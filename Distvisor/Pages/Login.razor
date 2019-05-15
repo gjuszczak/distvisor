@@ -1,0 +1,38 @@
+﻿@page "/login"
+@layout EmptyLayout
+@inject AuthService Auth
+@inject IUriHelper  UriHelper
+
+
+<div class="d-flex w-100 vh-100 justify-content-center align-items-center">
+    <div class="card w-100 m-3 shadow-sm" style="max-width:30em;">
+        <h5 class="card-header">Login to Distvisor</h5>
+        <div class="card-body">
+            <form action="about:blank" onsubmit="@LoginSubmit">
+                <p class="card-text">Please enter your login credentials.</p>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="username" placeholder="Username" bind="@username" />
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="password" placeholder="Password" bind="@password" />
+                </div>
+                <button type="submit" class="btn btn-primary w-25 float-right">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@functions {
+
+    string username;
+    string password;
+
+    void LoginSubmit()
+    {
+        Auth.Login(username, password);
+        if (Auth.IsAuthenticated())
+        {
+            UriHelper.NavigateTo("/");
+        }
+    }
+}
