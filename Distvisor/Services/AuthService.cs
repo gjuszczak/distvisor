@@ -18,6 +18,8 @@ namespace Distvisor.Services
         {
             if (login == "admin" && password == "admin")
                 isAuthenticated = true;
+            else
+                isAuthenticated = false;
         }
     }
 }
