@@ -7,7 +7,7 @@ namespace Distvisor.Services
 {
     public class AuthService
     {
-        private bool isAuthenticated = false;
+        private bool isAuthenticated = true;
 
         public bool IsAuthenticated()
         {

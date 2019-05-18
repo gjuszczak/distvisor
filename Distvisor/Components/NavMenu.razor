@@ -1,32 +1,25 @@
-<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">Distvisor</a>
-    <button class="navbar-toggler" onclick="@ToggleNavMenu">
+<nav class="navbar navbar-dark navbar-full bg-primary w-100 nav-runaway">
+    <button class="navbar-toggler d-block" data-target="#navmenu" data-toggle="navdrawer" data-type="persistent" type="button">
         <span class="navbar-toggler-icon"></span>
     </button>
+    <span class="navbar-brand mr-auto">Distvisor</span>
+</nav>
+
+
+<div class="navdrawer navdrawer-persistent" id="navmenu" tabindex="-1">
+    <div class="navdrawer-content">
+        <ul class="navdrawer-nav">
+            <li class="nav-item">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <i class="material-icons mr-3">home</i> Home
+                </NavLink>
+            </li>
+            <li class="nav-item">
+                <NavLink class="nav-link" href="counter">
+                    <i class="material-icons mr-3">plus_one</i> Counter
+                </NavLink>
+            </li>
+        </ul>
+    </div>
 </div>
 
-<div class="@NavMenuCssClass" onclick="@ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-    </ul>
-</div>
-
-@functions {
-    bool collapseNavMenu = true;
-
-    string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-}
