@@ -1,0 +1,13 @@
+<header>
+  <nav class="navbar border-bottom box-shadow mb-3">
+    <div class="container">
+      <a class="navbar-brand" [routerLink]="['/']">Distvisor</a>
+      <p-menu #menu [popup]="true" [model]="items"></p-menu>
+      <p-button class="navbar-toggler"
+                icon="pi pi-bars"
+                label="Apps"
+                (click)="menu.toggle($event)">
+      </p-button>
+    </div>
+  </nav>
+</header>
