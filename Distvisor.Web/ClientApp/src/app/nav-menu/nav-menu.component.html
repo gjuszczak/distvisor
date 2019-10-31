@@ -1,12 +1,12 @@
 <header>
   <nav class="navbar border-bottom box-shadow mb-3">
     <div class="container">
-      <a class="navbar-brand" [routerLink]="['/']">Distvisor</a>
+      <div class="navbar-brand">
+        <a [routerLink]="['/']">Distvisor</a>
+        <a *ngIf="navBrand"> -> {{navBrand}}</a>
+      </div>
       <p-menu #menu [popup]="true" [model]="items"></p-menu>
-      <p-button class="navbar-toggler"
-                icon="pi pi-bars"
-                label="Apps"
-                (click)="menu.toggle($event)">
+      <p-button class="navbar-toggler" icon="pi pi-bars" label="Apps" (click)="menu.toggle($event)">
       </p-button>
     </div>
   </nav>

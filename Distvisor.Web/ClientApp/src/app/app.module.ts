@@ -7,9 +7,11 @@ import { RouterModule } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
+import { TabViewModule } from 'primeng/tabview';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { NavMenuService } from './nav-menu/nav-menu.service';
 import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
@@ -38,9 +40,10 @@ import { TaxCalcComponent } from './taxcalc/taxcalc.component';
 
     // primeNg
     ButtonModule,
-    MenuModule
+    MenuModule,
+    TabViewModule
   ],
-  providers: [],
+  providers: [NavMenuService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

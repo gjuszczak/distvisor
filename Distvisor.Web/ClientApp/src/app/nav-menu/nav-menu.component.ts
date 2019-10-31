@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import { NavMenuService } from './nav-menu.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -8,6 +9,9 @@ import { MenuItem } from 'primeng/api';
 })
 export class NavMenuComponent {
   items: MenuItem[];
+  navBrand: string;
+
+  constructor(private navMenuService: NavMenuService) { }
 
   ngOnInit() {
     this.items = [{
@@ -16,5 +20,11 @@ export class NavMenuComponent {
         { label: 'Tax Calculator', icon: 'pi pi-dollar', routerLink: ['/taxcalc'] }
       ]
     }];
+
+    this.navMenuService.getNavBrand().subscribe(this.onNavBrandUpdate.bind(this));
+  }
+
+  onNavBrandUpdate(newNavBrand: string){
+    this.navBrand = newNavBrand;
   }
 }
