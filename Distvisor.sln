@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Distvisor.Angular", "Distvisor.Angular\Distvisor.Angular.csproj", "{D8B08540-A92D-4A4B-AFE1-13ECD4BC8592}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Distvisor.Web", "Distvisor.Web\Distvisor.Web.csproj", "{A1003EF4-7F28-4D0E-88C1-A676BB4E2926}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Distvisor.Web", "Distvisor.Web\Distvisor.Web.csproj", "{A1003EF4-7F28-4D0E-88C1-A676BB4E2926}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
