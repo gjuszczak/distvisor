@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Distvisor.Angular", "Distvi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Distvisor.Web", "Distvisor.Web\Distvisor.Web.csproj", "{A1003EF4-7F28-4D0E-88C1-A676BB4E2926}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AngularTemplate", "AngularTemplate\AngularTemplate.csproj", "{8C410C67-6C1C-4BE3-BDE8-76BD442F0789}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A1003EF4-7F28-4D0E-88C1-A676BB4E2926}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1003EF4-7F28-4D0E-88C1-A676BB4E2926}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1003EF4-7F28-4D0E-88C1-A676BB4E2926}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C410C67-6C1C-4BE3-BDE8-76BD442F0789}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C410C67-6C1C-4BE3-BDE8-76BD442F0789}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C410C67-6C1C-4BE3-BDE8-76BD442F0789}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C410C67-6C1C-4BE3-BDE8-76BD442F0789}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
