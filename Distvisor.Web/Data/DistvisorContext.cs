@@ -1,16 +1,17 @@
 ﻿using Distvisor.Web.Data.Models;
+using IdentityServer4.EntityFramework.Options;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
+using Microsoft.Extensions.Options;
 
 namespace Distvisor.Web.Data
 {
-    public class DistvisorContext : DbContext
+    public class DistvisorContext : ApiAuthorizationDbContext<User>
     {
-        public DbSet<User> Users { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        { 
-            options.UseSqlite(@"Data Source=Data\dev_distvisor.db");
+        public DistvisorContext(
+            DbContextOptions options,
+            IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
+        {
         }
     }
 }

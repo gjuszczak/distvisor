@@ -17,6 +17,10 @@ import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { TaxCalcComponent } from './taxcalc/taxcalc.component';
 
+import { ApiAuthorizationModule } from 'src/api-authorization/api-authorization.module';
+import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
+import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,6 +35,7 @@ import { TaxCalcComponent } from './taxcalc/taxcalc.component';
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
+    ApiAuthorizationModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
@@ -43,7 +48,10 @@ import { TaxCalcComponent } from './taxcalc/taxcalc.component';
     MenuModule,
     TabViewModule
   ],
-  providers: [NavMenuService],
+    providers: [
+        NavMenuService,
+        { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true }
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
