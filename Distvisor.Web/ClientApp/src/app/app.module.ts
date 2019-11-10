@@ -17,9 +17,9 @@ import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { TaxCalcComponent } from './taxcalc/taxcalc.component';
 
-import { ApiAuthorizationModule } from 'src/api-authorization/api-authorization.module';
-import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
-import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
+import { AuthorizationModule } from 'src/authorization/authorization.module';
+import { AuthorizeGuard } from 'src/authorization/authorize.guard';
+import { AuthorizeInterceptor } from 'src/authorization/authorize.interceptor';
 
 @NgModule({
   declarations: [
@@ -35,7 +35,7 @@ import { AuthorizeInterceptor } from 'src/api-authorization/authorize.intercepto
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
-    ApiAuthorizationModule,
+    AuthorizationModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
