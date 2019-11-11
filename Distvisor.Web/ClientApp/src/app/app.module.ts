@@ -40,7 +40,7 @@ import { AuthorizeInterceptor } from 'src/authorization/authorize.interceptor';
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
-      { path: 'taxcalc', component: TaxCalcComponent },
+      { path: 'taxcalc', component: TaxCalcComponent, canActivate: [AuthorizeGuard] },
     ]),
 
     // primeNg

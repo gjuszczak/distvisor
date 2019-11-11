@@ -3,7 +3,7 @@ import { AuthenticationResultStatus, AuthorizeService } from '../authorize.servi
 import { BehaviorSubject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs/operators';
-import { LogoutActions, ApplicationPaths, ReturnUrlType } from '../authorization.constants';
+import { ApplicationPaths, ReturnUrlType } from '../authorization.constants';
 
 // The main responsibility of this component is to handle the user's logout process.
 // This is the starting point for the logout process, which is usually initiated when a
@@ -23,25 +23,25 @@ export class LogoutComponent implements OnInit {
 
   async ngOnInit() {
     const action = this.activatedRoute.snapshot.url[1];
-    switch (action.path) {
-      case LogoutActions.Logout:
-        if (!!window.history.state.local) {
-          await this.logout(this.getReturnUrl());
-        } else {
-          // This prevents regular links to <app>/authentication/logout from triggering a logout
-          this.message.next('The logout was not initiated from within the page.');
-        }
+    //switch (action.path) {
+    //  case LogoutActions.Logout:
+    //    if (!!window.history.state.local) {
+    //      await this.logout(this.getReturnUrl());
+    //    } else {
+    //      // This prevents regular links to <app>/authentication/logout from triggering a logout
+    //      this.message.next('The logout was not initiated from within the page.');
+    //    }
 
-        break;
-      case LogoutActions.LogoutCallback:
-        await this.processLogoutCallback();
-        break;
-      case LogoutActions.LoggedOut:
-        this.message.next('You successfully logged out!');
-        break;
-      default:
-        throw new Error(`Invalid action '${action}'`);
-    }
+    //    break;
+    //  case LogoutActions.LogoutCallback:
+    //    await this.processLogoutCallback();
+    //    break;
+    //  case LogoutActions.LoggedOut:
+    //    this.message.next('You successfully logged out!');
+    //    break;
+    //  default:
+    //    throw new Error(`Invalid action '${action}'`);
+    //}
   }
 
   private async logout(returnUrl: string): Promise<void> {
@@ -50,41 +50,24 @@ export class LogoutComponent implements OnInit {
       take(1)
     ).toPromise();
     if (isauthenticated) {
-      const result = await this.authorizeService.signOut(state);
-      switch (result.status) {
-        case AuthenticationResultStatus.Redirect:
-          break;
-        case AuthenticationResultStatus.Success:
-          await this.navigateToReturnUrl(returnUrl);
-          break;
-        case AuthenticationResultStatus.Fail:
-          this.message.next(result.message);
-          break;
-        default:
-          throw new Error('Invalid authentication result status.');
-      }
+      const result = await this.authorizeService.signOut();
+      //switch (result.status) {
+      //  case AuthenticationResultStatus.Success:
+      //    await this.navigateToReturnUrl(returnUrl);
+      //    break;
+      //  case AuthenticationResultStatus.Fail:
+      //    this.message.next(result.message);
+      //    break;
+      //  default:
+      //    throw new Error('Invalid authentication result status.');
+      //}
     } else {
       this.message.next('You successfully logged out!');
     }
   }
 
   private async processLogoutCallback(): Promise<void> {
-    const url = window.location.href;
-    const result = await this.authorizeService.completeSignOut(url);
-    switch (result.status) {
-      case AuthenticationResultStatus.Redirect:
-        // There should not be any redirects as the only time completeAuthentication finishes
-        // is when we are doing a redirect sign in flow.
-        throw new Error('Should not redirect.');
-      case AuthenticationResultStatus.Success:
-        await this.navigateToReturnUrl(this.getReturnUrl(result.state));
-        break;
-      case AuthenticationResultStatus.Fail:
-        this.message.next(result.message);
-        break;
-      default:
-        throw new Error('Invalid authentication result status.');
-    }
+
   }
 
   private async navigateToReturnUrl(returnUrl: string) {
