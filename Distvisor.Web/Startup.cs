@@ -30,6 +30,8 @@ namespace Distvisor.Web
 
             services.AddControllersWithViews();
 
+            services.AddDistvisorAuthentication();
+
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -62,6 +64,8 @@ namespace Distvisor.Web
             }
 
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

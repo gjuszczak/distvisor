@@ -16,6 +16,27 @@ namespace Distvisor.Web.Data.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.0.0");
 
+            modelBuilder.Entity("Distvisor.Web.Data.Models.Session", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ExpireOnUtc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("IssuedAtUtc")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Sessions");
+                });
+
             modelBuilder.Entity("Distvisor.Web.Data.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -34,6 +55,13 @@ namespace Distvisor.Web.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Distvisor.Web.Data.Models.Session", b =>
+                {
+                    b.HasOne("Distvisor.Web.Data.Models.User", "User")
+                        .WithMany("Sessions")
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

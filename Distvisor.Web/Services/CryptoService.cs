@@ -9,6 +9,7 @@ namespace Distvisor.Web.Services
         private const int SaltSize = 16;
         private const int KeySize = 32;
         private const int Iterations = 10000;
+        private const int SessionIdSize = 64;
 
         public string GeneratePasswordHash(string plainPassword)
         {
@@ -32,6 +33,14 @@ namespace Distvisor.Web.Services
             using var hashGen = new Rfc2898DeriveBytes(plainPassword, salt, Iterations, HashAlgorithmName.SHA256);
             var keyToVerify = hashGen.GetBytes(KeySize);
             return keyToVerify.SequenceEqual(key);
+        }
+
+        public string GenerateRandomSessionId()
+        {
+            using var saltGen = new RNGCryptoServiceProvider();
+            var sessionId = new byte[SessionIdSize];
+            saltGen.GetBytes(sessionId);
+            return Convert.ToBase64String(sessionId);
         }
     }
 }
