@@ -8,7 +8,6 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { LoginComponent } from './login/login.component';
-import { LoginMenuComponent } from './login-menu/login-menu.component';
 import { LogoutComponent } from './logout/logout.component';
 import { ApplicationPaths } from './authorization.constants';
 import { AutofocusModule } from '../autofocus/autofocus.module';
@@ -35,7 +34,7 @@ import { AutofocusModule } from '../autofocus/autofocus.module';
     // internal
     AutofocusModule
   ],
-  declarations: [LoginMenuComponent, LoginComponent, LogoutComponent],
-  exports: [LoginMenuComponent, LoginComponent, LogoutComponent]
+  declarations: [LoginComponent, LogoutComponent],
+  exports: [LoginComponent, LogoutComponent]
 })
 export class AuthorizationModule { }

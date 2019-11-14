@@ -15,7 +15,6 @@ import { NavMenuService } from './nav-menu/nav-menu.service';
 import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { TaxCalcComponent } from './taxcalc/taxcalc.component';
 
 import { AuthorizationModule } from 'src/authorization/authorization.module';
 import { AuthorizeGuard } from 'src/authorization/authorize.guard';
@@ -27,8 +26,7 @@ import { AuthorizeInterceptor } from 'src/authorization/authorize.interceptor';
     NavMenuComponent,
     HomeComponent,
     CounterComponent,
-    FetchDataComponent,
-    TaxCalcComponent
+    FetchDataComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -39,8 +37,7 @@ import { AuthorizeInterceptor } from 'src/authorization/authorize.interceptor';
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
-      { path: 'taxcalc', component: TaxCalcComponent, canActivate: [AuthorizeGuard] },
+      { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard]},
     ]),
 
     // primeNg

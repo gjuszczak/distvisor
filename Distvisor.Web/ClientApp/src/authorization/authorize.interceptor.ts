@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { Observable, throwError } from 'rxjs';
+import { map, mergeMap, catchError } from 'rxjs/operators';
 import { AuthorizeService } from './authorize.service';
-import { map, mergeMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthorizeInterceptor implements HttpInterceptor {
-  constructor(private authorize: AuthorizeService) { }
+  constructor(private authorize: AuthorizeService, private router: Router) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return this.authorize.getUser().pipe(
-        map(user => user && user.accessToken),
+        map(user => user && user.sessionId),
         mergeMap(token => this.processRequestWithToken(token, req, next)));
   }
 
@@ -28,7 +29,15 @@ export class AuthorizeInterceptor implements HttpInterceptor {
       });
     }
 
-    return next.handle(req);
+    return next.handle(req).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error && error.status === 401) {
+          this.authorize.signOut();  
+          location.reload();
+        } 
+        return throwError(error);
+      })
+    );
   }
 
   private isSameOriginUrl(req: any) {

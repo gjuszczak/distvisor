@@ -1,9 +1,6 @@
 export const ApplicationName = 'Distvisor';
 
-export const LocalStorageKeys = {
-  User: `${ApplicationName}_Auth_User`,
-  Session: `${ApplicationName}_Auth_Session`
-}
+export const LocalStorageUserKey = `${ApplicationName}_Auth_User`;
 
 export const ReturnUrlType = 'returnUrl';
 

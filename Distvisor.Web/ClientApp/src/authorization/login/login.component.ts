@@ -9,8 +9,7 @@ import { ApplicationPaths, ReturnUrlType } from '../authorization.constants';
 // let the component perform the login and return back to the return url.
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {
   private returnUrl: string;

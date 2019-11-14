@@ -31,6 +31,14 @@ namespace Distvisor.Web.Controllers
             return Ok($"Hello {User.Identity.Name}");
         }
 
+        [HttpGet("revokeall")]
+        public IActionResult RevokeAll()
+        {
+            _distvisorContext.Sessions.RemoveRange(_distvisorContext.Sessions);
+            _distvisorContext.SaveChanges();
+            return Ok();
+        }
+
         [HttpPost("login")]
         public IActionResult Login(LoginRequestDto login)
         {

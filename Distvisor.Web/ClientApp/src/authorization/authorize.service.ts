@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { BehaviorSubject, concat, of, Observable } from 'rxjs';
 import { filter, map, take, tap } from 'rxjs/operators';
-import { LocalStorageKeys, ApplicationPaths } from './authorization.constants';
+import { LocalStorageUserKey, ApplicationPaths } from './authorization.constants';
 
 export interface IAuthenticationResult {
   status: AuthenticationResultStatus;
@@ -15,45 +15,40 @@ export enum AuthenticationResultStatus {
 }
 
 export interface IUser {
-  name: string;
-  accessToken: string;
+  username: string;
+  sessionId: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthorizeService {
-  private userSubject: BehaviorSubject<IUser | null> = new BehaviorSubject(null);
 
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
   }
 
   public isAuthenticated(): Observable<boolean> {
-    return this.getUser().pipe(map(u => !!u));
+    return this.getUser()
+      .pipe(map(u => !!u));
   }
 
   public getUser(): Observable<IUser | null> {
-    return concat(
-      this.userSubject.pipe(take(1), filter(u => !!u)),
-      this.getUserFromStorage().pipe(filter(u => !!u), tap(u => this.userSubject.next(u))),
-      this.userSubject.asObservable());
+    return this.getUserFromStorage();
   }
 
   public signIn(username: string, password: string): Observable<IAuthenticationResult> {
-
     return this.http.post(
       this.baseUrl + ApplicationPaths.ApiLogin,
       { username, password },
       { observe: 'response' })
-      .pipe(map(
-        _ => this.success(),
-        (error) => this.fail(error.body.toString())
+      .pipe(
+        tap(resp => this.storeUser(<IUser>resp.body)),
+        map(_ => this.success(), (err: HttpResponse<Object>) => this.fail(err.body.toString())
       ));
   }
 
-  public signOut(): Observable<IAuthenticationResult> {
-
-    return of(this.fail("Dupa"));
+  public signOut() {
+    localStorage.setItem(LocalStorageUserKey, null);
   }
 
   private fail(message: string): IAuthenticationResult {
@@ -64,8 +59,12 @@ export class AuthorizeService {
     return { status: AuthenticationResultStatus.Success, message: "" };
   }
 
-  private getUserFromStorage(): Observable<IUser> {
-    return of(localStorage.getItem(LocalStorageKeys.User)).pipe(
-      map(u => u && { name: u, accessToken: "" }));
+  private getUserFromStorage(): Observable<IUser | null> {
+    return of(localStorage.getItem(LocalStorageUserKey)).pipe(
+      map(u => u && JSON.parse(u)));
+  }
+
+  private storeUser(user: IUser) {
+    localStorage.setItem(LocalStorageUserKey, JSON.stringify(user));
   }
 }

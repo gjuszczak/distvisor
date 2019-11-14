@@ -15,9 +15,10 @@ export class NavMenuComponent {
 
   ngOnInit() {
     this.items = [{
-      label: 'Accounting',
+      label: 'Account',
       items: [
-        { label: 'Tax Calculator', icon: 'pi pi-dollar', routerLink: ['/taxcalc'] }
+        { label: 'Fetch data', icon: 'pi pi-dollar', routerLink: ['/fetch-data'] },
+        { label: 'Logout', routerLink: ['/authentication/logout'] }
       ]
     }];
 
