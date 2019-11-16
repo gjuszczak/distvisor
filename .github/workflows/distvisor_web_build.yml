@@ -22,7 +22,7 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ${{ env.build_angular_path }}/node_modules
-        key: build_angular_node_modules-${{ hashFiles('${{ env.build_angular_path }}/package-lock.json') }}
+        key: build_angular_node_modules-${{ hashFiles('**/package-lock.json') }}
           
     - name: Install packages
       working-directory: ${{ env.build_angular_path }}
