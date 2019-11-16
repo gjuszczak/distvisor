@@ -3,7 +3,8 @@ name: Distvisor.Web build
 on: push
 
 env: 
-  build_angular_path: Distvisor.Web/ClientApp
+  build_angular_path: src/Distvisor.Web/ClientApp
+  build_aspnetcore_path: src
 
 jobs:
   build_angular:
@@ -33,7 +34,7 @@ jobs:
       run: npm run build 
     
 
-  build_aspnet:
+  build_aspnetcore:
 
     runs-on: ubuntu-latest
 
@@ -46,4 +47,5 @@ jobs:
         dotnet-version: 3.0.100
     
     - name: Build with dotnet
+      working-directory: ${{ env.build_aspnetcore_path }}
       run: dotnet build --configuration Release
