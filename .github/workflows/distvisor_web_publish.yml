@@ -4,6 +4,7 @@ on: push
 env:
   build_date: $(date +%s)
 
+
 jobs:
   publish:
     name: Publish
