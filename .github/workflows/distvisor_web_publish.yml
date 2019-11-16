@@ -1,0 +1,44 @@
+name: Distvisor.Web publish
+
+on: push
+env:
+  build_date: $(date +%s)
+
+jobs:
+  publish:
+    name: Publish
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    
+    - name: Setup Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+    
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.0.100
+    
+    - name: Publish with dotnet
+      working-directory: src
+      run: dotnet publish -c Release -o ../deploy/out -r linux-arm Distvisor.Web 
+      
+    - name: Build the Docker image
+      working-directory: deploy
+      run: docker build -t ${{ secrets.DOCKER_IMG_NAME }}:${{ env.build_date }} -t ${{ secrets.DOCKER_IMG_NAME }}:latest .
+
+    - name: Docker login
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      
+    - name: Docker push versioned
+      run: docker push ${{ secrets.DOCKER_IMG_NAME }}:${{ env.build_date }}
+      
+    - name: Docker push latest
+      run: docker push ${{ secrets.DOCKER_IMG_NAME }}:latest
+      
+      
+      
