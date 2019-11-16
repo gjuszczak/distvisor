@@ -1,6 +1,9 @@
-name: Distvisor build
+name: Distvisor.Web build
 
-on: [push]
+on: push
+
+env: 
+  build_angular_path: Distvisor.Web/ClientApp
 
 jobs:
   build_angular:
@@ -9,14 +12,25 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+          
     - name: Setup Node.js 10.x
       uses: actions/setup-node@v1
       with:
         node-version: 10.x
+    
+    - name: Cache node modules
+      uses: actions/cache@v1
+      with:
+        path: ${{ env.build_angular_path }}/node_modules
+        key: build_angular_node_modules-${{ hashFiles('${{ env.build_angular_path }}/package-lock.json') }}
+          
     - name: Install packages
+      working-directory: ${{ env.build_angular_path }}
       run: npm install
+    
     - name: Build Angular
-      run: npm run build --if-present
+      working-directory: ${{ env.build_angular_path }}
+      run: npm run build 
     
 
   build_aspnet:
@@ -25,9 +39,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.0.100
+    
     - name: Build with dotnet
       run: dotnet build --configuration Release
