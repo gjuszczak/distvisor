@@ -1,8 +1,6 @@
 name: Distvisor.Web publish
 
 on: push
-env:
-  build_date: $(date +%s)
 
 jobs:
   publish:
@@ -27,16 +25,11 @@ jobs:
       working-directory: src
       run: dotnet publish -c Release -o ../deploy/out -r linux-arm Distvisor.Web 
       
-    - name: Build the Docker image
+    - name: Build and push Docker image
       working-directory: deploy
-      run: docker build -t ${{ secrets.DOCKER_IMG_NAME }}:${{ env.build_date }} -t ${{ secrets.DOCKER_IMG_NAME }}:latest .
-
-    - name: Docker login
-      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-            
-    - name: Docker push latest
-      run: docker push ${{ secrets.DOCKER_IMG_NAME }}:latest
-      
-    - name: Docker push versioned
-      run: docker push ${{ secrets.DOCKER_IMG_NAME }}:${{ env.build_date }}     
-      
+      run: |
+        date=$(date '+%Y%m%d%H%M%S')
+        docker build -t ${{ secrets.DOCKER_IMG_NAME }}:$date -t ${{ secrets.DOCKER_IMG_NAME }}:latest .
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker push ${{ secrets.DOCKER_IMG_NAME }}:$date
+        docker push ${{ secrets.DOCKER_IMG_NAME }}:latest
