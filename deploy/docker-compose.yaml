@@ -1,0 +1,58 @@
+version: '3'
+
+# =======================================
+# Create data & letsencrypt dirs
+# =======================================
+#
+# mkdir data
+# mkdir letsencrypt
+#
+# =======================================
+# Define following env vars 
+# to make this configuration work
+# =======================================
+#
+# export ACME_EMAIL="email@example.com"
+# export DISTVISOR_DOMAIN="domain.com"
+# export DISTVISOR_DOCKER_IMG"="example/distvisor"
+#
+# docker-compose up
+
+services:
+  traefik:
+    image: traefik
+    container_name: traefik
+    restart: always
+    command:
+      - "--log.level=WARN"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.mytlschallenge.acme.tlschallenge=true"
+      - "--certificatesresolvers.mytlschallenge.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - 80:80
+      - 8080:8080
+      - 443:443
+    volumes:
+      - ./letsencrypt:/letsencrypt
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  distvisor:
+    image: ${DISTVISOR_DOCKER_IMG}
+    container_name: distvisor
+    restart: always
+    volumes: 
+      - ./data:/app/Data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.redirecthttps.redirectscheme.scheme=https"
+      - "traefik.http.routers.distvisor_insecure.rule=Host(`${DISTVISOR_DOMAIN}`)"
+      - "traefik.http.routers.distvisor_insecure.entrypoints=web"
+      - "traefik.http.routers.distvisor_insecure.middlewares=redirecthttps"
+      - "traefik.http.routers.distvisor.rule=Host(`${DISTVISOR_DOMAIN}`)"
+      - "traefik.http.routers.distvisor.entrypoints=websecure"
+      - "traefik.http.routers.distvisor.tls.certresolver=mytlschallenge"
