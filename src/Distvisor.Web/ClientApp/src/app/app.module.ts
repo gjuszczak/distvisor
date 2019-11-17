@@ -13,6 +13,7 @@ import { AuthorizationModule } from '../authorization/authorization.module';
 import { AuthorizeGuard } from '../authorization/authorize.guard';
 import { AuthorizeInterceptor } from '../authorization/authorize.interceptor';
 import { NavigationModule } from '../navigation/navigation.module';
+import { SettingsModule } from '../settings/settings.module';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { NavigationModule } from '../navigation/navigation.module';
 
     // internal
     NavigationModule,
+    SettingsModule,
   ],
   providers: [
       { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true }

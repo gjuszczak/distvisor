@@ -14,13 +14,11 @@ export class NavMenuComponent {
   constructor(private navigationService: NavigationService) { }
 
   ngOnInit() {
-    this.items = [{
-      label: 'Account',
-      items: [
-        { label: 'Fetch data', icon: 'pi pi-dollar', routerLink: ['/fetch-data'] },
-        { label: 'Logout', routerLink: ['/authentication/logout'] }
-      ]
-    }];
+    this.items = [
+        { label: 'Fetch data', icon: 'pi pi-chart-bar', routerLink: ['/fetch-data'] },
+        { label: 'Settings', icon: 'pi pi-cog', routerLink: ['/settings'] },
+        { label: 'Logout', icon: 'pi pi-sign-out', routerLink: ['/authentication/logout'] },
+    ];
 
     this.navigationService.getNavBrand().subscribe(this.onNavBrandUpdate.bind(this));
   }
