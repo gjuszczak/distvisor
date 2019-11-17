@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavMenuService } from '../nav-menu/nav-menu.service';
+import { NavigationService } from '../../navigation/navigation.service';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +7,9 @@ import { NavMenuService } from '../nav-menu/nav-menu.service';
 })
 export class HomeComponent  implements OnInit {
 
-  constructor(private navMenuService: NavMenuService) { }
+  constructor(private navigationService: NavigationService) { }
 
   ngOnInit(){
-    this.navMenuService.setNavBrand(null);
+    this.navigationService.setNavBrand(null);
   }
 }

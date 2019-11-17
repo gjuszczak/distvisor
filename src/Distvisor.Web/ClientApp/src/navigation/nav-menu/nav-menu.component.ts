@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { NavMenuService } from './nav-menu.service';
+import { NavigationService } from '../navigation.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -11,7 +11,7 @@ export class NavMenuComponent {
   items: MenuItem[];
   navBrand: string;
 
-  constructor(private navMenuService: NavMenuService) { }
+  constructor(private navigationService: NavigationService) { }
 
   ngOnInit() {
     this.items = [{
@@ -22,7 +22,7 @@ export class NavMenuComponent {
       ]
     }];
 
-    this.navMenuService.getNavBrand().subscribe(this.onNavBrandUpdate.bind(this));
+    this.navigationService.getNavBrand().subscribe(this.onNavBrandUpdate.bind(this));
   }
 
   onNavBrandUpdate(newNavBrand: string){

@@ -5,25 +5,18 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
-import { ButtonModule } from 'primeng/button';
-import { MenuModule } from 'primeng/menu';
-import { TabViewModule } from 'primeng/tabview';
-
 import { AppComponent } from './app.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { NavMenuService } from './nav-menu/nav-menu.service';
 import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
-
-import { AuthorizationModule } from 'src/authorization/authorization.module';
-import { AuthorizeGuard } from 'src/authorization/authorize.guard';
-import { AuthorizeInterceptor } from 'src/authorization/authorize.interceptor';
+import { AuthorizationModule } from '../authorization/authorization.module';
+import { AuthorizeGuard } from '../authorization/authorize.guard';
+import { AuthorizeInterceptor } from '../authorization/authorize.interceptor';
+import { NavigationModule } from '../navigation/navigation.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavMenuComponent,
     HomeComponent,
     CounterComponent,
     FetchDataComponent
@@ -40,15 +33,12 @@ import { AuthorizeInterceptor } from 'src/authorization/authorize.interceptor';
       { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard]},
     ]),
 
-    // primeNg
-    ButtonModule,
-    MenuModule,
-    TabViewModule
+    // internal
+    NavigationModule,
   ],
-    providers: [
-        NavMenuService,
-        { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true }
-    ],
+  providers: [
+      { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

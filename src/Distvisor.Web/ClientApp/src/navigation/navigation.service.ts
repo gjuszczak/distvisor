@@ -1,6 +1,6 @@
 import { Subject, Observable } from "rxjs";
 
-export class NavMenuService {
+export class NavigationService {
     private navBrand = new Subject<string>();
 
     getNavBrand() : Observable<string> {
