@@ -1,4 +1,4 @@
-﻿using Distvisor.Web.Data.Models;
+﻿using Distvisor.Web.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Distvisor.Web.Data
@@ -9,7 +9,6 @@ namespace Distvisor.Web.Data
         {
         }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Session> Sessions { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
     }
 }

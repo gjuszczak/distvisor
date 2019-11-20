@@ -23,6 +23,8 @@ namespace Distvisor.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<ICryptoService, CryptoService>();
+            services.AddSingleton<IAuthCache, AuthCache>();
+            services.AddScoped<IAuthService, AuthService>();
 
             services.AddDbContext<DistvisorContext>(options =>
                 options.UseSqlite(
@@ -56,7 +58,6 @@ namespace Distvisor.Web
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             if (!env.IsDevelopment())
             {

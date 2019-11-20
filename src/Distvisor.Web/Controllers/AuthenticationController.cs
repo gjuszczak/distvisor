@@ -1,11 +1,8 @@
-﻿using Distvisor.Web.Data;
-using Distvisor.Web.Data.Models;
-using Distvisor.Web.Services;
+﻿using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
 {
@@ -13,15 +10,11 @@ namespace Distvisor.Web.Controllers
     [Route("api/[controller]")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly ICryptoService _cryptoService;
-        private readonly DistvisorContext _distvisorContext;
+        private readonly IAuthService _users;
 
-        public AuthenticationController(
-            ICryptoService cryptoService,
-            DistvisorContext distvisorContext)
+        public AuthenticationController(IAuthService users)
         {
-            _cryptoService = cryptoService;
-            _distvisorContext = distvisorContext;
+            _users = users;
         }
 
         [HttpGet]
@@ -31,69 +24,35 @@ namespace Distvisor.Web.Controllers
             return Ok($"Hello {User.Identity.Name}");
         }
 
-        [HttpGet("revokeall")]
-        public IActionResult RevokeAll()
-        {
-            _distvisorContext.Sessions.RemoveRange(_distvisorContext.Sessions);
-            _distvisorContext.SaveChanges();
-            return Ok();
-        }
-
         [HttpPost("login")]
-        public IActionResult Login(LoginRequestDto login)
+        public async Task<IActionResult> Login(LoginRequestDto login)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // create user if there is no user at all
-            if (!_distvisorContext.Users.Any())
+            if (!await _users.AnyAsync())
             {
-                var newUser = new User()
-                {
-                    Id = Guid.NewGuid(),
-                    Username = login.Username,
-                    PasswordHash = _cryptoService.GeneratePasswordHash(login.Password),
-                    LockoutUtc = DateTime.UtcNow,
-                };
-                _distvisorContext.Add(newUser);
-                _distvisorContext.SaveChanges();
+                await _users.CreateUserAsync(login.Username, login.Password);
             }
 
-            // verify credentials
-            var user = _distvisorContext.Users.FirstOrDefault(x => x.Username == login.Username);
-            if (user == null)
-                return Unauthorized();
+            var loginResult = await _users.LoginAsync(login.Username, login.Password);
 
-            var lockoutSeconds = (int)(user.LockoutUtc - DateTime.UtcNow).TotalSeconds - 50;
-            if (lockoutSeconds > 0)
-                return Unauthorized($"Lockout for {lockoutSeconds} seconds.");
-
-            var authenticated = (_cryptoService.ValidatePasswordHash(login.Password, user.PasswordHash));
-            if (!authenticated)
-            {
-                user.LockoutUtc = user.LockoutUtc > DateTime.UtcNow ? user.LockoutUtc.AddSeconds(10) : DateTime.UtcNow.AddSeconds(10);
-                _distvisorContext.SaveChanges();
-                return Unauthorized();
-            }
-
-            // generate user session
-            var session = new Session
-            {
-                Id = _cryptoService.GenerateRandomSessionId(),
-                IssuedAtUtc = DateTime.UtcNow,
-                ExpireOnUtc = DateTime.Now.AddDays(30),
-                User = user,
-            };
-            _distvisorContext.Add(session);
-            _distvisorContext.SaveChanges();
+            if (!loginResult.IsAuthenticated)
+                return Unauthorized(loginResult.Message);
 
             return Ok(new LoginSuccessResponseDto
             {
-                Username = user.Username,
-                SessionId = session.Id,
-                SessionIssueDate = session.IssuedAtUtc,
-                SessionExpirationDate = session.ExpireOnUtc,
+                Username = loginResult.Username,
+                SessionId = loginResult.SessionId,
             });
+        }
+
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await _users.LogoutAsync(User.Identity.Name);
+            return Ok();
         }
     }
 
@@ -112,7 +71,5 @@ namespace Distvisor.Web.Controllers
     {
         public string Username { get; set; }
         public string SessionId { get; set; }
-        public DateTime SessionIssueDate { get; set; }
-        public DateTime SessionExpirationDate { get; set; }
     }
 }

@@ -1,12 +1,8 @@
-﻿using Distvisor.Web.Data;
-using Distvisor.Web.Data.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Linq;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
@@ -21,17 +17,17 @@ namespace Distvisor.Web.Services
     public class DistvisorAuthenticationHandler
         : AuthenticationHandler<DistvisorAuthenticationOptions>
     {
-        private readonly DistvisorContext _context;
+        private readonly IAuthService _users;
 
         public DistvisorAuthenticationHandler(
             IOptionsMonitor<DistvisorAuthenticationOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock,
-            DistvisorContext context)
+            IAuthService users)
             : base(options, logger, encoder, clock)
         {
-            _context = context;
+            _users = users;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -45,24 +41,15 @@ namespace Distvisor.Web.Services
             if (!"Bearer".Equals(headerValue.Scheme, StringComparison.OrdinalIgnoreCase))
                 return AuthenticateResult.NoResult();
 
-            var user = await GetUserAsync(headerValue.Parameter);
-            if (user == null)
-                return AuthenticateResult.Fail("User session not found");
+            var authResult = await _users.AuthenticateAsync(headerValue.Parameter);
+            if (!authResult.IsAuthenticated)
+                return AuthenticateResult.Fail(authResult.Message);
 
-            var claims = new[] { new Claim(ClaimTypes.Name, user.Username) };
+            var claims = new[] { new Claim(ClaimTypes.Name, authResult.Username) };
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, Scheme.Name);
             return AuthenticateResult.Success(ticket);
-        }
-
-        private async Task<User> GetUserAsync(string sessionId)
-        {
-            var session = await _context.Sessions
-                .Include(x => x.User)
-                .Where(x => DateTime.UtcNow < x.ExpireOnUtc)
-                .FirstOrDefaultAsync(x => x.Id == sessionId);
-            return session?.User;
         }
     }
 
