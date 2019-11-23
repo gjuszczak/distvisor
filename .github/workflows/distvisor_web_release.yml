@@ -1,10 +1,12 @@
-name: Distvisor.Web publish
+name: Distvisor.Web release
 
-on: push
-
+on:
+  release:
+    types: [published]
+    
 jobs:
-  publish:
-    name: Publish
+  release:
+    name: Release
 
     runs-on: ubuntu-latest
 
@@ -28,8 +30,7 @@ jobs:
     - name: Build and push Docker image
       working-directory: deploy
       run: |
-        date=$(date '+%Y%m%d%H%M%S')
-        docker build -t ${{ secrets.DOCKER_IMG_NAME }}:$date -t ${{ secrets.DOCKER_IMG_NAME }}:latest .
+        docker build -t ${{ secrets.DOCKER_IMG_NAME }}:${GITHUB_REF#refs/tags/} -t ${{ secrets.DOCKER_IMG_NAME }}:latest .
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker push ${{ secrets.DOCKER_IMG_NAME }}:$date
+        docker push ${{ secrets.DOCKER_IMG_NAME }}:${GITHUB_REF#refs/tags/}
         docker push ${{ secrets.DOCKER_IMG_NAME }}:latest
