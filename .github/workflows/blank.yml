@@ -11,4 +11,4 @@ jobs:
 
     steps:
     - name: Run a one-line script
-      run: echo ${GITHUB_REF#refs/heads/}
+      run: echo ${GITHUB_REF#refs/tags/}
