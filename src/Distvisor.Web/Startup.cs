@@ -25,13 +25,13 @@ namespace Distvisor.Web
             services.AddSingleton<ICryptoService, CryptoService>();
             services.AddSingleton<IAuthCache, AuthCache>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IDockerService, DockerService>();
+            services.AddScoped<IGithubService, GithubService>();
 
             services.AddDbContext<DistvisorContext>(options =>
-                options.UseSqlite(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
 
             services.AddControllersWithViews();
-
             services.AddDistvisorAuthentication();
 
             // In production, the Angular files will be served from this directory
