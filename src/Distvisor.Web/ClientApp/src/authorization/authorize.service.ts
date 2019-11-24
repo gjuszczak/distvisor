@@ -1,22 +1,14 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { BehaviorSubject, concat, of, Observable } from 'rxjs';
-import { filter, map, take, tap } from 'rxjs/operators';
-import { LocalStorageUserKey, ApplicationPaths } from './authorization.constants';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ApplicationPaths } from './authorization.constants';
+import { IUser } from './user.service';
 
 export interface IAuthenticationResult {
-  status: AuthenticationResultStatus;
+  success: boolean;
+  user: IUser | null;
   message: string;
-}
-
-export enum AuthenticationResultStatus {
-  Success,
-  Fail
-}
-
-export interface IUser {
-  username: string;
-  sessionId: string;
 }
 
 @Injectable({
@@ -27,44 +19,33 @@ export class AuthorizeService {
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
   }
 
-  public isAuthenticated(): Observable<boolean> {
-    return this.getUser()
-      .pipe(map(u => !!u));
-  }
-
-  public getUser(): Observable<IUser | null> {
-    return this.getUserFromStorage();
-  }
-
-  public signIn(username: string, password: string): Observable<IAuthenticationResult> {
+  public login(username: string, password: string): Observable<IAuthenticationResult> {
     return this.http.post(
       this.baseUrl + ApplicationPaths.ApiLogin,
       { username, password },
       { observe: 'response' })
-      .pipe(
-        tap(resp => this.storeUser(<IUser>resp.body)),
-        map(_ => this.success(), (err: HttpResponse<Object>) => this.fail(err.body.toString())
-      ));
+      .pipe(map(
+        resp => this.success(resp), 
+        (err: HttpResponse<Object>) => this.fail(err)));
   }
 
-  public signOut() {
-    localStorage.setItem(LocalStorageUserKey, null);
+  public logout(): Observable<Object> {
+    return this.http.post(this.baseUrl + ApplicationPaths.ApiLogout, null);
   }
 
-  private fail(message: string): IAuthenticationResult {
-    return { status: AuthenticationResultStatus.Fail, message };
+  private fail(response: HttpResponse<Object>): IAuthenticationResult {
+    return {
+      success: false,
+      user: null,
+      message: response.body.toString()
+    };
   }
 
-  private success(): IAuthenticationResult {
-    return { status: AuthenticationResultStatus.Success, message: "" };
-  }
-
-  private getUserFromStorage(): Observable<IUser | null> {
-    return of(localStorage.getItem(LocalStorageUserKey)).pipe(
-      map(u => u && JSON.parse(u)));
-  }
-
-  private storeUser(user: IUser) {
-    localStorage.setItem(LocalStorageUserKey, JSON.stringify(user));
+  private success(response: HttpResponse<Object>): IAuthenticationResult {
+    return {
+      success: true,
+      user: <IUser>response.body,
+      message: "ok"
+    };
   }
 }

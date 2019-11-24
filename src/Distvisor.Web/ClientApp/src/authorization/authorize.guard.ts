@@ -1,30 +1,23 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { AuthorizeService } from './authorize.service';
-import { tap } from 'rxjs/operators';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, UrlTree } from '@angular/router';
 import { ApplicationPaths, QueryParameterNames } from './authorization.constants';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthorizeGuard implements CanActivate {
-  constructor(private authorize: AuthorizeService, private router: Router) {
-  }
-  canActivate(
-    _next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-      return this.authorize.isAuthenticated()
-        .pipe(tap(isAuthenticated => this.handleAuthorization(isAuthenticated, state)));
+  constructor(private user: UserService, private router: Router) {
   }
 
-  private handleAuthorization(isAuthenticated: boolean, state: RouterStateSnapshot) {
-    if (!isAuthenticated) {
-      this.router.navigate(ApplicationPaths.LoginPathComponents, {
+  canActivate(_next: ActivatedRouteSnapshot, state: RouterStateSnapshot) : boolean | UrlTree {
+      if(this.user.isAuthenticated())
+        return true;
+
+      return this.router.createUrlTree(ApplicationPaths.LoginPathComponents, {
         queryParams: {
           [QueryParameterNames.ReturnUrl]: state.url
         }
       });
-    }
   }
 }

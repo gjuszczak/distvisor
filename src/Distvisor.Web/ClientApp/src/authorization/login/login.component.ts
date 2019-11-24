@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthorizeService, AuthenticationResultStatus } from '../authorize.service';
+import { AuthorizeService, IAuthenticationResult } from '../authorize.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationPaths, ReturnUrlType } from '../authorization.constants';
+import { UserService } from '../user.service';
 
-// The main responsibility of this component is to handle the user's login process.
-// This is the starting point for the login process. Any component that needs to authenticate
-// a user can simply perform a redirect to this component with a returnUrl query parameter and
-// let the component perform the login and return back to the return url.
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html'
@@ -20,6 +17,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private authorizeService: AuthorizeService,
+    private userService: UserService,
     private activatedRoute: ActivatedRoute,
     private router: Router) { }
 
@@ -27,28 +25,28 @@ export class LoginComponent implements OnInit {
     this.returnUrl = this.getReturnUrl();
   }
 
-  onLogin(){
+  onLogin() {
     this.isBusy = true;
-    this.authorizeService.signIn(this.username, this.password)
+    this.authorizeService.login(this.username, this.password)
       .subscribe(
-        async _ => await this.navigateToReturnUrl(),
-        err => { this.errorMessage = err.message; this.isBusy = false; });
+        async result => await this.onAuthSuccess(result),
+        err => this.onAuthFail(err));
   }
 
-  private async navigateToReturnUrl() {
-    // It's important that we do a replace here so that we remove the callback uri with the
-    // fragment containing the tokens from the browser history.
+  private async onAuthSuccess(result: IAuthenticationResult) {
+    this.userService.setUser(result.user)
     await this.router.navigateByUrl(this.returnUrl);
+  }
+
+  private onAuthFail(result: IAuthenticationResult) {
+    this.errorMessage = result.message; 
+    this.isBusy = false;
   }
 
   private getReturnUrl(): string {
     const fromQuery = (this.activatedRoute.snapshot.queryParams as INavigationState).returnUrl;
-    // If the url is comming from the query string, check that is either
-    // a relative url or an absolute url
-    if (fromQuery &&
-      !(fromQuery.startsWith(`${window.location.origin}/`) ||
-        /\/[^\/].*/.test(fromQuery))) {
-      // This is an extra check to prevent open redirects.
+
+    if (fromQuery && !(fromQuery.startsWith(`${window.location.origin}/`) || /\/[^\/].*/.test(fromQuery))) {
       throw new Error('Invalid return url. The return url needs to have the same origin as the current page.');
     }
     return fromQuery || ApplicationPaths.DefaultLoginRedirectPath;

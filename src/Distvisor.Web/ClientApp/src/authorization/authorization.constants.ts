@@ -23,7 +23,8 @@ let applicationPaths: ApplicationPathsType = {
   LoginPathComponents: [],
   LogOutPathComponents: [],
   LoggedOutPathComponents: [],
-  ApiLogin: ``,
+  ApiLogin: '',
+  ApiLogout: '',
 };
 
 applicationPaths = {
@@ -32,6 +33,7 @@ applicationPaths = {
   LogOutPathComponents: applicationPaths.LogOut.split('/'),
   LoggedOutPathComponents: applicationPaths.LoggedOut.split('/'),
   ApiLogin: `api/${applicationPaths.Login}`,
+  ApiLogout: `api/${applicationPaths.LogOut}`,
 };
 
 interface ApplicationPathsType {
@@ -43,6 +45,7 @@ interface ApplicationPathsType {
   readonly LogOutPathComponents: string [];
   readonly LoggedOutPathComponents: string [];
   readonly ApiLogin: string;
+  readonly ApiLogout: string;
 }
 
 export const ApplicationPaths: ApplicationPathsType = applicationPaths;

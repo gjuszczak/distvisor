@@ -1,25 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of } from 'rxjs';
 import { map, mergeMap, catchError } from 'rxjs/operators';
-import { AuthorizeService } from './authorize.service';
+import { ApplicationPaths } from './authorization.constants';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthorizeInterceptor implements HttpInterceptor {
-  constructor(private authorize: AuthorizeService, private router: Router) { }
+  constructor(private userService: UserService, private router: Router) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return this.authorize.getUser().pipe(
+    return of(this.userService.getUser()).pipe(
         map(user => user && user.sessionId),
         mergeMap(token => this.processRequestWithToken(token, req, next)));
   }
 
-  // Checks if there is an access_token available in the authorize service
-  // and adds it to the request in case it's targeted at the same origin as the
-  // single page application.
   private processRequestWithToken(token: string, req: HttpRequest<any>, next: HttpHandler) {
     if (!!token && this.isSameOriginUrl(req)) {
       req = req.clone({
@@ -32,8 +30,7 @@ export class AuthorizeInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error && error.status === 401) {
-          this.authorize.signOut();  
-          location.reload();
+          this.router.navigate(ApplicationPaths.LogOutPathComponents);
         } 
         return throwError(error);
       })

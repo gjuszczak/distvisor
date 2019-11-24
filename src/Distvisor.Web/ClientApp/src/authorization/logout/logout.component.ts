@@ -1,23 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { Router } from '@angular/router';
 import { AuthorizeService } from '../authorize.service';
-import { ApplicationPaths, ReturnUrlType } from '../authorization.constants';
+import { ApplicationPaths } from '../authorization.constants';
+import { UserService } from '../user.service';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-logout',
   templateUrl: './logout.component.html'
 })
 export class LogoutComponent implements OnInit {
-  public message = new BehaviorSubject<string>(null);
-
   constructor(
     private authorizeService: AuthorizeService,
-    private activatedRoute: ActivatedRoute,
+    private userService: UserService,
     private router: Router) { }
 
-  async ngOnInit() {
-    this.authorizeService.signOut();
-    this.router.navigate(ApplicationPaths.LoginPathComponents);
+  ngOnInit() {
+    this.authorizeService.logout()
+      .pipe(tap(_ => this.userService.clearUser()))
+      .subscribe(_ => this.router.navigate(ApplicationPaths.LoginPathComponents));
   }
 }
