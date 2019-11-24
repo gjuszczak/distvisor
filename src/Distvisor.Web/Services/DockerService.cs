@@ -19,12 +19,25 @@ namespace Distvisor.Web.Services
                 .CreateClient();
         }
 
-        public async Task<IEnumerable<string>> GetAllContainersAsync()
+        public async Task UpdateImageAsync(string tag)
         {
-            var containers = await client.Containers.ListContainersAsync(
-                new ContainersListParameters() { Limit = 10 });
+            var imgParams = new ImagesCreateParameters
+            {
+                FromImage = "test",
+                Tag = tag
+            };
+            var auth = new AuthConfig();
+            var progress = new DockerProgress(); 
 
-            return containers.SelectMany(x => x.Names).ToList();
+            await client.Images.CreateImageAsync(imgParams, auth, progress);
+        }
+    }
+
+    public class DockerProgress : IProgress<JSONMessage>
+    {
+        public void Report(JSONMessage value)
+        {
+            // do nothing
         }
     }
 }

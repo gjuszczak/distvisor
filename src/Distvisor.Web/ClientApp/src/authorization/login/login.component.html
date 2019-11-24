@@ -13,7 +13,7 @@
         </div>
 
         <div class="d-flex justify-content-end">
-          <button pButton type="submit" label="Login" icon="pi pi-check" [disabled]="isBusy"></button>
+          <button pButton type="submit" label="Login" icon="{{ isBusy ? 'pi pi-spin pi-spinner' : 'pi pi-sign-in' }}" [disabled]="isBusy"></button>
         </div>
       </form>
     </p-card>

@@ -23,12 +23,13 @@ namespace Distvisor.Web.Controllers
         [HttpGet("updates")]
         public Task<IEnumerable<string>> GetUpdates()
         {
-            return _github.GetReleasesAsync();
+            return _github.GetReleasesAsync(); 
         }
 
         [HttpPost("update")]
-        public IActionResult Update(string tag)
+        public async Task<IActionResult> Update(string tag)
         {
+            await _docker.UpdateImageAsync(tag);
             return Ok($"Redy to update version: { tag }");
         }
     }
