@@ -5,6 +5,11 @@ using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
 {
+    public interface IGithubService
+    {
+        Task<IEnumerable<string>> GetReleasesAsync();
+    }
+
     public class GithubService : IGithubService
     {
         private readonly string appName = "distvisor";

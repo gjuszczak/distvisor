@@ -4,6 +4,13 @@ using System.Security.Cryptography;
 
 namespace Distvisor.Web.Services
 {
+    public interface ICryptoService
+    {
+        string GeneratePasswordHash(string plainPassword);
+        string GenerateRandomSessionId();
+        bool ValidatePasswordHash(string plainPassword, string passwordHash);
+    }
+
     public class CryptoService : ICryptoService
     {
         private const int SaltSize = 16;

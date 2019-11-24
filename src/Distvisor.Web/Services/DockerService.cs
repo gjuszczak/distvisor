@@ -2,12 +2,15 @@
 using Docker.DotNet.Models;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
 {
+    public interface IDockerService
+    {
+        Task UpdateImageAsync(string tag);
+    }
+
     public class DockerService : IDockerService
     {
         private readonly DockerClient client;
