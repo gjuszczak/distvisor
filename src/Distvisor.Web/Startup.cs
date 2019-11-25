@@ -32,7 +32,7 @@ namespace Distvisor.Web
                 options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
 
             services.AddControllersWithViews();
-            services.AddDistvisorAuthentication();
+            services.AddDistvisorAuth();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

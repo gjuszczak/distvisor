@@ -10,17 +10,16 @@ using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
 {
-    public class DistvisorAuthenticationOptions : AuthenticationSchemeOptions
+    public class AuthOptions : AuthenticationSchemeOptions
     {
     }
 
-    public class DistvisorAuthenticationHandler
-        : AuthenticationHandler<DistvisorAuthenticationOptions>
+    public class AuthHandler: AuthenticationHandler<AuthOptions>
     {
         private readonly IAuthService _users;
 
-        public DistvisorAuthenticationHandler(
-            IOptionsMonitor<DistvisorAuthenticationOptions> options,
+        public AuthHandler(
+            IOptionsMonitor<AuthOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock,
@@ -53,12 +52,12 @@ namespace Distvisor.Web.Services
         }
     }
 
-    public static class DistvisorAuthenticationExtensions
+    public static class AuthExtensions
     {
-        public static AuthenticationBuilder AddDistvisorAuthentication(this IServiceCollection services)
+        public static AuthenticationBuilder AddDistvisorAuth(this IServiceCollection services)
         {
             return services.AddAuthentication("Distvisor")
-                .AddScheme<DistvisorAuthenticationOptions, DistvisorAuthenticationHandler>(
+                .AddScheme<AuthOptions, AuthHandler>(
                     "Distvisor", x => { });
         }
     }
