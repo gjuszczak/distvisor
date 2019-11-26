@@ -8,4 +8,4 @@ jobs:
 
     steps:
     - name: Run a one-line script
-      run: echo ${GITHUB_REF}
+      run: echo ${{ github.event.action }}
