@@ -8,4 +8,4 @@ jobs:
 
     steps:
     - name: Run a one-line script
-      run: echo ${{ github.event.action }} - next_version
+      run: echo ${{ github.event.action }}
