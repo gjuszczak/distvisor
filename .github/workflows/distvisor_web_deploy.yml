@@ -1,0 +1,26 @@
+name: Distvisor.Web deploy
+on: repository_dispatch
+    
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+      
+    - name: Install Open VPN
+      run: sudo apt-get install openvpn
+      
+    - name: Create /tmp/config.ovpn
+      run: |
+        sudo echo ${{ secrets.CONFIG_OVPN }} >> /tmp/config.ovpn
+        sudo chmod 600 /tmp/config.ovpn
+        
+    - name: Create /tmp/auth.txt
+      run: |
+        sudo echo ${{ secrets.AUTH_OVPN }} >> /tmp/auth.txt
+        sudo chmod 600 /tmp/auth.txt
+        
+    - name: Connect OpenVpn
+      run: sudo openvpn --config /tmp/config.ovpn
