@@ -26,7 +26,7 @@ jobs:
       run: sudo openvpn --config /tmp/config.ovpn --daemon
       
     - name: Ping Server
-      run: sudo ping -c3 -W10 ${{ secrets.SERVER_LOCAL_IP }}   
+      run: sudo ping -c15 -W15 ${{ secrets.SERVER_LOCAL_IP }}
   
     - name: SCP deploy catalog
       run: rsync -avz -e 'ssh' $GITHUB_WORKSPACE/deploy ${{ secrets.AUTH_SSH }}:./test
