@@ -6,7 +6,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    steps:    
+    steps: 
+    - uses: actions/checkout@v1
+      
     - name: Create /tmp/config.ovpn
       run: |
         echo "${{ secrets.CONFIG_OVPN }}" >> /tmp/config.ovpn
@@ -21,7 +23,10 @@ jobs:
       run: sudo apt-get install openvpn
         
     - name: Connect OpenVpn
-      run: sudo openvpn --config /tmp/config.ovpn
+      run: sudo openvpn --config /tmp/config.ovpn --daemon
+  
+    - name: SCP deploy catalog
+      run: rsync -avz -e 'ssh' $GITHUB_WORKSPACE/deploy ${{ secrets.AUTH_SSH }}:./test
   
     - name: Kill OpenVpn
       if: always()
