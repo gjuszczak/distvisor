@@ -22,3 +22,7 @@ jobs:
         
     - name: Connect OpenVpn
       run: sudo openvpn --config /tmp/config.ovpn
+  
+    - name: Kill OpenVpn
+      if: always()
+      run: sudo killall openvpn
