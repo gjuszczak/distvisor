@@ -29,7 +29,13 @@ jobs:
       run: sudo ping -c10 -W15 ${{ secrets.SERVER_LOCAL_IP }}
   
     - name: SCP deploy catalog
-      run: rsync -avz -e 'ssh' $GITHUB_WORKSPACE/deploy ${{ secrets.AUTH_SSH }}@${{ secrets.SERVER_LOCAL_IP }}:./test
+      uses: appleboy/scp-action@v0.0.4
+      with:
+        host: ${{ secrets.SERVER_LOCAL_IP }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        source: "deploy/*.*"
+        target: "test"
   
     - name: Kill Open VPN
       if: always()
