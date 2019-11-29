@@ -13,7 +13,7 @@ jobs:
       run: |
         echo "${{ secrets.CONFIG_OVPN }}" >> /tmp/config.ovpn
         sudo chmod 600 /tmp/config.ovpn
-        
+    
     - name: Create /tmp/auth.txt
       run: |
         echo "${{ secrets.AUTH_OVPN }}" >> /tmp/auth.txt
@@ -34,9 +34,29 @@ jobs:
         host: ${{ secrets.SERVER_LOCAL_IP }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
-        source: "deploy/*.*"
-        target: "test"
-  
+        source: "deploy/*"
+        target: ${{ github.event.client_payload.to_version }}
+        rm: true
+        strip_components: 1
+        
+    - name: Create .env
+      uses: appleboy/ssh-action@master
+      env:
+          ENV_FILE_PATH: ./${{ github.event.client_payload.to_version }}/.env 
+      with:
+        host: ${{ secrets.SERVER_LOCAL_IP }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        envs: ENV_FILE_PATH
+        script: |
+            rm -f $ENV_FILE_PATH
+            echo "ACME_EMAIL=${{ secrets.ACME_EMAIL }}
+            DISTVISOR_DOMAIN=${{ secrets.SERVER_DOMAIN }}
+            DISTVISOR_DOCKER_IMG=${{ secrets.DOCKER_IMG_NAME }}
+            DISTVISOR_DOCKER_IMG_TAG=${{ github.event.client_payload.to_version }}
+            " >> $ENV_FILE_PATH
+            sudo chmod 600 $ENV_FILE_PATH
+
     - name: Kill Open VPN
       if: always()
       run: sudo killall openvpn
