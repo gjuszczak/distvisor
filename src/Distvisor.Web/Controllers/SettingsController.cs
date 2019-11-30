@@ -1,7 +1,6 @@
 ﻿using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,29 +11,24 @@ namespace Distvisor.Web.Controllers
     [Route("api/[controller]")]
     public class SettingsController : ControllerBase
     {
-        private readonly IDockerService _docker;
-        private readonly IGithubService _github;
-        private readonly IHostApplicationLifetime _appHost;
+        private readonly IGithubService github;
 
-        public SettingsController(IDockerService docker, IGithubService github, IHostApplicationLifetime appHost)
+        public SettingsController(IGithubService github)
         {
-            _docker = docker;
-            _github = github;
-            _appHost = appHost;
+            this.github = github;
         }
 
         [HttpGet("updates")]
         public Task<IEnumerable<string>> GetUpdates()
         {
-            return _github.GetReleasesAsync(); 
+            return this.github.GetReleasesAsync();
         }
 
         [HttpPost("update")]
         public async Task<IActionResult> Update(string tag)
         {
-            _appHost.StopApplication();
-            //await _docker.UpdateImageAsync(tag);
-            return Ok($"Ready to update version: { tag }");
+            await this.github.UpdateToVersion(tag);
+            return Ok($"Update to { tag } started.");
         }
     }
 }

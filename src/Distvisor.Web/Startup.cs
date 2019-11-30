@@ -22,11 +22,12 @@ namespace Distvisor.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<GithubSettings>(Configuration.GetSection("Github"));
+
             services.AddSingleton<ICryptoService, CryptoService>();
             services.AddSingleton<IAuthCache, AuthCache>();
+            services.AddSingleton<IGithubService, GithubService>();
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IDockerService, DockerService>();
-            services.AddScoped<IGithubService, GithubService>();
 
             services.AddDbContext<DistvisorContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("Sqlite")));

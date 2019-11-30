@@ -28,6 +28,6 @@ export class UserService {
   }
 
   public clearUser() {
-    localStorage.setItem(LocalStorageUserKey, null);
+    localStorage.removeItem(LocalStorageUserKey);
   }
 }

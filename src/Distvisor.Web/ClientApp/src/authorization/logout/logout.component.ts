@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AuthorizeService } from '../authorize.service';
 import { ApplicationPaths } from '../authorization.constants';
 import { UserService } from '../user.service';
-import { tap } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-logout',
@@ -17,7 +17,10 @@ export class LogoutComponent implements OnInit {
 
   ngOnInit() {
     this.authorizeService.logout()
-      .pipe(tap(_ => this.userService.clearUser()))
-      .subscribe(_ => this.router.navigate(ApplicationPaths.LoginPathComponents));
+      .pipe(finalize(() => {
+          this.userService.clearUser();
+          this.router.navigate(ApplicationPaths.LoginPathComponents);
+      }))
+      .subscribe();
   }
 }

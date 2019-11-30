@@ -48,10 +48,12 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpPost("logout")]
-        [Authorize]
         public async Task<IActionResult> Logout()
         {
-            await _users.LogoutAsync(User.Identity.Name);
+            if (User.Identity.IsAuthenticated)
+            {
+                await _users.LogoutAsync(User.Identity.Name);
+            }
             return Ok();
         }
     }
