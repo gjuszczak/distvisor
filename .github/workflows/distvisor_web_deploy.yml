@@ -40,7 +40,7 @@ jobs:
         strip_components: 1
         
     - name: Create .env
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v0.0.5
       env:
           ENV_FILE_PATH: ./${{ github.event.client_payload.to_version }}/.env 
       with:
@@ -56,6 +56,15 @@ jobs:
             DISTVISOR_DOCKER_IMG_TAG=${{ github.event.client_payload.to_version }}
             " >> $ENV_FILE_PATH
             sudo chmod 600 $ENV_FILE_PATH
+            
+    - name: Run deploy.sh
+      uses: appleboy/ssh-action@v0.0.5
+      with:
+        host: ${{ secrets.SERVER_LOCAL_IP }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        envs: DEPLOY_FILE_PATH
+        script: ./${{ github.event.client_payload.to_version }}/deploy.sh
 
     - name: Kill Open VPN
       if: always()
