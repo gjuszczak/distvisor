@@ -2,7 +2,7 @@ name: Distvisor.Web deploy
 on: repository_dispatch
     
 jobs:
-  build:
+  deploy:
 
     runs-on: ubuntu-latest
 
@@ -42,20 +42,20 @@ jobs:
     - name: Create .env
       uses: appleboy/ssh-action@v0.0.5
       env:
-          ENV_FILE_PATH: ./${{ github.event.client_payload.to_version }}/.env 
+        ENV_FILE_PATH: ./${{ github.event.client_payload.to_version }}/.env 
       with:
         host: ${{ secrets.SERVER_LOCAL_IP }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
         envs: ENV_FILE_PATH
         script: |
-            rm -f $ENV_FILE_PATH
-            echo "ACME_EMAIL=${{ secrets.ACME_EMAIL }}
-            DISTVISOR_DOMAIN=${{ secrets.SERVER_DOMAIN }}
-            DISTVISOR_DOCKER_IMG=${{ secrets.DOCKER_IMG_NAME }}
-            DISTVISOR_DOCKER_IMG_TAG=${{ github.event.client_payload.to_version }}
-            " >> $ENV_FILE_PATH
-            sudo chmod 600 $ENV_FILE_PATH
+          rm -f $ENV_FILE_PATH
+          echo "ACME_EMAIL=${{ secrets.ACME_EMAIL }}
+          DISTVISOR_DOMAIN=${{ secrets.SERVER_DOMAIN }}
+          DISTVISOR_DOCKER_IMG=${{ secrets.DOCKER_IMG_NAME }}
+          DISTVISOR_DOCKER_IMG_TAG=${{ github.event.client_payload.to_version }}
+          " >> $ENV_FILE_PATH
+          sudo chmod 600 $ENV_FILE_PATH
             
     - name: Run deploy.sh
       uses: appleboy/ssh-action@v0.0.5
@@ -64,7 +64,10 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
         envs: DEPLOY_FILE_PATH
-        script: ./${{ github.event.client_payload.to_version }}/deploy.sh
+        script: |
+          cd ./${{ github.event.client_payload.to_version }}
+          sudo chmod 600 ./deploy.sh
+          ./deploy.sh
 
     - name: Kill Open VPN
       if: always()
