@@ -14,6 +14,8 @@ import { AuthorizeGuard } from '../authorization/authorize.guard';
 import { AuthorizeInterceptor } from '../authorization/authorize.interceptor';
 import { NavigationModule } from '../navigation/navigation.module';
 import { SettingsModule } from '../settings/settings.module';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,7 @@ import { SettingsModule } from '../settings/settings.module';
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,

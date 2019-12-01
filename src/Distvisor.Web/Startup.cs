@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Distvisor.Web.Data;
 using Distvisor.Web.Services;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace Distvisor.Web
 {
@@ -47,6 +48,9 @@ namespace Distvisor.Web
         {
             context.Database.Migrate();
 
+            var pwaProvider = new FileExtensionContentTypeProvider();
+            pwaProvider.Mappings[".webmanifest"] = "application/manifest+json";
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -59,10 +63,16 @@ namespace Distvisor.Web
                 app.UseHsts();
             }
 
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                ContentTypeProvider = pwaProvider
+            });
             if (!env.IsDevelopment())
             {
-                app.UseSpaStaticFiles();
+                app.UseSpaStaticFiles(new StaticFileOptions
+                {
+                    ContentTypeProvider = pwaProvider
+                });
             }
 
             app.UseRouting();
