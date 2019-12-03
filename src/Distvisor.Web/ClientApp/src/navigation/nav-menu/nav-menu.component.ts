@@ -16,11 +16,11 @@ export class NavMenuComponent {
 
   ngOnInit() {
     this.items = [
-      { label: 'Fetch data', icon: 'pi pi-chart-bar', routerLink: ['/fetch-data'] },
       { label: 'Settings', icon: 'pi pi-cog', routerLink: ['/settings'] },
     ];
 
-    this.logoutItem = { label: 'Logout', icon: 'pi pi-sign-out', routerLink: ['/authentication/logout'] }
+    this.logoutItem = { label: 'Logout', icon: 'pi pi-sign-out', routerLink: ['/auth/logout'] }
+    this.items.push(this.logoutItem);
 
     this.navigationService.getNavBrand().subscribe(this.onNavBrandUpdate.bind(this));
     this.navigationService.getLogoutVisible().subscribe(this.onLogoutVisibilityUpdate.bind(this));

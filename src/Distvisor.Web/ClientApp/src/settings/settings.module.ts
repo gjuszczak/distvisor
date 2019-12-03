@@ -7,7 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { FieldsetModule } from 'primeng/fieldset';
 import { SettingsComponent } from './settings/settings.component';
-import { AuthorizeGuard } from '../authorization/authorize.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { NavigationModule } from '../navigation/navigation.module';
 import { UpdatesComponent } from './updates/updates.component';
 
@@ -18,7 +18,7 @@ import { UpdatesComponent } from './updates/updates.component';
     FormsModule,
     HttpClientModule,
     RouterModule.forRoot([
-      { path: 'settings', component: SettingsComponent, pathMatch: 'full', canActivate: [AuthorizeGuard] },
+      { path: 'settings', component: SettingsComponent, pathMatch: 'full', canActivate: [AuthGuard] },
     ]),
 
     // internal

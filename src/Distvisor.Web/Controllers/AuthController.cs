@@ -8,11 +8,11 @@ namespace Distvisor.Web.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthenticationController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IAuthService _users;
 
-        public AuthenticationController(IAuthService users)
+        public AuthController(IAuthService users)
         {
             _users = users;
         }

@@ -9,7 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
-import { ApplicationPaths } from './authorization.constants';
+import { ApplicationPaths } from './auth.constants';
 import { AutofocusModule } from '../autofocus/autofocus.module';
 
 @NgModule({
@@ -37,4 +37,4 @@ import { AutofocusModule } from '../autofocus/autofocus.module';
   declarations: [LoginComponent, LogoutComponent],
   exports: [LoginComponent, LogoutComponent]
 })
-export class AuthorizationModule { }
+export class AuthModule { }

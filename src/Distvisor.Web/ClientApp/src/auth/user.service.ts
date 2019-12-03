@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { LocalStorageUserKey } from './authorization.constants';
+import { LocalStorageUserKey } from './auth.constants';
 
 export interface IUser {
   username: string;

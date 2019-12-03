@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthorizeService, IAuthenticationResult } from '../authorize.service';
+import { AuthService, IAuthResult } from '../auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApplicationPaths, ReturnUrlType } from '../authorization.constants';
+import { ApplicationPaths, ReturnUrlType } from '../auth.constants';
 import { UserService } from '../user.service';
 
 @Component({
@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
   public isBusy: boolean;
 
   constructor(
-    private authorizeService: AuthorizeService,
+    private authService: AuthService,
     private userService: UserService,
     private activatedRoute: ActivatedRoute,
     private router: Router) { }
@@ -27,18 +27,18 @@ export class LoginComponent implements OnInit {
 
   onLogin() {
     this.isBusy = true;
-    this.authorizeService.login(this.username, this.password)
+    this.authService.login(this.username, this.password)
       .subscribe(
         async result => await this.onAuthSuccess(result),
         err => this.onAuthFail(err));
   }
 
-  private async onAuthSuccess(result: IAuthenticationResult) {
+  private async onAuthSuccess(result: IAuthResult) {
     this.userService.setUser(result.user)
     await this.router.navigateByUrl(this.returnUrl);
   }
 
-  private onAuthFail(result: IAuthenticationResult) {
+  private onAuthFail(result: IAuthResult) {
     this.errorMessage = result.message; 
     this.isBusy = false;
   }

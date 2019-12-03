@@ -17,9 +17,9 @@ export const AuthActions = {
 
 let applicationPaths: ApplicationPathsType = {
   DefaultLoginRedirectPath: '/',
-  Login: `authentication/${AuthActions.Login}`,
-  LogOut: `authentication/${AuthActions.Logout}`,
-  LoggedOut: `authentication/${AuthActions.LoggedOut}`,
+  Login: `auth/${AuthActions.Login}`,
+  LogOut: `auth/${AuthActions.Logout}`,
+  LoggedOut: `auth/${AuthActions.LoggedOut}`,
   LoginPathComponents: [],
   LogOutPathComponents: [],
   LoggedOutPathComponents: [],

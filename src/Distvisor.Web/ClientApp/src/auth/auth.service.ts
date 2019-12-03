@@ -2,10 +2,10 @@ import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ApplicationPaths } from './authorization.constants';
+import { ApplicationPaths } from './auth.constants';
 import { IUser } from './user.service';
 
-export interface IAuthenticationResult {
+export interface IAuthResult {
   success: boolean;
   user: IUser | null;
   message: string;
@@ -14,12 +14,12 @@ export interface IAuthenticationResult {
 @Injectable({
   providedIn: 'root'
 })
-export class AuthorizeService {
+export class AuthService {
 
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
   }
 
-  public login(username: string, password: string): Observable<IAuthenticationResult> {
+  public login(username: string, password: string): Observable<IAuthResult> {
     return this.http.post(
       this.baseUrl + ApplicationPaths.ApiLogin,
       { username, password },
@@ -33,7 +33,7 @@ export class AuthorizeService {
     return this.http.post(this.baseUrl + ApplicationPaths.ApiLogout, null);
   }
 
-  private fail(response: HttpResponse<Object>): IAuthenticationResult {
+  private fail(response: HttpResponse<Object>): IAuthResult {
     return {
       success: false,
       user: null,
@@ -41,7 +41,7 @@ export class AuthorizeService {
     };
   }
 
-  private success(response: HttpResponse<Object>): IAuthenticationResult {
+  private success(response: HttpResponse<Object>): IAuthResult {
     return {
       success: true,
       user: <IUser>response.body,

@@ -3,13 +3,13 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse
 import { Router } from '@angular/router';
 import { Observable, throwError, of } from 'rxjs';
 import { map, mergeMap, catchError } from 'rxjs/operators';
-import { ApplicationPaths } from './authorization.constants';
+import { ApplicationPaths } from './auth.constants';
 import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthorizeInterceptor implements HttpInterceptor {
+export class AuthInterceptor implements HttpInterceptor {
   constructor(private userService: UserService, private router: Router) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
