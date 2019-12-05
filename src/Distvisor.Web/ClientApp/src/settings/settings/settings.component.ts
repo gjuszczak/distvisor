@@ -10,6 +10,6 @@ export class SettingsComponent {
   constructor(private nav: NavigationService) { }
 
   ngOnInit() {
-    this.nav.setNavBrand("Settings");
+    //this.nav.setNavBrand("Settings");
   }
 }

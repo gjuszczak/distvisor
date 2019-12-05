@@ -1,42 +1,66 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { NavigationService } from '../navigation.service';
+import { NavigationService, INavApp } from '../navigation.service';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.css']
 })
-export class NavMenuComponent {
-  items: MenuItem[];
-  logoutItem: MenuItem;
+export class NavMenuComponent implements OnInit, OnDestroy {
   navBrand: string;
+  items: MenuItem[] = [];
+  subscriptions: Subscription[] = [];
 
-  constructor(private navigationService: NavigationService) { }
+  constructor(
+    private navigationService: NavigationService) { }
 
   ngOnInit() {
-    this.items = [
-      { label: 'Settings', icon: 'pi pi-cog', routerLink: ['/settings'] },
-    ];
+    this.subscriptions.push(
+      this.navigationService.getRegisteredApps().subscribe(app => {
+        this.addApp(app);
 
-    this.logoutItem = { label: 'Logout', icon: 'pi pi-sign-out', routerLink: ['/auth/logout'] }
-    this.items.push(this.logoutItem);
-
-    this.navigationService.getNavBrand().subscribe(this.onNavBrandUpdate.bind(this));
-    this.navigationService.getLogoutVisible().subscribe(this.onLogoutVisibilityUpdate.bind(this));
+        if (app.visibile != null) {
+          this.subscriptions.push(
+            app.visibile.subscribe(visible => this.toggleApp(app, visible)));
+        }
+      }));
   }
 
-  onNavBrandUpdate(newNavBrand: string){
+  addApp(app: INavApp) {
+    var ix = this.items.findIndex(x => x === app);
+    if (ix < 0) {
+      this.items.push({
+        label: app.name,
+        icon: app.icon,
+        routerLink: app.routerLink
+      });
+    }
+  }
+
+  removeApp(app: INavApp) {
+    var ix = this.items.findIndex(x => x === app);
+    if (ix >= 0) {
+      this.items.splice(ix, 1);
+    }
+  }
+
+  toggleApp(app: INavApp, visible: boolean) {
+    if (visible) {
+      this.removeApp(app);
+    }
+    else {
+      this.addApp(app);
+    }
+  }
+
+  onNavBrandUpdate(newNavBrand: string) {
     this.navBrand = newNavBrand;
   }
 
-  onLogoutVisibilityUpdate(show: boolean) {
-    var logoutIndex = this.items.findIndex((value, _) => value === this.logoutItem)
-    if (show && logoutIndex !== -1) {
-        this.items.splice(2, 1);
-    }
-    else if (!show && logoutIndex === -1) {
-        this.items.push(this.logoutItem);
-    }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 }

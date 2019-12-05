@@ -1,22 +1,20 @@
-import { Subject, Observable } from "rxjs";
+import { Subject, Observable, ReplaySubject } from "rxjs";
+
+export interface INavApp {
+  name: string;
+  icon: string | null;
+  routerLink: string;
+  visibile?: Observable<boolean> | null;
+}
 
 export class NavigationService {
-  private navBrand = new Subject<string>();
-  private logoutVisible = new Subject<boolean>();
+  private apps = new ReplaySubject<INavApp>();
 
-  getNavBrand() : Observable<string> {
-    return this.navBrand;
+  registerApp(app: INavApp) {
+    this.apps.next(app);
   }
 
-  setNavBrand(brand: string) {
-    this.navBrand.next(brand);
-  }
-
-  getLogoutVisible(): Observable<boolean> {
-    return this.logoutVisible;
-  }
-
-  setLogoutVisible(isVisible: boolean) {
-    this.logoutVisible.next(isVisible);
+  getRegisteredApps(): Observable<INavApp> {
+    return this.apps;
   }
 }
