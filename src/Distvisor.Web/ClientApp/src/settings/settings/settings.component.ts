@@ -8,8 +8,4 @@ import { NavigationService } from 'src/navigation/navigation.service';
 export class SettingsComponent {
 
   constructor(private nav: NavigationService) { }
-
-  ngOnInit() {
-    //this.nav.setNavBrand("Settings");
-  }
 }

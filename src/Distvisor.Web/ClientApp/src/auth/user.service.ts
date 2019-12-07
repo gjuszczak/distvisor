@@ -1,6 +1,7 @@
-import { Injectable, Inject } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { LocalStorageUserKey } from './auth.constants';
+import { Observable, BehaviorSubject, concat, of } from 'rxjs';
+import { take, filter, tap, map } from 'rxjs/operators';
 
 export interface IUser {
   username: string;
@@ -11,23 +12,35 @@ export interface IUser {
   providedIn: 'root'
 })
 export class UserService {
+  private userSubject: BehaviorSubject<IUser | null> = new BehaviorSubject(null);
 
-  public isAuthenticated(): boolean {
-    return !!this.getUser();
+  constructor() {
+    const user = this.getUserFromLocalStorage();
+    this.userSubject = new BehaviorSubject(user);    
   }
 
-  public getUser(): IUser | null {
-    var userJson = localStorage.getItem(LocalStorageUserKey);
-    var user = userJson && JSON.parse(userJson);
-    return user;
+  public isAuthenticated(): Observable<boolean> {
+    return this.getUser().pipe(map(u => !!u));
+  }
+
+  public getUser(): Observable<IUser | null> {
+    return this.userSubject;
   }
 
   public setUser(user: IUser) {
     var userJson = JSON.stringify(user);
     localStorage.setItem(LocalStorageUserKey, userJson);
+    this.userSubject.next(user);
   }
 
   public clearUser() {
     localStorage.removeItem(LocalStorageUserKey);
+    this.userSubject.next(null);
+  }
+
+  private getUserFromLocalStorage(): IUser | null {
+    var userJson = localStorage.getItem(LocalStorageUserKey);
+    var user = userJson && JSON.parse(userJson);
+    return user;
   }
 }

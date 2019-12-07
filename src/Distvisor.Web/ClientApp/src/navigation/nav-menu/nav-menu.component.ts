@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { NavigationService, INavApp } from '../navigation.service';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-nav-menu',
@@ -15,6 +15,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
 
   constructor(
+    private router: Router,
     private navigationService: NavigationService) { }
 
   ngOnInit() {
@@ -27,10 +28,23 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             app.visibile.subscribe(visible => this.toggleApp(app, visible)));
         }
       }));
+
+    this.subscriptions.push(
+      this.router.events.subscribe(event => {
+        if (event instanceof NavigationEnd) {
+          var ix = this.items.findIndex(x => event.url.startsWith(x.routerLink));
+          if (ix >= 0) {
+            this.navBrand = this.items[ix].label;
+          }
+          else {
+            this.navBrand = "";
+          }
+        }
+      }));
   }
 
   addApp(app: INavApp) {
-    var ix = this.items.findIndex(x => x === app);
+    var ix = this.items.findIndex(x => x.label === app.name);
     if (ix < 0) {
       this.items.push({
         label: app.name,
@@ -41,7 +55,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
   }
 
   removeApp(app: INavApp) {
-    var ix = this.items.findIndex(x => x === app);
+    var ix = this.items.findIndex(x => x.label === app.name);
     if (ix >= 0) {
       this.items.splice(ix, 1);
     }
@@ -49,10 +63,10 @@ export class NavMenuComponent implements OnInit, OnDestroy {
 
   toggleApp(app: INavApp, visible: boolean) {
     if (visible) {
-      this.removeApp(app);
+      this.addApp(app);
     }
     else {
-      this.addApp(app);
+      this.removeApp(app);
     }
   }
 

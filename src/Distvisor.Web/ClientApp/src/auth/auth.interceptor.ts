@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, throwError, of } from 'rxjs';
-import { map, mergeMap, catchError } from 'rxjs/operators';
+import { map, mergeMap, catchError, take } from 'rxjs/operators';
 import { ApplicationPaths } from './auth.constants';
 import { UserService } from './user.service';
 
@@ -13,7 +13,8 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private userService: UserService, private router: Router) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return of(this.userService.getUser()).pipe(
+    return this.userService.getUser().pipe(
+        take(1),
         map(user => user && user.sessionId),
         mergeMap(token => this.processRequestWithToken(token, req, next)));
   }
