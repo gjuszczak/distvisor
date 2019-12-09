@@ -32,7 +32,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.router.events.subscribe(event => {
         if (event instanceof NavigationEnd) {
-          var ix = this.items.findIndex(x => event.url.startsWith(x.routerLink));
+          var ix = this.items.findIndex(x => event.url.match('[^?]*')[0] === x.routerLink);
           if (ix >= 0) {
             this.navBrand = this.items[ix].label;
           }

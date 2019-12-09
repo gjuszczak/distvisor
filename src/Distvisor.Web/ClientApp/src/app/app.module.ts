@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -11,7 +12,7 @@ import { AuthModule } from '../auth/auth.module';
 import { AuthInterceptor } from '../auth/auth.interceptor';
 import { NavigationModule } from '../navigation/navigation.module';
 import { SettingsModule } from '../settings/settings.module';
-import { ServiceWorkerModule } from '@angular/service-worker';
+import { InvoicesModule } from '../invoices/invoices.module';
 import { environment } from '../environments/environment';
 
 @NgModule({
@@ -33,9 +34,10 @@ import { environment } from '../environments/environment';
     // internal
     NavigationModule,
     SettingsModule,
+    InvoicesModule,
   ],
   providers: [
-      { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

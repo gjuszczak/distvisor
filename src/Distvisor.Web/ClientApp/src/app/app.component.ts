@@ -17,9 +17,23 @@ export class AppComponent {
 
   configureNavigation() {
     this.navigationService.registerApp({
+      name: 'Home',
+      icon: 'pi pi-home',
+      routerLink: '/'
+    });
+
+    this.navigationService.registerApp({
+      name: 'Invoices',
+      icon: 'pi pi-file-o',
+      routerLink: '/invoices',
+      visibile: this.userService.isAuthenticated()
+    });
+
+    this.navigationService.registerApp({
       name: 'Settings',
       icon: 'pi pi-cog',
       routerLink: '/settings',
+      visibile: this.userService.isAuthenticated()
     });
 
     this.navigationService.registerApp({

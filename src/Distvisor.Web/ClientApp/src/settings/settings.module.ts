@@ -6,9 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { FieldsetModule } from 'primeng/fieldset';
-import { SettingsComponent } from './settings/settings.component';
 import { AuthGuard } from '../auth/auth.guard';
-import { NavigationModule } from '../navigation/navigation.module';
+import { SettingsComponent } from './settings/settings.component';
 import { UpdatesComponent } from './updates/updates.component';
 
 
@@ -21,15 +20,11 @@ import { UpdatesComponent } from './updates/updates.component';
       { path: 'settings', component: SettingsComponent, pathMatch: 'full', canActivate: [AuthGuard] },
     ]),
 
-    // internal
-    NavigationModule,
-
     // PrimeNg
     FieldsetModule,
     ButtonModule,
     DropdownModule,
   ],
-  declarations: [SettingsComponent, UpdatesComponent],
-  exports: [SettingsComponent]
+  declarations: [SettingsComponent, UpdatesComponent]
 })
 export class SettingsModule { }
