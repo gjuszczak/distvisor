@@ -27,6 +27,7 @@ namespace Distvisor.Web
 
             services.AddSingleton<ICryptoService, CryptoService>();
             services.AddSingleton<IAuthCache, AuthCache>();
+            services.AddSingleton<IInvoicesService, InvoicesService>();
             services.AddSingleton<IGithubService, GithubService>();
             services.AddScoped<IAuthService, AuthService>();
 

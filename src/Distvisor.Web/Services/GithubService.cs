@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
-using Octokit;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,28 +16,37 @@ namespace Distvisor.Web.Services
 
     public class GithubService : IGithubService
     {
-        private readonly GithubSettings settings;
+        private readonly GithubSettings _settings;
+        private readonly RestClient _httpClient;
 
         public GithubService(IOptions<GithubSettings> settings)
         {
-            this.settings = settings.Value;
+            _settings = settings.Value;
+            _httpClient = new RestClient("https://api.github.com/");
         }
 
         public async Task<IEnumerable<string>> GetReleasesAsync()
         {
-            var client = new GitHubClient(new ProductHeaderValue(settings.Repository));
-            var releases = await client.Repository.Release.GetAll(settings.Owner, settings.Repository);
-            return releases.Select(x => x.TagName).ToList();
+            var request = new RestRequest("repos/{owner}/{repo}/releases", Method.GET);
+            request.AddUrlSegment("owner", _settings.Owner);
+            request.AddUrlSegment("repo", _settings.Repository);
+            request.AddHeader("User-Agent", _settings.Owner);
+            request.AddHeader("Accept", "application/vnd.github.v3+json");
+
+            var response = await _httpClient.ExecuteTaskAsync(request);
+
+            var releases = JsonConvert.DeserializeObject<JArray>(response.Content);
+            return releases.Select(r => r["tag_name"].Value<string>());
         }
 
         public async Task UpdateToVersion(string version)
         {
-            var client = new RestClient("https://api.github.com/");
             var request = new RestRequest("repos/{owner}/{repo}/dispatches", Method.POST);
-            request.AddUrlSegment("owner", settings.Owner);
-            request.AddUrlSegment("repo", settings.Repository);
+            request.AddUrlSegment("owner", _settings.Owner);
+            request.AddUrlSegment("repo", _settings.Repository);
+            request.AddHeader("User-Agent", _settings.Owner);
             request.AddHeader("Accept", "application/vnd.github.everest-preview+json");
-            request.AddHeader("Authorization", $"Bearer {settings.ApiToken}");
+            request.AddHeader("Authorization", $"Bearer {_settings.ApiToken}");
             request.AddJsonBody(new
             {
                 event_type = "deploy",
@@ -47,7 +57,7 @@ namespace Distvisor.Web.Services
                 }
             });
 
-            await client.ExecuteTaskAsync(request);
+            await _httpClient.ExecuteTaskAsync(request);
         }
     }
 
