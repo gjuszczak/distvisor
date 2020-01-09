@@ -1,14 +1,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Distvisor.Web.Data;
 using Distvisor.Web.Services;
-using Microsoft.AspNetCore.StaticFiles;
-using Joonasw.AspNetCore.SecurityHeaders;
+using System.Text.Json.Serialization;
 
 namespace Distvisor.Web
 {
@@ -35,7 +36,17 @@ namespace Distvisor.Web
             services.AddDbContext<DistvisorContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddJsonOptions(opts =>
+                {
+                    opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Distvisor API", Version = "v1" });
+            });
+
             services.AddDistvisorAuth();
 
             // In production, the Angular files will be served from this directory
@@ -78,6 +89,12 @@ namespace Distvisor.Web
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Distvisor API V1");
+            });
 
             app.UseEndpoints(endpoints =>
             {

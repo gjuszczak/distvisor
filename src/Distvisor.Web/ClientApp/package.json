@@ -8,7 +8,8 @@
     "build:ssr": "ng run Distvisor.Web:server:dev",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "swagger": "ng-openapi-gen --input http://localhost:65465/swagger/v1/swagger.json --output src/api"
   },
   "private": true,
   "dependencies": {
@@ -44,7 +45,6 @@
     "@types/jasmine": "^3.4.4",
     "@types/jasminewd2": "^2.0.8",
     "@types/node": "~12.11.6",
-    "serialize-javascript": ">=2.1.1",
     "codelyzer": "^5.2.0",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~4.2.1",
@@ -53,6 +53,8 @@
     "karma-coverage-istanbul-reporter": "^2.1.0",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.2",
+    "ng-openapi-gen": "^0.7.2",
+    "serialize-javascript": ">=2.1.1",
     "typescript": "3.5.3"
   },
   "optionalDependencies": {

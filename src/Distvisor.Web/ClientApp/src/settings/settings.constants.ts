@@ -1,10 +1,10 @@
 let applicationPaths: ApplicationPathsType = {
-  ApiGetUpdates: `api/settings/updates`,
+  ApiGetUpdateParams: `api/settings/update-params`,
   ApiUpdate: `api/settings/update`,
 };
 
 interface ApplicationPathsType {
-  readonly ApiGetUpdates: string;
+  readonly ApiGetUpdateParams: string;
   readonly ApiUpdate: string;
 }
 

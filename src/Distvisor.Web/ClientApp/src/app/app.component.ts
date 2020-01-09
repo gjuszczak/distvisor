@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { UserService } from 'src/auth/user.service';
 import { NavigationService } from 'src/navigation/navigation.service';
 import { map } from 'rxjs/operators';
+import { ApiConfiguration } from 'src/api/api-configuration';
 
 @Component({
   selector: 'app-root',
@@ -11,8 +12,15 @@ export class AppComponent {
 
   constructor(
     private userService: UserService,
-    private navigationService: NavigationService) {
+    private navigationService: NavigationService,
+    private apiConfiguration: ApiConfiguration,
+    @Inject('BASE_URL') private baseUrl: string) {          
+    this.configureApi();
     this.configureNavigation();
+  }
+  
+  configureApi() {
+    this.apiConfiguration.rootUrl = this.baseUrl.replace(/\/$/, "");
   }
 
   configureNavigation() {

@@ -14,6 +14,7 @@ import { NavigationModule } from '../navigation/navigation.module';
 import { SettingsModule } from '../settings/settings.module';
 import { InvoicesModule } from '../invoices/invoices.module';
 import { environment } from '../environments/environment';
+import { ApiModule } from 'src/api/api.module';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { environment } from '../environments/environment';
     NavigationModule,
     SettingsModule,
     InvoicesModule,
+    ApiModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }

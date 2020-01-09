@@ -1,4 +1,36 @@
 <p-fieldset legend="Updates">
-    <p-dropdown [options]="versions" [(ngModel)]="selectedVersion" optionLabel="tag"></p-dropdown>
-    <button pButton icon="pi pi-download" label="Update" class="ui-button-success" (click)="onUpdate()"></button>
+    <div class="form-group row">
+        <label 
+            for="inputUpdateToVersion" 
+            class="col-sm-4 col-md-3 col-xl-2 col-form-label">Update to version:</label>
+        <div class="col">
+            <p-dropdown 
+                id="inputUpdateToVersion"
+                name="inputUpdateToVersion"
+                [options]="versions" 
+                [(ngModel)]="selectedVersion"></p-dropdown>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label 
+            for="inputDbUpdateStrategy" 
+            class="col-sm-4 col-md-3 col-xl-2 col-form-label">DB update strategy:</label>
+        <div class="col">
+            <p-dropdown 
+                id="inputDbUpdateStrategy"
+                name="inputDbUpdateStrategy"
+                [options]="dbUpdateStrategies" 
+                [(ngModel)]="selectedDbUpdateStrategy"></p-dropdown>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <button 
+                pButton 
+                icon="pi pi-download" 
+                label="Update" 
+                class="ui-button-success" 
+                (click)="onUpdate()"></button>
+        </div>
+    </div>
 </p-fieldset>

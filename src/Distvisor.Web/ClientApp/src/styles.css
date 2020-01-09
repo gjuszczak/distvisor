@@ -19,3 +19,8 @@ legend {
   width: auto;
   font-size: 1rem;
 }
+
+.ui-dropdown {
+  width: 100%;
+  max-width: 25rem;
+}

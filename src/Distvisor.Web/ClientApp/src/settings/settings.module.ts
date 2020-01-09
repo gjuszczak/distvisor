@@ -9,6 +9,7 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { AuthGuard } from '../auth/auth.guard';
 import { SettingsComponent } from './settings/settings.component';
 import { UpdatesComponent } from './updates/updates.component';
+import { ApiModule } from 'src/api/api.module';
 
 
 @NgModule({
@@ -24,6 +25,9 @@ import { UpdatesComponent } from './updates/updates.component';
     FieldsetModule,
     ButtonModule,
     DropdownModule,
+
+    // internal
+    ApiModule,
   ],
   declarations: [SettingsComponent, UpdatesComponent]
 })
