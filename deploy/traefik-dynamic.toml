@@ -20,7 +20,7 @@
 
   [http.middlewares.security-headers.headers]
     BrowserXssFilter = true
-    ContentSecurityPolicy = "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; manifest-src 'self'; font-src 'self; connect-src 'self'"
+    ContentSecurityPolicy = "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; manifest-src 'self'; font-src 'self'; connect-src 'self'"
     ContentTypeNosniff = true
     ForceSTSHeader = true
     FrameDeny = true
