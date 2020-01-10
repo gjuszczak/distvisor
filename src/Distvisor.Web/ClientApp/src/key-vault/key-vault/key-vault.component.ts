@@ -1,46 +1,53 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { SelectItem } from 'primeng/api';
-import { KeyType } from '../key-type';
+import { KeyType } from '../../api/models/key-type';
+import { KeyVaultService } from '../../api/services';
 
 @Component({
   selector: 'app-key-vault',
   templateUrl: './key-vault.component.html'
 })
-export class KeyVaultComponent implements OnInit {
+export class KeyVaultComponent implements OnInit, OnDestroy {
 
+  private subscriptions: Subscription[] = [];
   keyTypes: SelectItem[];
-  selectedKeyType: string;
+  selectedKeyType: KeyType;
+  inputKeyValue: string;
+  keyList: KeyType[];
 
-  cars: Car[];
-
-  selectedCar: Car;
-
-  cols: any[];
+  constructor(private keyVaultService: KeyVaultService) { }
 
   ngOnInit() {
-
     this.keyTypes = Object.keys(KeyType).map(v => <SelectItem>{ label: v, value: v });
     this.selectedKeyType = this.keyTypes[0].value;
 
-    this.cars = [
-      { vin: 'vin1', year: 'year1', brand: 'brand1', color: 'color1' },
-      { vin: 'vin2', year: 'year1', brand: 'brand1', color: 'color1' },
-      { vin: 'vin3', year: 'year1', brand: 'brand1', color: 'color1' },
-      { vin: 'vin4', year: 'year1', brand: 'brand1', color: 'color1' },
-    ];
-
-    this.cols = [
-      { field: 'vin', header: 'Vin' },
-      { field: 'year', header: 'Year' },
-      { field: 'brand', header: 'Brand' },
-      { field: 'color', header: 'Color' }
-    ];
+    this.reloadList();
   }
-}
 
-export class Car {
-  vin: string;
-  year: string;
-  brand: string;
-  color: string;
+  reloadList() {
+    this.subscriptions.push(this.keyVaultService.apiKeyVaultListGet$Json()
+      .subscribe(keys => {
+        this.keyList = keys;
+      }));
+  }
+
+  onSave() {
+    this.subscriptions.push(this.keyVaultService.apiKeyVaultKeyTypePost$Json({
+      keyType: this.selectedKeyType,
+      body: {
+        keyValue: this.inputKeyValue
+      }
+    }).subscribe(() => this.reloadList()));
+  }
+
+  onRemove(keyType: KeyType) {
+    this.subscriptions.push(this.keyVaultService.apiKeyVaultKeyTypeDelete({
+      keyType: keyType,
+    }).subscribe(() => this.reloadList()));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(x => x.unsubscribe());
+  }
 }

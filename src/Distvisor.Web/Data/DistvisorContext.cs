@@ -10,5 +10,6 @@ namespace Distvisor.Web.Data
         }
 
         public DbSet<UserEntity> Users { get; set; }
+        public DbSet<KeyVaultEntity> KeyVault { get; set; }
     }
 }

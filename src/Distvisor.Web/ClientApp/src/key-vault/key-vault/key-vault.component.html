@@ -1,15 +1,16 @@
 <p-fieldset legend="Key Vault">
-    <p-dataView [value]="cars" styleClass="no-header">
-        <ng-template let-car pTemplate="listItem">
+    <p-dataView [value]="keyList" styleClass="no-header">
+        <ng-template let-key pTemplate="listItem">
             <div class="d-flex flex-row p-4 border-bottom">
                 <div>
-                    {{car.vin}}
+                    {{key}}
                 </div>
                 <div class="ml-auto">
                     <button 
                         pButton 
                         label="Remove" 
-                        class="ui-button-secondary"></button>
+                        class="ui-button-secondary"
+                        (click)="onRemove(key)"></button>
                 </div>
             </div>
         </ng-template>
@@ -36,7 +37,8 @@
                 pInputText
                 type="text"
                 id="inputKeyValue"
-                name="inputKeyValue" />
+                name="inputKeyValue" 
+                [(ngModel)]="inputKeyValue"/>
         </div>
     </div>
     <div class="form-group row">
@@ -44,7 +46,8 @@
             <button 
                 pButton 
                 label="Save" 
-                class="ui-button-success"></button>
+                class="ui-button-success"
+                (click)="onSave()"></button>
         </div>
     </div>
 </p-fieldset>

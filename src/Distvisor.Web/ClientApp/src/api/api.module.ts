@@ -5,8 +5,8 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { AuthService } from './services/auth.service';
 import { InvoicesService } from './services/invoices.service';
+import { KeyVaultService } from './services/key-vault.service';
 import { SettingsService } from './services/settings.service';
-import { WeatherForecastService } from './services/weather-forecast.service';
 
 /**
  * Module that provides all services and configuration.
@@ -18,8 +18,8 @@ import { WeatherForecastService } from './services/weather-forecast.service';
   providers: [
     AuthService,
     InvoicesService,
+    KeyVaultService,
     SettingsService,
-    WeatherForecastService,
     ApiConfiguration
   ],
 })
