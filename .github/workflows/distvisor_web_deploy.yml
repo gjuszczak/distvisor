@@ -51,10 +51,13 @@ jobs:
         script: |
           rm -f $ENV_FILE_PATH
           echo "ACME_EMAIL=${{ secrets.ACME_EMAIL }}
-          DISTVISOR_DOMAIN=${{ secrets.SERVER_DOMAIN }}
-          DISTVISOR_DOCKER_IMG=${{ secrets.DOCKER_IMG_NAME }}
-          DISTVISOR_DOCKER_IMG_TAG=${{ github.event.client_payload.to_version }}
+          DOMAIN=${{ secrets.SERVER_DOMAIN }}
+          DOCKER_IMG=${{ secrets.DOCKER_IMG_NAME }}
           GITHUB_API_TOKEN=${{ secrets.APP_GITHUB_TOKEN }}
+          GITHUB_REPO_OWNER=gjuszczak
+          GITHUB_REPO_NAME=distvisor                           
+          CURRENT_VERSION=${{ github.event.client_payload.to_version }}
+          PREVIOUS_VERSION=${{ github.event.client_payload.from_version }}
           " >> $ENV_FILE_PATH
           sudo chmod 600 $ENV_FILE_PATH
             
@@ -64,7 +67,6 @@ jobs:
         host: ${{ secrets.SERVER_LOCAL_IP }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
-        envs: DEPLOY_FILE_PATH
         script: |
           cd ./${{ github.event.client_payload.to_version }}
           sudo chmod 700 ./deploy.sh
