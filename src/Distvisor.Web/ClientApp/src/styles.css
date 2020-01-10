@@ -20,7 +20,11 @@ legend {
   font-size: 1rem;
 }
 
-.ui-dropdown {
+.ui-dropdown, .ui-inputtext {
   width: 100%;
   max-width: 25rem;
+}
+
+.no-header .ui-dataview-header  {
+  display: none !important;
 }

@@ -1,0 +1,50 @@
+<p-fieldset legend="Key Vault">
+    <p-dataView [value]="cars" styleClass="no-header">
+        <ng-template let-car pTemplate="listItem">
+            <div class="d-flex flex-row p-4 border-bottom">
+                <div>
+                    {{car.vin}}
+                </div>
+                <div class="ml-auto">
+                    <button 
+                        pButton 
+                        label="Remove" 
+                        class="ui-button-secondary"></button>
+                </div>
+            </div>
+        </ng-template>
+    </p-dataView>
+    <h5 class="mt-4">Modify stored keys:</h5>
+    <div class="form-group row">
+        <label 
+            for="inputKeyType" 
+            class="col-sm-4 col-md-3 col-xl-2 col-form-label">Key type:</label>
+        <div class="col">
+            <p-dropdown 
+                id="inputKeyType"
+                name="inputKeyType"
+                [options]="keyTypes" 
+                [(ngModel)]="selectedKeyType"></p-dropdown>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label 
+            for="inputKeyValue" 
+            class="col-sm-4 col-md-3 col-xl-2 col-form-label">Key value:</label>
+        <div class="col">
+            <input
+                pInputText
+                type="text"
+                id="inputKeyValue"
+                name="inputKeyValue" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <button 
+                pButton 
+                label="Save" 
+                class="ui-button-success"></button>
+        </div>
+    </div>
+</p-fieldset>
