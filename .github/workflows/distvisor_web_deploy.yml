@@ -55,7 +55,7 @@ jobs:
           DOCKER_IMG=${{ secrets.DOCKER_IMG_NAME }}
           GITHUB_API_TOKEN=${{ secrets.APP_GITHUB_TOKEN }}
           GITHUB_REPO_OWNER=gjuszczak
-          GITHUB_REPO_NAME=distvisor                           
+          GITHUB_REPO_NAME=distvisor
           CURRENT_VERSION=${{ github.event.client_payload.to_version }}
           PREVIOUS_VERSION=${{ github.event.client_payload.from_version }}
           DB_UPDATE_STRATEGY=${{ github.event.client_payload.db_update_strategy }}
