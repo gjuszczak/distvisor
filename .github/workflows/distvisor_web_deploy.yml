@@ -67,7 +67,6 @@ jobs:
         host: ${{ secrets.SERVER_LOCAL_IP }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
-        envs: DEPLOY_FILE_PATH
         script: |
           cd ./${{ github.event.client_payload.to_version }}
           sudo chmod 700 ./deploy.sh
