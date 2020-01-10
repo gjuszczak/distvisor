@@ -33,10 +33,10 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpPost("update")]
-        public async Task<IActionResult> Update(string tag)
+        public async Task<IActionResult> Update([FromBody]UpdateRequestDto dto)
         {
-            await _github.UpdateToVersion(tag);
-            return Ok($"Update to { tag } started.");
+            await _github.UpdateToVersion(dto.UpdateToVersion, dto.DbUpdateStrategy.ToString());
+            return Ok($"Update to { dto.UpdateToVersion } started.");
         }
     }
 
@@ -46,7 +46,14 @@ namespace Distvisor.Web.Controllers
         public IEnumerable<DbUpdateStrategy> DbUpdateStrategies { get; set; }
     }
 
+    public class UpdateRequestDto { 
+        public string UpdateToVersion { get; set; }
+
+        public DbUpdateStrategy DbUpdateStrategy { get; set; }
+    }
+
     public enum DbUpdateStrategy {
-        MigrateToLatest
+        MigrateToLatest,
+        EmptyDatabase,
     }
 }

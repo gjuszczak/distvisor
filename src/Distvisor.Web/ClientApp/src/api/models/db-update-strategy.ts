@@ -1,4 +1,5 @@
 /* tslint:disable */
 export enum DbUpdateStrategy {
-  MigrateToLatest = 'MigrateToLatest'
+  MigrateToLatest = 'MigrateToLatest',
+  EmptyDatabase = 'EmptyDatabase'
 }

@@ -28,21 +28,20 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   distvisor:
-    image: ${DISTVISOR_DOCKER_IMG}:${DISTVISOR_DOCKER_IMG_TAG}
+    image: ${DOCKER_IMG}:${CURRENT_VERSION}
     container_name: distvisor
     restart: always
-    environment:
-      - GITHUB__APITOKEN=${GITHUB_API_TOKEN}
     volumes: 
       - "./data:/app/Data"
+      - "./.env:/app/config.env"
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.redirecthttps.redirectscheme.scheme=https"
       - "traefik.http.middlewares.redirecthttps.redirectscheme.permanent=true"
-      - "traefik.http.routers.distvisor_insecure.rule=Host(`${DISTVISOR_DOMAIN}`)"
+      - "traefik.http.routers.distvisor_insecure.rule=Host(`${DOMAIN}`)"
       - "traefik.http.routers.distvisor_insecure.entrypoints=web"
       - "traefik.http.routers.distvisor_insecure.middlewares=https-only@file"
-      - "traefik.http.routers.distvisor.rule=Host(`${DISTVISOR_DOMAIN}`)"
+      - "traefik.http.routers.distvisor.rule=Host(`${DOMAIN}`)"
       - "traefik.http.routers.distvisor.entrypoints=websecure"
       - "traefik.http.routers.distvisor.tls.certresolver=acmehttpchallenge"
       - "traefik.http.routers.distvisor.middlewares=default"

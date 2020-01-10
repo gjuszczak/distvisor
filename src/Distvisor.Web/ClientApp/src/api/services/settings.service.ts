@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { UpdateParamsResponseDto } from '../models/update-params-response-dto';
+import { UpdateRequestDto } from '../models/update-request-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -115,20 +116,20 @@ export class SettingsService extends BaseService {
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSettingsUpdatePost()` instead.
+   * To access only the response body, use `apiSettingsUpdatePost$Json()` instead.
    *
-   * This method doesn't expect any request body.
+   * This method sends `application/json` and handles request body of type `application/json`.
    */
-  apiSettingsUpdatePost$Response(params?: {
-    tag?: null | string;
+  apiSettingsUpdatePost$Json$Response(params?: {
 
+    body?: UpdateRequestDto
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, SettingsService.ApiSettingsUpdatePostPath, 'post');
     if (params) {
 
-      rb.query('tag', params.tag);
 
+      rb.body(params.body, 'application/json');
     }
     return this.http.request(rb.build({
       responseType: 'text',
@@ -143,16 +144,16 @@ export class SettingsService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiSettingsUpdatePost$Response()` instead.
+   * To access the full response (for headers, for example), `apiSettingsUpdatePost$Json$Response()` instead.
    *
-   * This method doesn't expect any request body.
+   * This method sends `application/json` and handles request body of type `application/json`.
    */
-  apiSettingsUpdatePost(params?: {
-    tag?: null | string;
+  apiSettingsUpdatePost$Json(params?: {
 
+    body?: UpdateRequestDto
   }): Observable<void> {
 
-    return this.apiSettingsUpdatePost$Response(params).pipe(
+    return this.apiSettingsUpdatePost$Json$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Distvisor.Web.Configuration;
+using Microsoft.Extensions.Options;
 using RestSharp;
 using RestSharp.Authenticators;
 using System.Collections.Generic;
@@ -14,10 +15,10 @@ namespace Distvisor.Web.Services
 
     public class InvoicesService : IInvoicesService
     {
-        private readonly GithubSettings _settings;
+        private readonly EnvConfiguration _settings;
         private readonly RestClient _httpClient;
 
-        public InvoicesService(IOptions<GithubSettings> settings)
+        public InvoicesService(IOptions<EnvConfiguration> settings)
         {
             _settings = settings.Value;
             _httpClient = new RestClient("https://www.ifirma.pl/");
@@ -35,13 +36,6 @@ namespace Distvisor.Web.Services
             var result = new[] { "Test1", "Test2" };
             return Task.FromResult((IEnumerable<string>)result);
         }
-    }
-
-    public class InvoicesSettings
-    {
-        //public string ApiToken { get; set; }
-        //public string Owner { get; set; }
-        //public string Repository { get; set; }
     }
 
     public class InvoicesRestAuthenticator : IAuthenticator

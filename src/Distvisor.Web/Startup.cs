@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using Distvisor.Web.Data;
 using Distvisor.Web.Services;
 using System.Text.Json.Serialization;
+using Distvisor.Web.Configuration;
 
 namespace Distvisor.Web
 {
@@ -25,7 +26,7 @@ namespace Distvisor.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<GithubSettings>(Configuration.GetSection("Github"));
+            services.Configure<EnvConfiguration>(Configuration.GetSection("EnvConfiguration"));
 
             services.AddSingleton<ICryptoService, CryptoService>();
             services.AddSingleton<IAuthCache, AuthCache>();
