@@ -58,6 +58,7 @@ jobs:
           GITHUB_REPO_NAME=distvisor                           
           CURRENT_VERSION=${{ github.event.client_payload.to_version }}
           PREVIOUS_VERSION=${{ github.event.client_payload.from_version }}
+          DB_UPDATE_STRATEGY=${{ github.event.client_payload.db_update_strategy }}
           " >> $ENV_FILE_PATH
           sudo chmod 600 $ENV_FILE_PATH
             
