@@ -1,9 +1,8 @@
-﻿using Distvisor.Web.Configuration;
-using Microsoft.Extensions.Options;
-using RestSharp;
+﻿using RestSharp;
 using RestSharp.Authenticators;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
@@ -15,26 +14,24 @@ namespace Distvisor.Web.Services
 
     public class InvoicesService : IInvoicesService
     {
-        private readonly EnvConfiguration _settings;
         private readonly RestClient _httpClient;
 
-        public InvoicesService(IOptions<EnvConfiguration> settings)
+        public InvoicesService(IKeyVault keyVault)
         {
-            _settings = settings.Value;
             _httpClient = new RestClient("https://www.ifirma.pl/");
-            //_httpClient.Authenticator = new InvoicesRestAuthenticator(...);
+            _httpClient.Authenticator = new InvoicesRestAuthenticator(keyVault);
         }
 
-        public Task<IEnumerable<string>> GetInvoicesAsync()
+        public async Task<IEnumerable<string>> GetInvoicesAsync()
         {
-            //var request = new RestRequest("iapi/faktury.json", Method.GET);
-            //request.AddParameter("dataOd", "2019-10-03");
-            //request.AddParameter("dataDo", "2019-12-10");
+            var request = new RestRequest("iapi/faktury.json", Method.GET);
+            request.AddParameter("dataOd", "2019-10-03");
+            request.AddParameter("dataDo", "2019-12-10");
 
-            //var response = await _httpClient.ExecuteTaskAsync(request);
+            var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
 
             var result = new[] { "Test1", "Test2" };
-            return Task.FromResult((IEnumerable<string>)result);
+            return (IEnumerable<string>)result;
         }
     }
 
@@ -44,11 +41,12 @@ namespace Distvisor.Web.Services
         private readonly string _keyName;
         private readonly byte[] _keyBytes;
 
-        public InvoicesRestAuthenticator(string user, string keyName, string key)
+        public InvoicesRestAuthenticator(IKeyVault keyVault)
         {
-            _user = user;
-            _keyName = keyName;
-            _keyBytes = HexStringToByteArray(key);
+            var key = keyVault.GetIFirmaApiKey().Result;
+            _user = key.User;
+            _keyName = "faktury";
+            _keyBytes = HexStringToByteArray(key.Key);
         }
 
         public void Authenticate(IRestClient client, IRestRequest request)

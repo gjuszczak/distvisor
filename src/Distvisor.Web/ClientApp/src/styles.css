@@ -28,3 +28,13 @@ legend {
 .no-header .ui-dataview-header  {
   display: none !important;
 }
+
+.borderless td, .borderless th {
+  border: none;
+}
+
+.table td.fit, 
+.table th.fit {
+    white-space: nowrap;
+    width: 1%;
+}

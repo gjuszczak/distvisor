@@ -1,14 +1,8 @@
-﻿using Distvisor.Web.Data;
-using Distvisor.Web.Data.Entities;
+﻿using Distvisor.Web.Data.Entities;
+using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
@@ -18,66 +12,43 @@ namespace Distvisor.Web.Controllers
     [Route("api/[controller]")]
     public class KeyVaultController : ControllerBase
     {
-        private readonly DistvisorContext _context;
+        private readonly IKeyVault _keyVault;
 
-        public KeyVaultController(DistvisorContext context)
+        public KeyVaultController(IKeyVault keyVault)
         {
-            _context = context;
+            _keyVault = keyVault;
         }
 
         [HttpGet("list")]
         public Task<List<KeyType>> ListKeys()
         {
-            return _context.KeyVault.Select(x => x.Id).ToListAsync();
+            return _keyVault.ListAvailableKeys();
         }
 
         [HttpGet("{keyType}")]
         public async Task<ActionResult<dynamic>> GetKey(KeyType keyType)
         {
-            var key = await _context.KeyVault.FindAsync(keyType);
+            var key = await _keyVault.GetKey(keyType);
             if (key == null)
             {
                 return BadRequest();
             }
 
-            var jsonValue = Encoding.UTF8.GetString(Convert.FromBase64String(key.KeyValue));
-            var jobjectValue = JObject.Parse(jsonValue);
-            return jobjectValue;
+            return key;
         }
 
         [HttpDelete("{keyType}")]
         public async Task<IActionResult> RemoveKey(KeyType keyType)
         {
-            KeyVaultEntity e = new KeyVaultEntity() { Id = keyType };
-            _context.KeyVault.Attach(e);
-            _context.KeyVault.Remove(e);
-            await _context.SaveChangesAsync();
+            await _keyVault.RemoveKey(keyType);
             return Ok();
         }
 
         [HttpPost("{keyType}")]
-        public async Task<IActionResult> SaveKey(KeyType keyType, [FromBody]dynamic body)
+        public async Task<IActionResult> SetKey(KeyType keyType, [FromBody]dynamic body)
         {
-            var jsonBody = JObject.FromObject(body).ToString(Formatting.None);
-            var base64Body = Convert.ToBase64String(Encoding.UTF8.GetBytes(jsonBody));
-
-            var key = await _context.KeyVault.FindAsync(keyType);
-            if (key == null)
-            {
-                key = new KeyVaultEntity { Id = keyType };
-                _context.KeyVault.Add(key);
-            }
-
-            key.KeyValue = base64Body;
-
-            await _context.SaveChangesAsync();
+            await _keyVault.SetKey(keyType, body);
             return Ok();
         }
-    }
-
-    public enum KeyType
-    {
-        GithubApiKey,
-        IFirmaApiKey,
     }
 }

@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
+import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
@@ -22,6 +23,7 @@ import { AuthGuard } from '../auth/auth.guard';
     ]),
 
     // PrimeNg
+    ButtonModule,
     DataViewModule,
     DialogModule,
     DropdownModule,

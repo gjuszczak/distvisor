@@ -1,1 +1,38 @@
-<h1>Invoices</h1>
+<p-dataView [value]="invoices" [paginator]="true" [rows]="10" layout="grid">
+    <p-header>
+        <div class="d-flex justify-content-start align-items-center">
+            <div class="font-weight-bold">Invoices</div>
+            <div class="ml-auto">
+                <p-dropdown [options]="sortOptions" [(ngModel)]="sortKey" placeholder="Sort By"
+                    (onChange)="onSortChange($event)"></p-dropdown>
+            </div>
+        </div>
+    </p-header>
+    <ng-template let-invoice pTemplate="gridItem">
+        <div class="p-2 col-sm-6 col-lg-4">
+            <p-panel [header]="invoice.identifier">
+                <table class="table table-sm borderless">
+                    <tbody>
+                        <tr>
+                            <th class="fit pr-3">Customer:</th>
+                            <td>{{invoice.customer}}</td>
+                        </tr>
+                        <tr>
+                            <th >Amount:</th>
+                            <td>{{invoice.amount}}</td>
+                        </tr>
+                        <tr>
+                            <th>Days:</th>
+                            <td>{{invoice.workDays}}</td>
+                        </tr>
+                        <tr>
+                            <th>Date:</th>
+                            <td>{{invoice.issueDate | date: 'yyyy-MM-dd'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button pButton type="button" icon="pi pi-search"></button>
+            </p-panel>
+        </div>
+    </ng-template>
+</p-dataView>
