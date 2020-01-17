@@ -1,26 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+import { InvoicesService } from 'src/api/services';
+import { Invoice } from 'src/api/models';
 
 @Component({
   selector: 'app-invoices',
   templateUrl: './invoices.component.html'
 })
 export class InvoicesComponent implements OnInit {
-  invoices : Invoice[];
+  invoices: Invoice[];
+
+  constructor(private invoicesService: InvoicesService) { }
 
   ngOnInit() {
-    this.invoices = [
-      { identifier: "FV/20/01", customer: "Intel", issueDate: new Date("2020-12-17"), workDays: 20, amount: 5000 },
-      { identifier: "FV/20/02", customer: "Intel", issueDate: new Date("2020-12-17"), workDays: 20, amount: 5000 },
-      { identifier: "FV/20/03", customer: "Intel", issueDate: new Date("2020-12-17"), workDays: 20, amount: 5000 },
-      { identifier: "FV/20/04", customer: "Intel", issueDate: new Date("2020-12-17"), workDays: 20, amount: 5000 },
-    ];
+    this.invoicesService.apiInvoicesListGet$Json()
+      .subscribe(x => this.invoices = x);
   }
-}
-
-export interface Invoice {
-  identifier : String;
-  customer : String;
-  issueDate : Date;
-  workDays : Number;
-  amount : Number;
 }

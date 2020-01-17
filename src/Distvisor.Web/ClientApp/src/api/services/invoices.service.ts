@@ -8,6 +8,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { Invoice } from '../models/invoice';
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +34,7 @@ export class InvoicesService extends BaseService {
    */
   apiInvoicesListGet$Plain$Response(params?: {
 
-  }): Observable<StrictHttpResponse<null | Array<string>>> {
+  }): Observable<StrictHttpResponse<null | Array<Invoice>>> {
 
     const rb = new RequestBuilder(this.rootUrl, InvoicesService.ApiInvoicesListGetPath, 'get');
     if (params) {
@@ -46,7 +47,7 @@ export class InvoicesService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<null | Array<string>>;
+        return r as StrictHttpResponse<null | Array<Invoice>>;
       })
     );
   }
@@ -59,10 +60,10 @@ export class InvoicesService extends BaseService {
    */
   apiInvoicesListGet$Plain(params?: {
 
-  }): Observable<null | Array<string>> {
+  }): Observable<null | Array<Invoice>> {
 
     return this.apiInvoicesListGet$Plain$Response(params).pipe(
-      map((r: StrictHttpResponse<null | Array<string>>) => r.body as null | Array<string>)
+      map((r: StrictHttpResponse<null | Array<Invoice>>) => r.body as null | Array<Invoice>)
     );
   }
 
@@ -74,7 +75,7 @@ export class InvoicesService extends BaseService {
    */
   apiInvoicesListGet$Json$Response(params?: {
 
-  }): Observable<StrictHttpResponse<null | Array<string>>> {
+  }): Observable<StrictHttpResponse<null | Array<Invoice>>> {
 
     const rb = new RequestBuilder(this.rootUrl, InvoicesService.ApiInvoicesListGetPath, 'get');
     if (params) {
@@ -87,7 +88,7 @@ export class InvoicesService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<null | Array<string>>;
+        return r as StrictHttpResponse<null | Array<Invoice>>;
       })
     );
   }
@@ -100,10 +101,10 @@ export class InvoicesService extends BaseService {
    */
   apiInvoicesListGet$Json(params?: {
 
-  }): Observable<null | Array<string>> {
+  }): Observable<null | Array<Invoice>> {
 
     return this.apiInvoicesListGet$Json$Response(params).pipe(
-      map((r: StrictHttpResponse<null | Array<string>>) => r.body as null | Array<string>)
+      map((r: StrictHttpResponse<null | Array<Invoice>>) => r.body as null | Array<Invoice>)
     );
   }
 

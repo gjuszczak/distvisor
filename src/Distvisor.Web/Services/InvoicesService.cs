@@ -1,6 +1,9 @@
-﻿using RestSharp;
+﻿using Newtonsoft.Json.Linq;
+using RestSharp;
 using RestSharp.Authenticators;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +12,7 @@ namespace Distvisor.Web.Services
 {
     public interface IInvoicesService
     {
-        Task<IEnumerable<string>> GetInvoicesAsync();
+        Task<IEnumerable<Invoice>> GetInvoicesAsync();
     }
 
     public class InvoicesService : IInvoicesService
@@ -22,16 +25,28 @@ namespace Distvisor.Web.Services
             _httpClient.Authenticator = new InvoicesRestAuthenticator(keyVault);
         }
 
-        public async Task<IEnumerable<string>> GetInvoicesAsync()
+        public async Task<IEnumerable<Invoice>> GetInvoicesAsync()
         {
             var request = new RestRequest("iapi/faktury.json", Method.GET);
             request.AddParameter("dataOd", "2019-10-03");
-            request.AddParameter("dataDo", "2019-12-10");
+            request.AddParameter("dataDo", "2020-01-17");
 
             var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
+            var jobject = JObject.Parse(response.Content);
+            var invoices = jobject.SelectToken("response.Wynik").Value<JArray>();
+            var result = invoices
+                .Select(x => x.Value<JObject>())
+                .Select(x => new Invoice
+                {
+                    Identifier = "FV " + x["PelnyNumer"].Value<string>(),
+                    Customer = x["IdentyfikatorKontrahenta"].Value<string>(),
+                    Amount = x["Brutto"].Value<decimal>(),
+                    IssueDate = DateTime.ParseExact(x["DataWystawienia"].Value<string>(), "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                    WorkDays = 0,
+                })
+                .ToList();
 
-            var result = new[] { "Test1", "Test2" };
-            return (IEnumerable<string>)result;
+            return result;
         }
     }
 
@@ -45,7 +60,7 @@ namespace Distvisor.Web.Services
         {
             var key = keyVault.GetIFirmaApiKey().Result;
             _user = key.User;
-            _keyName = "faktury";
+            _keyName = "faktura";
             _keyBytes = HexStringToByteArray(key.Key);
         }
 
@@ -74,5 +89,14 @@ namespace Distvisor.Web.Services
                 .Select(x => System.Convert.ToByte(x, 16))
                 .ToArray();
         }
+    }
+
+    public class Invoice
+    {
+      public string Identifier { get; set; }
+      public string Customer { get; set; }
+      public DateTime IssueDate { get; set; }
+      public int WorkDays { get; set; }
+      public decimal Amount { get; set; }
     }
 }

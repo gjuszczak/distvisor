@@ -16,7 +16,7 @@ namespace Distvisor.Web.Services
         Task<JObject> GetKey(KeyType keyType);
         Task<List<KeyType>> ListAvailableKeys();
         Task RemoveKey(KeyType keyType);
-        Task SetKey(KeyType keyType, object keyValue);
+        Task SetKey(KeyType keyType, string keyValue);
     }
 
     public class KeyVault : IKeyVault
@@ -55,9 +55,9 @@ namespace Distvisor.Web.Services
             return _context.SaveChangesAsync();
         }
 
-        public async Task SetKey(KeyType keyType, object keyValue)
+        public async Task SetKey(KeyType keyType, string keyValue)
         {
-            var jsonBody = JObject.FromObject(keyValue).ToString(Formatting.None);
+            var jsonBody = JObject.Parse(keyValue).ToString(Formatting.None);
             var jsonBytes = Encoding.UTF8.GetBytes(jsonBody);
             var base64Body = Convert.ToBase64String(jsonBytes);
 

@@ -11,6 +11,8 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { KeyVaultComponent } from './key-vault/key-vault.component';
 import { ApiModule } from '../api/api.module';
+import { KeyVaultIfirmaComponent } from './key-vault-ifirma/key-vault-ifirma.component';
+import { KeyVaultGithubComponent } from './key-vault-github/key-vault-github.component';
 
 @NgModule({
   imports: [
@@ -28,7 +30,11 @@ import { ApiModule } from '../api/api.module';
     // internal
     ApiModule,
   ],
-  declarations: [KeyVaultComponent],
+  declarations: [
+    KeyVaultComponent, 
+    KeyVaultGithubComponent,
+    KeyVaultIfirmaComponent
+  ],
   exports: [KeyVaultComponent],
 })
 export class KeyVaultModule { }

@@ -19,7 +19,7 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpGet("list")]
-        public Task<IEnumerable<string>> ListInvoices()
+        public Task<IEnumerable<Invoice>> ListInvoices()
         {
             return _invoices.GetInvoicesAsync();
         }

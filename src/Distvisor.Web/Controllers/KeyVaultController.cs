@@ -47,7 +47,7 @@ namespace Distvisor.Web.Controllers
         [HttpPost("{keyType}")]
         public async Task<IActionResult> SetKey(KeyType keyType, [FromBody]dynamic body)
         {
-            await _keyVault.SetKey(keyType, body);
+            await _keyVault.SetKey(keyType, body.ToString());
             return Ok();
         }
     }

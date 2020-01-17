@@ -31,8 +31,9 @@ namespace Distvisor.Web
             services.AddSingleton<ICryptoService, CryptoService>();
             services.AddSingleton<IAuthCache, AuthCache>();
             services.AddSingleton<IGithubService, GithubService>();
-            services.AddScoped<IInvoicesService, InvoicesService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IInvoicesService, InvoicesService>();
+            services.AddScoped<IKeyVault, KeyVault>();
 
             services.AddDbContext<DistvisorContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
@@ -68,7 +69,13 @@ namespace Distvisor.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();          
+                app.UseDatabaseErrorPage();
+
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Distvisor API V1");
+                });
             }
             else
             {
@@ -90,12 +97,6 @@ namespace Distvisor.Web
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Distvisor API V1");
-            });
 
             app.UseEndpoints(endpoints =>
             {

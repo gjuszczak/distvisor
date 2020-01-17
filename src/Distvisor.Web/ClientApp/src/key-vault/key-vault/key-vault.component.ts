@@ -11,9 +11,9 @@ import { KeyVaultService } from '../../api/services';
 export class KeyVaultComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
+  keyType = KeyType;
   keyTypes: SelectItem[];
   selectedKeyType: KeyType;
-  inputKeyValue: string;
   keyList: KeyType[];
 
   constructor(private keyVaultService: KeyVaultService) { }
@@ -32,12 +32,10 @@ export class KeyVaultComponent implements OnInit, OnDestroy {
       }));
   }
 
-  onSave() {
+  onSave(body: any) {
     this.subscriptions.push(this.keyVaultService.apiKeyVaultKeyTypePost$Json({
       keyType: this.selectedKeyType,
-      body: {
-        keyValue: this.inputKeyValue
-      }
+      body: body,
     }).subscribe(() => this.reloadList()));
   }
 
