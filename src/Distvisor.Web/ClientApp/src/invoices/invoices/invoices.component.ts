@@ -15,4 +15,17 @@ export class InvoicesComponent implements OnInit {
     this.invoicesService.apiInvoicesListGet$Json()
       .subscribe(x => this.invoices = x);
   }
+
+  onPreviewInvoiceClicked(invoiceId: string) {
+    var newWindow = window.open('', '_blank');
+    newWindow.document.write('Loading pdf...');
+    this.invoicesService.apiInvoicesInvoiceIdGet$Response({ invoiceId: invoiceId })
+      .subscribe(resp => {
+        const fileURL = URL.createObjectURL(resp.body);
+        newWindow.location.href = fileURL;
+      },
+      _ => {
+        newWindow.document.write('Loading failed!');
+      });
+  }
 }

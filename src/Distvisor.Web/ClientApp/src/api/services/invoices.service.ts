@@ -108,4 +108,53 @@ export class InvoicesService extends BaseService {
     );
   }
 
+  /**
+   * Path part for operation apiInvoicesInvoiceIdGet
+   */
+  static readonly ApiInvoicesInvoiceIdGetPath = '/api/Invoices/{invoiceId}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiInvoicesInvoiceIdGet()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiInvoicesInvoiceIdGet$Response(params: {
+    invoiceId: null | string;
+
+  }): Observable<StrictHttpResponse<Blob>> {
+
+    const rb = new RequestBuilder(this.rootUrl, InvoicesService.ApiInvoicesInvoiceIdGetPath, 'get');
+    if (params) {
+
+      rb.path('invoiceId', params.invoiceId);
+
+    }
+    return this.http.request(rb.build({
+      responseType: 'blob',
+      accept: 'application/pdf'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Blob>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiInvoicesInvoiceIdGet$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiInvoicesInvoiceIdGet(params: {
+    invoiceId: null | string;
+
+  }): Observable<Blob> {
+
+    return this.apiInvoicesInvoiceIdGet$Response(params).pipe(
+      map((r: StrictHttpResponse<Blob>) => r.body as Blob)
+    );
+  }
+
 }

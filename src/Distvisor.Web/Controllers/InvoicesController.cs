@@ -23,5 +23,14 @@ namespace Distvisor.Web.Controllers
         {
             return _invoices.GetInvoicesAsync();
         }
+
+        [HttpGet("{invoiceId}")]
+        [ProducesResponseType(typeof(FileContentResult), 200)]
+        [Produces("application/pdf")]
+        public async Task<IActionResult> GetInvoicePdf(string invoiceId)
+        {
+            var pdf = await _invoices.GetInvoicePdfAsync(invoiceId);
+            return File(pdf, "application/pdf");
+        }
     }
 }

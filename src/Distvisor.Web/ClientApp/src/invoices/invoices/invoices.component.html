@@ -9,7 +9,7 @@
     </p-header>
     <ng-template let-invoice pTemplate="gridItem">
         <div class="p-2 col-sm-6 col-lg-4">
-            <p-panel [header]="invoice.identifier">
+            <p-panel [header]="invoice.number">
                 <table class="table table-sm borderless">
                     <tbody>
                         <tr>
@@ -30,7 +30,8 @@
                         </tr>
                     </tbody>
                 </table>
-                <button pButton type="button" icon="pi pi-search"></button>
+                <button pButton type="button" class="m-2 p-1 w-auto" icon="pi pi-envelope" (click)="onPreviewInvoiceClicked(invoice.id)"></button>
+                <button pButton type="button" class="m-2 p-1 w-auto" icon="pi pi-search" (click)="onPreviewInvoiceClicked(invoice.id)"></button>
             </p-panel>
         </div>
     </ng-template>

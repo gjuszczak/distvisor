@@ -12,6 +12,7 @@ namespace Distvisor.Web.Services
 {
     public interface IInvoicesService
     {
+        Task<byte[]> GetInvoicePdfAsync(string invoiceId);
         Task<IEnumerable<Invoice>> GetInvoicesAsync();
     }
 
@@ -38,13 +39,26 @@ namespace Distvisor.Web.Services
                 .Select(x => x.Value<JObject>())
                 .Select(x => new Invoice
                 {
-                    Identifier = "FV " + x["PelnyNumer"].Value<string>(),
+                    Id = x["FakturaId"].Value<string>(),
+                    Number = "FV " + x["PelnyNumer"].Value<string>(),
                     Customer = x["IdentyfikatorKontrahenta"].Value<string>(),
                     Amount = x["Brutto"].Value<decimal>(),
                     IssueDate = DateTime.ParseExact(x["DataWystawienia"].Value<string>(), "yyyy-MM-dd", CultureInfo.InvariantCulture),
                     WorkDays = 0,
                 })
                 .ToList();
+
+            return result;
+        }
+
+        public async Task<byte[]> GetInvoicePdfAsync(string invoiceId)
+        {
+            var request = new RestRequest("iapi/fakturakraj/{invoiceId}.pdf.single", Method.GET);
+            request.AddUrlSegment("invoiceId", invoiceId);
+            request.AddHeader("Accept", "application/pdf");
+
+            var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
+            var result = response.RawBytes;
 
             return result;
         }
@@ -67,7 +81,11 @@ namespace Distvisor.Web.Services
         public void Authenticate(IRestClient client, IRestRequest request)
         {
             var fullUrl = client.BuildUri(request);
-            var url = fullUrl.AbsoluteUri.Replace(fullUrl.Query, "");
+            var url = fullUrl.AbsoluteUri;
+            if (!string.IsNullOrEmpty(fullUrl.Query))
+            {
+                url = url.Replace(fullUrl.Query, "");
+            }
             var requestContent = request.Parameters
                 .FirstOrDefault(p => p.Type == ParameterType.RequestBody);
             var stringToHash = $"{url}{_user}{_keyName}{requestContent}";
@@ -93,10 +111,11 @@ namespace Distvisor.Web.Services
 
     public class Invoice
     {
-      public string Identifier { get; set; }
-      public string Customer { get; set; }
-      public DateTime IssueDate { get; set; }
-      public int WorkDays { get; set; }
-      public decimal Amount { get; set; }
+        public string Id { get; set; }
+        public string Number { get; set; }
+        public string Customer { get; set; }
+        public DateTime IssueDate { get; set; }
+        public int WorkDays { get; set; }
+        public decimal Amount { get; set; }
     }
 }

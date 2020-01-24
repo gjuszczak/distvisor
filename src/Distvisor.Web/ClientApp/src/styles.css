@@ -35,6 +35,14 @@ legend {
 
 .table td.fit, 
 .table th.fit {
-    white-space: nowrap;
-    width: 1%;
+  white-space: nowrap;
+  width: 1%;
+}
+
+.w-auto {
+  width: auto !important;
+}
+
+.pi-large {
+  font-size: 2em !important;
 }
