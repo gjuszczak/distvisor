@@ -28,4 +28,14 @@ export class InvoicesComponent implements OnInit {
         newWindow.document.write('Loading failed!');
       });
   }
+
+  onSendMailInvoiceClicked(invoiceId: string) {
+    this.invoicesService.apiInvoicesInvoiceIdSendMailPost$Response({ invoiceId: invoiceId })
+      .subscribe(_ => {
+        console.log("mail-sent");
+      },
+      _ => {
+        console.error("mail-sent-error");
+      });
+  }
 }

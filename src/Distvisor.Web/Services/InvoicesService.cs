@@ -29,8 +29,8 @@ namespace Distvisor.Web.Services
         public async Task<IEnumerable<Invoice>> GetInvoicesAsync()
         {
             var request = new RestRequest("iapi/faktury.json", Method.GET);
-            request.AddParameter("dataOd", "2019-10-03");
-            request.AddParameter("dataDo", "2020-01-17");
+            request.AddParameter("dataOd", "2019-10-01");
+            request.AddParameter("dataDo", DateTime.Now.Date.ToString("yyyy-MM-dd"));
 
             var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
             var jobject = JObject.Parse(response.Content);

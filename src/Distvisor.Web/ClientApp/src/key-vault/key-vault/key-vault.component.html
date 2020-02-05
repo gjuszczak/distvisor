@@ -33,5 +33,7 @@
         </app-key-vault-github>
         <app-key-vault-ifirma *ngSwitchCase="keyType.IFirmaApiKey" (save)="onSave($event)">
         </app-key-vault-ifirma>
+        <app-key-vault-mailgun *ngSwitchCase="keyType.MailgunApiKey" (save)="onSave($event)">
+        </app-key-vault-mailgun>
     </div>
 </p-fieldset>

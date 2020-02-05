@@ -2,6 +2,7 @@
 using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -23,18 +24,6 @@ namespace Distvisor.Web.Controllers
         public Task<List<KeyType>> ListKeys()
         {
             return _keyVault.ListAvailableKeys();
-        }
-
-        [HttpGet("{keyType}")]
-        public async Task<ActionResult<dynamic>> GetKey(KeyType keyType)
-        {
-            var key = await _keyVault.GetKey(keyType);
-            if (key == null)
-            {
-                return BadRequest();
-            }
-
-            return key;
         }
 
         [HttpDelete("{keyType}")]

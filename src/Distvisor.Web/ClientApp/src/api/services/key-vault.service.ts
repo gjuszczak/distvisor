@@ -110,55 +110,6 @@ export class KeyVaultService extends BaseService {
   }
 
   /**
-   * Path part for operation apiKeyVaultKeyTypeGet
-   */
-  static readonly ApiKeyVaultKeyTypeGetPath = '/api/KeyVault/{keyType}';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiKeyVaultKeyTypeGet()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiKeyVaultKeyTypeGet$Response(params: {
-    keyType: KeyType;
-
-  }): Observable<StrictHttpResponse<void>> {
-
-    const rb = new RequestBuilder(this.rootUrl, KeyVaultService.ApiKeyVaultKeyTypeGetPath, 'get');
-    if (params) {
-
-      rb.path('keyType', params.keyType);
-
-    }
-    return this.http.request(rb.build({
-      responseType: 'text',
-      accept: '*/*'
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiKeyVaultKeyTypeGet$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  apiKeyVaultKeyTypeGet(params: {
-    keyType: KeyType;
-
-  }): Observable<void> {
-
-    return this.apiKeyVaultKeyTypeGet$Response(params).pipe(
-      map((r: StrictHttpResponse<void>) => r.body as void)
-    );
-  }
-
-  /**
    * Path part for operation apiKeyVaultKeyTypePost
    */
   static readonly ApiKeyVaultKeyTypePostPath = '/api/KeyVault/{keyType}';

@@ -11,7 +11,6 @@ using Distvisor.Web.Data;
 using Distvisor.Web.Services;
 using System.Text.Json.Serialization;
 using Distvisor.Web.Configuration;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Distvisor.Web
 {
@@ -34,6 +33,7 @@ namespace Distvisor.Web
             services.AddSingleton<IGithubService, GithubService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
+            services.AddScoped<IMailService, MailService>();
             services.AddScoped<IKeyVault, KeyVault>();
 
             services.AddDbContext<DistvisorContext>(options =>

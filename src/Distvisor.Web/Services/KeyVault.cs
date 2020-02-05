@@ -13,7 +13,7 @@ namespace Distvisor.Web.Services
 {
     public interface IKeyVault
     {
-        Task<JObject> GetKey(KeyType keyType);
+        Task<T> GetKey<T>(KeyType keyType) where T : class;
         Task<List<KeyType>> ListAvailableKeys();
         Task RemoveKey(KeyType keyType);
         Task SetKey(KeyType keyType, string keyValue);
@@ -33,18 +33,16 @@ namespace Distvisor.Web.Services
             return _context.KeyVault.Select(x => x.Id).ToListAsync();
         }
 
-        public async Task<JObject> GetKey(KeyType keyType)
+        public async Task<T> GetKey<T>(KeyType keyType) where T : class
         {
             var key = await _context.KeyVault.FindAsync(keyType);
             if (string.IsNullOrEmpty(key?.KeyValue))
             {
                 return null;
             }
-
             var byteValue = Convert.FromBase64String(key.KeyValue);
             var jsonValue = Encoding.UTF8.GetString(byteValue);
-            var jobjectValue = JObject.Parse(jsonValue);
-            return jobjectValue;
+            return JsonConvert.DeserializeObject<T>(jsonValue);
         }
 
         public Task RemoveKey(KeyType keyType)
@@ -76,12 +74,14 @@ namespace Distvisor.Web.Services
 
     public static class KeyVaultExtensions
     {
-        public static async Task<IFirmaApiKey> GetIFirmaApiKey(this IKeyVault keyVault)
+        public static Task<IFirmaApiKey> GetIFirmaApiKey(this IKeyVault keyVault)
         {
-            var keyData = await keyVault.GetKey(KeyType.IFirmaApiKey);
-            var key = new IFirmaApiKey();
-            JsonConvert.PopulateObject(keyData.ToString(), key);
-            return key;
+            return keyVault.GetKey<IFirmaApiKey>(KeyType.IFirmaApiKey);
+        }
+
+        public static Task<MailgunApiKey> GetMailgunApiKeyAsync(this IKeyVault keyVault)
+        {
+            return keyVault.GetKey<MailgunApiKey>(KeyType.MailgunApiKey);
         }
     }
 
@@ -89,5 +89,12 @@ namespace Distvisor.Web.Services
     {
         public string Key { get; set; }
         public string User { get; set; }
+    }
+
+    public class MailgunApiKey
+    {
+        public string Key { get; set; }
+        public string Domain { get; set; }
+        public string To { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 /* tslint:disable */
 export enum KeyType {
   GithubApiKey = 'GithubApiKey',
-  IFirmaApiKey = 'IFirmaApiKey'
+  IFirmaApiKey = 'IFirmaApiKey',
+  MailgunApiKey = 'MailgunApiKey'
 }

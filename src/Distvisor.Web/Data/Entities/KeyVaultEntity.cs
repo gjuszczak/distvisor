@@ -10,5 +10,6 @@
     {
         GithubApiKey,
         IFirmaApiKey,
+        MailgunApiKey,
     }
 }

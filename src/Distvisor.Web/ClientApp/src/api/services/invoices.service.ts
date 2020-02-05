@@ -157,4 +157,53 @@ export class InvoicesService extends BaseService {
     );
   }
 
+  /**
+   * Path part for operation apiInvoicesInvoiceIdSendMailPost
+   */
+  static readonly ApiInvoicesInvoiceIdSendMailPostPath = '/api/Invoices/{invoiceId}/send-mail';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiInvoicesInvoiceIdSendMailPost()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiInvoicesInvoiceIdSendMailPost$Response(params: {
+    invoiceId: null | string;
+
+  }): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, InvoicesService.ApiInvoicesInvoiceIdSendMailPostPath, 'post');
+    if (params) {
+
+      rb.path('invoiceId', params.invoiceId);
+
+    }
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiInvoicesInvoiceIdSendMailPost$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiInvoicesInvoiceIdSendMailPost(params: {
+    invoiceId: null | string;
+
+  }): Observable<void> {
+
+    return this.apiInvoicesInvoiceIdSendMailPost$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
 }

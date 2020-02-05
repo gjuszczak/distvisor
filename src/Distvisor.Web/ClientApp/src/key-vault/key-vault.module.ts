@@ -9,10 +9,11 @@ import { DropdownModule } from 'primeng/dropdown';
 import { FieldsetModule } from 'primeng/fieldset';
 import { InputTextModule } from 'primeng/inputtext';
 
-import { KeyVaultComponent } from './key-vault/key-vault.component';
 import { ApiModule } from '../api/api.module';
+import { KeyVaultComponent } from './key-vault/key-vault.component';
 import { KeyVaultIfirmaComponent } from './key-vault-ifirma/key-vault-ifirma.component';
 import { KeyVaultGithubComponent } from './key-vault-github/key-vault-github.component';
+import { KeyVaultMailgunComponent } from './key-vault-mailgun/key-vault-mailgun.component';
 
 @NgModule({
   imports: [
@@ -33,7 +34,8 @@ import { KeyVaultGithubComponent } from './key-vault-github/key-vault-github.com
   declarations: [
     KeyVaultComponent, 
     KeyVaultGithubComponent,
-    KeyVaultIfirmaComponent
+    KeyVaultIfirmaComponent,
+    KeyVaultMailgunComponent,
   ],
   exports: [KeyVaultComponent],
 })

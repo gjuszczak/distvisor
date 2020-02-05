@@ -1,4 +1,4 @@
-<p-dataView [value]="invoices" [paginator]="true" [rows]="10" layout="grid">
+<p-dataView [value]="invoices" [paginator]="true" [rows]="4" layout="grid">
     <p-header>
         <div class="d-flex justify-content-start align-items-center">
             <div class="font-weight-bold">Invoices</div>
@@ -17,21 +17,25 @@
                             <td>{{invoice.customer}}</td>
                         </tr>
                         <tr>
-                            <th >Amount:</th>
+                            <th>Amount:</th>
                             <td>{{invoice.amount}}</td>
                         </tr>
                         <tr>
-                            <th>Days:</th>
-                            <td>{{invoice.workDays}}</td>
-                        </tr>
-                        <tr>
-                            <th>Date:</th>
+                            <th>Issued:</th>
                             <td>{{invoice.issueDate | date: 'yyyy-MM-dd'}}</td>
                         </tr>
                     </tbody>
                 </table>
-                <button pButton type="button" class="m-2 p-1 w-auto" icon="pi pi-envelope" (click)="onPreviewInvoiceClicked(invoice.id)"></button>
-                <button pButton type="button" class="m-2 p-1 w-auto" icon="pi pi-search" (click)="onPreviewInvoiceClicked(invoice.id)"></button>
+                <div class="d-flex flex-row-reverse">
+                    <div class="ml-3">
+                        <button pButton type="button" class="pi-large" icon="pi pi-search"
+                            (click)="onPreviewInvoiceClicked(invoice.id)"></button>
+                    </div>
+                    <div class="ml-3">
+                        <button pButton type="button" class="pi-large" icon="pi pi-envelope"
+                            (click)="onSendMailInvoiceClicked(invoice.id)"></button>
+                    </div>
+                </div>
             </p-panel>
         </div>
     </ng-template>

@@ -39,10 +39,6 @@ legend {
   width: 1%;
 }
 
-.w-auto {
-  width: auto !important;
-}
-
 .pi-large {
-  font-size: 2em !important;
+  font-size: 1.2rem !important;
 }

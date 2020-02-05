@@ -1,0 +1,48 @@
+<div class="form-group row">
+    <label 
+        for="inputTo" 
+        class="col-sm-4 col-md-3 col-xl-2 col-form-label">To:</label>
+    <div class="col">
+        <input
+            pInputText
+            type="text"
+            id="inputTo"
+            name="inputTo" 
+            [(ngModel)]="inputTo"/>
+    </div>
+</div>
+<div class="form-group row">
+    <label 
+        for="inputDomain" 
+        class="col-sm-4 col-md-3 col-xl-2 col-form-label">Domain:</label>
+    <div class="col">
+        <input
+            pInputText
+            type="text"
+            id="inputDomain"
+            name="inputDomain" 
+            [(ngModel)]="inputDomain"/>
+    </div>
+</div>
+<div class="form-group row">
+    <label 
+        for="inputKeyValue" 
+        class="col-sm-4 col-md-3 col-xl-2 col-form-label">Key value:</label>
+    <div class="col">
+        <input
+            pInputText
+            type="text"
+            id="inputKeyValue"
+            name="inputKeyValue" 
+            [(ngModel)]="inputKeyValue"/>
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-sm-10">
+        <button 
+            pButton 
+            label="Save" 
+            class="ui-button-success"
+            (click)="saveClicked()"></button>
+    </div>
+</div>
