@@ -23,20 +23,20 @@ namespace Distvisor.Web.Controllers
         [HttpGet("list")]
         public Task<List<KeyType>> ListKeys()
         {
-            return _keyVault.ListAvailableKeys();
+            return _keyVault.ListAvailableKeysAsync();
         }
 
         [HttpDelete("{keyType}")]
         public async Task<IActionResult> RemoveKey(KeyType keyType)
         {
-            await _keyVault.RemoveKey(keyType);
+            await _keyVault.RemoveKeyAsync(keyType);
             return Ok();
         }
 
         [HttpPost("{keyType}")]
         public async Task<IActionResult> SetKey(KeyType keyType, [FromBody]dynamic body)
         {
-            await _keyVault.SetKey(keyType, body.ToString());
+            await _keyVault.SetKeyAsync(keyType, body.ToString());
             return Ok();
         }
     }

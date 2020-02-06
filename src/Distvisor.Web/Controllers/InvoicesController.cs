@@ -1,6 +1,7 @@
 ﻿using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -33,6 +34,13 @@ namespace Distvisor.Web.Controllers
         {
             var pdf = await _invoices.GetInvoicePdfAsync(invoiceId);
             return File(pdf, "application/pdf");
+        }
+
+        [HttpPost("generate")]
+        public async Task<IActionResult> GenerateInvoice(string templateInvoiceId)
+        {
+            await _invoices.GenerateInvoiceAsync(templateInvoiceId, DateTime.Now, 10);
+            return Ok();
         }
 
         [HttpPost("{invoiceId}/send-mail")]

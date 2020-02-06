@@ -158,6 +158,55 @@ export class InvoicesService extends BaseService {
   }
 
   /**
+   * Path part for operation apiInvoicesGeneratePost
+   */
+  static readonly ApiInvoicesGeneratePostPath = '/api/Invoices/generate';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiInvoicesGeneratePost()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiInvoicesGeneratePost$Response(params?: {
+    templateInvoiceId?: null | string;
+
+  }): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, InvoicesService.ApiInvoicesGeneratePostPath, 'post');
+    if (params) {
+
+      rb.query('templateInvoiceId', params.templateInvoiceId);
+
+    }
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiInvoicesGeneratePost$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiInvoicesGeneratePost(params?: {
+    templateInvoiceId?: null | string;
+
+  }): Observable<void> {
+
+    return this.apiInvoicesGeneratePost$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
+  /**
    * Path part for operation apiInvoicesInvoiceIdSendMailPost
    */
   static readonly ApiInvoicesInvoiceIdSendMailPostPath = '/api/Invoices/{invoiceId}/send-mail';

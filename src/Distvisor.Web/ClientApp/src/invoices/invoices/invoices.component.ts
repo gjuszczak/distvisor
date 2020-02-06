@@ -38,4 +38,14 @@ export class InvoicesComponent implements OnInit {
         console.error("mail-sent-error");
       });
   }
+
+  onGenerateInvoiceClicked(invoiceId: string) {
+    this.invoicesService.apiInvoicesGeneratePost$Response({ templateInvoiceId: invoiceId })
+      .subscribe(_ => {
+        console.log("generated");
+      },
+      _ => {
+        console.error("generate-error");
+      });
+  }
 }

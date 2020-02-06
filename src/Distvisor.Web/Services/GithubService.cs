@@ -13,7 +13,7 @@ namespace Distvisor.Web.Services
     public interface IGithubService
     {
         Task<IEnumerable<string>> GetReleasesAsync();
-        Task UpdateToVersion(string version, string dbUpdateStrategy);
+        Task UpdateToVersionAsync(string version, string dbUpdateStrategy);
     }
 
     public class GithubService : IGithubService
@@ -41,7 +41,7 @@ namespace Distvisor.Web.Services
             return releases.Select(r => r["tag_name"].Value<string>());
         }
 
-        public async Task UpdateToVersion(string version, string dbUpdateStrategy)
+        public async Task UpdateToVersionAsync(string version, string dbUpdateStrategy)
         {
             var request = new RestRequest("repos/{owner}/{repo}/dispatches", Method.POST);
             request.AddUrlSegment("owner", _settings.GithubRepoOwner);

@@ -13,10 +13,10 @@ namespace Distvisor.Web.Services
 {
     public interface IKeyVault
     {
-        Task<T> GetKey<T>(KeyType keyType) where T : class;
-        Task<List<KeyType>> ListAvailableKeys();
-        Task RemoveKey(KeyType keyType);
-        Task SetKey(KeyType keyType, string keyValue);
+        Task<T> GetKeyAsync<T>(KeyType keyType) where T : class;
+        Task<List<KeyType>> ListAvailableKeysAsync();
+        Task RemoveKeyAsync(KeyType keyType);
+        Task SetKeyAsync(KeyType keyType, string keyValue);
     }
 
     public class KeyVault : IKeyVault
@@ -28,12 +28,12 @@ namespace Distvisor.Web.Services
             _context = context;
         }
 
-        public Task<List<KeyType>> ListAvailableKeys()
+        public Task<List<KeyType>> ListAvailableKeysAsync()
         {
             return _context.KeyVault.Select(x => x.Id).ToListAsync();
         }
 
-        public async Task<T> GetKey<T>(KeyType keyType) where T : class
+        public async Task<T> GetKeyAsync<T>(KeyType keyType) where T : class
         {
             var key = await _context.KeyVault.FindAsync(keyType);
             if (string.IsNullOrEmpty(key?.KeyValue))
@@ -45,7 +45,7 @@ namespace Distvisor.Web.Services
             return JsonConvert.DeserializeObject<T>(jsonValue);
         }
 
-        public Task RemoveKey(KeyType keyType)
+        public Task RemoveKeyAsync(KeyType keyType)
         {
             KeyVaultEntity e = new KeyVaultEntity() { Id = keyType };
             _context.KeyVault.Attach(e);
@@ -53,7 +53,7 @@ namespace Distvisor.Web.Services
             return _context.SaveChangesAsync();
         }
 
-        public async Task SetKey(KeyType keyType, string keyValue)
+        public async Task SetKeyAsync(KeyType keyType, string keyValue)
         {
             var jsonBody = JObject.Parse(keyValue).ToString(Formatting.None);
             var jsonBytes = Encoding.UTF8.GetBytes(jsonBody);
@@ -74,14 +74,14 @@ namespace Distvisor.Web.Services
 
     public static class KeyVaultExtensions
     {
-        public static Task<IFirmaApiKey> GetIFirmaApiKey(this IKeyVault keyVault)
+        public static Task<IFirmaApiKey> GetIFirmaApiKeyAsync(this IKeyVault keyVault)
         {
-            return keyVault.GetKey<IFirmaApiKey>(KeyType.IFirmaApiKey);
+            return keyVault.GetKeyAsync<IFirmaApiKey>(KeyType.IFirmaApiKey);
         }
 
         public static Task<MailgunApiKey> GetMailgunApiKeyAsync(this IKeyVault keyVault)
         {
-            return keyVault.GetKey<MailgunApiKey>(KeyType.MailgunApiKey);
+            return keyVault.GetKeyAsync<MailgunApiKey>(KeyType.MailgunApiKey);
         }
     }
 

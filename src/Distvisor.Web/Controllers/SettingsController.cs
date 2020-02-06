@@ -35,7 +35,7 @@ namespace Distvisor.Web.Controllers
         [HttpPost("update")]
         public async Task<IActionResult> Update([FromBody]UpdateRequestDto dto)
         {
-            await _github.UpdateToVersion(dto.UpdateToVersion, dto.DbUpdateStrategy.ToString());
+            await _github.UpdateToVersionAsync(dto.UpdateToVersion, dto.DbUpdateStrategy.ToString());
             return Ok($"Update to { dto.UpdateToVersion } started.");
         }
     }
