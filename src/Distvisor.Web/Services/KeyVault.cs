@@ -87,7 +87,8 @@ namespace Distvisor.Web.Services
 
     public class IFirmaApiKey
     {
-        public string Key { get; set; }
+        public string InvoiceKey { get; set; }
+        public string SubscriberKey { get; set; }
         public string User { get; set; }
     }
 

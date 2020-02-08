@@ -7,9 +7,14 @@ import { Component, Output, EventEmitter } from '@angular/core';
 export class KeyVaultIfirmaComponent {
   @Output() save: EventEmitter<any> = new EventEmitter();
   inputUsername: string;
-  inputKeyValue: string;
+  inputInvoiceKeyValue: string;
+  inputSubscriberKeyValue: string;
 
   saveClicked() {
-    this.save.emit({ key: this.inputKeyValue, user: this.inputUsername });
+    this.save.emit({
+      invoiceKey: this.inputInvoiceKeyValue,
+      subscriberKey: this.inputSubscriberKeyValue,
+      user: this.inputUsername,
+    });
   }
 }
