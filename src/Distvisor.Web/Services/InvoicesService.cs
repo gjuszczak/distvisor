@@ -153,7 +153,6 @@ namespace Distvisor.Web.Services
             templateInvoice["Zaplacono"] = 0;
             templateInvoice["ZaplaconoNaDokumencie"] = 0;
             templateInvoice["NumerKontaBankowego"] = null;
-            templateInvoice["IdentyfikatorKontrahenta"] = templateInvoice["Kontrahent"]["Identyfikator"].Value<string>();
             templateInvoice["PrefiksUEKontrahenta"].Parent.Remove();
             templateInvoice["NIPKontrahenta"].Parent.Remove();
             templateInvoice["DataWystawienia"] = issueDate.ToString("yyyy-MM-dd");
@@ -167,6 +166,11 @@ namespace Distvisor.Web.Services
             templateInvoice["Pozycje"][0]["MagazynPozycjaId"].Parent.Remove();
             templateInvoice["Pozycje"][0]["MagazynMagazynId"].Parent.Remove();
             templateInvoice["Pozycje"][0]["MagazynObiektSprzedazyId"].Parent.Remove();
+
+            if (templateInvoice["IdentyfikatorKontrahenta"].Value<string>() == null)
+            {
+                templateInvoice["IdentyfikatorKontrahenta"] = templateInvoice["Kontrahent"]["Identyfikator"].Value<string>();
+            }
 
             var json = templateInvoice.ToString();
 

@@ -8,10 +8,15 @@ import { Invoice } from 'src/api/models';
 })
 export class InvoicesComponent implements OnInit {
   invoices: Invoice[];
+  issueDate: Date;
+  workdays: Number;
 
   constructor(private invoicesService: InvoicesService) { }
 
   ngOnInit() {
+    this.issueDate = new Date(Date.now());
+    this.workdays = 20;
+
     this.invoicesService.apiInvoicesListGet$Json()
       .subscribe(x => this.invoices = x);
   }
@@ -39,7 +44,7 @@ export class InvoicesComponent implements OnInit {
       });
   }
 
-  onGenerateInvoiceClicked(invoiceId: string) {
+  onSubmit(invoiceId: string) {
     this.invoicesService.apiInvoicesGeneratePost$Response({ templateInvoiceId: invoiceId })
       .subscribe(_ => {
         console.log("generated");

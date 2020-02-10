@@ -1,4 +1,4 @@
-<p-dataView [value]="invoices" [paginator]="true" [rows]="4" layout="grid">
+<p-dataView [value]="invoices" [paginator]="true" [rows]="6" layout="grid">
     <p-header>
         <div class="d-flex justify-content-start align-items-center">
             <div class="font-weight-bold">Invoices</div>
@@ -35,12 +35,45 @@
                         <button pButton type="button" class="pi-large" icon="pi pi-envelope"
                             (click)="onSendMailInvoiceClicked(invoice.id)"></button>
                     </div>
-                    <div class="ml-3">
-                        <button pButton type="button" class="pi-large" icon="pi pi-plus"
-                            (click)="onGenerateInvoiceClicked(invoice.id)"></button>
-                    </div>                    
                 </div>
             </p-panel>
         </div>
     </ng-template>
 </p-dataView>
+
+<p-fieldset legend="Generate new invoice">
+    <form class="ml-3 mb-3" (ngSubmit)="onSubmit()">
+        <table class="table table-sm borderless">
+            <tbody>
+                <tr>
+                    <td class="fit pr-3">
+                        <label for="inputTemplate" class="col-form-label">Template:</label>
+                    </td>
+                    <td>
+                        <p-dropdown id="inputTemplate" name="inputTemplate" [(ngModel)]="template" showButtonBar="true">
+                        </p-dropdown>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="inputIssueDate" class="col-form-label">Issue date:</label>
+                    </td>
+                    <td>
+                        <p-calendar id="inputIssueDate" name="inputIssueDate" [(ngModel)]="issueDate" showButtonBar="true">
+                        </p-calendar>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="inputWorkdays" class="col-form-label">Workdays:</label>
+                    </td>
+                    <td>
+                        <p-spinner id="inputWorkdays" name="inputWorkdays" [(ngModel)]="workdays" [min]="1" [max]="31">
+                        </p-spinner>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button pButton icon="pi pi-check" label="Generate" class="ui-button-success" type="submit"></button>
+    </form>
+</p-fieldset>
