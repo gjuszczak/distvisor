@@ -8,6 +8,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { GenerateInvoiceDto } from '../models/generate-invoice-dto';
 import { Invoice } from '../models/invoice';
 
 @Injectable({
@@ -164,20 +165,20 @@ export class InvoicesService extends BaseService {
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiInvoicesGeneratePost()` instead.
+   * To access only the response body, use `apiInvoicesGeneratePost$Json()` instead.
    *
-   * This method doesn't expect any request body.
+   * This method sends `application/json` and handles request body of type `application/json`.
    */
-  apiInvoicesGeneratePost$Response(params?: {
-    templateInvoiceId?: null | string;
+  apiInvoicesGeneratePost$Json$Response(params?: {
 
+    body?: GenerateInvoiceDto
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, InvoicesService.ApiInvoicesGeneratePostPath, 'post');
     if (params) {
 
-      rb.query('templateInvoiceId', params.templateInvoiceId);
 
+      rb.body(params.body, 'application/json');
     }
     return this.http.request(rb.build({
       responseType: 'text',
@@ -192,16 +193,16 @@ export class InvoicesService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiInvoicesGeneratePost$Response()` instead.
+   * To access the full response (for headers, for example), `apiInvoicesGeneratePost$Json$Response()` instead.
    *
-   * This method doesn't expect any request body.
+   * This method sends `application/json` and handles request body of type `application/json`.
    */
-  apiInvoicesGeneratePost(params?: {
-    templateInvoiceId?: null | string;
+  apiInvoicesGeneratePost$Json(params?: {
 
+    body?: GenerateInvoiceDto
   }): Observable<void> {
 
-    return this.apiInvoicesGeneratePost$Response(params).pipe(
+    return this.apiInvoicesGeneratePost$Json$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }

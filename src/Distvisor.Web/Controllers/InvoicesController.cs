@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
@@ -37,9 +38,9 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpPost("generate")]
-        public async Task<IActionResult> GenerateInvoice(string templateInvoiceId)
+        public async Task<IActionResult> GenerateInvoice([FromBody]GenerateInvoiceDto dto)
         {
-            await _invoices.GenerateInvoiceAsync(templateInvoiceId, DateTime.Now, 10);
+            await _invoices.GenerateInvoiceAsync(dto.TemplateInvoiceId, dto.UtcIssueDate.ToLocalTime(), dto.Workdays);
             return Ok();
         }
 
@@ -50,4 +51,18 @@ namespace Distvisor.Web.Controllers
             await _mailService.SendInvoicePdfAsync(invoicePdf);
         }
     }
+
+    public class GenerateInvoiceDto
+    {
+        [Required]
+        public string TemplateInvoiceId { get; set; }
+
+        [Required]
+        public DateTime UtcIssueDate { get; set; }
+
+        [Required]
+        [Range(1, 31)]
+        public int Workdays { get; set; }
+    }
+
 }

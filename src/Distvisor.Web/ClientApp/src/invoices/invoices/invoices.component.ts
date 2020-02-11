@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { InvoicesService } from 'src/api/services';
 import { Invoice } from 'src/api/models';
+import { SelectItem } from 'primeng/api';
 
 @Component({
   selector: 'app-invoices',
@@ -9,7 +10,9 @@ import { Invoice } from 'src/api/models';
 export class InvoicesComponent implements OnInit {
   invoices: Invoice[];
   issueDate: Date;
-  workdays: Number;
+  workdays: number;
+  templateInvoices: SelectItem[];
+  selectedTemplateInvoice: SelectItem;
 
   constructor(private invoicesService: InvoicesService) { }
 
@@ -17,8 +20,17 @@ export class InvoicesComponent implements OnInit {
     this.issueDate = new Date(Date.now());
     this.workdays = 20;
 
+    this.reloadInvoices();
+  }
+
+  reloadInvoices() {
     this.invoicesService.apiInvoicesListGet$Json()
-      .subscribe(x => this.invoices = x);
+      .subscribe(x => {
+        this.invoices = x;
+        this.templateInvoices =
+          x.map(inv => <SelectItem>{ label: inv.number, value: inv.id });
+        this.selectedTemplateInvoice = this.templateInvoices[0];
+      });
   }
 
   onPreviewInvoiceClicked(invoiceId: string) {
@@ -29,9 +41,9 @@ export class InvoicesComponent implements OnInit {
         const fileURL = URL.createObjectURL(resp.body);
         newWindow.location.href = fileURL;
       },
-      _ => {
-        newWindow.document.write('Loading failed!');
-      });
+        _ => {
+          newWindow.document.write('Loading failed!');
+        });
   }
 
   onSendMailInvoiceClicked(invoiceId: string) {
@@ -39,18 +51,25 @@ export class InvoicesComponent implements OnInit {
       .subscribe(_ => {
         console.log("mail-sent");
       },
-      _ => {
-        console.error("mail-sent-error");
-      });
+        _ => {
+          console.error("mail-sent-error");
+        });
   }
 
-  onSubmit(invoiceId: string) {
-    this.invoicesService.apiInvoicesGeneratePost$Response({ templateInvoiceId: invoiceId })
+  onSubmit() {
+    this.invoicesService.apiInvoicesGeneratePost$Json$Response({
+      body: {
+        templateInvoiceId: <string>this.selectedTemplateInvoice.value,
+        utcIssueDate: this.issueDate.toISOString(),
+        workdays: this.workdays
+      }
+    })
       .subscribe(_ => {
         console.log("generated");
+        this.reloadInvoices();
       },
-      _ => {
-        console.error("generate-error");
-      });
+        _ => {
+          console.error("generate-error");
+        });
   }
 }

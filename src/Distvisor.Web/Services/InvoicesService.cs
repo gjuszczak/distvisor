@@ -178,7 +178,7 @@ namespace Distvisor.Web.Services
             request.AddJsonBody(JsonConvert.SerializeObject(templateInvoice));
             request.AddHeader("Authentication", await GenerateInvoiceAuthHeaderAsync(request));
 
-            // var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
+            var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
         }
 
         private Task<string> GenerateInvoiceAuthHeaderAsync(IRestRequest request)
