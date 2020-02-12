@@ -7,8 +7,14 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 export class KeyVaultGithubComponent {
   @Output() save: EventEmitter<any> = new EventEmitter();
   inputKeyValue: string;
+  inputRepoOwner: string;
+  inputRepoName: string;
 
   saveClicked() {
-    this.save.emit({ key: this.inputKeyValue });
+    this.save.emit({
+      key: this.inputKeyValue,
+      repoOwner: this.inputRepoOwner,
+      repoName: this.inputRepoName,
+    });
   }
 }

@@ -30,7 +30,7 @@ namespace Distvisor.Web
 
             services.AddSingleton<ICryptoService, CryptoService>();
             services.AddSingleton<IAuthCache, AuthCache>();
-            services.AddSingleton<IGithubService, GithubService>();
+            services.AddScoped<IGithubService, GithubService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
             services.AddScoped<IMailService, MailService>();

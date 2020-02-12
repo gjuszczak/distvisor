@@ -83,6 +83,11 @@ namespace Distvisor.Web.Services
         {
             return keyVault.GetKeyAsync<MailgunApiKey>(KeyType.MailgunApiKey);
         }
+
+        public static Task<GithubApiKey> GetGithubApiKeyAsync(this IKeyVault keyVault)
+        {
+            return keyVault.GetKeyAsync<GithubApiKey>(KeyType.GithubApiKey);
+        }
     }
 
     public class IFirmaApiKey
@@ -97,5 +102,12 @@ namespace Distvisor.Web.Services
         public string Key { get; set; }
         public string Domain { get; set; }
         public string To { get; set; }
+    }
+
+    public class GithubApiKey
+    {
+        public string Key { get; set; }
+        public string RepoOwner { get; set; }
+        public string RepoName { get; set; }
     }
 }
