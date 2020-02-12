@@ -70,6 +70,7 @@ jobs:
         password: ${{ secrets.SSH_PASSWORD }}
         command_timeout: "5m" 
         script: |
+          echo "${{ secrets.AUTH_OVPN }}" >> ./auth.txt
           cd ./${{ github.event.client_payload.to_version }}
           sudo chmod 700 ./deploy.sh
           ./deploy.sh
