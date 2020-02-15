@@ -24,12 +24,12 @@ namespace Distvisor.Web.Services
     {
         private readonly DateTime _bottomDateLimit;
         private readonly RestClient _httpClient;
-        private readonly IKeyVault _keyVault;
+        private readonly AccountingSecrets _secrets;
 
-        public InvoicesService(IKeyVault keyVault)
+        public InvoicesService(ISecretsVault keyVault)
         {
             _httpClient = new RestClient("https://www.ifirma.pl/");
-            _keyVault = keyVault;
+            _secrets = keyVault.GetAccountingSecrets();
             _bottomDateLimit = new DateTime(2019, 10, 3);
         }
 
@@ -38,7 +38,7 @@ namespace Distvisor.Web.Services
             var request = new RestRequest("iapi/faktury.json", Method.GET);
             request.AddParameter("dataOd", _bottomDateLimit.ToString("yyyy-MM-dd"));
             request.AddParameter("dataDo", DateTime.Now.Date.ToString("yyyy-MM-dd"));
-            request.AddHeader("Authentication", await GenerateInvoiceAuthHeaderAsync(request));
+            request.AddHeader("Authentication", GenerateInvoiceAuthHeaderAsync(request));
 
             var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
             var jobject = JObject.Parse(response.Content);
@@ -64,7 +64,7 @@ namespace Distvisor.Web.Services
             var request = new RestRequest("iapi/fakturakraj/{invoiceId}.pdf.single", Method.GET);
             request.AddUrlSegment("invoiceId", invoiceId);
             request.AddHeader("Accept", "application/pdf");
-            request.AddHeader("Authentication", await GenerateInvoiceAuthHeaderAsync(request));
+            request.AddHeader("Authentication", GenerateInvoiceAuthHeaderAsync(request));
 
             var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
             var result = response.RawBytes;
@@ -75,7 +75,7 @@ namespace Distvisor.Web.Services
         public async Task<DateTime> GetActiveMonthAsync()
         {
             var request = new RestRequest("iapi/abonent/miesiacksiegowy.json", Method.GET);
-            request.AddHeader("Authentication", await GenerateSubscriberAuthHeaderAsync(request));
+            request.AddHeader("Authentication", GenerateSubscriberAuthHeaderAsync(request));
 
             var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
             var content = JObject.Parse(response.Content);
@@ -118,7 +118,7 @@ namespace Distvisor.Web.Services
                     MiesiacKsiegowy = goUp ? "NAST" : "POPRZ",
                     PrzeniesDaneZPoprzedniegoRoku = true,
                 });
-                request.AddHeader("Authentication", await GenerateSubscriberAuthHeaderAsync(request));
+                request.AddHeader("Authentication", GenerateSubscriberAuthHeaderAsync(request));
 
                 var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
             }
@@ -128,7 +128,7 @@ namespace Distvisor.Web.Services
         {
             var request = new RestRequest("iapi/fakturakraj/{invoiceId}.json", Method.GET);
             request.AddUrlSegment("invoiceId", invoiceId);
-            request.AddHeader("Authentication", await GenerateInvoiceAuthHeaderAsync(request));
+            request.AddHeader("Authentication", GenerateInvoiceAuthHeaderAsync(request));
 
             var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
             var content = JObject.Parse(response.Content);
@@ -176,29 +176,27 @@ namespace Distvisor.Web.Services
 
             var request = new RestRequest("iapi/fakturakraj.json", Method.POST);
             request.AddJsonBody(JsonConvert.SerializeObject(templateInvoice));
-            request.AddHeader("Authentication", await GenerateInvoiceAuthHeaderAsync(request));
+            request.AddHeader("Authentication", GenerateInvoiceAuthHeaderAsync(request));
 
             var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
         }
 
-        private Task<string> GenerateInvoiceAuthHeaderAsync(IRestRequest request)
+        private string GenerateInvoiceAuthHeaderAsync(IRestRequest request)
         {
-            return GenerateAuthHeaderAsync(request, "faktura", x => x.InvoiceKey);
+            return GenerateAuthHeaderAsync(request, "faktura", _secrets.InvoicesApiKey);
         }
 
-        private Task<string> GenerateSubscriberAuthHeaderAsync(IRestRequest request)
+        private string GenerateSubscriberAuthHeaderAsync(IRestRequest request)
         {
-            return GenerateAuthHeaderAsync(request, "abonent", x => x.SubscriberKey);
+            return GenerateAuthHeaderAsync(request, "abonent", _secrets.SubscriberApiKey);
         }
 
-        private async Task<string> GenerateAuthHeaderAsync(IRestRequest request, string keyName, Func<IFirmaApiKey, string> keyValueSelector)
+        private string GenerateAuthHeaderAsync(IRestRequest request, string apiKeyName, string apiKeyValue)
         {
-            var apiKey = await _keyVault.GetIFirmaApiKeyAsync();
-            var user = apiKey.User;
-            var keyValue = keyValueSelector(apiKey);
+            var user = _secrets.User;
             var keyBytes = Enumerable
-                .Range(0, keyValue.Length / 2)
-                .Select(x => keyValue.Substring(x * 2, 2))
+                .Range(0, apiKeyValue.Length / 2)
+                .Select(x => apiKeyValue.Substring(x * 2, 2))
                 .Select(x => Convert.ToByte(x, 16))
                 .ToArray();
 
@@ -215,7 +213,7 @@ namespace Distvisor.Web.Services
             {
                 requestContent = requestContentValue as string ?? JsonConvert.SerializeObject(requestContentValue);
             }
-            var stringToHash = $"{url}{user}{keyName}{requestContent}";
+            var stringToHash = $"{url}{user}{apiKeyName}{requestContent}";
             var encoder = new System.Text.UTF8Encoding();
             var textBytes = encoder.GetBytes(stringToHash);
             var hmacsha1 = new System.Security.Cryptography.HMACSHA1(keyBytes);

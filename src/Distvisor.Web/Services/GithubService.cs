@@ -18,24 +18,23 @@ namespace Distvisor.Web.Services
 
     public class GithubService : IGithubService
     {
-        private readonly IKeyVault _keyVault;
+        private readonly GithubSecrets _secrets;
         private readonly EnvConfiguration _env;
         private readonly RestClient _httpClient;
 
-        public GithubService(IOptions<EnvConfiguration> env, IKeyVault keyVault)
+        public GithubService(IOptions<EnvConfiguration> env, ISecretsVault keyVault)
         {
             _env = env.Value;
-            _keyVault = keyVault;
+            _secrets = keyVault.GetGithubSecrets();
             _httpClient = new RestClient("https://api.github.com/");
         }
 
         public async Task<IEnumerable<string>> GetReleasesAsync()
         {
             var request = new RestRequest("repos/{owner}/{repo}/releases", Method.GET);
-            var key = await _keyVault.GetGithubApiKeyAsync();
-            request.AddUrlSegment("owner", key.RepoOwner);
-            request.AddUrlSegment("repo", key.RepoName);
-            request.AddHeader("User-Agent", key.RepoOwner);
+            request.AddUrlSegment("owner", _secrets.RepoOwner);
+            request.AddUrlSegment("repo", _secrets.RepoName);
+            request.AddHeader("User-Agent", _secrets.RepoOwner);
             request.AddHeader("Accept", "application/vnd.github.v3+json");
 
             var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
@@ -47,12 +46,11 @@ namespace Distvisor.Web.Services
         public async Task UpdateToVersionAsync(string version, string dbUpdateStrategy)
         {
             var request = new RestRequest("repos/{owner}/{repo}/dispatches", Method.POST);
-            var key = await _keyVault.GetGithubApiKeyAsync();
-            request.AddUrlSegment("owner", key.RepoOwner);
-            request.AddUrlSegment("repo", key.RepoName);
-            request.AddHeader("User-Agent", key.RepoOwner);
+            request.AddUrlSegment("owner", _secrets.RepoOwner);
+            request.AddUrlSegment("repo", _secrets.RepoName);
+            request.AddHeader("User-Agent", _secrets.RepoOwner);
             request.AddHeader("Accept", "application/vnd.github.everest-preview+json");
-            request.AddHeader("Authorization", $"Bearer {key.Key}");
+            request.AddHeader("Authorization", $"Bearer {_secrets.ApiKey}");
             request.AddJsonBody(new
             {
                 event_type = "deploy",

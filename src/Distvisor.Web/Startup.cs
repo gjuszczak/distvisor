@@ -34,7 +34,7 @@ namespace Distvisor.Web
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
             services.AddScoped<IMailService, MailService>();
-            services.AddScoped<IKeyVault, KeyVault>();
+            services.AddScoped<ISecretsVault, SecretsVault>();
 
             services.AddDbContext<DistvisorContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
