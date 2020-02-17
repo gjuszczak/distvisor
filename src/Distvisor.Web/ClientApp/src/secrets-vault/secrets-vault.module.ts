@@ -10,10 +10,8 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { InputTextModule } from 'primeng/inputtext';
 
 import { ApiModule } from '../api/api.module';
-import { KeyVaultComponent } from './key-vault/key-vault.component';
-import { KeyVaultIfirmaComponent } from './key-vault-ifirma/key-vault-ifirma.component';
-import { KeyVaultGithubComponent } from './key-vault-github/key-vault-github.component';
-import { KeyVaultMailgunComponent } from './key-vault-mailgun/key-vault-mailgun.component';
+import { SecretsVaultComponent } from './secrets-vault/secrets-vault.component';
+import { SecretValueComponent } from './secret-value/secret-value.component';
 
 @NgModule({
   imports: [
@@ -32,11 +30,9 @@ import { KeyVaultMailgunComponent } from './key-vault-mailgun/key-vault-mailgun.
     ApiModule,
   ],
   declarations: [
-    KeyVaultComponent, 
-    KeyVaultGithubComponent,
-    KeyVaultIfirmaComponent,
-    KeyVaultMailgunComponent,
+    SecretsVaultComponent, 
+    SecretValueComponent,
   ],
-  exports: [KeyVaultComponent],
+  exports: [SecretsVaultComponent],
 })
-export class KeyVaultModule { }
+export class SecretsVaultModule { }

@@ -5,7 +5,7 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { AuthService } from './services/auth.service';
 import { InvoicesService } from './services/invoices.service';
-import { KeyVaultService } from './services/key-vault.service';
+import { SecretsVaultService } from './services/secrets-vault.service';
 import { SettingsService } from './services/settings.service';
 
 /**
@@ -18,7 +18,7 @@ import { SettingsService } from './services/settings.service';
   providers: [
     AuthService,
     InvoicesService,
-    KeyVaultService,
+    SecretsVaultService,
     SettingsService,
     ApiConfiguration
   ],

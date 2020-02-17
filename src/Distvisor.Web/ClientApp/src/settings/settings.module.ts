@@ -10,7 +10,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { SettingsComponent } from './settings/settings.component';
 import { UpdatesComponent } from './updates/updates.component';
 import { ApiModule } from 'src/api/api.module';
-import { KeyVaultModule } from 'src/key-vault/key-vault.module';
+import { SecretsVaultModule } from 'src/secrets-vault/secrets-vault.module';
 
 
 @NgModule({
@@ -29,7 +29,7 @@ import { KeyVaultModule } from 'src/key-vault/key-vault.module';
 
     // internal
     ApiModule,
-    KeyVaultModule,
+    SecretsVaultModule,
   ],
   declarations: [SettingsComponent, UpdatesComponent]
 })
