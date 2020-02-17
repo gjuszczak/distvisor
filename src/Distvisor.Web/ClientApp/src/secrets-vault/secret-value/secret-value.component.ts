@@ -5,16 +5,10 @@ import { Component, EventEmitter, Output } from '@angular/core';
   templateUrl: './secret-value.component.html'
 })
 export class SecretValueComponent {
-  @Output() save: EventEmitter<any> = new EventEmitter();
-  inputKeyValue: string;
-  inputRepoOwner: string;
-  inputRepoName: string;
+  @Output() save: EventEmitter<string> = new EventEmitter();
+  inputSecretValue: string;
 
   saveClicked() {
-    this.save.emit({
-      key: this.inputKeyValue,
-      repoOwner: this.inputRepoOwner,
-      repoName: this.inputRepoName,
-    });
+    this.save.emit(this.inputSecretValue);
   }
 }

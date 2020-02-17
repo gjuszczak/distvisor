@@ -44,12 +44,12 @@ namespace Distvisor.Web.Services
                 {
                     var valueBytes = Convert.FromBase64String(secretsVaultEntity.Value);
                     secretValue = Encoding.UTF8.GetString(valueBytes); 
-
-                    var cacheEntryOptions = new MemoryCacheEntryOptions()
-                        .SetPriority(CacheItemPriority.NeverRemove);
-
-                    _cache.Set(key, secretValue, cacheEntryOptions);
                 }
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetPriority(CacheItemPriority.NeverRemove);
+
+                _cache.Set(key, secretValue, cacheEntryOptions);
             }
             
             return secretValue;

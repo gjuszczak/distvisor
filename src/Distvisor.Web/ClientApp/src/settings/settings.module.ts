@@ -11,6 +11,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { UpdatesComponent } from './updates/updates.component';
 import { ApiModule } from 'src/api/api.module';
 import { SecretsVaultModule } from 'src/secrets-vault/secrets-vault.module';
+import { MicrosoftAuthComponent } from './microsoft-auth/microsoft-auth.component';
 
 
 @NgModule({
@@ -31,6 +32,6 @@ import { SecretsVaultModule } from 'src/secrets-vault/secrets-vault.module';
     ApiModule,
     SecretsVaultModule,
   ],
-  declarations: [SettingsComponent, UpdatesComponent]
+  declarations: [SettingsComponent, UpdatesComponent, MicrosoftAuthComponent]
 })
 export class SettingsModule { }

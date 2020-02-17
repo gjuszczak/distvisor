@@ -5,6 +5,7 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { AuthService } from './services/auth.service';
 import { InvoicesService } from './services/invoices.service';
+import { MicrosoftService } from './services/microsoft.service';
 import { SecretsVaultService } from './services/secrets-vault.service';
 import { SettingsService } from './services/settings.service';
 
@@ -18,6 +19,7 @@ import { SettingsService } from './services/settings.service';
   providers: [
     AuthService,
     InvoicesService,
+    MicrosoftService,
     SecretsVaultService,
     SettingsService,
     ApiConfiguration

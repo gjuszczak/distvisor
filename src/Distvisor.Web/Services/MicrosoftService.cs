@@ -19,9 +19,14 @@
             return $"https://login.microsoftonline.com/consumers/oauth2/v2.0/authorize" +
                 $"?client_id={_secrets.AppClientId}" +
                 $"&response_type=code" +
-                $"&redirect_uri={_secrets.AuthRedirectUri}" +
+                $"&redirect_uri={UrlEncode(_secrets.AuthRedirectUri)}" +
                 $"&response_mode=query" +
-                $"&scope=offline_access%20user.read%20mail.read";
+                $"&scope=user.read";
+        }
+
+        private string UrlEncode(string text)
+        {
+            return System.Net.WebUtility.UrlEncode(text);
         }
     }
 }

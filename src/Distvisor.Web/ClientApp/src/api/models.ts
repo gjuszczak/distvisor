@@ -1,6 +1,7 @@
 export { LoginRequestDto } from './models/login-request-dto';
 export { Invoice } from './models/invoice';
 export { GenerateInvoiceDto } from './models/generate-invoice-dto';
+export { MicrosoftAuthDto } from './models/microsoft-auth-dto';
 export { SecretKey } from './models/secret-key';
 export { DbUpdateStrategy } from './models/db-update-strategy';
 export { UpdateParamsResponseDto } from './models/update-params-response-dto';

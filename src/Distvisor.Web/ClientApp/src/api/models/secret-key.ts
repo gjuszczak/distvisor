@@ -3,12 +3,13 @@ export enum SecretKey {
   AccountingInvoicesApiKey = 'AccountingInvoicesApiKey',
   AccountingSubscriberApiKey = 'AccountingSubscriberApiKey',
   AccountingUser = 'AccountingUser',
+  GithubApiKey = 'GithubApiKey',
+  GithubRepoName = 'GithubRepoName',
+  GithubRepoOwner = 'GithubRepoOwner',
   MailgunApiKey = 'MailgunApiKey',
   MailgunDomain = 'MailgunDomain',
   MailgunToAddress = 'MailgunToAddress',
-  GithubApiKey = 'GithubApiKey',
-  GithubRepoOwner = 'GithubRepoOwner',
-  GithubRepoName = 'GithubRepoName',
   MicrosoftAppClientId = 'MicrosoftAppClientId',
-  MicrosoftAppSecret = 'MicrosoftAppSecret'
+  MicrosoftAppSecret = 'MicrosoftAppSecret',
+  MicrosoftAuthRedirectUri = 'MicrosoftAuthRedirectUri'
 }
