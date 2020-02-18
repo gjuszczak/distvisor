@@ -73,7 +73,7 @@ namespace Distvisor.Web.Services
 
                 await _context.SaveChangesAsync();
             }
-            return AuthResult.Success(user.Username, user.SessionId, user.SessionExpirationUtc);
+            return AuthResult.Success(user.Id, user.Username, user.SessionId, user.SessionExpirationUtc);
         }
 
         public async Task<AuthResult> AuthenticateAsync(string sessionId)
@@ -90,7 +90,7 @@ namespace Distvisor.Web.Services
             if (user == null)
                 return AuthResult.Fail("Session invalid or expired");
 
-            var result = AuthResult.Success(user.Username, user.SessionId, user.SessionExpirationUtc);
+            var result = AuthResult.Success(user.Id, user.Username, user.SessionId, user.SessionExpirationUtc);
             _cache.Set(sessionId, result);
             return result;
         }
@@ -117,16 +117,18 @@ namespace Distvisor.Web.Services
 
         public bool IsAuthenticated { get; private set; }
         public string Message { get; private set; }
+        public Guid UserId { get; private set; }
         public string Username { get; private set; }
         public string SessionId { get; private set; }
         public DateTime SessionExpirationUtc {get; private set;}
 
-        public static AuthResult Success(string username, string sessionId, DateTime sessionExpirationUtc)
+        public static AuthResult Success(Guid userId, string username, string sessionId, DateTime sessionExpirationUtc)
         {
             return new AuthResult
             {
                 IsAuthenticated = true,
                 Message = "Ok",
+                UserId = userId,
                 Username = username,
                 SessionId = sessionId,
                 SessionExpirationUtc = sessionExpirationUtc,

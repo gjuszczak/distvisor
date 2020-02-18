@@ -11,10 +11,18 @@ namespace Distvisor.Web.Data
         }
 
         public DbSet<UserEntity> Users { get; set; }
+        public DbSet<OAuthTokenEntity> OAuthTokens { get; set; }
         public DbSet<SecretsVaultEntity> SecretsVault { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder
+                .Entity<OAuthTokenEntity>()
+                .Property(e => e.Issuer)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (OAuthTokenIssuer)Enum.Parse(typeof(OAuthTokenIssuer), v));
+            
             modelBuilder
                 .Entity<SecretsVaultEntity>()
                 .Property(e => e.Key)

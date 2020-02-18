@@ -22,21 +22,21 @@ export class MicrosoftService extends BaseService {
   }
 
   /**
-   * Path part for operation apiMicrosoftAuthUrlGet
+   * Path part for operation apiMicrosoftAuthUriGet
    */
-  static readonly ApiMicrosoftAuthUrlGetPath = '/api/Microsoft/auth-url';
+  static readonly ApiMicrosoftAuthUriGetPath = '/api/Microsoft/auth-uri';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiMicrosoftAuthUrlGet$Plain()` instead.
+   * To access only the response body, use `apiMicrosoftAuthUriGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiMicrosoftAuthUrlGet$Plain$Response(params?: {
+  apiMicrosoftAuthUriGet$Plain$Response(params?: {
 
   }): Observable<StrictHttpResponse<MicrosoftAuthDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, MicrosoftService.ApiMicrosoftAuthUrlGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, MicrosoftService.ApiMicrosoftAuthUriGetPath, 'get');
     if (params) {
 
 
@@ -54,30 +54,30 @@ export class MicrosoftService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiMicrosoftAuthUrlGet$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiMicrosoftAuthUriGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiMicrosoftAuthUrlGet$Plain(params?: {
+  apiMicrosoftAuthUriGet$Plain(params?: {
 
   }): Observable<MicrosoftAuthDto> {
 
-    return this.apiMicrosoftAuthUrlGet$Plain$Response(params).pipe(
+    return this.apiMicrosoftAuthUriGet$Plain$Response(params).pipe(
       map((r: StrictHttpResponse<MicrosoftAuthDto>) => r.body as MicrosoftAuthDto)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiMicrosoftAuthUrlGet$Json()` instead.
+   * To access only the response body, use `apiMicrosoftAuthUriGet$Json()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiMicrosoftAuthUrlGet$Json$Response(params?: {
+  apiMicrosoftAuthUriGet$Json$Response(params?: {
 
   }): Observable<StrictHttpResponse<MicrosoftAuthDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, MicrosoftService.ApiMicrosoftAuthUrlGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, MicrosoftService.ApiMicrosoftAuthUriGetPath, 'get');
     if (params) {
 
 
@@ -95,15 +95,15 @@ export class MicrosoftService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiMicrosoftAuthUrlGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiMicrosoftAuthUriGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiMicrosoftAuthUrlGet$Json(params?: {
+  apiMicrosoftAuthUriGet$Json(params?: {
 
   }): Observable<MicrosoftAuthDto> {
 
-    return this.apiMicrosoftAuthUrlGet$Json$Response(params).pipe(
+    return this.apiMicrosoftAuthUriGet$Json$Response(params).pipe(
       map((r: StrictHttpResponse<MicrosoftAuthDto>) => r.body as MicrosoftAuthDto)
     );
   }
@@ -120,7 +120,7 @@ export class MicrosoftService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiMicrosoftAuthRedirectGet$Response(params?: {
-    code?: string;
+    code?: null | string;
     state?: null | string;
 
   }): Observable<StrictHttpResponse<void>> {
@@ -150,7 +150,7 @@ export class MicrosoftService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiMicrosoftAuthRedirectGet(params?: {
-    code?: string;
+    code?: null | string;
     state?: null | string;
 
   }): Observable<void> {

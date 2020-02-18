@@ -12,5 +12,7 @@ namespace Distvisor.Web.Data.Entities
         public string SessionId { get; set; }
         public DateTime SessionStartUtc { get; set; }
         public DateTime SessionExpirationUtc { get; set; }
+
+        public List<OAuthTokenEntity> OAuthTokens { get; set; } = new List<OAuthTokenEntity>();
     }
 }

@@ -1,0 +1,22 @@
+﻿using System;
+
+namespace Distvisor.Web.Data.Entities
+{
+    public class OAuthTokenEntity
+    {
+        public int Id { get; set; }
+        public OAuthTokenIssuer Issuer { get; set; }        
+        public string AccessToken { get; set; }
+        public string TokenType { get; set; }
+        public DateTime ExpiresIn { get; set; }        
+        public string Scope { get; set; }
+        public string RefreshToken { get; set; }
+
+        public UserEntity User { get; set; }
+    }
+
+    public enum OAuthTokenIssuer
+    {
+        MicrosoftService,
+    }
+}

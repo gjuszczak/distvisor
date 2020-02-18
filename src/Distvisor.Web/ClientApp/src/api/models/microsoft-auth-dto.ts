@@ -1,4 +1,4 @@
 /* tslint:disable */
 export interface MicrosoftAuthDto {
-  authUrl?: null | string;
+  authUri?: null | string;
 }

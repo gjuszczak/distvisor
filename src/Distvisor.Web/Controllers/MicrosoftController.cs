@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
 {
@@ -17,25 +19,28 @@ namespace Distvisor.Web.Controllers
         }
 
         [Authorize]
-        [HttpGet("auth-url")]
-        public MicrosoftAuthDto Authorize()
+        [HttpGet("auth-uri")]
+        public MicrosoftAuthDto AuthUri()
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return new MicrosoftAuthDto
             {
-                AuthUrl = _microsoftService.GetAuthorizeUrl()
+                AuthUri = _microsoftService.GetAuthorizeUri(userId)
             };
         }
 
         [HttpGet("auth-redirect")]
-        public IActionResult Authorize(string code, string state)
+        public async Task<IActionResult> AuthRedirect(string code, string state)
         {
-
-            return Ok();
+            var token = await _microsoftService.ExchangeAuthCodeForBearerToken(code);
+            var userId = Guid.Parse(state);
+            await _microsoftService.StoreUserToken(userId, token);
+            return Redirect("/settings");
         }
     }
 
     public class MicrosoftAuthDto
     {
-        public string AuthUrl { get; set; }
+        public string AuthUri { get; set; }
     }
 }

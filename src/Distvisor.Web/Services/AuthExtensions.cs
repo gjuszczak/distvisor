@@ -14,7 +14,7 @@ namespace Distvisor.Web.Services
     {
     }
 
-    public class AuthHandler: AuthenticationHandler<AuthOptions>
+    public class AuthHandler : AuthenticationHandler<AuthOptions>
     {
         private readonly IAuthService _users;
 
@@ -44,7 +44,10 @@ namespace Distvisor.Web.Services
             if (!authResult.IsAuthenticated)
                 return AuthenticateResult.Fail(authResult.Message);
 
-            var claims = new[] { new Claim(ClaimTypes.Name, authResult.Username) };
+            var claims = new[] { 
+                new Claim(ClaimTypes.Name, authResult.Username),
+                new Claim(ClaimTypes.NameIdentifier, authResult.UserId.ToString()),
+            };
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, Scheme.Name);
