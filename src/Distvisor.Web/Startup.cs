@@ -11,6 +11,7 @@ using Distvisor.Web.Data;
 using Distvisor.Web.Services;
 using System.Text.Json.Serialization;
 using Distvisor.Web.Configuration;
+using Microsoft.AspNetCore.Http;
 
 namespace Distvisor.Web
 {
@@ -28,6 +29,7 @@ namespace Distvisor.Web
         {
             services.Configure<EnvConfiguration>(Configuration.GetSection("EnvConfiguration"));
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ICryptoService, CryptoService>();
             services.AddSingleton<IAuthCache, AuthCache>();
             services.AddScoped<IGithubService, GithubService>();
@@ -36,6 +38,7 @@ namespace Distvisor.Web
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<ISecretsVault, SecretsVault>();
             services.AddScoped<IMicrosoftService, MicrosoftService>();
+            services.AddScoped<IUserInfoProvider, UserInfoProvider>();
 
             services.AddDbContext<DistvisorContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("Sqlite")));

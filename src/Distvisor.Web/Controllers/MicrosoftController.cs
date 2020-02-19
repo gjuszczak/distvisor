@@ -22,10 +22,9 @@ namespace Distvisor.Web.Controllers
         [HttpGet("auth-uri")]
         public MicrosoftAuthDto AuthUri()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return new MicrosoftAuthDto
             {
-                AuthUri = _microsoftService.GetAuthorizeUri(userId)
+                AuthUri = _microsoftService.GetAuthorizeUri()
             };
         }
 
@@ -36,6 +35,13 @@ namespace Distvisor.Web.Controllers
             var userId = Guid.Parse(state);
             await _microsoftService.StoreUserToken(userId, token);
             return Redirect("/settings");
+        }
+
+        [Authorize]
+        [HttpGet("backup")]
+        public Task Backup()
+        {
+            return _microsoftService.CreateUploadSession("dupa.bak");
         }
     }
 

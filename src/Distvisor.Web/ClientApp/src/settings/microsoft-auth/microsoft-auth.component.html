@@ -1,3 +1,4 @@
 <p-fieldset legend="Microsoft integration">
     <a *ngIf="authUri" pButton icon="pi pi-download" [href]="authUri" class="ui-button-success">Authenticate</a>
+    <button pButton icon="pi pi-download" label="Backup" class="ui-button-success" (click)="onBackup()"></button>
 </p-fieldset>

@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MicrosoftService } from 'src/api/services';
 
 
@@ -13,8 +13,13 @@ export class MicrosoftAuthComponent implements OnInit {
 
   ngOnInit() {
     this.microsoftService.apiMicrosoftAuthUriGet$Json()
-    .subscribe(authParams => {
-      this.authUri = authParams.authUri;
-    });
+      .subscribe(authParams => {
+        this.authUri = authParams.authUri;
+      });
+  }
+
+  onBackup() {
+    this.microsoftService.apiMicrosoftBackupGet()
+      .subscribe();
   }
 }
