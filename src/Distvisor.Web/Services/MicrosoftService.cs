@@ -86,11 +86,17 @@ namespace Distvisor.Web.Services
         public async Task CreateUploadSession(string filename)
         {
             var token = await GetUserActiveToken();
-            var request = new RestRequest("v1.0/me/drive/special/approot:/{filename}:/createUploadSession", Method.POST);
-            request.AddUrlSegment("filename", filename);
+            
+            // make sure that approot is created before upload session request
+            var request = new RestRequest($"v1.0/me/drive/special/approot", Method.GET);
             request.AddHeader("Authorization", "Bearer " + token.AccessToken);
-
             var response = await _httpGraphClient.ExecuteAsync(request, CancellationToken.None);
+
+            request = new RestRequest($"v1.0/me/drive/special/approot:{filename}:/createUploadSession", Method.POST);
+            request.AddHeader("Authorization", "Bearer " + token.AccessToken);
+            //request.AddFile("scheme.txt", @"S:\priv\color_scheme.txt", "text/plain");
+
+            response = await _httpGraphClient.ExecuteAsync(request, CancellationToken.None);
         }
 
         public Task StoreUserToken(MicrosoftToken token)

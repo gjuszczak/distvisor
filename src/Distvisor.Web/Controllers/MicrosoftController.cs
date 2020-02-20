@@ -41,7 +41,7 @@ namespace Distvisor.Web.Controllers
         [HttpGet("backup")]
         public Task Backup()
         {
-            return _microsoftService.CreateUploadSession("dupa.bak");
+            return _microsoftService.CreateUploadSession("/scheme.txt");
         }
     }
 
