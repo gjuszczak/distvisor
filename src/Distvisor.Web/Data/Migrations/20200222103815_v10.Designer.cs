@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Distvisor.Web.Data.Migrations
 {
     [DbContext(typeof(DistvisorContext))]
-    [Migration("20200218164101_v10_1")]
-    partial class v10_1
+    [Migration("20200222103815_v10")]
+    partial class v10
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,8 +27,8 @@ namespace Distvisor.Web.Data.Migrations
                     b.Property<string>("AccessToken")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("ExpiresIn")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("ExpiresIn")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Issuer")
                         .IsRequired()
@@ -44,6 +44,9 @@ namespace Distvisor.Web.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UtcIssueDate")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

@@ -8,9 +8,10 @@ namespace Distvisor.Web.Data.Entities
         public OAuthTokenIssuer Issuer { get; set; }        
         public string AccessToken { get; set; }
         public string TokenType { get; set; }
-        public DateTime ExpiresIn { get; set; }        
+        public int ExpiresIn { get; set; }      
         public string Scope { get; set; }
         public string RefreshToken { get; set; }
+        public DateTime UtcIssueDate { get; set; }
 
         public UserEntity User { get; set; }
     }

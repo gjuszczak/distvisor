@@ -25,8 +25,8 @@ namespace Distvisor.Web.Data.Migrations
                     b.Property<string>("AccessToken")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("ExpiresIn")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("ExpiresIn")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Issuer")
                         .IsRequired()
@@ -42,6 +42,9 @@ namespace Distvisor.Web.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UtcIssueDate")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

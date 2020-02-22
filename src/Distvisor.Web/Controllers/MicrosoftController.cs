@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
@@ -11,11 +10,15 @@ namespace Distvisor.Web.Controllers
     [Route("api/[controller]")]
     public class MicrosoftController : ControllerBase
     {
-        private readonly IMicrosoftService _microsoftService;
+        private readonly IMicrosoftAuthService _authService;
+        private readonly IMicrosoftAuthTokenStore _authTokenStore;
+        private readonly IMicrosoftOneDriveService _oneDriveService;
 
-        public MicrosoftController(IMicrosoftService microsoftService)
+        public MicrosoftController(IMicrosoftAuthService authService, IMicrosoftAuthTokenStore authTokenStore, IMicrosoftOneDriveService oneDriveService)
         {
-            _microsoftService = microsoftService;
+            _authService = authService;
+            _authTokenStore = authTokenStore;
+            _oneDriveService = oneDriveService;
         }
 
         [Authorize]
@@ -24,24 +27,25 @@ namespace Distvisor.Web.Controllers
         {
             return new MicrosoftAuthDto
             {
-                AuthUri = _microsoftService.GetAuthorizeUri()
+                AuthUri = _authService.GetAuthorizeUri()
             };
         }
 
         [HttpGet("auth-redirect")]
         public async Task<IActionResult> AuthRedirect(string code, string state)
         {
-            var token = await _microsoftService.ExchangeAuthCodeForBearerToken(code);
+            var token = await _authService.ExchangeAuthCodeForBearerToken(code);
             var userId = Guid.Parse(state);
-            await _microsoftService.StoreUserToken(userId, token);
+            await _authTokenStore.StoreUserTokenAsync(token, userId);
             return Redirect("/settings");
         }
 
         [Authorize]
         [HttpGet("backup")]
-        public Task Backup()
+        public async Task Backup()
         {
-            return _microsoftService.CreateUploadSession("/scheme.txt");
+            using var session = await _oneDriveService.CreateUploadSession("/foto.jpg");
+            await session.Upload(@"S:\priv\foto.jpg");
         }
     }
 

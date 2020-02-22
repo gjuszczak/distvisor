@@ -37,7 +37,9 @@ namespace Distvisor.Web
             services.AddScoped<IInvoicesService, InvoicesService>();
             services.AddScoped<IMailService, MailService>();
             services.AddScoped<ISecretsVault, SecretsVault>();
-            services.AddScoped<IMicrosoftService, MicrosoftService>();
+            services.AddScoped<IMicrosoftAuthService, MicrosoftAuthService>();
+            services.AddScoped<IMicrosoftAuthTokenStore, MicrosoftAuthTokenStore>();
+            services.AddScoped<IMicrosoftOneDriveService, MicrosoftOneDriveService>();
             services.AddScoped<IUserInfoProvider, UserInfoProvider>();
 
             services.AddDbContext<DistvisorContext>(options =>

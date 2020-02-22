@@ -22,7 +22,14 @@ namespace Distvisor.Web.Data
                 .HasConversion(
                     v => v.ToString(),
                     v => (OAuthTokenIssuer)Enum.Parse(typeof(OAuthTokenIssuer), v));
-            
+
+            modelBuilder
+                .Entity<OAuthTokenEntity>()
+                .Property(e => e.UtcIssueDate)
+                .HasConversion(
+                    v => v,
+                    v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+
             modelBuilder
                 .Entity<SecretsVaultEntity>()
                 .Property(e => e.Key)
