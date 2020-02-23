@@ -15,6 +15,7 @@ export class SecretsVaultComponent implements OnInit, OnDestroy {
   allSecretKeys: SelectItem[];
   selectedSecretKey: SecretKey;
   storedSecretKeys: SecretKey[];
+  inputSecretValue: string;
 
   constructor(private secretsVaultService: SecretsVaultService) { }
 
@@ -32,10 +33,10 @@ export class SecretsVaultComponent implements OnInit, OnDestroy {
       }));
   }
 
-  onSave(value: string) {
+  onSave() {
     this.subscriptions.push(this.secretsVaultService.apiSecretsVaultKeyPost({
       key: this.selectedSecretKey,
-      value: value,
+      value: this.inputSecretValue,
     }).subscribe(() => this.reloadList()));
   }
 
@@ -43,6 +44,10 @@ export class SecretsVaultComponent implements OnInit, OnDestroy {
     this.subscriptions.push(this.secretsVaultService.apiSecretsVaultKeyDelete({
       key: key,
     }).subscribe(() => this.reloadList()));
+  }
+
+  isLast(key: SecretKey) {
+    return this.storedSecretKeys.indexOf(key) === this.storedSecretKeys.length -1;
   }
 
   ngOnDestroy(): void {

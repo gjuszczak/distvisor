@@ -1,36 +1,25 @@
 <p-fieldset legend="Updates">
-    <div class="form-group row">
-        <label 
-            for="inputUpdateToVersion" 
-            class="col-sm-4 col-md-3 col-xl-2 col-form-label">Update to version:</label>
-        <div class="col">
-            <p-dropdown 
-                id="inputUpdateToVersion"
-                name="inputUpdateToVersion"
-                [options]="versions" 
-                [(ngModel)]="selectedVersion"></p-dropdown>
+    <form class="pl-3 pb-3 pr-3" (ngSubmit)="onUpdate()">
+        <div class="form-row">
+            <div class="form-group col-md-4 col-xl-3">
+                <label for="inputUpdateToVersion" class="col-form-label">Update to version:</label>
+                <div class="form-input ui-fluid">
+                    <p-dropdown id="inputUpdateToVersion" name="inputUpdateToVersion" [options]="versions"
+                        [(ngModel)]="selectedVersion"></p-dropdown>
+                </div>
+            </div>
+            <div class="form-group col-md-4 col-xl-3">
+                <label for="inputDbUpdateStrategy" class="col-form-label">DB update strategy:</label>
+                <div class="form-input ui-fluid">
+                    <p-dropdown id="inputDbUpdateStrategy" name="inputDbUpdateStrategy" [options]="dbUpdateStrategies"
+                        [(ngModel)]="selectedDbUpdateStrategy"></p-dropdown>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        <label 
-            for="inputDbUpdateStrategy" 
-            class="col-sm-4 col-md-3 col-xl-2 col-form-label">DB update strategy:</label>
-        <div class="col">
-            <p-dropdown 
-                id="inputDbUpdateStrategy"
-                name="inputDbUpdateStrategy"
-                [options]="dbUpdateStrategies" 
-                [(ngModel)]="selectedDbUpdateStrategy"></p-dropdown>
+        <div class="form-row">
+            <div class="col">
+                <button pButton icon="pi pi-download" label="Update" class="ui-button-success" type="submit"></button>
+            </div>
         </div>
-    </div>
-    <div class="form-group row">
-        <div class="col-sm-10">
-            <button 
-                pButton 
-                icon="pi pi-download" 
-                label="Update" 
-                class="ui-button-success" 
-                (click)="onUpdate()"></button>
-        </div>
-    </div>
+    </form>
 </p-fieldset>

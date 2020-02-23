@@ -32,7 +32,7 @@ export class AppComponent {
 
     this.navigationService.registerApp({
       name: 'Invoices',
-      icon: 'pi pi-file-o',
+      icon: 'pi pi-dollar',
       routerLink: '/invoices',
       visibile: this.userService.isAuthenticated()
     });
