@@ -149,6 +149,8 @@ namespace Distvisor.Web.Services
                 throw new Exception("Cannot issue invoice for future months.");
             }
 
+            await SetActiveMonthAsync(issueDate);
+
             var templateInvoice = await GetInvoiceJsonAsync(templateInvoiceId);
             templateInvoice["Zaplacono"] = 0;
             templateInvoice["ZaplaconoNaDokumencie"] = 0;

@@ -44,8 +44,7 @@ namespace Distvisor.Web.Controllers
         [HttpGet("backup")]
         public async Task Backup()
         {
-            using var session = await _oneDriveService.CreateUploadSession("/foto.jpg");
-            await session.Upload(@"S:\priv\foto.jpg");
+            await _oneDriveService.BackupDb();
         }
     }
 

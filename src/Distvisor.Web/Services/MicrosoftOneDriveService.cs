@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using RestSharp;
+using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,6 +9,7 @@ namespace Distvisor.Web.Services
 {
     public interface IMicrosoftOneDriveService
     {
+        Task BackupDb();
         Task<MicrosoftUploadSession> CreateUploadSession(string filename);
     }
 
@@ -36,6 +39,18 @@ namespace Distvisor.Web.Services
             var sessionInfo = JsonConvert.DeserializeObject<MicrosoftUploadSessionInfo>(response.Content);
 
             return new MicrosoftUploadSession(sessionInfo, _authTokenStore);
+        }
+
+        public async Task BackupDb()
+        {
+            var databases = Directory.GetFiles("./Data", "*.db");
+            foreach (var dbPath in databases)
+            {
+                var dbName = Path.GetFileName(dbPath);
+                var dateString = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                using var session = await CreateUploadSession($"/backup_{dateString}_{dbName}");
+                await session.Upload(dbPath);
+            }
         }
     }
 }
