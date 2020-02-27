@@ -14,7 +14,8 @@ import { NavigationModule } from '../navigation/navigation.module';
 import { SettingsModule } from '../settings/settings.module';
 import { InvoicesModule } from '../invoices/invoices.module';
 import { environment } from '../environments/environment';
-import { ApiModule } from 'src/api/api.module';
+import { ApiModule } from '../api/api.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { ApiModule } from 'src/api/api.module';
     NavigationModule,
     SettingsModule,
     InvoicesModule,
+    NotificationsModule,
     ApiModule
   ],
   providers: [

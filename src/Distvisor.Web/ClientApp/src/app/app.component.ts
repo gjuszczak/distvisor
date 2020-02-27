@@ -31,6 +31,13 @@ export class AppComponent {
     });
 
     this.navigationService.registerApp({
+      name: 'Notifications',
+      icon: 'pi pi-bell',
+      routerLink: '/notifications',
+      visibile: this.userService.isAuthenticated()
+    });
+
+    this.navigationService.registerApp({
       name: 'Invoices',
       icon: 'pi pi-dollar',
       routerLink: '/invoices',
