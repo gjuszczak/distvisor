@@ -1,7 +1,9 @@
 ﻿using Distvisor.Web.Data.Entities;
+using Distvisor.Web.Hubs;
 using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,16 +15,19 @@ namespace Distvisor.Web.Controllers
     public class SecretsVaultController : ControllerBase
     {
         private readonly ISecretsVault _secretsVault;
+        private readonly IHubContext<NotificationsHub> _hub;
 
-        public SecretsVaultController(ISecretsVault secretsVault)
+        public SecretsVaultController(ISecretsVault secretsVault, IHubContext<NotificationsHub> hub)
         {
             _secretsVault = secretsVault;
+            _hub = hub;
         }
 
         [HttpGet("list")]
-        public Task<List<SecretKey>> SecretKeys()
+        public async Task<List<SecretKey>> SecretKeys()
         {
-            return _secretsVault.ListSecretKeysAsync();
+            await _hub.Clients.All.SendAsync("ReceiveMessage", "user", "message");
+            return await _secretsVault.ListSecretKeysAsync();
         }
 
         [HttpDelete("{key}")]

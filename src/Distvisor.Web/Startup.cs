@@ -12,6 +12,7 @@ using Distvisor.Web.Services;
 using System.Text.Json.Serialization;
 using Distvisor.Web.Configuration;
 using Microsoft.AspNetCore.Http;
+using Distvisor.Web.Hubs;
 
 namespace Distvisor.Web
 {
@@ -55,6 +56,8 @@ namespace Distvisor.Web
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Distvisor API", Version = "v1" });
             });
+
+            services.AddSignalR();
 
             services.AddDistvisorAuth();
 
@@ -110,6 +113,8 @@ namespace Distvisor.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+
+                endpoints.MapHub<NotificationsHub>("/notificationshub");
             });
 
             app.UseSpa(spa =>

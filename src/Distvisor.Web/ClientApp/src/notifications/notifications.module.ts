@@ -26,8 +26,14 @@ import { NotificationsService } from './notifications.service';
     ButtonModule,
     ToastModule,
   ],
-  declarations: [NotificationsPageComponent, NotificationsOverlayComponent],
-  providers: [MessageService, NotificationsService],
+  declarations: [
+    NotificationsPageComponent,
+    NotificationsOverlayComponent
+  ],
+  providers: [
+    MessageService, 
+    NotificationsService
+  ],
   exports: [NotificationsOverlayComponent]
 })
 export class NotificationsModule { }

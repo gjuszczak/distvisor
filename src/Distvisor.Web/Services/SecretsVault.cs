@@ -116,7 +116,7 @@ namespace Distvisor.Web.Services
             {
                 ApiKey = secretsVault.GetSecretValue(SecretKey.GithubApiKey),
                 RepoOwner = secretsVault.GetSecretValue(SecretKey.GithubRepoOwner),
-                RepoName = secretsVault.GetSecretValue(SecretKey.GithubRepoOwner),
+                RepoName = secretsVault.GetSecretValue(SecretKey.GithubRepoName),
             };
         }
 
