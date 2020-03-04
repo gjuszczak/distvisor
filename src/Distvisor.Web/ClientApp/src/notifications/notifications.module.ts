@@ -12,6 +12,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { NotificationsPageComponent } from './notifications-page/notifications-page.component';
 import { NotificationsOverlayComponent } from './notifications-overlay/notifications-overlay.component';
 import { NotificationsService } from './notifications.service';
+import { SignalrService } from './signalr.service';
 
 @NgModule({
   imports: [
@@ -31,7 +32,8 @@ import { NotificationsService } from './notifications.service';
     NotificationsOverlayComponent
   ],
   providers: [
-    MessageService, 
+    MessageService,
+    SignalrService,
     NotificationsService
   ],
   exports: [NotificationsOverlayComponent]

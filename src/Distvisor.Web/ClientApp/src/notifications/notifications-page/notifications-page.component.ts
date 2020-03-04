@@ -11,7 +11,7 @@ export class NotificationsPageComponent {
   }
 
   onSingle() {
-    this.notificationsService.addSingle();
+    this.notificationsService.success("success!");
   }
 
   onMultiple() {

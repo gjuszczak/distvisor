@@ -42,6 +42,7 @@ namespace Distvisor.Web
             services.AddScoped<IMicrosoftAuthTokenStore, MicrosoftAuthTokenStore>();
             services.AddScoped<IMicrosoftOneDriveService, MicrosoftOneDriveService>();
             services.AddScoped<IUserInfoProvider, UserInfoProvider>();
+            services.AddScoped<INotificationService, NotificationService>();
 
             services.AddDbContext<DistvisorContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("Sqlite")));

@@ -6,8 +6,8 @@ export class NotificationsService {
 
   constructor(private messageService: MessageService) { }
 
-  addSingle() {
-    this.messageService.add({ severity: 'success', summary: 'Service Message', detail: 'Via MessageService' });
+  success(detail: string) {
+    this.messageService.add({ severity: 'success', summary: 'Success', detail });
   }
 
   addMultiple() {

@@ -31,16 +31,12 @@ namespace Distvisor.Web.Services
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            if (!Request.Headers.ContainsKey("Authorization"))
+            var sessionId = GetSessionIdFromHeader() ?? GetSessionIdFromUrlParam();
+
+            if (sessionId == null)
                 return AuthenticateResult.NoResult();
 
-            if (!AuthenticationHeaderValue.TryParse(Request.Headers["Authorization"], out AuthenticationHeaderValue headerValue))
-                return AuthenticateResult.NoResult();
-
-            if (!"Bearer".Equals(headerValue.Scheme, StringComparison.OrdinalIgnoreCase))
-                return AuthenticateResult.NoResult();
-
-            var authResult = await _users.AuthenticateAsync(headerValue.Parameter);
+            var authResult = await _users.AuthenticateAsync(sessionId);
             if (!authResult.IsAuthenticated)
                 return AuthenticateResult.Fail(authResult.Message);
 
@@ -52,6 +48,36 @@ namespace Distvisor.Web.Services
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, Scheme.Name);
             return AuthenticateResult.Success(ticket);
+        }
+
+        private string GetSessionIdFromHeader()
+        {
+            if (!Request.Headers.ContainsKey("Authorization"))
+                return null;
+
+            if (!AuthenticationHeaderValue.TryParse(Request.Headers["Authorization"], out AuthenticationHeaderValue headerValue))
+                return null;
+
+            if (!"Bearer".Equals(headerValue.Scheme, StringComparison.OrdinalIgnoreCase))
+                return null;
+
+            return headerValue.Parameter;
+        }
+
+        private string GetSessionIdFromUrlParam()
+        {
+            if (!Request.Query.ContainsKey("access_token"))
+                return null;
+
+            if (!Request.Path.StartsWithSegments("/notificationshub"))
+                return null;
+
+            var sessionId = Request.Query["access_token"];
+
+            if (string.IsNullOrEmpty(sessionId))
+                return null;
+
+            return sessionId;
         }
     }
 

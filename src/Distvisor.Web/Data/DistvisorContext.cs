@@ -12,6 +12,7 @@ namespace Distvisor.Web.Data
 
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<OAuthTokenEntity> OAuthTokens { get; set; }
+        public DbSet<NotificationEntity> Notifications { get; set; }
         public DbSet<SecretsVaultEntity> SecretsVault { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -19,23 +20,17 @@ namespace Distvisor.Web.Data
             modelBuilder
                 .Entity<OAuthTokenEntity>()
                 .Property(e => e.Issuer)
-                .HasConversion(
-                    v => v.ToString(),
-                    v => (OAuthTokenIssuer)Enum.Parse(typeof(OAuthTokenIssuer), v));
+                .HasEnumConversion();
 
             modelBuilder
                 .Entity<OAuthTokenEntity>()
                 .Property(e => e.UtcIssueDate)
-                .HasConversion(
-                    v => v,
-                    v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+                .HasUtcDateTimeConversion();
 
             modelBuilder
                 .Entity<SecretsVaultEntity>()
                 .Property(e => e.Key)
-                .HasConversion(
-                    v => v.ToString(),
-                    v => (SecretKey)Enum.Parse(typeof(SecretKey), v));
+                .HasEnumConversion();
         }
     }
 }
