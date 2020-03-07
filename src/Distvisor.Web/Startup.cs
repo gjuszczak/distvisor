@@ -13,22 +13,25 @@ using System.Text.Json.Serialization;
 using Distvisor.Web.Configuration;
 using Microsoft.AspNetCore.Http;
 using Distvisor.Web.Hubs;
+using System;
 
 namespace Distvisor.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration config, IWebHostEnvironment env)
         {
-            Configuration = configuration;
+            Config = config;
+            Env = env;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Config { get; }
+        public IWebHostEnvironment Env { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<EnvConfiguration>(Configuration.GetSection("EnvConfiguration"));
+            services.Configure<EnvConfiguration>(Config.GetSection("EnvConfiguration"));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ICryptoService, CryptoService>();
@@ -36,7 +39,7 @@ namespace Distvisor.Web
             services.AddScoped<IGithubService, GithubService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
-            services.AddScoped<IMailService, MailService>();
+            services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ISecretsVault, SecretsVault>();
             services.AddScoped<IMicrosoftAuthService, MicrosoftAuthService>();
             services.AddScoped<IMicrosoftAuthTokenStore, MicrosoftAuthTokenStore>();
@@ -45,8 +48,11 @@ namespace Distvisor.Web
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<INotificationStore, NotificationStore>();
 
+            services.AddProdOrDevHttpClient<IMailgunClient, MailgunClient, MailgunClient>(Env, Config)
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://api.eu.mailgun.net/"));
+
             services.AddDbContext<DistvisorContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
+            options.UseSqlite(Config.GetConnectionString("Sqlite")));
 
             services.AddControllersWithViews()
                 .AddJsonOptions(opts =>

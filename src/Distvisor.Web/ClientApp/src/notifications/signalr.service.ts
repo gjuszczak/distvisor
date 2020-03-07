@@ -26,11 +26,43 @@ export class SignalrService {
     });
 
     this.connection.on("PushNotification", (payload: string) => {
-      this.notificationsService.success(payload);
+      let notification: any = JSON.parse(payload);
+      let notificationType = (<GenericNotification>notification).$type;
+
+      if (notificationType.includes('SuccessNotification')) {
+        this.successNotification(<SuccessNotification>notification);
+      }
+
+      if (notificationType.includes('ErrorNotification')) {
+        this.errorNotification(<ErrorNotification>notification);
+      }
+
     });
   }
 
   disconnect() {
     this.connection.stop();
   }
+
+  successNotification(notification: SuccessNotification) {
+    this.notificationsService.success(notification.message);
+  }
+
+  errorNotification(notification: ErrorNotification) {
+    this.notificationsService.error(notification.message, notification.exceptionMessage);
+  }
+}
+
+interface GenericNotification {
+  $type: string;
+}
+
+interface SuccessNotification {
+  message: string;
+}
+
+interface ErrorNotification {
+  message: string;
+  exceptionMessage: string;
+  exceptionDetails: string;
 }

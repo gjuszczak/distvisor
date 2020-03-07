@@ -14,9 +14,9 @@ namespace Distvisor.Web.Controllers
     public class InvoicesController : ControllerBase
     {
         private readonly IInvoicesService _invoices;
-        private readonly IMailService _mailService;
+        private readonly IEmailService _mailService;
 
-        public InvoicesController(IInvoicesService invoices, IMailService mailService)
+        public InvoicesController(IInvoicesService invoices, IEmailService mailService)
         {
             _invoices = invoices;
             _mailService = mailService;

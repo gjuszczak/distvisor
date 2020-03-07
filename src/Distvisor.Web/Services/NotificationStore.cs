@@ -1,6 +1,7 @@
 ﻿using Distvisor.Web.Data;
 using Distvisor.Web.Data.Entities;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Threading.Tasks;
 
@@ -44,6 +45,7 @@ namespace Distvisor.Web.Services
             return JsonConvert.SerializeObject(this, Formatting.None, new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.All,
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc
             });
         }
@@ -62,6 +64,7 @@ namespace Distvisor.Web.Services
             var notification = JsonConvert.DeserializeObject<Notification>(entity.Payload, new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.Auto,
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc
             });
             notification.GenerationDate = entity.UtcGeneratedDate.ToLocalTime();

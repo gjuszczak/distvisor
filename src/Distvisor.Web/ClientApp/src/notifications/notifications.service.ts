@@ -10,6 +10,10 @@ export class NotificationsService {
     this.messageService.add({ severity: 'success', summary: 'Success', detail });
   }
 
+  error(summary: string, detail: string) {
+    this.messageService.add({ severity: 'error', summary, detail });
+  }
+
   addMultiple() {
     this.messageService.addAll([{ severity: 'success', summary: 'Service Message', detail: 'Via MessageService' },
     { severity: 'info', summary: 'Info Message', detail: 'Via MessageService' }]);
