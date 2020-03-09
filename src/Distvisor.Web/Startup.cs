@@ -51,6 +51,14 @@ namespace Distvisor.Web
             services.AddProdOrDevHttpClient<IMailgunClient, MailgunClient, FakeMailgunClient>(Env, Config)
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://api.eu.mailgun.net/"));
 
+            services.AddProdOrDevHttpClient<IGithubClient, GithubClient, GithubClient>(Env, Config)
+                .ConfigureHttpClient(c =>
+                {
+                    c.BaseAddress = new Uri("https://api.github.com/");
+                    c.DefaultRequestHeaders.Add("User-Agent", "distvisor");
+                    c.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
+                });
+
             services.AddDbContext<DistvisorContext>(options =>
             options.UseSqlite(Config.GetConnectionString("Sqlite")));
 
