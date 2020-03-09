@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NotificationsService } from '../notifications.service';
+import { NotificationsService, SuccessNotification } from '../notifications.service';
 
 @Component({
   selector: 'app-notifications-page',
@@ -11,10 +11,11 @@ export class NotificationsPageComponent {
   }
 
   onSingle() {
-    this.notificationsService.success("success!");
+    this.notificationsService.show(<SuccessNotification>{ message: 'success' });
   }
 
   onMultiple() {
-    this.notificationsService.addMultiple();
+    this.notificationsService.show(<SuccessNotification>{ message: 'one' });
+    this.notificationsService.show(<SuccessNotification>{ message: 'two' });
   }
 }

@@ -48,7 +48,7 @@ namespace Distvisor.Web
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<INotificationStore, NotificationStore>();
 
-            services.AddProdOrDevHttpClient<IMailgunClient, MailgunClient, MailgunClient>(Env, Config)
+            services.AddProdOrDevHttpClient<IMailgunClient, MailgunClient, FakeMailgunClient>(Env, Config)
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://api.eu.mailgun.net/"));
 
             services.AddDbContext<DistvisorContext>(options =>

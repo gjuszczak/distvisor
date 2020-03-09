@@ -47,7 +47,7 @@ namespace Distvisor.Web.Services
 
             var url = new UriBuilder(_httpClient.BaseAddress);
             url.Path = $"v3/{Domain}/messages";
-            
+
             var requestContent = new MultipartFormDataContent();
             requestContent.Add(new StringContent(email.From), "from");
             requestContent.Add(new StringContent(email.To), "to");
@@ -76,6 +76,38 @@ namespace Distvisor.Web.Services
             {
                 throw new InvalidOperationException("Mailgun client must be configured before first use");
             }
+        }
+    }
+
+    public class FakeMailgunClient : IMailgunClient
+    {
+        private readonly INotificationService _notifications;
+
+        public FakeMailgunClient(HttpClient _, INotificationService notifications)
+        {
+            _notifications = notifications;
+        }
+
+        public string Domain { get; private set; }
+
+        public string ApiKey { get; private set; }
+
+        public void Configure(string domain, string apiKey)
+        {
+        }
+
+        public async Task SendEmailAsync(MailgunEmail email)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(2));
+
+            await _notifications.PushFakeApiUsedAsync("mailgun", new
+            {
+                email.From,
+                email.To,
+                email.Subject,
+                email.Text,
+                Attachments = string.Join(", ", email.Attachments.Select(x => x.FileName))
+            });
         }
     }
 

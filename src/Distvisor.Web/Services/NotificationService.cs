@@ -8,6 +8,7 @@ namespace Distvisor.Web.Services
     public interface INotificationService
     {
         Task PushErrorAsync(string message, Exception exception = null);
+        Task PushFakeApiUsedAsync(string api, object requestParams);
         Task PushSuccessAsync(string message);
     }
 
@@ -40,6 +41,16 @@ namespace Distvisor.Web.Services
                 Message = message,
                 ExceptionMessage = exception?.Message,
                 ExceptionDetails = exception?.ToString()
+            };
+            await StoreAndPushAsync(notification);
+        }
+
+        public async Task PushFakeApiUsedAsync(string api, object requestParams)
+        {
+            var notification = new FakeApiUsedNotification
+            {
+                Api = api,
+                RequestParams = requestParams,
             };
             await StoreAndPushAsync(notification);
         }

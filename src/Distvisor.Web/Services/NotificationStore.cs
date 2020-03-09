@@ -3,6 +3,7 @@ using Distvisor.Web.Data.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
@@ -82,5 +83,11 @@ namespace Distvisor.Web.Services
         public string Message { get; set; }
         public string ExceptionMessage { get; set; }
         public string ExceptionDetails { get; set; }
+    }
+
+    public class FakeApiUsedNotification : Notification
+    {
+        public string Api { get; set; }
+        public object RequestParams { get; set; }
     }
 }
