@@ -16,29 +16,32 @@ namespace Distvisor.Web.Services
 
     public class AuthHandler : AuthenticationHandler<AuthOptions>
     {
-        private readonly IAuthService _users;
+        private readonly IDistvisorAuthService _authService;
 
         public AuthHandler(
             IOptionsMonitor<AuthOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock,
-            IAuthService users)
+            IDistvisorAuthService authService)
             : base(options, logger, encoder, clock)
         {
-            _users = users;
+            _authService = authService;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            var sessionId = GetSessionIdFromHeader() ?? GetSessionIdFromUrlParam();
-
-            if (sessionId == null)
+            var token = GetTokenFromHeader() ?? GetTokenFromUrlParam();
+            if (token == null)
+            {
                 return AuthenticateResult.NoResult();
+            }
 
-            var authResult = await _users.AuthenticateAsync(sessionId);
+            var authResult = await _authService.AuthenticateAsync(token);
             if (!authResult.IsAuthenticated)
+            {
                 return AuthenticateResult.Fail(authResult.Message);
+            }
 
             var claims = new[] { 
                 new Claim(ClaimTypes.Name, authResult.Username),
@@ -50,7 +53,7 @@ namespace Distvisor.Web.Services
             return AuthenticateResult.Success(ticket);
         }
 
-        private string GetSessionIdFromHeader()
+        private string GetTokenFromHeader()
         {
             if (!Request.Headers.ContainsKey("Authorization"))
                 return null;
@@ -64,7 +67,7 @@ namespace Distvisor.Web.Services
             return headerValue.Parameter;
         }
 
-        private string GetSessionIdFromUrlParam()
+        private string GetTokenFromUrlParam()
         {
             if (!Request.Query.ContainsKey("access_token"))
                 return null;
@@ -81,7 +84,7 @@ namespace Distvisor.Web.Services
         }
     }
 
-    public static class AuthExtensions
+    public static class DistvisorAuthExtensions
     {
         public static AuthenticationBuilder AddDistvisorAuth(this IServiceCollection services)
         {

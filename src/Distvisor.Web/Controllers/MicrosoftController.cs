@@ -11,13 +11,11 @@ namespace Distvisor.Web.Controllers
     public class MicrosoftController : ControllerBase
     {
         private readonly IMicrosoftAuthService _authService;
-        private readonly IMicrosoftAuthTokenStore _authTokenStore;
         private readonly IMicrosoftOneDriveService _oneDriveService;
 
-        public MicrosoftController(IMicrosoftAuthService authService, IMicrosoftAuthTokenStore authTokenStore, IMicrosoftOneDriveService oneDriveService)
+        public MicrosoftController(IMicrosoftAuthService authService, IMicrosoftOneDriveService oneDriveService)
         {
             _authService = authService;
-            _authTokenStore = authTokenStore;
             _oneDriveService = oneDriveService;
         }
 
@@ -34,9 +32,8 @@ namespace Distvisor.Web.Controllers
         [HttpGet("auth-redirect")]
         public async Task<IActionResult> AuthRedirect(string code, string state)
         {
-            var token = await _authService.ExchangeAuthCodeForBearerToken(code);
             var userId = Guid.Parse(state);
-            await _authTokenStore.StoreUserTokenAsync(token, userId);
+            var token = await _authService.ExchangeAuthCodeForBearerTokenAsync(code, userId);
             return Redirect("/settings");
         }
 

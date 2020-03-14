@@ -11,13 +11,13 @@ namespace Distvisor.Web.Services
         private const long BytesThrottle = 327680; //320 KiB
 
         private readonly MicrosoftUploadSessionInfo _sessionInfo;
-        private readonly IMicrosoftAuthTokenStore _authTokenStore;
+        private readonly IMicrosoftAuthService _authService;
         private readonly RestClient _httpClient;
 
-        public MicrosoftUploadSession(MicrosoftUploadSessionInfo sessionInfo, IMicrosoftAuthTokenStore authTokenStore)
+        public MicrosoftUploadSession(MicrosoftUploadSessionInfo sessionInfo, IMicrosoftAuthService authService)
         {
             _sessionInfo = sessionInfo;
-            _authTokenStore = authTokenStore;
+            _authService = authService;
             _httpClient = new RestClient(_sessionInfo.UploadUrl);
         }
 
@@ -44,7 +44,7 @@ namespace Distvisor.Web.Services
                 var batchSize = (int)(remainingBytes > BytesThrottle ? BytesThrottle : remainingBytes);
                 stream.Read(buffer, 0, batchSize);
                                 
-                var token = await _authTokenStore.GetUserActiveToken();
+                var token = await _authService.GetUserActiveTokenAsync();
                 var request = new RestRequest(Method.PUT);
                 request.AddHeader("Authorization", "Bearer " + token.AccessToken);
                 request.AddHeader("Content-Length", $"{batchSize}");
@@ -66,7 +66,7 @@ namespace Distvisor.Web.Services
 
         public async Task Cancel()
         {
-            var token = await _authTokenStore.GetUserActiveToken();
+            var token = await _authService.GetUserActiveTokenAsync();
 
             var request = new RestRequest(Method.DELETE);
             request.AddHeader("Authorization", "Bearer " + token.AccessToken);

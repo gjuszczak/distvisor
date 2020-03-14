@@ -9,9 +9,6 @@ namespace Distvisor.Web.Data.Entities
         public string Username { get; set; }
         public string PasswordHash { get; set; }
         public DateTime LockoutUtc { get; set; }
-        public string SessionId { get; set; }
-        public DateTime SessionStartUtc { get; set; }
-        public DateTime SessionExpirationUtc { get; set; }
 
         public List<OAuthTokenEntity> OAuthTokens { get; set; } = new List<OAuthTokenEntity>();
         public List<NotificationEntity> Notifications { get; set; } = new List<NotificationEntity>();

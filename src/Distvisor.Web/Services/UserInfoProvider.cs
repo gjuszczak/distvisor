@@ -6,8 +6,9 @@ namespace Distvisor.Web.Services
 {
     public interface IUserInfoProvider
     {
-        Guid UserId { get; }
+        bool IsAuthenticated { get; }
         string UserName { get; }
+        Guid UserId { get; }
     }
 
     public class UserInfoProvider : IUserInfoProvider
@@ -18,6 +19,8 @@ namespace Distvisor.Web.Services
         {
             _user = httpContextAccessor.HttpContext.User;
         }
+
+        public bool IsAuthenticated => _user.Identity.IsAuthenticated;
 
         public string UserName => _user.Identity.Name;
 

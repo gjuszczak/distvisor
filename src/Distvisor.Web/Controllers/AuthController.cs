@@ -10,49 +10,46 @@ namespace Distvisor.Web.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _users;
+        private readonly IDistvisorAuthService _authService;
+        private readonly IUserInfoProvider _userInfo;
 
-        public AuthController(IAuthService users)
+        public AuthController(IDistvisorAuthService authService, IUserInfoProvider userInfo)
         {
-            _users = users;
+            _authService = authService;
+            _userInfo = userInfo;
         }
 
         [HttpGet]
         [Authorize]
         public IActionResult Get()
         {
-            return Ok($"Hello {User.Identity.Name}");
+            return Ok($"Hello {_userInfo.UserName}");
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequestDto login)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            if (!await _users.AnyAsync())
             {
-                await _users.CreateUserAsync(login.Username, login.Password);
+                return BadRequest(ModelState);
             }
 
-            var loginResult = await _users.LoginAsync(login.Username, login.Password);
+            var loginResult = await _authService.LoginAsync(login.Username, login.Password);
 
             if (!loginResult.IsAuthenticated)
-                return Unauthorized(loginResult.Message);
-
-            return Ok(new LoginSuccessResponseDto
             {
-                Username = loginResult.Username,
-                SessionId = loginResult.SessionId,
-            });
+                return Unauthorized(loginResult.Message);
+            }
+
+            return Ok(loginResult.Token);
         }
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            if (User.Identity.IsAuthenticated)
+            if (_userInfo.IsAuthenticated)
             {
-                await _users.LogoutAsync(User.Identity.Name);
+                await _authService.LogoutAsync(_userInfo.UserId);
             }
             return Ok();
         }
@@ -67,11 +64,5 @@ namespace Distvisor.Web.Controllers
         [Required]
         [MinLength(5)]
         public string Password { get; set; }
-    }
-
-    public class LoginSuccessResponseDto
-    {
-        public string Username { get; set; }
-        public string SessionId { get; set; }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Distvisor.Web.Data;
-using Distvisor.Web.Data.Entities;
+﻿using Distvisor.Web.Data.Entities;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
@@ -10,22 +9,24 @@ namespace Distvisor.Web.Services
 {
     public interface IMicrosoftAuthService
     {
-        Task<OAuthToken> ExchangeAuthCodeForBearerToken(string authCode);
+        Task<OAuthToken> ExchangeAuthCodeForBearerTokenAsync(string authCode, Guid userId);
         string GetAuthorizeUri();
-        Task<OAuthToken> RefreshAccessToken(string refreshToken);
+        Task<OAuthToken> GetUserActiveTokenAsync();
     }
 
     public class MicrosoftAuthService : IMicrosoftAuthService
     {
         private readonly IUserInfoProvider _userInfo;
+        private readonly IAuthTokenStore _tokenStore;
         private readonly RestClient _httpClient;
         private readonly MicrosoftSecrets _secrets;
         private readonly string _requestedScopes;
 
-        public MicrosoftAuthService(ISecretsVault secretsVault, IUserInfoProvider userInfo)
+        public MicrosoftAuthService(ISecretsVault secretsVault, IUserInfoProvider userInfo, IAuthTokenStore tokenStore)
         {
             _secrets = secretsVault.GetMicrosoftSecrets();
             _userInfo = userInfo;
+            _tokenStore = tokenStore;
             _httpClient = new RestClient("https://login.microsoftonline.com/");
             _requestedScopes = "offline_access user.read Files.ReadWrite.AppFolder";
         }
@@ -44,7 +45,7 @@ namespace Distvisor.Web.Services
             return uri.ToString();
         }
 
-        public async Task<OAuthToken> ExchangeAuthCodeForBearerToken(string authCode)
+        public async Task<OAuthToken> ExchangeAuthCodeForBearerTokenAsync(string authCode, Guid userId)
         {
             var request = new RestRequest("consumers/oauth2/v2.0/token", Method.POST);
             request.AddParameter("client_id", _secrets.AppClientId);
@@ -56,12 +57,31 @@ namespace Distvisor.Web.Services
 
             var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
             var token = JsonConvert.DeserializeObject<OAuthToken>(response.Content);
-            token.Issuer = OAuthTokenIssuer.MicrosoftService;
+            token.Issuer = OAuthTokenIssuer.MicrosoftIdentity;
             token.UtcIssueDate = DateTime.UtcNow;
+
+            await _tokenStore.StoreUserTokenAsync(token, userId);
             return token;
         }
 
-        public async Task<OAuthToken> RefreshAccessToken(string refreshToken)
+        public async Task<OAuthToken> GetUserActiveTokenAsync()
+        {
+            var token = await _tokenStore.GetUserStoredTokenAsync(OAuthTokenIssuer.MicrosoftIdentity, _userInfo.UserId);
+            var tokenExpiration = token.UtcIssueDate
+                .ToLocalTime()
+                .AddSeconds(token.ExpiresIn)
+                .AddMinutes(-1);
+
+            if (tokenExpiration > DateTime.Now)
+            {
+                return token;
+            }
+
+            var refreshedToken = await RefreshAccessTokenAsync(token.RefreshToken);
+            return refreshedToken;
+        }
+
+        private async Task<OAuthToken> RefreshAccessTokenAsync(string refreshToken)
         {
             var request = new RestRequest("consumers/oauth2/v2.0/token", Method.POST);
             request.AddParameter("client_id", _secrets.AppClientId);
@@ -73,31 +93,11 @@ namespace Distvisor.Web.Services
 
             var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
             var token = JsonConvert.DeserializeObject<OAuthToken>(response.Content);
-            token.Issuer = OAuthTokenIssuer.MicrosoftService;
+            token.Issuer = OAuthTokenIssuer.MicrosoftIdentity;
             token.UtcIssueDate = DateTime.UtcNow;
+
+            await _tokenStore.StoreUserTokenAsync(token, _userInfo.UserId);
             return token;
         }
-    }
-
-    public class OAuthToken
-    {
-        public OAuthTokenIssuer Issuer { get; set; }
-
-        [JsonProperty("access_token")]
-        public string AccessToken { get; set; }
-
-        [JsonProperty("token_type")]
-        public string TokenType { get; set; }
-
-        [JsonProperty("expires_in")]
-        public int ExpiresIn { get; set; }
-
-        [JsonProperty("scope")]
-        public string Scope { get; set; }
-
-        [JsonProperty("refresh_token")]
-        public string RefreshToken { get; set; }
-
-        public DateTime UtcIssueDate { get; set; }
     }
 }

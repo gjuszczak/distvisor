@@ -7,7 +7,7 @@ namespace Distvisor.Web.Services
     public interface ICryptoService
     {
         string GeneratePasswordHash(string plainPassword);
-        string GenerateRandomSessionId();
+        string GenerateRandomToken();
         bool ValidatePasswordHash(string plainPassword, string passwordHash);
     }
 
@@ -16,7 +16,7 @@ namespace Distvisor.Web.Services
         private const int SaltSize = 16;
         private const int KeySize = 32;
         private const int Iterations = 10000;
-        private const int SessionIdSize = 64;
+        private const int TokenSize = 256;
 
         public string GeneratePasswordHash(string plainPassword)
         {
@@ -42,10 +42,10 @@ namespace Distvisor.Web.Services
             return keyToVerify.SequenceEqual(key);
         }
 
-        public string GenerateRandomSessionId()
+        public string GenerateRandomToken()
         {
             using var saltGen = new RNGCryptoServiceProvider();
-            var sessionId = new byte[SessionIdSize];
+            var sessionId = new byte[TokenSize];
             saltGen.GetBytes(sessionId);
             return Convert.ToBase64String(sessionId);
         }

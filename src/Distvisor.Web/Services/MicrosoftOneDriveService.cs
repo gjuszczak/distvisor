@@ -16,17 +16,17 @@ namespace Distvisor.Web.Services
     public class MicrosoftOneDriveService : IMicrosoftOneDriveService
     {
         private readonly RestClient _httpClient;
-        private readonly IMicrosoftAuthTokenStore _authTokenStore;
+        private readonly IMicrosoftAuthService _authService;
 
-        public MicrosoftOneDriveService(IMicrosoftAuthTokenStore authTokenStore)
+        public MicrosoftOneDriveService(IMicrosoftAuthService authService)
         {
             _httpClient = new RestClient("https://graph.microsoft.com/");
-            _authTokenStore = authTokenStore;
+            _authService = authService;
         }
 
         public async Task<MicrosoftUploadSession> CreateUploadSession(string filename)
         {
-            var token = await _authTokenStore.GetUserActiveToken();
+            var token = await _authService.GetUserActiveTokenAsync();
 
             // make sure that approot is created before upload session request
             var request = new RestRequest("v1.0/me/drive/special/approot", Method.GET);
@@ -38,7 +38,7 @@ namespace Distvisor.Web.Services
             response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
             var sessionInfo = JsonConvert.DeserializeObject<MicrosoftUploadSessionInfo>(response.Content);
 
-            return new MicrosoftUploadSession(sessionInfo, _authTokenStore);
+            return new MicrosoftUploadSession(sessionInfo, _authService);
         }
 
         public async Task BackupDb()

@@ -18,6 +18,7 @@ namespace Distvisor.Web.Data.Entities
 
     public enum OAuthTokenIssuer
     {
-        MicrosoftService,
+        Distvisor,
+        MicrosoftIdentity,
     }
 }

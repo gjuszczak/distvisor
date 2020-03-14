@@ -3,14 +3,16 @@ using System;
 using Distvisor.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Distvisor.Web.Data.Migrations
 {
     [DbContext(typeof(DistvisorContext))]
-    partial class DistvisorContextModelSnapshot : ModelSnapshot
+    [Migration("20200314191211_v10_2")]
+    partial class v10_2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
