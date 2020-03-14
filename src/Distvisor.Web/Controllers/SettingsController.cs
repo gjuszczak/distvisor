@@ -13,13 +13,11 @@ namespace Distvisor.Web.Controllers
     [Route("api/[controller]")]
     public class SettingsController : ControllerBase
     {
-        private readonly IGithubService _github;
-        private readonly INotificationService _notifications;
+        private readonly IUpdateService _github;
 
-        public SettingsController(IGithubService github, INotificationService notifications)
+        public SettingsController(IUpdateService github)
         {
             _github = github;
-            _notifications = notifications;
         }
 
         [HttpGet("update-params")]
@@ -38,7 +36,6 @@ namespace Distvisor.Web.Controllers
         public async Task Update([FromBody]UpdateRequestDto dto)
         {
             await _github.UpdateToVersionAsync(dto.UpdateToVersion, dto.DbUpdateStrategy.ToString());
-            await _notifications.PushSuccessAsync($"Update to { dto.UpdateToVersion } started.");
         }
     }
 

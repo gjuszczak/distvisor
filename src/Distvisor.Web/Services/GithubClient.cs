@@ -97,4 +97,37 @@ namespace Distvisor.Web.Services
             public string TagName { get; set; }
         }
     }
+
+    public class FakeGithubClient : IGithubClient
+    {
+        private readonly INotificationService _notifications;
+
+        public FakeGithubClient(HttpClient _, INotificationService notifications)
+        {
+            _notifications = notifications;
+        }
+        public string ApiKey { get; }
+        public string RepoName { get; }
+        public string RepoOwner { get; }
+        public void Configure(string repoOwner, string repoName, string apiKey)
+        {
+        }
+
+        public Task<IEnumerable<string>> GetReleasesAsync()
+        {
+            return Task.FromResult((new string[] { "fake_v0.1", "fake_v0.2" }).AsEnumerable());
+        }
+
+        public async Task UpdateToVersionAsync(string fromVersion, string toVersion, string dbUpdateStrategy)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(2));
+
+            await _notifications.PushFakeApiUsedAsync("github", new
+            {
+                fromVersion,
+                toVersion,
+                dbUpdateStrategy,
+            });
+        }
+    }
 }

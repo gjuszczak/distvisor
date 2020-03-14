@@ -36,7 +36,7 @@ namespace Distvisor.Web
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ICryptoService, CryptoService>();
             services.AddSingleton<IAuthCache, AuthCache>();
-            services.AddScoped<IGithubService, GithubService>();
+            services.AddScoped<IUpdateService, UpdateService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
             services.AddScoped<IEmailService, EmailService>();
@@ -51,7 +51,7 @@ namespace Distvisor.Web
             services.AddProdOrDevHttpClient<IMailgunClient, MailgunClient, FakeMailgunClient>(Env, Config)
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://api.eu.mailgun.net/"));
 
-            services.AddProdOrDevHttpClient<IGithubClient, GithubClient, GithubClient>(Env, Config)
+            services.AddProdOrDevHttpClient<IGithubClient, GithubClient, FakeGithubClient>(Env, Config)
                 .ConfigureHttpClient(c =>
                 {
                     c.BaseAddress = new Uri("https://api.github.com/");
