@@ -40,18 +40,18 @@ namespace Distvisor.Web.Services
             var userId = await _tokenStore.GetUserIdForTokenAsync(OAuthTokenIssuer.Distvisor, accessToken);
             if (userId == null)
             {
-                return AuthResult.Fail("Token invalid or expired");
+                return AuthResult.Fail("Token invalid");
             }
 
             var token = await _tokenStore.GetUserStoredTokenAsync(OAuthTokenIssuer.Distvisor, userId.Value);
             if (userId == null)
             {
-                return AuthResult.Fail("Token invalid or expired");
+                return AuthResult.Fail("Token invalid");
             }
 
             if (DateTime.UtcNow > token.UtcIssueDate.AddSeconds(token.ExpiresIn))
             {
-                return AuthResult.Fail("Token invalid or expired");
+                return AuthResult.Fail("Token expired");
             }
 
             var username = await GetUsernameAsync(userId.Value);

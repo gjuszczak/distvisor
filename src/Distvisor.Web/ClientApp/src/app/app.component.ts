@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { UserService } from 'src/auth/user.service';
+import { AuthService } from 'src/auth/auth.service';
 import { NavigationService } from 'src/navigation/navigation.service';
-import { map } from 'rxjs/operators';
+import { map, skipWhile } from 'rxjs/operators';
 import { ApiConfiguration } from 'src/api/api-configuration';
 import { SignalrService } from 'src/notifications/signalr.service';
 import { Subscription } from 'rxjs';
@@ -15,7 +15,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private authSubscription: Subscription;
 
   constructor(
-    private userService: UserService,
+    private userService: AuthService,
     private navigationService: NavigationService,
     private apiConfiguration: ApiConfiguration,
     private signalrService: SignalrService,
@@ -81,10 +81,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   configureNotifications() {
-    this.authSubscription = this.userService.getUser()
-      .subscribe(user => {
-        if (user != null) {
-          this.signalrService.connect(this.baseUrl, user.token.accessToken);
+    this.authSubscription = this.userService.isAuthenticated()
+      .pipe(skipWhile(auth => auth === false))
+      .subscribe(auth => {
+        if (auth) {
+          this.signalrService.connect(this.baseUrl, this.userService.getUser().accessToken);
         }
         else {
           this.signalrService.disconnect();

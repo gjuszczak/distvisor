@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApplicationPaths, ReturnUrlType } from '../auth.constants';
-import { UserService } from '../user.service';
 import { Subscription } from 'rxjs';
-import { AuthService } from 'src/api/services';
-import { AuthResult } from 'src/api/models';
+import { ApplicationPaths, ReturnUrlType } from '../auth.constants';
+import { AuthService } from '../auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +19,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private userService: UserService,
     private activatedRoute: ActivatedRoute,
     private router: Router) { }
 
@@ -30,19 +28,19 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   onLogin() {
     this.isBusy = true;
-    this.subscription = this.authService.apiAuthLoginPost$Json$Json({ body: { username: this.username, password: this.password } })
+    this.subscription = this.authService.login(this.username, this.password)
       .subscribe(
-        result => this.onAuthSuccess(result),
-        err => this.onAuthFail(err));
+        _ => this.onAuthSuccess(),
+        err => this.onAuthFail(err)
+      );
   }
 
-  private onAuthSuccess(result: AuthResult) {
-    this.userService.setUser(result)
+  private onAuthSuccess() {
     this.router.navigateByUrl(this.returnUrl);
   }
 
-  private onAuthFail(result: AuthResult) {
-    this.errorMessage = result.message;
+  private onAuthFail(response: HttpErrorResponse) {
+    this.errorMessage = response.error;
     this.isBusy = false;
   }
 

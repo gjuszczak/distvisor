@@ -28,24 +28,43 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpPost("login")]
-        [ProducesResponseType(typeof(AuthResult), 200)]
-        [ProducesResponseType(typeof(AuthResult), 401)]
-        [ProducesResponseType(400)]
-        public async Task<IActionResult> Login(LoginRequestDto login)
+        [ProducesResponseType(typeof(AuthUser), 200)]
+        [ProducesResponseType(typeof(string), 401)]
+        public async Task<IActionResult> Login(LoginRequestDto dto)
         {
-            if (!ModelState.IsValid)
+            var authResult = await _authService.LoginAsync(dto.Username, dto.Password);
+
+            if (!authResult.IsAuthenticated)
             {
-                return BadRequest(ModelState);
+                return Unauthorized(authResult.Message);
             }
 
-            var loginResult = await _authService.LoginAsync(login.Username, login.Password);
-
-            if (!loginResult.IsAuthenticated)
+            return Ok(new AuthUser
             {
-                return Unauthorized(loginResult);
+                Username = authResult.Username,
+                AccessToken = authResult.Token.AccessToken,
+                RefreshToken = authResult.Token.RefreshToken,
+            });
+        }
+
+        [HttpPost("refreshtoken")]
+        [ProducesResponseType(typeof(AuthUser), 200)]
+        [ProducesResponseType(typeof(string), 401)]
+        public async Task<IActionResult> RefreshToken(RefreshTokenDto dto)
+        {
+            var authResult = await _authService.RefreshAccessTokenAsync(dto.RefreshToken);
+
+            if (!authResult.IsAuthenticated)
+            {
+                return Unauthorized(authResult.Message);
             }
 
-            return Ok(loginResult);
+            return Ok(new AuthUser
+            {
+                Username = authResult.Username,
+                AccessToken = authResult.Token.AccessToken,
+                RefreshToken = authResult.Token.RefreshToken,
+            });
         }
 
         [HttpPost("logout")]
@@ -68,5 +87,18 @@ namespace Distvisor.Web.Controllers
         [Required]
         [MinLength(5)]
         public string Password { get; set; }
+    }
+
+    public class RefreshTokenDto
+    {
+        [Required]
+        public string RefreshToken { get; set; }
+    }
+
+    public class AuthUser
+    {
+        public string Username { get; set; }
+        public string AccessToken { get; set; }
+        public string RefreshToken { get; set; }
     }
 }

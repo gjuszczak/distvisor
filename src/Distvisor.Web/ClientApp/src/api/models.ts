@@ -1,8 +1,6 @@
 export { LoginRequestDto } from './models/login-request-dto';
-export { OAuthTokenIssuer } from './models/o-auth-token-issuer';
-export { OAuthToken } from './models/o-auth-token';
-export { AuthResult } from './models/auth-result';
-export { ProblemDetails } from './models/problem-details';
+export { AuthUser } from './models/auth-user';
+export { RefreshTokenDto } from './models/refresh-token-dto';
 export { Invoice } from './models/invoice';
 export { GenerateInvoiceDto } from './models/generate-invoice-dto';
 export { MicrosoftAuthDto } from './models/microsoft-auth-dto';

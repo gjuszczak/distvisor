@@ -11,6 +11,7 @@ import { LoginComponent } from './login/login.component';
 import { LogoutComponent } from './logout/logout.component';
 import { ApplicationPaths } from './auth.constants';
 import { AutofocusModule } from '../autofocus/autofocus.module';
+import { ApiModule } from '../api/api.module';
 
 @NgModule({
   imports: [
@@ -32,7 +33,8 @@ import { AutofocusModule } from '../autofocus/autofocus.module';
     PasswordModule,
 
     // internal
-    AutofocusModule
+    AutofocusModule,
+    ApiModule
   ],
   declarations: [LoginComponent, LogoutComponent],
   exports: [LoginComponent, LogoutComponent]

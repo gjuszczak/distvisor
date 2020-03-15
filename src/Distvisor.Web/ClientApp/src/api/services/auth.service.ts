@@ -8,8 +8,9 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-import { AuthResult } from '../models/auth-result';
+import { AuthUser } from '../models/auth-user';
 import { LoginRequestDto } from '../models/login-request-dto';
+import { RefreshTokenDto } from '../models/refresh-token-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -82,7 +83,7 @@ export class AuthService extends BaseService {
   apiAuthLoginPost$Json$Plain$Response(params?: {
 
     body?: LoginRequestDto
-  }): Observable<StrictHttpResponse<AuthResult>> {
+  }): Observable<StrictHttpResponse<AuthUser>> {
 
     const rb = new RequestBuilder(this.rootUrl, AuthService.ApiAuthLoginPostPath, 'post');
     if (params) {
@@ -96,7 +97,7 @@ export class AuthService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<AuthResult>;
+        return r as StrictHttpResponse<AuthUser>;
       })
     );
   }
@@ -110,10 +111,10 @@ export class AuthService extends BaseService {
   apiAuthLoginPost$Json$Plain(params?: {
 
     body?: LoginRequestDto
-  }): Observable<AuthResult> {
+  }): Observable<AuthUser> {
 
     return this.apiAuthLoginPost$Json$Plain$Response(params).pipe(
-      map((r: StrictHttpResponse<AuthResult>) => r.body as AuthResult)
+      map((r: StrictHttpResponse<AuthUser>) => r.body as AuthUser)
     );
   }
 
@@ -126,7 +127,7 @@ export class AuthService extends BaseService {
   apiAuthLoginPost$Json$Json$Response(params?: {
 
     body?: LoginRequestDto
-  }): Observable<StrictHttpResponse<AuthResult>> {
+  }): Observable<StrictHttpResponse<AuthUser>> {
 
     const rb = new RequestBuilder(this.rootUrl, AuthService.ApiAuthLoginPostPath, 'post');
     if (params) {
@@ -140,7 +141,7 @@ export class AuthService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<AuthResult>;
+        return r as StrictHttpResponse<AuthUser>;
       })
     );
   }
@@ -154,10 +155,103 @@ export class AuthService extends BaseService {
   apiAuthLoginPost$Json$Json(params?: {
 
     body?: LoginRequestDto
-  }): Observable<AuthResult> {
+  }): Observable<AuthUser> {
 
     return this.apiAuthLoginPost$Json$Json$Response(params).pipe(
-      map((r: StrictHttpResponse<AuthResult>) => r.body as AuthResult)
+      map((r: StrictHttpResponse<AuthUser>) => r.body as AuthUser)
+    );
+  }
+
+  /**
+   * Path part for operation apiAuthRefreshtokenPost
+   */
+  static readonly ApiAuthRefreshtokenPostPath = '/api/Auth/refreshtoken';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiAuthRefreshtokenPost$Json$Plain()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  apiAuthRefreshtokenPost$Json$Plain$Response(params?: {
+
+    body?: RefreshTokenDto
+  }): Observable<StrictHttpResponse<AuthUser>> {
+
+    const rb = new RequestBuilder(this.rootUrl, AuthService.ApiAuthRefreshtokenPostPath, 'post');
+    if (params) {
+
+
+      rb.body(params.body, 'application/json');
+    }
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: 'text/plain'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<AuthUser>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiAuthRefreshtokenPost$Json$Plain$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  apiAuthRefreshtokenPost$Json$Plain(params?: {
+
+    body?: RefreshTokenDto
+  }): Observable<AuthUser> {
+
+    return this.apiAuthRefreshtokenPost$Json$Plain$Response(params).pipe(
+      map((r: StrictHttpResponse<AuthUser>) => r.body as AuthUser)
+    );
+  }
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiAuthRefreshtokenPost$Json$Json()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  apiAuthRefreshtokenPost$Json$Json$Response(params?: {
+
+    body?: RefreshTokenDto
+  }): Observable<StrictHttpResponse<AuthUser>> {
+
+    const rb = new RequestBuilder(this.rootUrl, AuthService.ApiAuthRefreshtokenPostPath, 'post');
+    if (params) {
+
+
+      rb.body(params.body, 'application/json');
+    }
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<AuthUser>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiAuthRefreshtokenPost$Json$Json$Response()` instead.
+   *
+   * This method sends `application/json` and handles request body of type `application/json`.
+   */
+  apiAuthRefreshtokenPost$Json$Json(params?: {
+
+    body?: RefreshTokenDto
+  }): Observable<AuthUser> {
+
+    return this.apiAuthRefreshtokenPost$Json$Json$Response(params).pipe(
+      map((r: StrictHttpResponse<AuthUser>) => r.body as AuthUser)
     );
   }
 

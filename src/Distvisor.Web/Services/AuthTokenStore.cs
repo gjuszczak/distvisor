@@ -24,7 +24,6 @@ namespace Distvisor.Web.Services
 
         public AuthTokenStore(IMemoryCache cache, DistvisorContext context)
         {
-            ;
             _cache = cache;
             _context = context;
         }
@@ -58,7 +57,8 @@ namespace Distvisor.Web.Services
 
             await _context.SaveChangesAsync();
 
-            SetCache(userId, token);
+            SetCache(token.Issuer, userId, token);
+            SetCache(token.Issuer, token.AccessToken, userId);
         }
 
         public async Task ClearUserTokenAsync(OAuthTokenIssuer issuer, Guid userId)
@@ -66,16 +66,22 @@ namespace Distvisor.Web.Services
             var token = await _context.OAuthTokens
                   .Where(x => x.User.Id == userId && x.Issuer == issuer)
                   .SingleOrDefaultAsync();
+
+            if (token == null)
+            {
+                return;
+            }
+
             _context.OAuthTokens.Remove(token);
             await _context.SaveChangesAsync();
 
-            _cache.Remove(TokenCacheKey(issuer, userId));
-            _cache.Remove(UserIdCacheKey(token.AccessToken));
+            _cache.Remove(GetTokenCacheKey(issuer, userId));
+            _cache.Remove(GetUserIdCacheKey(issuer, token.AccessToken));
         }
 
         public async Task<OAuthToken> GetUserStoredTokenAsync(OAuthTokenIssuer issuer, Guid userId)
         {
-            if (!_cache.TryGetValue(TokenCacheKey(issuer, userId), out OAuthToken token))
+            if (!_cache.TryGetValue(GetTokenCacheKey(issuer, userId), out OAuthToken token))
             {
                 var tokenEntity = await _context.OAuthTokens
                   .Where(x => x.User.Id == userId && x.Issuer == issuer)
@@ -83,7 +89,12 @@ namespace Distvisor.Web.Services
 
                 token = ConvertEntityToToken(tokenEntity);
 
-                SetCache(userId, token);
+                SetCache(issuer, userId, token);
+
+                if (token != null)
+                {
+                    SetCache(issuer, token.AccessToken, userId);
+                }
             }
 
             return token;
@@ -91,7 +102,7 @@ namespace Distvisor.Web.Services
 
         public async Task<Guid?> GetUserIdForTokenAsync(OAuthTokenIssuer issuer, string accessToken)
         {
-            if (!_cache.TryGetValue(UserIdCacheKey(accessToken), out Guid? userId))
+            if (!_cache.TryGetValue(GetUserIdCacheKey(issuer, accessToken), out Guid? userId))
             {
                 var tokenEntity = await _context.OAuthTokens
                     .Include(x => x.User)
@@ -101,34 +112,45 @@ namespace Distvisor.Web.Services
                 var token = ConvertEntityToToken(tokenEntity);
                 userId = tokenEntity?.User?.Id;
 
-                SetCache(userId, token);
+                SetCache(issuer, accessToken, userId);
+
+                if (userId != null && token != null)
+                {
+                    SetCache(issuer, userId.Value, token);
+                }
             }
 
             return userId;
         }
 
-        private void SetCache(Guid? userId, OAuthToken token)
+        private void SetCache(OAuthTokenIssuer issuer, Guid userId, OAuthToken token)
         {
             var cacheEntryOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
             };
 
-            if (userId.HasValue)
+            _cache.Set(GetTokenCacheKey(issuer, userId), token, cacheEntryOptions);
+        }
+
+        private void SetCache(OAuthTokenIssuer issuer, string accessToken, Guid? userId)
+        {
+            var cacheEntryOptions = new MemoryCacheEntryOptions
             {
-                _cache.Set(TokenCacheKey(token.Issuer, userId.Value), token, cacheEntryOptions);
-            }
-            _cache.Set(UserIdCacheKey(token.AccessToken), (userId, token), cacheEntryOptions);
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+            };
+
+            _cache.Set(GetUserIdCacheKey(issuer, accessToken), userId, cacheEntryOptions);
         }
 
-        private string TokenCacheKey(OAuthTokenIssuer issuer, Guid userId)
+        private string GetTokenCacheKey(OAuthTokenIssuer issuer, Guid userId)
         {
-            return $"AuthTokenStore_Token_{issuer.ToString()}_{userId}";
+            return $"AuthTokenStore_GetToken_{issuer}_{userId}";
         }
 
-        private string UserIdCacheKey(string accessToken)
+        private string GetUserIdCacheKey(OAuthTokenIssuer issuer, string accessToken)
         {
-            return $"AuthTokenStore_UserId_{accessToken}";
+            return $"AuthTokenStore_GetUserId_{issuer}_{accessToken}";
         }
 
         private OAuthToken ConvertEntityToToken(OAuthTokenEntity entity)
