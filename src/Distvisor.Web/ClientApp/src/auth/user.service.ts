@@ -1,18 +1,14 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageUserKey } from './auth.constants';
-import { Observable, BehaviorSubject, concat, of } from 'rxjs';
-import { take, filter, tap, map } from 'rxjs/operators';
-
-export interface IUser {
-  username: string;
-  sessionId: string;
-}
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AuthResult } from 'src/api/models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private userSubject: BehaviorSubject<IUser | null> = new BehaviorSubject(null);
+  private userSubject: BehaviorSubject<AuthResult | null> = new BehaviorSubject(null);
 
   constructor() {
     const user = this.getUserFromLocalStorage();
@@ -23,11 +19,11 @@ export class UserService {
     return this.getUser().pipe(map(u => !!u));
   }
 
-  public getUser(): Observable<IUser | null> {
+  public getUser(): Observable<AuthResult | null> {
     return this.userSubject;
   }
 
-  public setUser(user: IUser) {
+  public setUser(user: AuthResult) {
     var userJson = JSON.stringify(user);
     localStorage.setItem(LocalStorageUserKey, userJson);
     this.userSubject.next(user);
@@ -38,7 +34,7 @@ export class UserService {
     this.userSubject.next(null);
   }
 
-  private getUserFromLocalStorage(): IUser | null {
+  private getUserFromLocalStorage(): AuthResult | null {
     var userJson = localStorage.getItem(LocalStorageUserKey);
     var user = userJson && JSON.parse(userJson);
     return user;

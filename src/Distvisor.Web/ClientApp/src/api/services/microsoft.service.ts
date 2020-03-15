@@ -120,8 +120,8 @@ export class MicrosoftService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiMicrosoftAuthRedirectGet$Response(params?: {
-    code?: null | string;
-    state?: null | string;
+    code?: string;
+    state?: string;
 
   }): Observable<StrictHttpResponse<void>> {
 
@@ -150,8 +150,8 @@ export class MicrosoftService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiMicrosoftAuthRedirectGet(params?: {
-    code?: null | string;
-    state?: null | string;
+    code?: string;
+    state?: string;
 
   }): Observable<void> {
 

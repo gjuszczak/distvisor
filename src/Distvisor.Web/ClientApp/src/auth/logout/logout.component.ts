@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth.service';
 import { ApplicationPaths } from '../auth.constants';
 import { UserService } from '../user.service';
-import { finalize } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { AuthService } from 'src/api/services';
 
 @Component({
   selector: 'app-logout',
@@ -20,7 +19,7 @@ export class LogoutComponent implements OnInit, OnDestroy {
   private subscription : Subscription;
 
   ngOnInit() {
-    this.subscription = this.authService.logout()
+    this.subscription = this.authService.apiAuthLogoutPost()
       .subscribe(
         _=> this.finalizeLogout(),
         _=> this.finalizeLogout()

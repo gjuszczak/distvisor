@@ -1,6 +1,7 @@
 ﻿using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
@@ -27,6 +28,9 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpPost("login")]
+        [ProducesResponseType(typeof(AuthResult), 200)]
+        [ProducesResponseType(typeof(AuthResult), 401)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> Login(LoginRequestDto login)
         {
             if (!ModelState.IsValid)
@@ -38,10 +42,10 @@ namespace Distvisor.Web.Controllers
 
             if (!loginResult.IsAuthenticated)
             {
-                return Unauthorized(loginResult.Message);
+                return Unauthorized(loginResult);
             }
 
-            return Ok(loginResult.Token);
+            return Ok(loginResult);
         }
 
         [HttpPost("logout")]

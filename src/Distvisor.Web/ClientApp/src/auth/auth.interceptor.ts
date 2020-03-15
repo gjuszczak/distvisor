@@ -15,7 +15,7 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return this.userService.getUser().pipe(
         take(1),
-        map(user => user && user.sessionId),
+        map(user => user && user.token.accessToken),
         mergeMap(token => this.processRequestWithToken(token, req, next)));
   }
 

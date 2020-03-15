@@ -84,7 +84,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.authSubscription = this.userService.getUser()
       .subscribe(user => {
         if (user != null) {
-          this.signalrService.connect(this.baseUrl, user.sessionId);
+          this.signalrService.connect(this.baseUrl, user.token.accessToken);
         }
         else {
           this.signalrService.disconnect();

@@ -34,7 +34,7 @@ export class SecretsVaultService extends BaseService {
    */
   apiSecretsVaultListGet$Plain$Response(params?: {
 
-  }): Observable<StrictHttpResponse<null | Array<SecretKey>>> {
+  }): Observable<StrictHttpResponse<Array<SecretKey>>> {
 
     const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecretsVaultListGetPath, 'get');
     if (params) {
@@ -47,7 +47,7 @@ export class SecretsVaultService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<null | Array<SecretKey>>;
+        return r as StrictHttpResponse<Array<SecretKey>>;
       })
     );
   }
@@ -60,10 +60,10 @@ export class SecretsVaultService extends BaseService {
    */
   apiSecretsVaultListGet$Plain(params?: {
 
-  }): Observable<null | Array<SecretKey>> {
+  }): Observable<Array<SecretKey>> {
 
     return this.apiSecretsVaultListGet$Plain$Response(params).pipe(
-      map((r: StrictHttpResponse<null | Array<SecretKey>>) => r.body as null | Array<SecretKey>)
+      map((r: StrictHttpResponse<Array<SecretKey>>) => r.body as Array<SecretKey>)
     );
   }
 
@@ -75,7 +75,7 @@ export class SecretsVaultService extends BaseService {
    */
   apiSecretsVaultListGet$Json$Response(params?: {
 
-  }): Observable<StrictHttpResponse<null | Array<SecretKey>>> {
+  }): Observable<StrictHttpResponse<Array<SecretKey>>> {
 
     const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecretsVaultListGetPath, 'get');
     if (params) {
@@ -88,7 +88,7 @@ export class SecretsVaultService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<null | Array<SecretKey>>;
+        return r as StrictHttpResponse<Array<SecretKey>>;
       })
     );
   }
@@ -101,10 +101,10 @@ export class SecretsVaultService extends BaseService {
    */
   apiSecretsVaultListGet$Json(params?: {
 
-  }): Observable<null | Array<SecretKey>> {
+  }): Observable<Array<SecretKey>> {
 
     return this.apiSecretsVaultListGet$Json$Response(params).pipe(
-      map((r: StrictHttpResponse<null | Array<SecretKey>>) => r.body as null | Array<SecretKey>)
+      map((r: StrictHttpResponse<Array<SecretKey>>) => r.body as Array<SecretKey>)
     );
   }
 
@@ -121,7 +121,7 @@ export class SecretsVaultService extends BaseService {
    */
   apiSecretsVaultKeyPost$Response(params: {
     key: SecretKey;
-    value?: null | string;
+    value?: string;
 
   }): Observable<StrictHttpResponse<void>> {
 
@@ -151,7 +151,7 @@ export class SecretsVaultService extends BaseService {
    */
   apiSecretsVaultKeyPost(params: {
     key: SecretKey;
-    value?: null | string;
+    value?: string;
 
   }): Observable<void> {
 

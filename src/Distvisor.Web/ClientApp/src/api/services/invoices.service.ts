@@ -35,7 +35,7 @@ export class InvoicesService extends BaseService {
    */
   apiInvoicesListGet$Plain$Response(params?: {
 
-  }): Observable<StrictHttpResponse<null | Array<Invoice>>> {
+  }): Observable<StrictHttpResponse<Array<Invoice>>> {
 
     const rb = new RequestBuilder(this.rootUrl, InvoicesService.ApiInvoicesListGetPath, 'get');
     if (params) {
@@ -48,7 +48,7 @@ export class InvoicesService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<null | Array<Invoice>>;
+        return r as StrictHttpResponse<Array<Invoice>>;
       })
     );
   }
@@ -61,10 +61,10 @@ export class InvoicesService extends BaseService {
    */
   apiInvoicesListGet$Plain(params?: {
 
-  }): Observable<null | Array<Invoice>> {
+  }): Observable<Array<Invoice>> {
 
     return this.apiInvoicesListGet$Plain$Response(params).pipe(
-      map((r: StrictHttpResponse<null | Array<Invoice>>) => r.body as null | Array<Invoice>)
+      map((r: StrictHttpResponse<Array<Invoice>>) => r.body as Array<Invoice>)
     );
   }
 
@@ -76,7 +76,7 @@ export class InvoicesService extends BaseService {
    */
   apiInvoicesListGet$Json$Response(params?: {
 
-  }): Observable<StrictHttpResponse<null | Array<Invoice>>> {
+  }): Observable<StrictHttpResponse<Array<Invoice>>> {
 
     const rb = new RequestBuilder(this.rootUrl, InvoicesService.ApiInvoicesListGetPath, 'get');
     if (params) {
@@ -89,7 +89,7 @@ export class InvoicesService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<null | Array<Invoice>>;
+        return r as StrictHttpResponse<Array<Invoice>>;
       })
     );
   }
@@ -102,10 +102,10 @@ export class InvoicesService extends BaseService {
    */
   apiInvoicesListGet$Json(params?: {
 
-  }): Observable<null | Array<Invoice>> {
+  }): Observable<Array<Invoice>> {
 
     return this.apiInvoicesListGet$Json$Response(params).pipe(
-      map((r: StrictHttpResponse<null | Array<Invoice>>) => r.body as null | Array<Invoice>)
+      map((r: StrictHttpResponse<Array<Invoice>>) => r.body as Array<Invoice>)
     );
   }
 
@@ -121,7 +121,7 @@ export class InvoicesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiInvoicesInvoiceIdGet$Response(params: {
-    invoiceId: null | string;
+    invoiceId: string;
 
   }): Observable<StrictHttpResponse<Blob>> {
 
@@ -149,7 +149,7 @@ export class InvoicesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiInvoicesInvoiceIdGet(params: {
-    invoiceId: null | string;
+    invoiceId: string;
 
   }): Observable<Blob> {
 
@@ -219,7 +219,7 @@ export class InvoicesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiInvoicesInvoiceIdSendMailPost$Response(params: {
-    invoiceId: null | string;
+    invoiceId: string;
 
   }): Observable<StrictHttpResponse<void>> {
 
@@ -247,7 +247,7 @@ export class InvoicesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiInvoicesInvoiceIdSendMailPost(params: {
-    invoiceId: null | string;
+    invoiceId: string;
 
   }): Observable<void> {
 

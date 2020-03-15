@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AuthService, IAuthResult } from '../auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApplicationPaths, ReturnUrlType } from '../auth.constants';
 import { UserService } from '../user.service';
 import { Subscription } from 'rxjs';
+import { AuthService } from 'src/api/services';
+import { AuthResult } from 'src/api/models';
 
 @Component({
   selector: 'app-login',
@@ -29,18 +30,18 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   onLogin() {
     this.isBusy = true;
-    this.subscription = this.authService.login(this.username, this.password)
+    this.subscription = this.authService.apiAuthLoginPost$Json$Json({ body: { username: this.username, password: this.password } })
       .subscribe(
         result => this.onAuthSuccess(result),
         err => this.onAuthFail(err));
   }
 
-  private onAuthSuccess(result: IAuthResult) {
-    this.userService.setUser(result.user)
+  private onAuthSuccess(result: AuthResult) {
+    this.userService.setUser(result)
     this.router.navigateByUrl(this.returnUrl);
   }
 
-  private onAuthFail(result: IAuthResult) {
+  private onAuthFail(result: AuthResult) {
     this.errorMessage = result.message;
     this.isBusy = false;
   }
