@@ -15,7 +15,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private authSubscription: Subscription;
 
   constructor(
-    private userService: AuthService,
+    private authService: AuthService,
     private navigationService: NavigationService,
     private apiConfiguration: ApiConfiguration,
     private signalrService: SignalrService,
@@ -47,45 +47,45 @@ export class AppComponent implements OnInit, OnDestroy {
       name: 'Notifications',
       icon: 'pi pi-bell',
       routerLink: '/notifications',
-      visibile: this.userService.isAuthenticated()
+      visibile: this.authService.isAuthenticated()
     });
 
     this.navigationService.registerApp({
       name: 'Invoices',
       icon: 'pi pi-dollar',
       routerLink: '/invoices',
-      visibile: this.userService.isAuthenticated()
+      visibile: this.authService.isAuthenticated()
     });
 
     this.navigationService.registerApp({
       name: 'Settings',
       icon: 'pi pi-cog',
       routerLink: '/settings',
-      visibile: this.userService.isAuthenticated()
+      visibile: this.authService.isAuthenticated()
     });
 
     this.navigationService.registerApp({
       name: 'Logout',
       icon: 'pi pi-sign-out',
       routerLink: '/auth/logout',
-      visibile: this.userService.isAuthenticated()
+      visibile: this.authService.isAuthenticated()
     });
 
     this.navigationService.registerApp({
       name: 'Login',
       icon: 'pi pi-sign-in',
       routerLink: '/auth/login',
-      visibile: this.userService.isAuthenticated().pipe(
+      visibile: this.authService.isAuthenticated().pipe(
         map(auth => !auth)),
     });
   }
 
   configureNotifications() {
-    this.authSubscription = this.userService.isAuthenticated()
+    this.authSubscription = this.authService.isAuthenticated()
       .pipe(skipWhile(auth => auth === false))
       .subscribe(auth => {
         if (auth) {
-          this.signalrService.connect(this.baseUrl, this.userService.getUser().accessToken);
+          this.signalrService.connect(this.baseUrl, this.authService.getUser().accessToken);
         }
         else {
           this.signalrService.disconnect();
