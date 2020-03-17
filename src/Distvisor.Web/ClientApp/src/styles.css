@@ -40,15 +40,26 @@ legend {
   font-size: 1.2rem !important;
 }
 
-.home-bg-img {
-  width: 100vw;
-  height: 100vh;
-  background-image: url('assets/images/home_bg_img.jpg');
-  opacity: 0.3;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  position: absolute;
-  z-index: -1; 
+.home-jumbo {
+  background-color: #343a40;
+  color: #ffffff;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  text-align: center;
+}
+
+.home-short-header {
+  font-size: 3rem;
+}
+
+.home-short-description {
+  max-width: 576px;
+  margin: auto;
+  text-align: justify;
+  font-size: 1.5rem;
+  font-weight: normal;
+}
+
+.rounded-img {
+  border-radius: 50%;
 }

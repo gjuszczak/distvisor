@@ -5,21 +5,12 @@ a.navbar-brand {
 }
 
 nav {
-  background-color: #8300ab;
+  background-color: #23272b;
   color: #ffffff;
 }
 
 nav a{
   color: #ffffff;
-}
-
-html {
-  font-size: 14px;
-}
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
 }
 
 .box-shadow {

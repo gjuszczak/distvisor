@@ -1,13 +1,12 @@
 <header>
-  <nav class="navbar border-bottom box-shadow mb-3">
+  <nav class="navbar box-shadow">
     <div class="container">
       <div class="navbar-brand">
-        <a [routerLink]="['/']">Distvisor</a>
-        <a *ngIf="navBrand"> -> {{navBrand}}</a>
+        <a [routerLink]="['/']" class="align-middle"><img src="assets/icons/icon-72x72.png" width="32" height="32"/></a>
+        <a *ngIf="navBrand" class="ml-3 align-middle">{{navBrand}}</a>
       </div>
       <p-menu #menu [popup]="true" [model]="items"></p-menu>
-      <p-button class="navbar-toggler" icon="pi pi-bars" label="Apps" (click)="menu.toggle($event)">
-      </p-button>
+      <button class="btn btn-dark" (click)="menu.toggle($event)">Apps <i class="pi pi-chevron-down align-middle"></i></button>
     </div>
   </nav>
 </header>
