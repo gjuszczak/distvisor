@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { MenuItem } from 'primeng/api';
 import { NavigationService, INavApp } from '../navigation.service';
-import { Subscription } from 'rxjs';
-import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-nav-menu',
@@ -11,7 +11,9 @@ import { Router, NavigationEnd } from '@angular/router';
 })
 export class NavMenuComponent implements OnInit, OnDestroy {
   navBrand: string;
-  items: MenuItem[] = [];
+  availableApps: INavApp[] = [];
+  menuItems: MenuItem[] = [];
+  isAnyMenuItem: boolean = false;
   subscriptions: Subscription[] = [];
 
   constructor(
@@ -21,20 +23,19 @@ export class NavMenuComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscriptions.push(
       this.navigationService.getRegisteredApps().subscribe(app => {
-        this.addApp(app);
-
-        if (app.visibile != null) {
+        this.availableApps.push(app);
+        if (app.menuVisibile != null) {
           this.subscriptions.push(
-            app.visibile.subscribe(visible => this.toggleApp(app, visible)));
+            app.menuVisibile.subscribe(visible => this.toggleAppMenuVisibility(app, visible)));
         }
       }));
 
     this.subscriptions.push(
       this.router.events.subscribe(event => {
         if (event instanceof NavigationEnd) {
-          var ix = this.items.findIndex(x => event.url.match('[^?]*')[0] === x.routerLink);
+          var ix = this.availableApps.findIndex(x => event.url.match('[^?]*')[0] === x.routerLink);
           if (ix >= 0) {
-            this.navBrand = this.items[ix].label;
+            this.navBrand = this.availableApps[ix].name;
           }
           else {
             this.navBrand = "";
@@ -43,31 +44,25 @@ export class NavMenuComponent implements OnInit, OnDestroy {
       }));
   }
 
-  addApp(app: INavApp) {
-    var ix = this.items.findIndex(x => x.label === app.name);
-    if (ix < 0) {
-      this.items.push({
-        label: app.name,
-        icon: app.icon,
-        routerLink: app.routerLink
-      });
-    }
-  }
-
-  removeApp(app: INavApp) {
-    var ix = this.items.findIndex(x => x.label === app.name);
-    if (ix >= 0) {
-      this.items.splice(ix, 1);
-    }
-  }
-
-  toggleApp(app: INavApp, visible: boolean) {
+  toggleAppMenuVisibility(app: INavApp, visible: boolean) {
     if (visible) {
-      this.addApp(app);
+      var ix = this.menuItems.findIndex(x => x.label === app.name);
+      if (ix < 0) {
+        this.menuItems.push({
+          label: app.name,
+          icon: app.icon,
+          routerLink: app.routerLink
+        });
+      }
     }
     else {
-      this.removeApp(app);
+      var ix = this.menuItems.findIndex(x => x.label === app.name);
+      if (ix >= 0) {
+        this.menuItems.splice(ix, 1);
+      }
     }
+
+    this.isAnyMenuItem = (this.menuItems.length > 0);
   }
 
   onNavBrandUpdate(newNavBrand: string) {

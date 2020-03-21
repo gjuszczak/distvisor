@@ -25,7 +25,7 @@ export class LogoutComponent implements OnInit, OnDestroy {
   }
 
   finalizeLogout() {
-    this.router.navigate(ApplicationPaths.LoginPathComponents);
+    this.router.navigateByUrl(ApplicationPaths.DefaultLoginRedirectPath);
   }
 
   ngOnDestroy(): void {

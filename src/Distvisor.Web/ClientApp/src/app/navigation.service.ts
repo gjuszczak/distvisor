@@ -4,7 +4,7 @@ export interface INavApp {
   name: string;
   icon: string | null;
   routerLink: string;
-  visibile?: Observable<boolean> | null;
+  menuVisibile?: Observable<boolean> | null;
 }
 
 export class NavigationService {

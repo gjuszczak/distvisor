@@ -30,3 +30,9 @@
   background: #24292e;
   color: white;
 }
+
+.hidden-link, .hidden-link:hover {
+  cursor: default;
+  color: inherit;
+  text-decoration: none;
+}
