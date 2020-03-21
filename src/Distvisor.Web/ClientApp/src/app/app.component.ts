@@ -1,10 +1,10 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { AuthService } from 'src/auth/auth.service';
-import { NavigationService } from 'src/navigation/navigation.service';
-import { map, skipWhile } from 'rxjs/operators';
-import { ApiConfiguration } from 'src/api/api-configuration';
-import { SignalrService } from 'src/notifications/signalr.service';
 import { Subscription } from 'rxjs';
+import { map, skipWhile } from 'rxjs/operators';
+import { AuthService } from '../auth/auth.service';
+import { NavigationService } from '../navigation/navigation.service';
+import { ApiConfiguration } from '../api/api-configuration';
+import { SignalrService } from '../notifications/signalr.service';
 
 @Component({
   selector: 'app-root',

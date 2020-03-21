@@ -8,6 +8,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { CardModule } from 'primeng/card';
 
+import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { AuthModule } from '../auth/auth.module';
@@ -15,14 +16,15 @@ import { AuthInterceptor } from '../auth/auth.interceptor';
 import { NavigationModule } from '../navigation/navigation.module';
 import { SettingsModule } from '../settings/settings.module';
 import { InvoicesModule } from '../invoices/invoices.module';
-import { environment } from '../environments/environment';
 import { ApiModule } from '../api/api.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
