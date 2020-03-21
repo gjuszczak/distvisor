@@ -38,7 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   configureNavigation() {
     this.navigationService.registerApp({
-      name: 'Home',
+      name: 'Distvisor',
       icon: 'pi pi-home',
       routerLink: '/'
     });
