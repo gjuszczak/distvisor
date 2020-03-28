@@ -14,6 +14,7 @@ namespace Distvisor.Web.Data
         public DbSet<OAuthTokenEntity> OAuthTokens { get; set; }
         public DbSet<NotificationEntity> Notifications { get; set; }
         public DbSet<SecretsVaultEntity> SecretsVault { get; set; }
+        public DbSet<RedirectionEntity> Redirections { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
