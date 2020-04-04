@@ -1,0 +1,70 @@
+name: Build Distvisor.Web preview
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build_preview_amd64:
+    name: Build preview-amd64
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+    
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.100
+
+    - name: dotnet publish
+      working-directory: src
+      run: dotnet publish -c Release -o ../deploy/preview-amd64/out Distvisor.Web
+
+    - name: Copy Dockerfile
+      working-directory: deploy
+      run: cp Dockerfile.preview-amd64 preview-amd64/Dockerfile
+
+    - name: Create and push docker image
+      working-directory: deploy/preview-amd64
+      run: |
+        docker build -t ${{ secrets.DOCKER_IMG_NAME }}:preview-amd64 .
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker push ${{ secrets.DOCKER_IMG_NAME }}:preview-amd64
+        
+  build_preview_arm32v7:
+    name: Build preview-arm32v7
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Setup Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+    
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.100
+
+    - name: dotnet publish
+      working-directory: src
+      run: dotnet publish -c Release -o ../deploy/preview-arm32v7/out -r linux-arm  Distvisor.Web
+
+    - name: Copy Dockerfile
+      working-directory: deploy
+      run: cp Dockerfile.preview-arm32v7 preview-arm32v7/Dockerfile
+
+    - name: Create and push docker image
+      working-directory: deploy/preview-arm32v7
+      run: |
+        docker build -t ${{ secrets.DOCKER_IMG_NAME }}:preview-arm32v7 .
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker push ${{ secrets.DOCKER_IMG_NAME }}:preview-arm32v7
