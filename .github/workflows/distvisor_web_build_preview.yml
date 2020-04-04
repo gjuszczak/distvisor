@@ -24,7 +24,7 @@ jobs:
 
     - name: dotnet publish
       working-directory: src
-      run: dotnet publish -c Release -o ../deploy/preview-amd64/out Distvisor.Web
+      run: dotnet publish -c Release -o ../deploy/amd64/out Distvisor.Web
 
     - name: Create and push docker image
       working-directory: deploy/preview-amd64
@@ -52,7 +52,7 @@ jobs:
 
     - name: dotnet publish
       working-directory: src
-      run: dotnet publish -c Release -o ../deploy/preview-arm32v7/out -r linux-arm  Distvisor.Web
+      run: dotnet publish -c Release -o ../deploy/arm32v7/out -r linux-arm  Distvisor.Web
 
     - name: Create and push docker image
       working-directory: deploy/preview-arm32v7
