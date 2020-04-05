@@ -1,12 +1,12 @@
-name: Build Distvisor.Web preview
+name: Distvisor.Web release
 
 on:
-  push:
-    branches: [ master ]
-
+  release:
+    types: [published]
+    
 jobs:
-  build_preview_amd64:
-    name: Build preview-amd64
+  build_release_amd64:
+    name: Build release-amd64
     runs-on: ubuntu-latest
     
     steps:
@@ -29,12 +29,13 @@ jobs:
     - name: Create and push docker image
       working-directory: deploy/amd64
       run: |
-        docker build -t ${{ secrets.DOCKER_IMG_NAME }}:preview-amd64 .
+        docker build -t ${{ secrets.DOCKER_IMG_NAME }}:${GITHUB_REF#refs/tags/} -t ${{ secrets.DOCKER_IMG_NAME }}:latest .
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker push ${{ secrets.DOCKER_IMG_NAME }}:preview-amd64
-        
-  build_preview_arm32v7:
-    name: Build preview-arm32v7
+        docker push ${{ secrets.DOCKER_IMG_NAME }}:${GITHUB_REF#refs/tags/}
+        docker push ${{ secrets.DOCKER_IMG_NAME }}:latest
+     
+  build_release_arm32v7:
+    name: Build release-arm32v7
     runs-on: ubuntu-latest
     
     steps:
@@ -52,11 +53,11 @@ jobs:
 
     - name: dotnet publish
       working-directory: src
-      run: dotnet publish -c Release -o ../deploy/arm32v7/out -r linux-arm  Distvisor.Web
+      run: dotnet publish -c Release -o ../deploy/arm32v7/out -r linux-arm Distvisor.Web
 
     - name: Create and push docker image
       working-directory: deploy/arm32v7
       run: |
-        docker build -t ${{ secrets.DOCKER_IMG_NAME }}:preview-arm32v7 .
+        docker build -t ${{ secrets.DOCKER_IMG_NAME }}:${GITHUB_REF#refs/tags/}-arm32v7 .
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker push ${{ secrets.DOCKER_IMG_NAME }}:preview-arm32v7
+        docker push ${{ secrets.DOCKER_IMG_NAME }}:${GITHUB_REF#refs/tags/}-arm32v7
