@@ -1,7 +1,7 @@
 {
   "short_name": "Distvisor",
   "name": "Distvisor",
-  "theme_color": "#8300ab",
+  "theme_color": "#23272b",
   "background_color": "#fafafa",
   "display": "standalone",
   "scope": "/",

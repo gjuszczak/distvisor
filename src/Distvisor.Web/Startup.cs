@@ -19,14 +19,12 @@ namespace Distvisor.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration config, IWebHostEnvironment env)
+        public Startup(IConfiguration config)
         {
             Config = config;
-            Env = env;
         }
 
         public IConfiguration Config { get; }
-        public IWebHostEnvironment Env { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -48,13 +46,13 @@ namespace Distvisor.Web
             services.AddScoped<INotificationStore, NotificationStore>();
             services.AddScoped<IRedirectionsService, RedirectionsService>();
 
-            services.AddProdOrDevHttpClient<IMailgunClient, MailgunClient, FakeMailgunClient>(Env, Config)
+            services.AddProdOrDevHttpClient<IMailgunClient, MailgunClient, FakeMailgunClient>(Config)
                 .ConfigureHttpClient(c =>
                 {
                     c.BaseAddress = new Uri("https://api.eu.mailgun.net/");
                 });
 
-            services.AddProdOrDevHttpClient<IGithubClient, GithubClient, FakeGithubClient>(Env, Config)
+            services.AddProdOrDevHttpClient<IGithubClient, GithubClient, FakeGithubClient>(Config)
                 .ConfigureHttpClient(c =>
                 {
                     c.BaseAddress = new Uri("https://api.github.com/");

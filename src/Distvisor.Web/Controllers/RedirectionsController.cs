@@ -23,9 +23,9 @@ namespace Distvisor.Web.Controllers
             var redirection = await _redirections.GetRedirectionAsync(name);
             if (redirection == null)
             {
-                return Redirect("/");
+                return RedirectPermanent("/");
             }
-            return Redirect(redirection.Url.ToString());
+            return RedirectPermanent(redirection.Url.ToString());
         }
 
         [HttpDelete("{name}")]
