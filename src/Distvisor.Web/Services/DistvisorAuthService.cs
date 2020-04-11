@@ -1,5 +1,7 @@
 ﻿using Distvisor.Web.Data;
 using Distvisor.Web.Data.Entities;
+using Distvisor.Web.Data.EventSourcing;
+using Distvisor.Web.Data.EventSourcing.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System;
@@ -21,17 +23,20 @@ namespace Distvisor.Web.Services
         private readonly DistvisorContext _context;
         private readonly ICryptoService _crypto;
         private readonly IAuthTokenStore _tokenStore;
+        private readonly IEventStore _eventStore;
         private readonly IMemoryCache _cache;
 
         public DistvisorAuthService(
             DistvisorContext context,
             ICryptoService crypto,
             IAuthTokenStore tokenStore,
+            IEventStore eventStore,
             IMemoryCache cache)
         {
             _context = context;
             _crypto = crypto;
             _tokenStore = tokenStore;
+            _eventStore = eventStore;
             _cache = cache;
         }
 
@@ -153,6 +158,11 @@ namespace Distvisor.Web.Services
                 PasswordHash = _crypto.GeneratePasswordHash(password),
                 LockoutUtc = DateTime.UtcNow,
             };
+            _eventStore.Publish(new AddUserEvent
+            {
+                Username = newUser.Username,
+                PasswordHash = newUser.PasswordHash,
+            });
             _context.Add(newUser);
             return _context.SaveChangesAsync();
         }

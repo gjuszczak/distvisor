@@ -1,5 +1,11 @@
+using Distvisor.Web.Configuration;
+using Distvisor.Web.Data;
+using Distvisor.Web.Data.EventSourcing.Core;
+using Distvisor.Web.Hubs;
+using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
@@ -7,13 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Distvisor.Web.Data;
-using Distvisor.Web.Services;
-using System.Text.Json.Serialization;
-using Distvisor.Web.Configuration;
-using Microsoft.AspNetCore.Http;
-using Distvisor.Web.Hubs;
 using System;
+using System.Text.Json.Serialization;
 
 namespace Distvisor.Web
 {
@@ -62,6 +63,8 @@ namespace Distvisor.Web
 
             services.AddDbContext<DistvisorContext>(options =>
             options.UseSqlite(Config.GetConnectionString("Sqlite")));
+
+            services.AddEventSourcing();
 
             services.AddControllersWithViews()
                 .AddJsonOptions(opts =>
