@@ -1,6 +1,7 @@
-﻿using Distvisor.Web.Data;
-using Distvisor.Web.Data.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Distvisor.Web.Data.Entities;
+using Distvisor.Web.Data.Events;
+using Distvisor.Web.Data.Events.Core;
+using Distvisor.Web.Data.Reads;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
@@ -20,25 +21,27 @@ namespace Distvisor.Web.Services
 
     public class SecretsVault : ISecretsVault
     {
-        private readonly DistvisorContext _context;
+        private readonly ReadStore _context;
+        private readonly IEventStore _eventStore;
         private readonly IMemoryCache _cache;
 
-        public SecretsVault(DistvisorContext context, IMemoryCache cache)
+        public SecretsVault(ReadStore context, IEventStore eventStore, IMemoryCache cache)
         {
             _context = context;
+            _eventStore = eventStore;
             _cache = cache;
         }
 
-        public Task<List<SecretKey>> ListSecretKeysAsync()
+        public async Task<List<SecretKey>> ListSecretKeysAsync()
         {
-            return _context.SecretsVault.Select(x => x.Key).ToListAsync();
+            return _context.SecretsVault.FindAll().Select(x => x.Key).ToList();
         }
 
         public string GetSecretValue(SecretKey key)
         {
             if (!_cache.TryGetValue(key, out string secretValue))
             {
-                var secretsVaultEntity = _context.SecretsVault.Find(key);
+                var secretsVaultEntity = _context.SecretsVault.FindOne(x=> x.Key == key);
 
                 if (!string.IsNullOrEmpty(secretsVaultEntity?.Value))
                 {
@@ -57,11 +60,7 @@ namespace Distvisor.Web.Services
 
         public async Task RemoveSecretAsync(SecretKey key)
         {
-            SecretsVaultEntity e = new SecretsVaultEntity() { Key = key };
-            _context.SecretsVault.Attach(e);
-            _context.SecretsVault.Remove(e);
-            await _context.SaveChangesAsync();
-
+            _eventStore.Publish(new RemoveSecretEvent { Key = key });
             _cache.Remove(key);
         }
 
@@ -70,16 +69,7 @@ namespace Distvisor.Web.Services
             var valueBytes = Encoding.UTF8.GetBytes(value);
             var entityValue = Convert.ToBase64String(valueBytes);
 
-            var secretsVaultEntity = await _context.SecretsVault.FindAsync(key);
-            if (secretsVaultEntity == null)
-            {
-                secretsVaultEntity = new SecretsVaultEntity { Key = key };
-                _context.SecretsVault.Add(secretsVaultEntity);
-            }
-
-            secretsVaultEntity.Value = entityValue;
-
-            await _context.SaveChangesAsync();
+            _eventStore.Publish(new SetSecretEvent { Key = key, Value = entityValue });
 
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                         .SetPriority(CacheItemPriority.NeverRemove);

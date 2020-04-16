@@ -1,11 +1,9 @@
-﻿using Distvisor.Web.Data;
-using Distvisor.Web.Data.Entities;
-using Distvisor.Web.Data.EventSourcing;
-using Distvisor.Web.Data.EventSourcing.Core;
-using Microsoft.EntityFrameworkCore;
+﻿using Distvisor.Web.Data.Entities;
+using Distvisor.Web.Data.Events;
+using Distvisor.Web.Data.Events.Core;
+using Distvisor.Web.Data.Reads;
 using Microsoft.Extensions.Caching.Memory;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
@@ -20,14 +18,14 @@ namespace Distvisor.Web.Services
 
     public class DistvisorAuthService : IDistvisorAuthService
     {
-        private readonly DistvisorContext _context;
+        private readonly ReadStore _context;
         private readonly ICryptoService _crypto;
         private readonly IAuthTokenStore _tokenStore;
         private readonly IEventStore _eventStore;
         private readonly IMemoryCache _cache;
 
         public DistvisorAuthService(
-            DistvisorContext context,
+            ReadStore context,
             ICryptoService crypto,
             IAuthTokenStore tokenStore,
             IEventStore eventStore,
@@ -66,18 +64,18 @@ namespace Distvisor.Web.Services
 
         public async Task<AuthResult> LoginAsync(string username, string password)
         {
-            if (!await _context.Users.AnyAsync())
+            if (_context.Users.Count() == 0)
             {
                 await CreateUserAsync(username, password);
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+            var user = _context.Users.FindOne(x => x.Username == username);
             if (user == null)
             {
                 return AuthResult.Fail("Invalid username or password");
             }
 
-            var lockoutSeconds = (int)(user.LockoutUtc - DateTime.UtcNow).TotalSeconds - 50;
+            long lockoutSeconds = (long)((user.LockoutUtc - DateTime.UtcNow).TotalSeconds - 50);
             if (lockoutSeconds > 0)
             {
                 return AuthResult.Fail($"Lockout for {lockoutSeconds} seconds.");
@@ -87,7 +85,7 @@ namespace Distvisor.Web.Services
             if (!authenticated)
             {
                 user.LockoutUtc = user.LockoutUtc > DateTime.UtcNow ? user.LockoutUtc.AddSeconds(10) : DateTime.UtcNow.AddSeconds(10);
-                await _context.SaveChangesAsync();
+                _context.Users.Update(user);
                 return AuthResult.Fail("Invalid username or password");
             }
 
@@ -103,10 +101,12 @@ namespace Distvisor.Web.Services
 
         public async Task<AuthResult> RefreshAccessTokenAsync(string refreshToken)
         {
-            var user = await _context.OAuthTokens
+            var userId = _context.OAuthTokens.Query()
                 .Where(x => x.RefreshToken == refreshToken && x.Issuer == OAuthTokenIssuer.Distvisor)
-                .Select(x => x.User)
-                .SingleOrDefaultAsync();
+                .Select(x => x.UserId)
+                .SingleOrDefault();
+
+            var user = _context.Users.FindOne(x => x.Id == userId);
 
             if (user == null)
             {
@@ -137,7 +137,7 @@ namespace Distvisor.Web.Services
             var cacheKey = $"DistvisorAuthService_Username_{userId}";
             if (!_cache.TryGetValue(cacheKey, out string username))
             {
-                var user = await _context.Users.FindAsync(userId);
+                var user = _context.Users.FindOne(x => x.Id == userId);
                 username = user.Username;
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
@@ -149,22 +149,14 @@ namespace Distvisor.Web.Services
             return username;
         }
 
-        private Task CreateUserAsync(string username, string password)
+        private async Task CreateUserAsync(string username, string password)
         {
-            var newUser = new UserEntity()
+            _eventStore.Publish(new AddUserEvent
             {
                 Id = Guid.NewGuid(),
                 Username = username,
                 PasswordHash = _crypto.GeneratePasswordHash(password),
-                LockoutUtc = DateTime.UtcNow,
-            };
-            _eventStore.Publish(new AddUserEvent
-            {
-                Username = newUser.Username,
-                PasswordHash = newUser.PasswordHash,
             });
-            _context.Add(newUser);
-            return _context.SaveChangesAsync();
         }
     }
 

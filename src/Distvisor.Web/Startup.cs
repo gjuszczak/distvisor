@@ -1,6 +1,6 @@
 using Distvisor.Web.Configuration;
-using Distvisor.Web.Data;
-using Distvisor.Web.Data.EventSourcing.Core;
+using Distvisor.Web.Data.Events.Core;
+using Distvisor.Web.Data.Reads;
 using Distvisor.Web.Hubs;
 using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Builder;
@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -61,10 +60,9 @@ namespace Distvisor.Web
                     c.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
                 });
 
-            services.AddDbContext<DistvisorContext>(options =>
-            options.UseSqlite(Config.GetConnectionString("Sqlite")));
 
-            services.AddEventSourcing();
+            services.AddEventStore();
+            services.AddReadStore();
 
             services.AddControllersWithViews()
                 .AddJsonOptions(opts =>
@@ -89,17 +87,14 @@ namespace Distvisor.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DistvisorContext context)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            context.Database.Migrate();
-
             var pwaProvider = new FileExtensionContentTypeProvider();
             pwaProvider.Mappings[".webmanifest"] = "application/manifest+json";
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
 
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>

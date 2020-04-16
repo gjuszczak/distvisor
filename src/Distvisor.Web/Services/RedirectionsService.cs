@@ -1,6 +1,6 @@
-﻿using Distvisor.Web.Data;
-using Distvisor.Web.Data.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Distvisor.Web.Data.Events;
+using Distvisor.Web.Data.Events.Core;
+using Distvisor.Web.Data.Reads;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
@@ -19,12 +19,14 @@ namespace Distvisor.Web.Services
 
     public class RedirectionsService : IRedirectionsService
     {
-        private readonly DistvisorContext _context;
+        private readonly ReadStore _context;
+        private readonly IEventStore _eventStore;
         private readonly IMemoryCache _cache;
 
-        public RedirectionsService(DistvisorContext context, IMemoryCache cache)
+        public RedirectionsService(ReadStore context, IEventStore eventStore, IMemoryCache cache)
         {
             _context = context;
+            _eventStore = eventStore;
             _cache = cache;
         }
 
@@ -32,7 +34,7 @@ namespace Distvisor.Web.Services
         {
             if (!_cache.TryGetValue(name, out RedirectionDetails redirection))
             {
-                var entity = await _context.Redirections.FindAsync(name);
+                var entity = _context.Redirections.FindOne(x => x.Name == name);
 
                 if (entity != null)
                 {
@@ -50,32 +52,27 @@ namespace Distvisor.Web.Services
 
         public async Task RemoveRedirectionAsync(string name)
         {
-            var e = new RedirectionEntity() { Name = name };
-            _context.Redirections.Attach(e);
-            _context.Redirections.Remove(e);
-            await _context.SaveChangesAsync();
+            _eventStore.Publish(new RemoveRedirectionEvent
+            {
+                Name = name,
+            });
 
             _cache.Remove(name);
         }
 
         public async Task<IEnumerable<RedirectionDetails>> ListRedirectionsAsync()
         {
-            var entities = await _context.Redirections.ToListAsync();
+            var entities = _context.Redirections.FindAll();
             return entities.Select(x => new RedirectionDetails(x.Name, x.Url)).ToList();
         }
 
         public async Task ConfigureRedirectionAsync(RedirectionDetails redirection)
         {
-            var entity = await _context.Redirections.FindAsync(redirection.Name);
-            if (entity == null)
+            _eventStore.Publish(new SetRedirectionEvent
             {
-                entity = new RedirectionEntity { Name = redirection.Name };
-                _context.Redirections.Add(entity);
-            }
-
-            entity.Url = redirection.Url.ToString();
-
-            await _context.SaveChangesAsync();
+                Name = redirection.Name,
+                Url = redirection.Url.ToString()
+            }); ;
 
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                         .SetPriority(CacheItemPriority.NeverRemove);

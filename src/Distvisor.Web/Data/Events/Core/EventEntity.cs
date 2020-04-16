@@ -1,7 +1,7 @@
 ﻿using LiteDB;
 using System;
 
-namespace Distvisor.Web.Data.EventSourcing.Core
+namespace Distvisor.Web.Data.Events.Core
 {
     public class EventEntity
     {

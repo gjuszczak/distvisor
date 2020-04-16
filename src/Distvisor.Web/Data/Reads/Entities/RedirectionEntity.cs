@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
 
 namespace Distvisor.Web.Data.Entities
 {
     public class RedirectionEntity
     {
-        [Key]
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Url { get; set; }
     }

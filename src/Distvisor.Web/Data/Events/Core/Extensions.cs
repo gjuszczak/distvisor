@@ -1,17 +1,17 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
-namespace Distvisor.Web.Data.EventSourcing.Core
+namespace Distvisor.Web.Data.Events.Core
 {
     public static class Extensions
     {
-        public static void AddEventSourcing(this IServiceCollection services)
+        public static void AddEventStore(this IServiceCollection services)
         {
+            services.AddSingleton<IDbProvider, DbProvider>();
             services.RegisterEventHandlers();
-            services.AddSingleton<IEventStore, EventStore>();
-            services.AddHostedService<EventSourcingBootstrap>();
+            services.AddScoped<IEventStore, EventStore>();
+            services.AddHostedService<EventStoreBootstrap>();
         }
 
         private static void RegisterEventHandlers(this IServiceCollection services)
@@ -40,14 +40,10 @@ namespace Distvisor.Web.Data.EventSourcing.Core
                 throw new InvalidOperationException("Only one handler per event can be defined.");
             }
 
-            services.AddSingleton<IEventHandler<object>>(sp =>
-            {
-                var mapping = handlers.ToDictionary(h => h.EventType, h => h.HandlerType);
-                return new EventHandlerResolver(sp, mapping);
-            });
+            handlers.ForEach(h => services.AddScoped(h.HandlerType, h.ImplementationType));
 
-            handlers.ForEach(h => services.AddSingleton(h.HandlerType, h.ImplementationType));
-
+            var mapping = handlers.ToDictionary(h => h.EventType, h => h.HandlerType);
+            services.AddScoped<IEventHandler<object>>(sp => new EventHandlerResolver(sp, mapping));
         }
     }
 }

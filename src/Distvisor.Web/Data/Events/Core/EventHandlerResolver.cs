@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Distvisor.Web.Data.EventSourcing.Core
+namespace Distvisor.Web.Data.Events.Core
 {
     public interface IEventHandler<T>
     {

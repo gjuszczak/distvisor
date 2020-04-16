@@ -15,20 +15,18 @@ namespace Distvisor.Web.Services
 
     public class NotificationStore : INotificationStore
     {
-        private readonly DistvisorContext _context;
         private readonly IUserInfoProvider _userInfo;
 
-        public NotificationStore(DistvisorContext context, IUserInfoProvider userInfo)
+        public NotificationStore(IUserInfoProvider userInfo)
         {
-            _context = context;
             _userInfo = userInfo;
         }
 
         public async Task StoreNotificationAsync(Notification notification)
         {
-            var user = await _context.Users.FindAsync(_userInfo.UserId);
-            user.Notifications.Add(notification.ToEntity());
-            await _context.SaveChangesAsync();
+            //var user = await _context.Users.FindAsync(_userInfo.UserId);
+            //user.Notifications.Add(notification.ToEntity());
+            //await _context.SaveChangesAsync();
         }
     }
 

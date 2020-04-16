@@ -1,6 +1,5 @@
-﻿using Distvisor.Web.Data;
-using Distvisor.Web.Data.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Distvisor.Web.Data.Entities;
+using Distvisor.Web.Data.Reads;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System;
@@ -20,9 +19,9 @@ namespace Distvisor.Web.Services
     public class AuthTokenStore : IAuthTokenStore
     {
         private readonly IMemoryCache _cache;
-        private readonly DistvisorContext _context;
+        private readonly ReadStore _context;
 
-        public AuthTokenStore(IMemoryCache cache, DistvisorContext context)
+        public AuthTokenStore(IMemoryCache cache, ReadStore context)
         {
             _cache = cache;
             _context = context;
@@ -30,21 +29,20 @@ namespace Distvisor.Web.Services
 
         public async Task StoreUserTokenAsync(OAuthToken token, Guid userId)
         {
-            var user = await _context.Users.FindAsync(userId);
+            var user = _context.Users.FindOne(x=> x.Id == userId);
             if (user == null)
             {
                 throw new InvalidOperationException($"Unable to store user token. User with id = {userId} does not exists.");
             }
 
-            var tokenEntity = await _context.OAuthTokens
-                .Where(x => x.User == user && x.Issuer == token.Issuer)
-                .SingleOrDefaultAsync();
+            var tokenEntity = _context.OAuthTokens.Query()
+                .Where(x => x.UserId == userId && x.Issuer == token.Issuer)
+                .FirstOrDefault();
 
             if (tokenEntity == null)
             {
                 tokenEntity = new OAuthTokenEntity();
-                tokenEntity.User = user;
-                _context.OAuthTokens.Add(tokenEntity);
+                tokenEntity.UserId = userId;
             }
 
             tokenEntity.Issuer = token.Issuer;
@@ -55,7 +53,7 @@ namespace Distvisor.Web.Services
             tokenEntity.RefreshToken = token.RefreshToken;
             tokenEntity.UtcIssueDate = token.UtcIssueDate;
 
-            await _context.SaveChangesAsync();
+            _context.OAuthTokens.Upsert(tokenEntity);
 
             SetCache(token.Issuer, userId, token);
             SetCache(token.Issuer, token.AccessToken, userId);
@@ -63,17 +61,16 @@ namespace Distvisor.Web.Services
 
         public async Task ClearUserTokenAsync(OAuthTokenIssuer issuer, Guid userId)
         {
-            var token = await _context.OAuthTokens
-                  .Where(x => x.User.Id == userId && x.Issuer == issuer)
-                  .SingleOrDefaultAsync();
+            var token = _context.OAuthTokens.Query()
+                  .Where(x => x.UserId == userId && x.Issuer == issuer)
+                  .SingleOrDefault();
 
             if (token == null)
             {
                 return;
             }
 
-            _context.OAuthTokens.Remove(token);
-            await _context.SaveChangesAsync();
+            _context.OAuthTokens.Delete(token.Id);
 
             _cache.Remove(GetTokenCacheKey(issuer, userId));
             _cache.Remove(GetUserIdCacheKey(issuer, token.AccessToken));
@@ -83,9 +80,9 @@ namespace Distvisor.Web.Services
         {
             if (!_cache.TryGetValue(GetTokenCacheKey(issuer, userId), out OAuthToken token))
             {
-                var tokenEntity = await _context.OAuthTokens
-                  .Where(x => x.User.Id == userId && x.Issuer == issuer)
-                  .SingleOrDefaultAsync();
+                var tokenEntity = _context.OAuthTokens.Query()
+                  .Where(x => x.UserId == userId && x.Issuer == issuer)
+                  .SingleOrDefault();
 
                 token = ConvertEntityToToken(tokenEntity);
 
@@ -104,13 +101,12 @@ namespace Distvisor.Web.Services
         {
             if (!_cache.TryGetValue(GetUserIdCacheKey(issuer, accessToken), out Guid? userId))
             {
-                var tokenEntity = await _context.OAuthTokens
-                    .Include(x => x.User)
+                var tokenEntity = _context.OAuthTokens.Query()
                     .Where(x => x.AccessToken == accessToken && x.Issuer == issuer)
-                    .SingleOrDefaultAsync();
+                    .SingleOrDefault();
 
                 var token = ConvertEntityToToken(tokenEntity);
-                userId = tokenEntity?.User?.Id;
+                userId = tokenEntity?.UserId;
 
                 SetCache(issuer, accessToken, userId);
 
