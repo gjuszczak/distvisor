@@ -60,6 +60,11 @@ namespace Distvisor.Web
                     c.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
                 });
 
+            services.AddProdOrDevHttpClient<IIFirmaClient, IFirmaClient, FakeIFirmaClient>(Config)
+                .ConfigureHttpClient(c =>
+                {
+                    c.BaseAddress = new Uri("https://www.ifirma.pl/");
+                });
 
             services.AddEventStore();
             services.AddReadStore();

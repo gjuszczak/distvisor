@@ -25,51 +25,26 @@ namespace Distvisor.Web.Services
         private readonly DateTime _bottomDateLimit;
         private readonly RestClient _httpClient;
         private readonly AccountingSecrets _secrets;
+        private readonly IIFirmaClient _client;
 
-        public InvoicesService(ISecretsVault keyVault)
+        public InvoicesService(ISecretsVault keyVault, IIFirmaClient client)
         {
             _httpClient = new RestClient("https://www.ifirma.pl/");
             _secrets = keyVault.GetAccountingSecrets();
             _bottomDateLimit = new DateTime(2019, 10, 3);
+
+            client.Configure(_secrets.InvoicesApiKey, _secrets.SubscriberApiKey, _secrets.User);
+            _client = client;
         }
 
         public async Task<IEnumerable<Invoice>> GetInvoicesAsync()
         {
-            var request = new RestRequest("iapi/faktury.json", Method.GET);
-            request.AddParameter("dataOd", _bottomDateLimit.ToString("yyyy-MM-dd"));
-            request.AddParameter("dataDo", DateTime.Now.Date.ToString("yyyy-MM-dd"));
-            request.AddHeader("Authentication", GenerateInvoiceAuthHeaderAsync(request));
-
-            var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
-            var jobject = JObject.Parse(response.Content);
-            var invoices = jobject.SelectToken("response.Wynik").Value<JArray>();
-            var result = invoices
-                .Select(x => x.Value<JObject>())
-                .Select(x => new Invoice
-                {
-                    Id = x["FakturaId"].Value<string>(),
-                    Number = "FV " + x["PelnyNumer"].Value<string>(),
-                    Customer = x["IdentyfikatorKontrahenta"].Value<string>(),
-                    Amount = x["Brutto"].Value<decimal>(),
-                    IssueDate = DateTime.ParseExact(x["DataWystawienia"].Value<string>(), "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                    WorkDays = 0,
-                })
-                .ToList();
-
-            return result;
+            return await _client.GetInvoicesAsync();
         }
 
         public async Task<byte[]> GetInvoicePdfAsync(string invoiceId)
         {
-            var request = new RestRequest("iapi/fakturakraj/{invoiceId}.pdf.single", Method.GET);
-            request.AddUrlSegment("invoiceId", invoiceId);
-            request.AddHeader("Accept", "application/pdf");
-            request.AddHeader("Authentication", GenerateInvoiceAuthHeaderAsync(request));
-
-            var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
-            var result = response.RawBytes;
-
-            return result;
+            return await _client.GetInvoicePdfAsync(invoiceId);
         }
 
         public async Task<DateTime> GetActiveMonthAsync()
