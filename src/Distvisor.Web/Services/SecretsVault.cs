@@ -90,16 +90,6 @@ namespace Distvisor.Web.Services
             };
         }
 
-        public static MailgunSecrets GetMailgunSecrets(this ISecretsVault secretsVault)
-        {
-            return new MailgunSecrets
-            {
-                ApiKey = secretsVault.GetSecretValue(SecretKey.MailgunApiKey),
-                Domain = secretsVault.GetSecretValue(SecretKey.MailgunDomain),
-                ToAddress = secretsVault.GetSecretValue(SecretKey.MailgunToAddress),
-            };
-        }
-
         public static GithubSecrets GetGithubSecrets(this ISecretsVault secretsVault)
         {
             return new GithubSecrets
@@ -126,13 +116,6 @@ namespace Distvisor.Web.Services
         public string InvoicesApiKey { get; set; }
         public string SubscriberApiKey { get; set; }
         public string User { get; set; }
-    }
-
-    public class MailgunSecrets
-    {
-        public string ApiKey { get; set; }
-        public string Domain { get; set; }
-        public string ToAddress { get; set; }
     }
 
     public class GithubSecrets

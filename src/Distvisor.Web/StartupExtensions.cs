@@ -5,7 +5,7 @@ namespace Distvisor.Web
 {
     public static class StartupExtensions
     {
-        public static IHttpClientBuilder AddProdOrDevHttpClient<TClient, TImplementation, TFakeImplementation>(
+        public static IHttpClientBuilder AddHttpClient<TClient, TImplementation, TFakeImplementation>(
             this IServiceCollection services,
             IConfiguration config
             )

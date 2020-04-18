@@ -3,22 +3,19 @@ using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
 {
-    public interface IEmailService
+    public interface IMailingService
     {
         Task SendInvoicePdfAsync(byte[] invoicePdf);
     }
 
-    public class EmailService : IEmailService
+    public class MailingService : IMailingService
     {
-        private readonly IMailgunClient _mailgunClient;
-        private readonly MailgunSecrets _secrets;
+        private readonly IMailgunClient _client;
         private readonly INotificationService _notifications;
 
-        public EmailService(ISecretsVault keyVault, IMailgunClient mailgunClient, INotificationService notifications)
+        public MailingService(IMailgunClient mailgunClient, INotificationService notifications)
         {
-            _secrets = keyVault.GetMailgunSecrets();
-            _mailgunClient = mailgunClient;
-            _mailgunClient.Configure(_secrets.Domain, _secrets.ApiKey);
+            _client = mailgunClient;
             _notifications = notifications;
         }
 
@@ -26,12 +23,12 @@ namespace Distvisor.Web.Services
         {
             try
             {
-                await _mailgunClient.SendEmailAsync(new MailgunEmail
+                await _client.SendEmailAsync(new MailgunEmail
                 {
-                    From = $"Distvisor <noreply@{_secrets.Domain}>",
-                    To = _secrets.ToAddress,
+                    From = $"Distvisor <noreply@{_client.Config.Domain}>",
+                    To = _client.Config.ToAddress,
                     Subject = "Faktura od Distvisior",
-                    Text = "Hejka.Faktura w zalaczniku.",
+                    Text = "Hejka. Faktura w zalaczniku.",
                     Attachments = new MailgunAttachment[]
                     {
                         new MailgunAttachment

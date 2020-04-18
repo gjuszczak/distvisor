@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Distvisor.Web.Configuration;
+using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -10,10 +12,7 @@ namespace Distvisor.Web.Services
 {
     public interface IMailgunClient
     {
-        string ApiKey { get; }
-        string Domain { get; }
-
-        void Configure(string domain, string apiKey);
+        MailgunConfiguration Config { get; }
         Task SendEmailAsync(MailgunEmail email);
     }
 
@@ -21,31 +20,24 @@ namespace Distvisor.Web.Services
     {
         private readonly HttpClient _httpClient;
 
-        public MailgunClient(HttpClient client)
+        public MailgunClient(HttpClient client, IOptions<MailgunConfiguration> config)
         {
             _httpClient = client;
-        }
+            Config = config.Value;
 
-        public string Domain { get; private set; }
-
-        public string ApiKey { get; private set; }
-
-        public void Configure(string domain, string apiKey)
-        {
-            Domain = domain;
-            ApiKey = apiKey;
-
-            var basicValue = Convert.ToBase64String(Encoding.ASCII.GetBytes($"api:{apiKey}"));
+            var basicValue = Convert.ToBase64String(Encoding.ASCII.GetBytes($"api:{Config.ApiKey}"));
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", basicValue);
         }
 
+        public MailgunConfiguration Config { get; }
+
         public async Task SendEmailAsync(MailgunEmail email)
         {
-            EnsureConfigured();
-
-            var url = new UriBuilder(_httpClient.BaseAddress);
-            url.Port = -1;
-            url.Path = $"v3/{Domain}/messages";
+            var url = new UriBuilder(_httpClient.BaseAddress)
+            {
+                Port = -1,
+                Path = $"v3/{Config.Domain}/messages"
+            };
 
             var requestContent = new MultipartFormDataContent();
             requestContent.Add(new StringContent(email.From), "from");
@@ -68,14 +60,6 @@ namespace Distvisor.Web.Services
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
         }
-
-        private void EnsureConfigured()
-        {
-            if (string.IsNullOrEmpty(Domain) || string.IsNullOrEmpty(ApiKey))
-            {
-                throw new InvalidOperationException("Mailgun client must be configured before first use");
-            }
-        }
     }
 
     public class FakeMailgunClient : IMailgunClient
@@ -87,17 +71,15 @@ namespace Distvisor.Web.Services
             _notifications = notifications;
         }
 
-        public string Domain { get; private set; }
-
-        public string ApiKey { get; private set; }
-
-        public void Configure(string domain, string apiKey)
+        public MailgunConfiguration Config => new MailgunConfiguration
         {
-        }
+            ApiKey = "fakeApiKey",
+            Domain = "fakeDomain",
+        };
 
         public async Task SendEmailAsync(MailgunEmail email)
         {
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(1));
 
             await _notifications.PushFakeApiUsedAsync("mailgun", new
             {

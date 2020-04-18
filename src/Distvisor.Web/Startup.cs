@@ -29,14 +29,15 @@ namespace Distvisor.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<EnvConfiguration>(Config.GetSection("EnvConfiguration"));
+            services.Configure<DistvisorConfiguration>(Config.GetSection("Distvisor"));
+            services.Configure<MailgunConfiguration>(Config.GetSection("Mailgun"));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ICryptoService, CryptoService>();
             services.AddScoped<IUpdateService, UpdateService>();
             services.AddScoped<IDistvisorAuthService, DistvisorAuthService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
-            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IMailingService, MailingService>();
             services.AddScoped<ISecretsVault, SecretsVault>();
             services.AddScoped<IMicrosoftAuthService, MicrosoftAuthService>();
             services.AddScoped<IAuthTokenStore, AuthTokenStore>();
@@ -46,14 +47,14 @@ namespace Distvisor.Web
             services.AddScoped<INotificationStore, NotificationStore>();
             services.AddScoped<IRedirectionsService, RedirectionsService>();
 
-            services.AddProdOrDevHttpClient<IMailgunClient, MailgunClient, FakeMailgunClient>(Config)
+            services.AddHttpClient<IMailgunClient, MailgunClient, FakeMailgunClient>(Config)
                 .ConfigureHttpClient(c =>
                 {
                     c.BaseAddress = new Uri("https://api.eu.mailgun.net/");
                     c.DefaultRequestHeaders.Add("Accept", "application/json");
                 });
 
-            services.AddProdOrDevHttpClient<IGithubClient, GithubClient, FakeGithubClient>(Config)
+            services.AddHttpClient<IGithubClient, GithubClient, FakeGithubClient>(Config)
                 .ConfigureHttpClient(c =>
                 {
                     c.BaseAddress = new Uri("https://api.github.com/");
@@ -61,7 +62,7 @@ namespace Distvisor.Web
                     c.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
                 });
 
-            services.AddProdOrDevHttpClient<IIFirmaClient, IFirmaClient, FakeIFirmaClient>(Config)
+            services.AddHttpClient<IIFirmaClient, IFirmaClient, FakeIFirmaClient>(Config)
                 .ConfigureHttpClient(c =>
                 {
                     c.BaseAddress = new Uri("https://www.ifirma.pl/");

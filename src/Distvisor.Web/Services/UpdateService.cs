@@ -14,11 +14,11 @@ namespace Distvisor.Web.Services
 
     public class UpdateService : IUpdateService
     {
-        private readonly EnvConfiguration _env;
+        private readonly DistvisorConfiguration _env;
         private readonly IGithubClient _github;
         private readonly INotificationService _notifications;
 
-        public UpdateService(IOptions<EnvConfiguration> env, IGithubClient github, INotificationService notifications, ISecretsVault keyVault)
+        public UpdateService(IOptions<DistvisorConfiguration> env, IGithubClient github, INotificationService notifications, ISecretsVault keyVault)
         {
             _env = env.Value;
             _notifications = notifications;

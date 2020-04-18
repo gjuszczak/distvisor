@@ -1,6 +1,6 @@
 ﻿namespace Distvisor.Web.Configuration
 {
-    public class EnvConfiguration
+    public class DistvisorConfiguration
     {
         public string CurrentVersion { get; set; }
     }
