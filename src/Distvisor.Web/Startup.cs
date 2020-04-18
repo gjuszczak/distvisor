@@ -50,6 +50,7 @@ namespace Distvisor.Web
                 .ConfigureHttpClient(c =>
                 {
                     c.BaseAddress = new Uri("https://api.eu.mailgun.net/");
+                    c.DefaultRequestHeaders.Add("Accept", "application/json");
                 });
 
             services.AddProdOrDevHttpClient<IGithubClient, GithubClient, FakeGithubClient>(Config)
@@ -64,6 +65,7 @@ namespace Distvisor.Web
                 .ConfigureHttpClient(c =>
                 {
                     c.BaseAddress = new Uri("https://www.ifirma.pl/");
+                    c.DefaultRequestHeaders.Add("Accept", "application/json");
                 });
 
             services.AddEventStore();

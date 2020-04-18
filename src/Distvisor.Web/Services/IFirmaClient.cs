@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -17,8 +18,12 @@ namespace Distvisor.Web.Services
         string User { get; }
 
         void Configure(string invoicesApiKey, string subscriberApiKey, string user);
+        Task GenerateInvoiceAsync(string templateInvoiceId, DateTime issueDate, int quantity);
+        Task<DateTime> GetActiveMonthAsync();
+        Task<JObject> GetInvoiceJsonAsync(string invoiceId);
         Task<byte[]> GetInvoicePdfAsync(string invoiceId);
         Task<IEnumerable<Invoice>> GetInvoicesAsync();
+        Task SetActiveMonthAsync(DateTime date);
     }
 
     public class IFirmaClient : IIFirmaClient
@@ -51,19 +56,19 @@ namespace Distvisor.Web.Services
             query.Add("dataOd", _bottomDateLimit.ToString("yyyy-MM-dd"));
             query.Add("dataDo", DateTime.Now.Date.ToString("yyyy-MM-dd"));
 
-            var url = new UriBuilder(_httpClient.BaseAddress);
-            url.Port = -1;
-            url.Path = $"iapi/faktury.json";
-            url.Query = query.ToString();
+            var url = new UriBuilder(_httpClient.BaseAddress)
+            {
+                Port = -1,
+                Path = $"iapi/faktury.json",
+                Query = query.ToString()
+            };
 
             var request = new HttpRequestMessage(HttpMethod.Get, url.ToString());
-            request.Headers.Authorization = await GenerateInvoiceAuthHeaderAsync(request);
+            request.Headers.Add("Authentication", await GenerateInvoiceAuthHeaderAsync(request));
 
             var response = await _httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
+            var jobject = await ParseResponseContentAsync(response);
 
-            var content = await response.Content.ReadAsStringAsync();
-            var jobject = JObject.Parse(content);
             var invoices = jobject.SelectToken("response.Wynik").Value<JArray>();
             var result = invoices
                 .Select(x => x.Value<JObject>())
@@ -85,18 +90,186 @@ namespace Distvisor.Web.Services
         {
             EnsureConfigured();
 
-            var url = new UriBuilder(_httpClient.BaseAddress);
-            url.Port = -1;
-            url.Path = $"iapi/fakturakraj/{invoiceId}.pdf.single";
+            var url = new UriBuilder(_httpClient.BaseAddress)
+            {
+                Port = -1,
+                Path = $"iapi/fakturakraj/{invoiceId}.pdf.single"
+            };
 
             var request = new HttpRequestMessage(HttpMethod.Get, url.ToString());
-            request.Headers.Authorization = await GenerateInvoiceAuthHeaderAsync(request);
+            request.Headers.Add("Authentication", await GenerateInvoiceAuthHeaderAsync(request));
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var result = await response.Content.ReadAsByteArrayAsync();
             return result;
+        }
+
+        public async Task<DateTime> GetActiveMonthAsync()
+        {
+            EnsureConfigured();
+
+            var url = new UriBuilder(_httpClient.BaseAddress)
+            {
+                Port = -1,
+                Path = $"iapi/abonent/miesiacksiegowy.json"
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url.ToString());
+            request.Headers.Add("Authentication", await GenerateSubscriberAuthHeaderAsync(request));
+
+            var response = await _httpClient.SendAsync(request);
+            var jobject = await ParseResponseContentAsync(response);
+
+            var year = jobject["response"].Value<int>("RokKsiegowy");
+            var month = jobject["response"].Value<int>("MiesiacKsiegowy");
+            var date = new DateTime(year, month, 1);
+
+            return date;
+        }
+
+        public async Task SetActiveMonthAsync(DateTime date)
+        {
+            EnsureConfigured();
+
+            if (date < _bottomDateLimit)
+            {
+                throw new Exception($"Cannot set active month before {_bottomDateLimit:yyyy-MM-dd}.");
+            }
+
+            var now = DateTime.Now;
+            if (date.Year > now.Year || (date.Year == now.Year && date.Month > now.Month))
+            {
+                throw new Exception("Cannot set active month for future.");
+            }
+
+            var target = new DateTime(date.Year, date.Month, 1);
+            var current = await GetActiveMonthAsync();
+            var monthDiff = ((target.Year - current.Year) * 12) + target.Month - current.Month;
+            if (monthDiff == 0)
+            {
+                return;
+            }
+
+            var goUp = monthDiff > 0;
+            var absMonthDiff = Math.Abs(monthDiff);
+            for (int i = 0; i < absMonthDiff; i++)
+            {
+                var url = new UriBuilder(_httpClient.BaseAddress)
+                {
+                    Port = -1,
+                    Path = $"iapi/abonent/miesiacksiegowy.json"
+                };
+
+                var jsonContent = JsonSerializer.Serialize(new
+                {
+                    MiesiacKsiegowy = goUp ? "NAST" : "POPRZ",
+                    PrzeniesDaneZPoprzedniegoRoku = true,
+                });
+
+                var request = new HttpRequestMessage(HttpMethod.Put, url.ToString());
+                request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                request.Headers.Add("Authentication", await GenerateSubscriberAuthHeaderAsync(request));
+
+                var response = await _httpClient.SendAsync(request);
+                await ParseResponseContentAsync(response);
+            }
+        }
+
+        public async Task<JObject> GetInvoiceJsonAsync(string invoiceId)
+        {
+            EnsureConfigured();
+
+            var url = new UriBuilder(_httpClient.BaseAddress)
+            {
+                Port = -1,
+                Path = $"iapi/fakturakraj/{invoiceId}.json"
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url.ToString());
+            request.Headers.Add("Authentication", await GenerateInvoiceAuthHeaderAsync(request));
+
+            var response = await _httpClient.SendAsync(request);
+            var jobject = await ParseResponseContentAsync(response);
+
+            return jobject.Value<JObject>("response");
+        }
+
+        public async Task GenerateInvoiceAsync(string templateInvoiceId, DateTime issueDate, int quantity)
+        {
+            EnsureConfigured();
+
+            if (issueDate < _bottomDateLimit)
+            {
+                throw new ArgumentException($"Cannot issue invoice before {_bottomDateLimit:yyyy-MM-dd}.");
+            }
+
+            var now = DateTime.Now;
+            if (issueDate.Year > now.Year || (issueDate.Year == now.Year && issueDate.Month > now.Month))
+            {
+                throw new Exception("Cannot issue invoice for future months.");
+            }
+
+            await SetActiveMonthAsync(issueDate);
+
+            var templateInvoice = await GetInvoiceJsonAsync(templateInvoiceId);
+            templateInvoice["Zaplacono"] = 0;
+            templateInvoice["ZaplaconoNaDokumencie"] = 0;
+            templateInvoice["NumerKontaBankowego"] = null;
+            templateInvoice["PrefiksUEKontrahenta"].Parent.Remove();
+            templateInvoice["NIPKontrahenta"].Parent.Remove();
+            templateInvoice["DataWystawienia"] = issueDate.ToString("yyyy-MM-dd");
+            templateInvoice["DataSprzedazy"] = issueDate.ToString("yyyy-MM-dd");
+            templateInvoice["TerminPlatnosci"] = issueDate.AddDays(14).ToString("yyyy-MM-dd");
+            templateInvoice["Numer"] = null;
+            templateInvoice["Pozycje"][0]["Ilosc"] = quantity;
+            templateInvoice["Pozycje"][0]["Id"].Parent.Remove();
+            templateInvoice["Pozycje"][0]["CenaZRabatem"].Parent.Remove();
+            templateInvoice["Pozycje"][0]["StawkaRyczaltu"].Parent.Remove();
+            templateInvoice["Pozycje"][0]["MagazynPozycjaId"].Parent.Remove();
+            templateInvoice["Pozycje"][0]["MagazynMagazynId"].Parent.Remove();
+            templateInvoice["Pozycje"][0]["MagazynObiektSprzedazyId"].Parent.Remove();
+
+            if (templateInvoice["IdentyfikatorKontrahenta"].Value<string>() == null)
+            {
+                templateInvoice["IdentyfikatorKontrahenta"] = templateInvoice["Kontrahent"]["Identyfikator"].Value<string>();
+            }
+
+            var url = new UriBuilder(_httpClient.BaseAddress)
+            {
+                Port = -1,
+                Path = $"iapi/fakturakraj.json"
+            };
+
+            var jsonContent = templateInvoice.ToString();
+
+            var request = new HttpRequestMessage(HttpMethod.Post, url.ToString());
+            request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            request.Headers.Add("Authentication", await GenerateInvoiceAuthHeaderAsync(request));
+
+            var response = await _httpClient.SendAsync(request);
+            await ParseResponseContentAsync(response);
+
+        }
+
+        private async Task<JObject> ParseResponseContentAsync(HttpResponseMessage response)
+        {
+            response.EnsureSuccessStatusCode();
+            var content = await response.Content?.ReadAsStringAsync();
+            if (string.IsNullOrEmpty(content))
+            {
+                throw new InvalidOperationException("Http response content is null or empty");
+            }
+            var jobject = JObject.Parse(content);
+            var errorCode = jobject.SelectToken("response.Kod")?.Value<int>() ?? 0;
+            if (errorCode > 0)
+            {
+                var errorMsg = jobject.SelectToken("response.Informacja")?.Value<string>() ?? "";
+
+                throw new InvalidOperationException($"ErrorCode: {errorCode}, ErrorMsg: {errorMsg}.");
+            }
+            return jobject;
         }
 
         private void EnsureConfigured()
@@ -107,17 +280,17 @@ namespace Distvisor.Web.Services
             }
         }
 
-        private Task<AuthenticationHeaderValue> GenerateInvoiceAuthHeaderAsync(HttpRequestMessage request)
+        private Task<string> GenerateInvoiceAuthHeaderAsync(HttpRequestMessage request)
         {
             return GenerateAuthHeaderAsync(request, "faktura", InvoicesApiKey);
         }
 
-        private Task<AuthenticationHeaderValue> GenerateSubscriberAuthHeaderAsync(HttpRequestMessage request)
+        private Task<string> GenerateSubscriberAuthHeaderAsync(HttpRequestMessage request)
         {
             return GenerateAuthHeaderAsync(request, "abonent", SubscriberApiKey);
         }
 
-        private async Task<AuthenticationHeaderValue> GenerateAuthHeaderAsync(HttpRequestMessage request, string apiKeyName, string apiKeyValue)
+        private async Task<string> GenerateAuthHeaderAsync(HttpRequestMessage request, string apiKeyName, string apiKeyValue)
         {
             var user = User;
             var keyBytes = Enumerable
@@ -132,7 +305,11 @@ namespace Distvisor.Web.Services
             {
                 url = url.Replace(fullUrl.Query, "");
             }
-            var requestContent = await request.Content.ReadAsStringAsync();
+            var requestContent = "";
+            if (request.Content != null)
+            {
+                requestContent = await request.Content.ReadAsStringAsync();
+            }
             var stringToHash = $"{url}{user}{apiKeyName}{requestContent}";
             var encoder = new System.Text.UTF8Encoding();
             var textBytes = encoder.GetBytes(stringToHash);
@@ -141,7 +318,7 @@ namespace Distvisor.Web.Services
             string hash = BitConverter.ToString(hashCode).Replace("-", "").ToLower();
             string auth = $"IAPIS user={user}, hmac-sha1={hash}";
 
-            return new AuthenticationHeaderValue("Authentication", auth);
+            return auth;
         }
     }
 
@@ -160,6 +337,28 @@ namespace Distvisor.Web.Services
 
         public void Configure(string invoicesApiKey, string subscriberApiKey, string user)
         {
+        }
+
+        public async Task GenerateInvoiceAsync(string templateInvoiceId, DateTime issueDate, int quantity)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            await _notifications.PushFakeApiUsedAsync("ifirma", new
+            {
+                templateInvoiceId,
+                issueDate,
+                quantity,
+            });
+        }
+
+        public Task<DateTime> GetActiveMonthAsync()
+        {
+            return Task.FromResult(DateTime.Now);
+        }
+
+        public Task<JObject> GetInvoiceJsonAsync(string invoiceId)
+        {
+            return Task.FromResult(JObject.Parse("{}"));
         }
 
         public Task<byte[]> GetInvoicePdfAsync(string invoiceId)
@@ -192,6 +391,14 @@ namespace Distvisor.Web.Services
                 },
             };
             return Task.FromResult(result.AsEnumerable());
+        }
+
+        public async Task SetActiveMonthAsync(DateTime date)
+        {
+            await _notifications.PushFakeApiUsedAsync("ifirma", new
+            {
+                date,
+            });
         }
     }
 }

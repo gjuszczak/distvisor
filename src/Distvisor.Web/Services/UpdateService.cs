@@ -37,7 +37,7 @@ namespace Distvisor.Web.Services
             catch (Exception exc)
             {
                 await _notifications.PushErrorAsync("Unable to get available releases", exc);
-                return new string[0];
+                throw;
             }
         }
 
@@ -52,6 +52,7 @@ namespace Distvisor.Web.Services
             catch (Exception exc)
             {
                 await _notifications.PushErrorAsync($"Unable to start {version} update", exc);
+                throw;
             }
         }        
     }
