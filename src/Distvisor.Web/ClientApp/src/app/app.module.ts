@@ -6,14 +6,14 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
+import { MsalModule, MsalInterceptor, MsalService } from '@azure/msal-angular';
+
 import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-import { AuthModule } from '../auth/auth.module';
-import { AuthInterceptor } from '../auth/auth.interceptor';
 import { SettingsModule } from '../settings/settings.module';
 import { InvoicesModule } from '../invoices/invoices.module';
 import { ApiModule } from '../api/api.module';
@@ -21,11 +21,14 @@ import { NotificationsModule } from '../notifications/notifications.module';
 import { FooterComponent } from './footer/footer.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { NavigationService } from './navigation.service';
+import { AuthService } from './auth.service';
+import { LogoutComponent } from './logout/logout.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
+    LogoutComponent,
     NavMenuComponent,
     FooterComponent
   ],
@@ -35,10 +38,13 @@ import { NavigationService } from './navigation.service';
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
-    AuthModule,
     RouterModule.forRoot([
+      { path: 'logout', component: LogoutComponent, pathMatch: 'full' },
       { path: '', component: HomeComponent, pathMatch: 'full' },
     ]),
+
+    // Msal
+    MsalModule,
 
     // PrimeNg
     MenuModule,
@@ -51,8 +57,10 @@ import { NavigationService } from './navigation.service';
     ApiModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    NavigationService
+    { provide: HTTP_INTERCEPTORS, useClass: MsalInterceptor, multi: true },
+    MsalService,
+    NavigationService,
+    AuthService,
   ],
   bootstrap: [AppComponent]
 })

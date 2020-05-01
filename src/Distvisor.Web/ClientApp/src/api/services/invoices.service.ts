@@ -121,7 +121,7 @@ export class InvoicesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiInvoicesInvoiceIdGet$Response(params: {
-    invoiceId: string;
+    invoiceId: null | string;
 
   }): Observable<StrictHttpResponse<Blob>> {
 
@@ -149,7 +149,7 @@ export class InvoicesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiInvoicesInvoiceIdGet(params: {
-    invoiceId: string;
+    invoiceId: null | string;
 
   }): Observable<Blob> {
 
@@ -219,7 +219,7 @@ export class InvoicesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiInvoicesInvoiceIdSendMailPost$Response(params: {
-    invoiceId: string;
+    invoiceId: null | string;
 
   }): Observable<StrictHttpResponse<void>> {
 
@@ -247,7 +247,7 @@ export class InvoicesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiInvoicesInvoiceIdSendMailPost(params: {
-    invoiceId: string;
+    invoiceId: null | string;
 
   }): Observable<void> {
 

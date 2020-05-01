@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { MsalGuard } from '@azure/msal-angular';
 
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
@@ -14,7 +15,6 @@ import { SpinnerModule } from 'primeng/spinner';
 import { PanelModule } from 'primeng/panel';
 
 import { InvoicesComponent } from './invoices/invoices.component';
-import { AuthGuard } from '../auth/auth.guard';
 
 @NgModule({
   imports: [
@@ -22,7 +22,7 @@ import { AuthGuard } from '../auth/auth.guard';
     FormsModule,
     HttpClientModule,
     RouterModule.forRoot([
-      { path: 'invoices', component: InvoicesComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+      { path: 'invoices', component: InvoicesComponent, pathMatch: 'full', canActivate: [MsalGuard] },
     ]),
 
     // PrimeNg

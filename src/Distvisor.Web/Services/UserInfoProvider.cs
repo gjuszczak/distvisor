@@ -22,8 +22,8 @@ namespace Distvisor.Web.Services
 
         public bool IsAuthenticated => _user.Identity.IsAuthenticated;
 
-        public string UserName => _user.Identity.Name;
+        public string UserName => _user.FindFirstValue("preferred_username");
 
-        public Guid UserId => Guid.Parse(_user.FindFirst(ClaimTypes.NameIdentifier).Value);
+        public Guid UserId => Guid.Parse(_user.FindFirstValue("http://schemas.microsoft.com/identity/claims/objectidentifier"));
     }
 }

@@ -6,9 +6,6 @@ export enum SecretKey {
   GithubApiKey = 'GithubApiKey',
   GithubRepoName = 'GithubRepoName',
   GithubRepoOwner = 'GithubRepoOwner',
-  MailgunApiKey = 'MailgunApiKey',
-  MailgunDomain = 'MailgunDomain',
-  MailgunToAddress = 'MailgunToAddress',
   MicrosoftAppClientId = 'MicrosoftAppClientId',
   MicrosoftAppSecret = 'MicrosoftAppSecret',
   MicrosoftAuthRedirectUri = 'MicrosoftAuthRedirectUri'

@@ -3,6 +3,9 @@ using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Data.Reads;
 using Distvisor.Web.Hubs;
 using Distvisor.Web.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -29,13 +32,13 @@ namespace Distvisor.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ClientConfiguration>(Config.GetSection("ClientConfig"));
             services.Configure<DistvisorConfiguration>(Config.GetSection("Distvisor"));
             services.Configure<MailgunConfiguration>(Config.GetSection("Mailgun"));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ICryptoService, CryptoService>();
             services.AddScoped<IUpdateService, UpdateService>();
-            services.AddScoped<IDistvisorAuthService, DistvisorAuthService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
             services.AddScoped<IMailingService, MailingService>();
             services.AddScoped<ISecretsVault, SecretsVault>();
@@ -85,7 +88,14 @@ namespace Distvisor.Web
 
             services.AddSignalR();
 
-            services.AddDistvisorAuth();
+            services.AddAuthentication(AzureADDefaults.JwtBearerAuthenticationScheme)
+                .AddAzureADBearer(options => Config.Bind("AzureAd", options));
+
+            services.Configure<JwtBearerOptions>(AzureADDefaults.JwtBearerAuthenticationScheme, options =>
+            {
+                options.Authority += "/v2.0";
+                options.TokenValidationParameters.ValidAudiences = new[] { options.Audience, $"api://{options.Audience}" };
+            });
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

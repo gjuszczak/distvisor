@@ -121,7 +121,7 @@ export class SecretsVaultService extends BaseService {
    */
   apiSecretsVaultKeyPost$Response(params: {
     key: SecretKey;
-    value?: string;
+    value?: null | string;
 
   }): Observable<StrictHttpResponse<void>> {
 
@@ -151,7 +151,7 @@ export class SecretsVaultService extends BaseService {
    */
   apiSecretsVaultKeyPost(params: {
     key: SecretKey;
-    value?: string;
+    value?: null | string;
 
   }): Observable<void> {
 

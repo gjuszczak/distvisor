@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { map, skipWhile } from 'rxjs/operators';
 import { NavigationService } from './navigation.service';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from './auth.service';
 import { ApiConfiguration } from '../api/api-configuration';
 import { SignalrService } from '../notifications/signalr.service';
 
@@ -23,6 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.configureAuth();
     this.configureApi();
     this.configureNavigation();
     this.configureNotifications();
@@ -35,18 +36,16 @@ export class AppComponent implements OnInit, OnDestroy {
   configureApi() {
     this.apiConfiguration.rootUrl = this.baseUrl.replace(/\/$/, "");
   }
+  
+  configureAuth() {
+
+  }
 
   configureNavigation() {
     this.navigationService.registerApp({
       name: 'Distvisor',
       icon: 'pi pi-home',
       routerLink: '/'
-    });
-
-    this.navigationService.registerApp({
-      name: 'Login',
-      icon: 'pi pi-sign-in',
-      routerLink: '/auth/login',
     });
 
     this.navigationService.registerApp({
@@ -73,20 +72,20 @@ export class AppComponent implements OnInit, OnDestroy {
     this.navigationService.registerApp({
       name: 'Logout',
       icon: 'pi pi-sign-out',
-      routerLink: '/auth/logout',
+      routerLink: '/logout',
       menuVisibile: this.authService.isAuthenticated()
     });
   }
 
   configureNotifications() {
-    this.authSubscription = this.authService.isAuthenticated()
-      .pipe(skipWhile(auth => auth === false))
-      .subscribe(auth => {
-        if (auth) {
-          this.signalrService.connect(this.baseUrl, this.authService.getUser().accessToken);
+    this.authSubscription = this.authService.accessToken()
+      .pipe(skipWhile(token => token === null))
+      .subscribe(token => {
+        if (token === null) {
+          this.signalrService.disconnect();
         }
         else {
-          this.signalrService.disconnect();
+          this.signalrService.connect(this.baseUrl, token);
         }
       });
   }

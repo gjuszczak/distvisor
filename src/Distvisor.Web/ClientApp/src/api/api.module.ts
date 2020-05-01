@@ -3,7 +3,6 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
-import { AuthService } from './services/auth.service';
 import { InvoicesService } from './services/invoices.service';
 import { MicrosoftService } from './services/microsoft.service';
 import { RedirectionsService } from './services/redirections.service';
@@ -18,7 +17,6 @@ import { SettingsService } from './services/settings.service';
   exports: [],
   declarations: [],
   providers: [
-    AuthService,
     InvoicesService,
     MicrosoftService,
     RedirectionsService,

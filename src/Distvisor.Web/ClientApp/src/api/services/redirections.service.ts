@@ -33,7 +33,7 @@ export class RedirectionsService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiRedirectionsNameGet$Response(params: {
-    name: string;
+    name: null | string;
 
   }): Observable<StrictHttpResponse<void>> {
 
@@ -61,7 +61,7 @@ export class RedirectionsService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiRedirectionsNameGet(params: {
-    name: string;
+    name: null | string;
 
   }): Observable<void> {
 
@@ -82,7 +82,7 @@ export class RedirectionsService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiRedirectionsNameDelete$Response(params: {
-    name: string;
+    name: null | string;
 
   }): Observable<StrictHttpResponse<void>> {
 
@@ -110,7 +110,7 @@ export class RedirectionsService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiRedirectionsNameDelete(params: {
-    name: string;
+    name: null | string;
 
   }): Observable<void> {
 

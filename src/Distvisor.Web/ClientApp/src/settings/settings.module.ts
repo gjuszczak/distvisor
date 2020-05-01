@@ -3,13 +3,13 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { MsalGuard } from '@azure/msal-angular';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { DropdownModule } from 'primeng/dropdown';
 import { FieldsetModule } from 'primeng/fieldset';
 import { InputTextModule } from 'primeng/inputtext';
 import { ApiModule } from '../api/api.module';
-import { AuthGuard } from '../auth/auth.guard';
 import { SettingsComponent } from './settings/settings.component';
 import { UpdatesComponent } from './updates/updates.component';
 import { MicrosoftAuthComponent } from './microsoft-auth/microsoft-auth.component';
@@ -23,7 +23,7 @@ import { RedirectionsComponent } from './redirections/redirections.component';
     FormsModule,
     HttpClientModule,
     RouterModule.forRoot([
-      { path: 'settings', component: SettingsComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+      { path: 'settings', component: SettingsComponent, pathMatch: 'full', canActivate: [MsalGuard] },
     ]),
 
     // PrimeNg
