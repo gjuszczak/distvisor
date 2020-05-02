@@ -6,17 +6,9 @@ import { MicrosoftService } from 'src/api/services';
   selector: 'app-microsoft-auth',
   templateUrl: './microsoft-auth.component.html'
 })
-export class MicrosoftAuthComponent implements OnInit {
-  authUri: string;
+export class MicrosoftAuthComponent {
 
   constructor(private microsoftService: MicrosoftService) { }
-
-  ngOnInit() {
-    this.microsoftService.apiMicrosoftAuthUriGet$Json()
-      .subscribe(authParams => {
-        this.authUri = authParams.authUri;
-      });
-  }
 
   onBackup() {
     this.microsoftService.apiMicrosoftBackupGet()

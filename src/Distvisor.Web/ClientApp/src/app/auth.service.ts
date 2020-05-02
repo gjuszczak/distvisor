@@ -26,7 +26,7 @@ export class AuthService {
     this.broadcastService.subscribe("msal:acquireTokenSuccess", payload => {
       this.accessTokenSubject.next(payload['accessToken']);
     });
-    
+
     this.broadcastService.subscribe("msal:acquireTokenFailure", payload => {
       this.accessTokenSubject.next(null);
     });
@@ -65,7 +65,7 @@ export class AuthService {
 
 class DistinctBehaviorSubject<T> extends BehaviorSubject<T> {
   public next(value: T): void {
-      if (value !== this.value)
-          super.next(value);
+    if (value !== this.value)
+      super.next(value);
   }
 }

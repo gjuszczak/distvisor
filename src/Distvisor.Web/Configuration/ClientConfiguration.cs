@@ -3,11 +3,16 @@
     public class ClientConfiguration
     {
         public MsalConfiguration Msal { get; set; }
+        public MsalAngularConfiguration MsalAngular { get; set; }
     }
 
     public class MsalConfiguration
     {
         public AuthMsalConfiguration Auth { get; set; }
+    }
+    public class MsalAngularConfiguration
+    {
+        public string[] ConsentScopes { get; set; }
     }
 
     public class AuthMsalConfiguration

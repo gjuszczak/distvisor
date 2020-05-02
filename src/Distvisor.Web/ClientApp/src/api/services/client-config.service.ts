@@ -12,7 +12,7 @@ import { map, filter } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
-export class MicrosoftService extends BaseService {
+export class ClientConfigService extends BaseService {
   constructor(
     config: ApiConfiguration,
     http: HttpClient
@@ -21,21 +21,21 @@ export class MicrosoftService extends BaseService {
   }
 
   /**
-   * Path part for operation apiMicrosoftBackupGet
+   * Path part for operation apiClientConfigGet
    */
-  static readonly ApiMicrosoftBackupGetPath = '/api/Microsoft/backup';
+  static readonly ApiClientConfigGetPath = '/api/ClientConfig';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiMicrosoftBackupGet()` instead.
+   * To access only the response body, use `apiClientConfigGet()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiMicrosoftBackupGet$Response(params?: {
+  apiClientConfigGet$Response(params?: {
 
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, MicrosoftService.ApiMicrosoftBackupGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, ClientConfigService.ApiClientConfigGetPath, 'get');
     if (params) {
 
 
@@ -53,15 +53,15 @@ export class MicrosoftService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiMicrosoftBackupGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiClientConfigGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiMicrosoftBackupGet(params?: {
+  apiClientConfigGet(params?: {
 
   }): Observable<void> {
 
-    return this.apiMicrosoftBackupGet$Response(params).pipe(
+    return this.apiClientConfigGet$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }

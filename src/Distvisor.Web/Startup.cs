@@ -3,8 +3,6 @@ using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Data.Reads;
 using Distvisor.Web.Hubs;
 using Distvisor.Web.Services;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +31,7 @@ namespace Distvisor.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<ClientConfiguration>(Config.GetSection("ClientConfig"));
+            services.Configure<AzureAdConfiguration>(Config.GetSection("AzureAd"));
             services.Configure<DistvisorConfiguration>(Config.GetSection("Distvisor"));
             services.Configure<MailgunConfiguration>(Config.GetSection("Mailgun"));
 
@@ -88,14 +87,19 @@ namespace Distvisor.Web
 
             services.AddSignalR();
 
-            services.AddAuthentication(AzureADDefaults.JwtBearerAuthenticationScheme)
-                .AddAzureADBearer(options => Config.Bind("AzureAd", options));
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    var config = Config.GetSection("AzureAd").Get<AzureAdConfiguration>();
+                    options.Authority = config.Instance + config.TenantId + "/v2.0";
+                    options.SaveToken = true;
 
-            services.Configure<JwtBearerOptions>(AzureADDefaults.JwtBearerAuthenticationScheme, options =>
-            {
-                options.Authority += "/v2.0";
-                options.TokenValidationParameters.ValidAudiences = new[] { options.Audience, $"api://{options.Audience}" };
-            });
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        ValidAudiences = new[] { config.ClientId },
+                        ValidIssuers = new[] { options.Authority }
+                    };
+                });
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

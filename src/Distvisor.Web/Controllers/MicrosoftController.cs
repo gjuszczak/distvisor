@@ -1,7 +1,6 @@
 ﻿using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
@@ -10,31 +9,11 @@ namespace Distvisor.Web.Controllers
     [Route("api/[controller]")]
     public class MicrosoftController : ControllerBase
     {
-        private readonly IMicrosoftAuthService _authService;
         private readonly IMicrosoftOneDriveService _oneDriveService;
 
-        public MicrosoftController(IMicrosoftAuthService authService, IMicrosoftOneDriveService oneDriveService)
+        public MicrosoftController(IMicrosoftOneDriveService oneDriveService)
         {
-            _authService = authService;
             _oneDriveService = oneDriveService;
-        }
-
-        [Authorize]
-        [HttpGet("auth-uri")]
-        public MicrosoftAuthDto AuthUri()
-        {
-            return new MicrosoftAuthDto
-            {
-                AuthUri = _authService.GetAuthorizeUri()
-            };
-        }
-
-        [HttpGet("auth-redirect")]
-        public async Task<IActionResult> AuthRedirect(string code, string state)
-        {
-            var userId = Guid.Parse(state);
-            var token = await _authService.ExchangeAuthCodeForBearerTokenAsync(code, userId);
-            return Redirect("/settings");
         }
 
         [Authorize]

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
 {
@@ -9,21 +11,25 @@ namespace Distvisor.Web.Services
         bool IsAuthenticated { get; }
         string UserName { get; }
         Guid UserId { get; }
+
+        Task<string> GetAccessTokenAsync();
     }
 
     public class UserInfoProvider : IUserInfoProvider
     {
-        private readonly ClaimsPrincipal _user;
+        private readonly HttpContext _httpContext;
 
         public UserInfoProvider(IHttpContextAccessor httpContextAccessor)
         {
-            _user = httpContextAccessor.HttpContext.User;
+            _httpContext = httpContextAccessor.HttpContext;
         }
 
-        public bool IsAuthenticated => _user.Identity.IsAuthenticated;
+        public bool IsAuthenticated => _httpContext.User.Identity.IsAuthenticated;
 
-        public string UserName => _user.FindFirstValue("preferred_username");
+        public string UserName => _httpContext.User.FindFirstValue("preferred_username");
 
-        public Guid UserId => Guid.Parse(_user.FindFirstValue("http://schemas.microsoft.com/identity/claims/objectidentifier"));
+        public Guid UserId => Guid.Parse(_httpContext.User.FindFirstValue("http://schemas.microsoft.com/identity/claims/objectidentifier"));
+
+        public async Task<string> GetAccessTokenAsync() => await _httpContext.GetTokenAsync("access_token");
     }
 }

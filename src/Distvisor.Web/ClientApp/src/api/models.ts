@@ -1,6 +1,5 @@
 export { Invoice } from './models/invoice';
 export { GenerateInvoiceDto } from './models/generate-invoice-dto';
-export { MicrosoftAuthDto } from './models/microsoft-auth-dto';
 export { RedirectionDetails } from './models/redirection-details';
 export { SecretKey } from './models/secret-key';
 export { DbUpdateStrategy } from './models/db-update-strategy';
