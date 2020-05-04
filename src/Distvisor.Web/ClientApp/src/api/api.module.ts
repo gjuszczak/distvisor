@@ -3,12 +3,12 @@ import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
+import { AccountService } from './services/account.service';
+import { AdminService } from './services/admin.service';
 import { ClientConfigService } from './services/client-config.service';
 import { InvoicesService } from './services/invoices.service';
-import { MicrosoftService } from './services/microsoft.service';
 import { RedirectionsService } from './services/redirections.service';
 import { SecretsVaultService } from './services/secrets-vault.service';
-import { SettingsService } from './services/settings.service';
 
 /**
  * Module that provides all services and configuration.
@@ -18,12 +18,12 @@ import { SettingsService } from './services/settings.service';
   exports: [],
   declarations: [],
   providers: [
+    AccountService,
+    AdminService,
     ClientConfigService,
     InvoicesService,
-    MicrosoftService,
     RedirectionsService,
     SecretsVaultService,
-    SettingsService,
     ApiConfiguration
   ],
 })

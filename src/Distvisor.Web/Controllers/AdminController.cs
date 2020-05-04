@@ -11,19 +11,21 @@ namespace Distvisor.Web.Controllers
     [ApiController]
     [Authorize]
     [Route("api/[controller]")]
-    public class SettingsController : ControllerBase
+    public class AdminController : ControllerBase
     {
-        private readonly IUpdateService _github;
+        private readonly IMicrosoftOneDriveService _oneDriveService;
+        private readonly IUpdateService _updateService;
 
-        public SettingsController(IUpdateService github)
+        public AdminController(IUpdateService updateService, IMicrosoftOneDriveService oneDriveService)
         {
-            _github = github;
+            _updateService = updateService;
+            _oneDriveService = oneDriveService;
         }
 
         [HttpGet("update-params")]
         public async Task<UpdateParamsResponseDto> GetUpdateParams()
         {
-            var versions = await _github.GetReleasesAsync();
+            var versions = await _updateService.GetReleasesAsync();
             var strategies = Enum.GetValues(typeof(DbUpdateStrategy)).Cast<DbUpdateStrategy>();
             return new UpdateParamsResponseDto
             {
@@ -35,7 +37,14 @@ namespace Distvisor.Web.Controllers
         [HttpPost("update")]
         public async Task Update([FromBody]UpdateRequestDto dto)
         {
-            await _github.UpdateToVersionAsync(dto.UpdateToVersion, dto.DbUpdateStrategy.ToString());
+            await _updateService.UpdateToVersionAsync(dto.UpdateToVersion, dto.DbUpdateStrategy.ToString());
+        }
+
+
+        [HttpPost("backup")]
+        public async Task Backup()
+        {
+            await _oneDriveService.BackupDb();
         }
     }
 

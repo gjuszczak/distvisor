@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MicrosoftService } from 'src/api/services';
+import { AdminService } from 'src/api/services';
 
 
 @Component({
@@ -8,10 +8,10 @@ import { MicrosoftService } from 'src/api/services';
 })
 export class MicrosoftAuthComponent {
 
-  constructor(private microsoftService: MicrosoftService) { }
+  constructor(private adminService: AdminService) { }
 
   onBackup() {
-    this.microsoftService.apiMicrosoftBackupGet()
+    this.adminService.apiAdminBackupPost()
       .subscribe();
   }
 }

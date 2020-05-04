@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { SettingsService } from '../../api/services/settings.service';
+import { AdminService } from 'src/api/services';
 import { SelectItem } from 'primeng/api';
 import { UpdateRequestDto } from 'src/api/models/update-request-dto';
 
@@ -15,10 +15,10 @@ export class UpdatesComponent implements OnInit, OnDestroy {
   dbUpdateStrategies: SelectItem[];
   selectedDbUpdateStrategy: string;
 
-  constructor(private settingsService: SettingsService) { }
+  constructor(private adminService: AdminService) { }
 
   ngOnInit() {
-    this.subscriptions.push(this.settingsService.apiSettingsUpdateParamsGet$Json()
+    this.subscriptions.push(this.adminService.apiAdminUpdateParamsGet$Json()
       .subscribe(updateParams => {
         this.versions = updateParams.versions.map(v => <SelectItem>{ label: v, value: v });
         this.selectedVersion = this.versions[0].value;
@@ -28,7 +28,7 @@ export class UpdatesComponent implements OnInit, OnDestroy {
   }
 
   onUpdate() {
-    this.subscriptions.push(this.settingsService.apiSettingsUpdatePost$Json({
+    this.subscriptions.push(this.adminService.apiAdminUpdatePost$Json({
       body: <UpdateRequestDto>{
         updateToVersion: this.selectedVersion,
         dbUpdateStrategy: this.selectedDbUpdateStrategy,

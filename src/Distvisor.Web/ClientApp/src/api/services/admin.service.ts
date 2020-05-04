@@ -14,7 +14,7 @@ import { UpdateRequestDto } from '../models/update-request-dto';
 @Injectable({
   providedIn: 'root',
 })
-export class SettingsService extends BaseService {
+export class AdminService extends BaseService {
   constructor(
     config: ApiConfiguration,
     http: HttpClient
@@ -23,21 +23,21 @@ export class SettingsService extends BaseService {
   }
 
   /**
-   * Path part for operation apiSettingsUpdateParamsGet
+   * Path part for operation apiAdminUpdateParamsGet
    */
-  static readonly ApiSettingsUpdateParamsGetPath = '/api/Settings/update-params';
+  static readonly ApiAdminUpdateParamsGetPath = '/api/Admin/update-params';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSettingsUpdateParamsGet$Plain()` instead.
+   * To access only the response body, use `apiAdminUpdateParamsGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSettingsUpdateParamsGet$Plain$Response(params?: {
+  apiAdminUpdateParamsGet$Plain$Response(params?: {
 
   }): Observable<StrictHttpResponse<UpdateParamsResponseDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, SettingsService.ApiSettingsUpdateParamsGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminUpdateParamsGetPath, 'get');
     if (params) {
 
 
@@ -55,30 +55,30 @@ export class SettingsService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiSettingsUpdateParamsGet$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiAdminUpdateParamsGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSettingsUpdateParamsGet$Plain(params?: {
+  apiAdminUpdateParamsGet$Plain(params?: {
 
   }): Observable<UpdateParamsResponseDto> {
 
-    return this.apiSettingsUpdateParamsGet$Plain$Response(params).pipe(
+    return this.apiAdminUpdateParamsGet$Plain$Response(params).pipe(
       map((r: StrictHttpResponse<UpdateParamsResponseDto>) => r.body as UpdateParamsResponseDto)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSettingsUpdateParamsGet$Json()` instead.
+   * To access only the response body, use `apiAdminUpdateParamsGet$Json()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSettingsUpdateParamsGet$Json$Response(params?: {
+  apiAdminUpdateParamsGet$Json$Response(params?: {
 
   }): Observable<StrictHttpResponse<UpdateParamsResponseDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, SettingsService.ApiSettingsUpdateParamsGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminUpdateParamsGetPath, 'get');
     if (params) {
 
 
@@ -96,36 +96,36 @@ export class SettingsService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiSettingsUpdateParamsGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiAdminUpdateParamsGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSettingsUpdateParamsGet$Json(params?: {
+  apiAdminUpdateParamsGet$Json(params?: {
 
   }): Observable<UpdateParamsResponseDto> {
 
-    return this.apiSettingsUpdateParamsGet$Json$Response(params).pipe(
+    return this.apiAdminUpdateParamsGet$Json$Response(params).pipe(
       map((r: StrictHttpResponse<UpdateParamsResponseDto>) => r.body as UpdateParamsResponseDto)
     );
   }
 
   /**
-   * Path part for operation apiSettingsUpdatePost
+   * Path part for operation apiAdminUpdatePost
    */
-  static readonly ApiSettingsUpdatePostPath = '/api/Settings/update';
+  static readonly ApiAdminUpdatePostPath = '/api/Admin/update';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSettingsUpdatePost$Json()` instead.
+   * To access only the response body, use `apiAdminUpdatePost$Json()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  apiSettingsUpdatePost$Json$Response(params?: {
+  apiAdminUpdatePost$Json$Response(params?: {
 
     body?: UpdateRequestDto
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, SettingsService.ApiSettingsUpdatePostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminUpdatePostPath, 'post');
     if (params) {
 
 
@@ -144,16 +144,62 @@ export class SettingsService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiSettingsUpdatePost$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiAdminUpdatePost$Json$Response()` instead.
    *
    * This method sends `application/json` and handles request body of type `application/json`.
    */
-  apiSettingsUpdatePost$Json(params?: {
+  apiAdminUpdatePost$Json(params?: {
 
     body?: UpdateRequestDto
   }): Observable<void> {
 
-    return this.apiSettingsUpdatePost$Json$Response(params).pipe(
+    return this.apiAdminUpdatePost$Json$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
+  /**
+   * Path part for operation apiAdminBackupPost
+   */
+  static readonly ApiAdminBackupPostPath = '/api/Admin/backup';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiAdminBackupPost()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiAdminBackupPost$Response(params?: {
+
+  }): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminBackupPostPath, 'post');
+    if (params) {
+
+
+    }
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiAdminBackupPost$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiAdminBackupPost(params?: {
+
+  }): Observable<void> {
+
+    return this.apiAdminBackupPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
