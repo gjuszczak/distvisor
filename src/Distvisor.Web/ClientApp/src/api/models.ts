@@ -1,4 +1,4 @@
-export { AccountInfoDto } from './models/account-info-dto';
+export { UserInfoDto } from './models/user-info-dto';
 export { DbUpdateStrategy } from './models/db-update-strategy';
 export { UpdateParamsResponseDto } from './models/update-params-response-dto';
 export { UpdateRequestDto } from './models/update-request-dto';

@@ -9,6 +9,7 @@
     public class MsalConfiguration
     {
         public AuthMsalConfiguration Auth { get; set; }
+        public CacheMsalConfiguration Cache { get; set; }
     }
     public class MsalAngularConfiguration
     {
@@ -21,5 +22,10 @@
         public string ClientId { get; set; }
         public string PostLogoutRedirectUri { get; set; }
         public bool ValidateAuthority { get; set; }
+    }
+
+    public class CacheMsalConfiguration
+    {
+        public string CacheLocation { get; set; }
     }
 }

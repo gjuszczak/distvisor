@@ -52,21 +52,21 @@ export class AppComponent implements OnInit, OnDestroy {
       name: 'Notifications',
       icon: 'pi pi-bell',
       routerLink: '/notifications',
-      menuVisibile: this.authService.isAuthenticated()
+      menuVisibile: this.authService.isInUserRole()
     });
 
     this.navigationService.registerApp({
       name: 'Invoices',
       icon: 'pi pi-dollar',
       routerLink: '/invoices',
-      menuVisibile: this.authService.isAuthenticated()
+      menuVisibile: this.authService.isInUserRole()
     });
 
     this.navigationService.registerApp({
       name: 'Settings',
       icon: 'pi pi-cog',
       routerLink: '/settings',
-      menuVisibile: this.authService.isAuthenticated()
+      menuVisibile: this.authService.isInUserRole()
     });
 
     this.navigationService.registerApp({

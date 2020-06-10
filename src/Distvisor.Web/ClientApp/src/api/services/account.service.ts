@@ -8,7 +8,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-import { AccountInfoDto } from '../models/account-info-dto';
+import { UserInfoDto } from '../models/user-info-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +34,7 @@ export class AccountService extends BaseService {
    */
   apiAccountGet$Plain$Response(params?: {
 
-  }): Observable<StrictHttpResponse<AccountInfoDto>> {
+  }): Observable<StrictHttpResponse<UserInfoDto>> {
 
     const rb = new RequestBuilder(this.rootUrl, AccountService.ApiAccountGetPath, 'get');
     if (params) {
@@ -47,7 +47,7 @@ export class AccountService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<AccountInfoDto>;
+        return r as StrictHttpResponse<UserInfoDto>;
       })
     );
   }
@@ -60,10 +60,10 @@ export class AccountService extends BaseService {
    */
   apiAccountGet$Plain(params?: {
 
-  }): Observable<AccountInfoDto> {
+  }): Observable<UserInfoDto> {
 
     return this.apiAccountGet$Plain$Response(params).pipe(
-      map((r: StrictHttpResponse<AccountInfoDto>) => r.body as AccountInfoDto)
+      map((r: StrictHttpResponse<UserInfoDto>) => r.body as UserInfoDto)
     );
   }
 
@@ -75,7 +75,7 @@ export class AccountService extends BaseService {
    */
   apiAccountGet$Json$Response(params?: {
 
-  }): Observable<StrictHttpResponse<AccountInfoDto>> {
+  }): Observable<StrictHttpResponse<UserInfoDto>> {
 
     const rb = new RequestBuilder(this.rootUrl, AccountService.ApiAccountGetPath, 'get');
     if (params) {
@@ -88,7 +88,7 @@ export class AccountService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<AccountInfoDto>;
+        return r as StrictHttpResponse<UserInfoDto>;
       })
     );
   }
@@ -101,10 +101,10 @@ export class AccountService extends BaseService {
    */
   apiAccountGet$Json(params?: {
 
-  }): Observable<AccountInfoDto> {
+  }): Observable<UserInfoDto> {
 
     return this.apiAccountGet$Json$Response(params).pipe(
-      map((r: StrictHttpResponse<AccountInfoDto>) => r.body as AccountInfoDto)
+      map((r: StrictHttpResponse<UserInfoDto>) => r.body as UserInfoDto)
     );
   }
 

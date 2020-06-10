@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { MsalService, BroadcastService } from '@azure/msal-angular';
 import { Account } from 'msal';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import { AccountService } from 'src/api/services';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -10,6 +12,7 @@ export class AuthService {
 
   constructor(
     private msalService: MsalService,
+    private accountService: AccountService,
     private broadcastService: BroadcastService) {
 
     this.isAuthenticatedSubject = new DistinctBehaviorSubject(!!this.getUser());
@@ -43,6 +46,13 @@ export class AuthService {
 
   public isAuthenticated(): Observable<boolean> {
     return this.isAuthenticatedSubject;
+  }
+
+  public isInUserRole(): Observable<boolean> {
+    return this.accountService.apiAccountGet$Json().pipe(
+      map(x => x.role === "user"),
+      catchError(_ => of(false))
+    );
   }
 
   public accessToken(): Observable<string | null> {

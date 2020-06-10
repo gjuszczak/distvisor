@@ -3,7 +3,6 @@ using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Data.Reads;
 using Distvisor.Web.Hubs;
 using Distvisor.Web.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,13 +11,9 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Linq;
-using System.Security.Claims;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Distvisor.Web
 {
@@ -90,35 +85,7 @@ namespace Distvisor.Web
 
             services.AddSignalR();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    var config = Config.GetSection("AzureAd").Get<AzureAdConfiguration>();
-                    var roles = Config.GetSection("Roles").Get<RolesConfiguration>();
-                    var issuer = config.Instance + config.TenantId + "/v2.0";
-                    options.Authority = issuer;
-                    options.SaveToken = true;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidAudiences = new[] { config.ClientId },
-                        ValidIssuers = new[] { issuer },
-                    };
-
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnTokenValidated = ctx =>
-                        {
-                            var username = ctx.Principal.FindFirst("preferred_username").Value;
-                            var role = (roles?.User?.Contains(username) ?? false) ? "user" : "guest";
-                            var appClaims = new[]
-                            {
-                                new Claim(ClaimTypes.Role, role)
-                            };
-                            ctx.Principal.AddIdentity(new ClaimsIdentity(appClaims));
-                            return Task.CompletedTask;
-                        }
-                    };
-                });
+            services.AddDistvisorAuth(Config);
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
