@@ -69,7 +69,7 @@ namespace Distvisor.Web
                     c.DefaultRequestHeaders.Add("Accept", "application/json");
                 });
 
-            services.AddEventStore();
+            services.AddEventStore(Config.GetConnectionString("EventStore"));
             services.AddReadStore();
 
             services.AddControllersWithViews()

@@ -5,7 +5,6 @@ namespace Distvisor.Web.Data
 {
     public interface IDbProvider
     {
-        ILiteDatabase EventStoreDatabase { get; }
         ILiteDatabase ReadStoreDatabase { get; }
     }
 
@@ -13,12 +12,9 @@ namespace Distvisor.Web.Data
     {
         public DbProvider(IConfiguration configuration)
         {
-            var eventDbPath = configuration.GetConnectionString("EventStore");
             var readDbPath = configuration.GetConnectionString("ReadStore");
-            EventStoreDatabase = new LiteDatabase(eventDbPath);
             ReadStoreDatabase = new LiteDatabase(readDbPath);
         }
-        public ILiteDatabase EventStoreDatabase { get; }
         public ILiteDatabase ReadStoreDatabase { get; }
     }
 }

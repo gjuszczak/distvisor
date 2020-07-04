@@ -1,6 +1,4 @@
-﻿using LiteDB;
-
-namespace Distvisor.Web.Data.Events.Core
+﻿namespace Distvisor.Web.Data.Events.Core
 {
     public interface IEventStore
     {
@@ -10,30 +8,27 @@ namespace Distvisor.Web.Data.Events.Core
 
     public class EventStore : IEventStore
     {
-        private readonly string _collectionName;
-        private readonly ILiteDatabase _db;
+        private readonly EventStoreContext _db;
         private readonly IEventHandler<object> _handler;
 
-        public EventStore(IDbProvider dbProvider, IEventHandler<object> handler)
+        public EventStore(EventStoreContext db, IEventHandler<object> handler)
         {
-            _collectionName = "events";
-            _db = dbProvider.EventStoreDatabase;
+            _db = db;
             _handler = handler;
         }
 
         public void Publish(object payload)
         {
             var entity = new EventEntity(payload);
-            var collection = _db.GetCollection<EventEntity>(_collectionName);
-            collection.Insert(entity);
+            _db.Events.Add(entity);
+            _db.SaveChanges();
             _handler.Handle(payload);
         }
 
         public void ReplayEvents()
         {
-            var collection = _db.GetCollection<EventEntity>(_collectionName);
-            var entities = collection.FindAll();
-            foreach (var e in entities)
+            var collection = _db.Events;
+            foreach (var e in collection)
             {
                 var payload = e.ToPayload();
                 _handler.Handle(payload);
