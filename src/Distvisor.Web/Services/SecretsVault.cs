@@ -1,7 +1,8 @@
 ﻿using Distvisor.Web.Data.Entities;
 using Distvisor.Web.Data.Events;
 using Distvisor.Web.Data.Events.Core;
-using Distvisor.Web.Data.Reads;
+using Distvisor.Web.Data.Reads.Core;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
@@ -21,11 +22,11 @@ namespace Distvisor.Web.Services
 
     public class SecretsVault : ISecretsVault
     {
-        private readonly ReadStore _context;
+        private readonly ReadStoreContext _context;
         private readonly IEventStore _eventStore;
         private readonly IMemoryCache _cache;
 
-        public SecretsVault(ReadStore context, IEventStore eventStore, IMemoryCache cache)
+        public SecretsVault(ReadStoreContext context, IEventStore eventStore, IMemoryCache cache)
         {
             _context = context;
             _eventStore = eventStore;
@@ -34,14 +35,14 @@ namespace Distvisor.Web.Services
 
         public async Task<List<SecretKey>> ListSecretKeysAsync()
         {
-            return _context.SecretsVault.FindAll().Select(x => x.Key).ToList();
+            return await _context.SecretsVault.Select(x => x.Key).ToListAsync();
         }
 
         public string GetSecretValue(SecretKey key)
         {
             if (!_cache.TryGetValue(key, out string secretValue))
             {
-                var secretsVaultEntity = _context.SecretsVault.FindOne(x=> x.Key == key);
+                var secretsVaultEntity = _context.SecretsVault.FirstOrDefault(x=> x.Key == key);
 
                 if (!string.IsNullOrEmpty(secretsVaultEntity?.Value))
                 {

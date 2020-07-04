@@ -1,8 +1,10 @@
 ﻿using Distvisor.Web.Data.Entities;
-using Distvisor.Web.Data.Reads;
+using Distvisor.Web.Data.Reads.Core;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
@@ -18,9 +20,9 @@ namespace Distvisor.Web.Services
     public class AuthTokenStore : IAuthTokenStore
     {
         private readonly IMemoryCache _cache;
-        private readonly ReadStore _context;
+        private readonly ReadStoreContext _context;
 
-        public AuthTokenStore(IMemoryCache cache, ReadStore context)
+        public AuthTokenStore(IMemoryCache cache, ReadStoreContext context)
         {
             _cache = cache;
             _context = context;
@@ -28,20 +30,22 @@ namespace Distvisor.Web.Services
 
         public async Task StoreUserTokenAsync(OAuthToken token, Guid userId)
         {
-            var user = _context.Users.FindOne(x=> x.Id == userId);
+            var user = await _context.Users.FirstOrDefaultAsync(x=> x.Id == userId);
             if (user == null)
             {
                 throw new InvalidOperationException($"Unable to store user token. User with id = {userId} does not exists.");
             }
 
-            var tokenEntity = _context.OAuthTokens.Query()
+            var tokenEntity = await _context.OAuthTokens
                 .Where(x => x.UserId == userId && x.Issuer == token.Issuer)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             if (tokenEntity == null)
             {
                 tokenEntity = new OAuthTokenEntity();
                 tokenEntity.UserId = userId;
+
+                _context.OAuthTokens.Add(tokenEntity);
             }
 
             tokenEntity.Issuer = token.Issuer;
@@ -52,7 +56,7 @@ namespace Distvisor.Web.Services
             tokenEntity.RefreshToken = token.RefreshToken;
             tokenEntity.UtcIssueDate = token.UtcIssueDate;
 
-            _context.OAuthTokens.Upsert(tokenEntity);
+            await _context.SaveChangesAsync();
 
             SetCache(token.Issuer, userId, token);
             SetCache(token.Issuer, token.AccessToken, userId);
@@ -60,16 +64,17 @@ namespace Distvisor.Web.Services
 
         public async Task ClearUserTokenAsync(OAuthTokenIssuer issuer, Guid userId)
         {
-            var token = _context.OAuthTokens.Query()
+            var token = await _context.OAuthTokens
                   .Where(x => x.UserId == userId && x.Issuer == issuer)
-                  .SingleOrDefault();
+                  .SingleOrDefaultAsync();
 
             if (token == null)
             {
                 return;
             }
 
-            _context.OAuthTokens.Delete(token.Id);
+            _context.OAuthTokens.Remove(token);
+            await _context.SaveChangesAsync();
 
             _cache.Remove(GetTokenCacheKey(issuer, userId));
             _cache.Remove(GetUserIdCacheKey(issuer, token.AccessToken));
@@ -79,9 +84,9 @@ namespace Distvisor.Web.Services
         {
             if (!_cache.TryGetValue(GetTokenCacheKey(issuer, userId), out OAuthToken token))
             {
-                var tokenEntity = _context.OAuthTokens.Query()
+                var tokenEntity = await _context.OAuthTokens
                   .Where(x => x.UserId == userId && x.Issuer == issuer)
-                  .SingleOrDefault();
+                  .SingleOrDefaultAsync();
 
                 token = ConvertEntityToToken(tokenEntity);
 
@@ -100,9 +105,9 @@ namespace Distvisor.Web.Services
         {
             if (!_cache.TryGetValue(GetUserIdCacheKey(issuer, accessToken), out Guid? userId))
             {
-                var tokenEntity = _context.OAuthTokens.Query()
+                var tokenEntity = await _context.OAuthTokens
                     .Where(x => x.AccessToken == accessToken && x.Issuer == issuer)
-                    .SingleOrDefault();
+                    .SingleOrDefaultAsync();
 
                 var token = ConvertEntityToToken(tokenEntity);
                 userId = tokenEntity?.UserId;

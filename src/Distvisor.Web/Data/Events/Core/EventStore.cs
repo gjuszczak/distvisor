@@ -1,4 +1,6 @@
-﻿namespace Distvisor.Web.Data.Events.Core
+﻿using Distvisor.Web.Data.Events.Entities;
+
+namespace Distvisor.Web.Data.Events.Core
 {
     public interface IEventStore
     {

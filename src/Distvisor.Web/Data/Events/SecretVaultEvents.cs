@@ -1,6 +1,7 @@
 ﻿using Distvisor.Web.Data.Entities;
 using Distvisor.Web.Data.Events.Core;
-using Distvisor.Web.Data.Reads;
+using Distvisor.Web.Data.Reads.Core;
+using System.Linq;
 
 namespace Distvisor.Web.Data.Events
 {
@@ -17,24 +18,27 @@ namespace Distvisor.Web.Data.Events
 
     public class SecretVaultEventHandler : IEventHandler<SetSecretEvent>, IEventHandler<RemoveSecretEvent>
     {
-        private readonly ReadStore _context;
+        private readonly ReadStoreContext _context;
 
-        public SecretVaultEventHandler(ReadStore context)
+        public SecretVaultEventHandler(ReadStoreContext context)
         {
             _context = context;
         }
 
         public void Handle(SetSecretEvent payload)
         {
-            var entity = _context.SecretsVault.FindOne(x => x.Key == payload.Key) ?? new SecretsVaultEntity();
+            var entity = _context.SecretsVault.FirstOrDefault(x => x.Key == payload.Key) ?? new SecretsVaultEntity();
             entity.Key = payload.Key;
             entity.Value = payload.Value;
-            _context.SecretsVault.Upsert(entity);
+            _context.SecretsVault.Add(entity);
+            _context.SaveChanges();
         }
 
         public void Handle(RemoveSecretEvent payload)
         {
-            _context.SecretsVault.DeleteMany(x => x.Key == payload.Key);
+            var toRemove = _context.SecretsVault.Where(x => x.Key == payload.Key);
+            _context.SecretsVault.RemoveRange(toRemove);
+            _context.SaveChanges();
         }
     }
 }

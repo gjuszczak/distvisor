@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
@@ -11,12 +10,10 @@ namespace Distvisor.Web.Data.Events.Core
         public static void AddEventStore(this IServiceCollection services, string connectionString)
         {
             services.AddDbContext<EventStoreContext>(options => options.UseNpgsql(connectionString));
+            services.AddHostedService<EventStoreBootstrap>();
 
-            services.AddSingleton<IDbProvider, DbProvider>();
             services.AddScoped<IEventStore, EventStore>();
             services.RegisterEventHandlers();
-
-            services.AddHostedService<EventStoreBootstrap>();
         }
 
         private static void RegisterEventHandlers(this IServiceCollection services)

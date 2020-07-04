@@ -1,6 +1,7 @@
 ﻿using Distvisor.Web.Data.Events;
 using Distvisor.Web.Data.Events.Core;
-using Distvisor.Web.Data.Reads;
+using Distvisor.Web.Data.Reads.Core;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
@@ -19,11 +20,11 @@ namespace Distvisor.Web.Services
 
     public class RedirectionsService : IRedirectionsService
     {
-        private readonly ReadStore _context;
+        private readonly ReadStoreContext _context;
         private readonly IEventStore _eventStore;
         private readonly IMemoryCache _cache;
 
-        public RedirectionsService(ReadStore context, IEventStore eventStore, IMemoryCache cache)
+        public RedirectionsService(ReadStoreContext context, IEventStore eventStore, IMemoryCache cache)
         {
             _context = context;
             _eventStore = eventStore;
@@ -34,7 +35,7 @@ namespace Distvisor.Web.Services
         {
             if (!_cache.TryGetValue(name, out RedirectionDetails redirection))
             {
-                var entity = _context.Redirections.FindOne(x => x.Name == name);
+                var entity = await _context.Redirections.FirstOrDefaultAsync(x => x.Name == name);
 
                 if (entity != null)
                 {
@@ -62,7 +63,7 @@ namespace Distvisor.Web.Services
 
         public async Task<IEnumerable<RedirectionDetails>> ListRedirectionsAsync()
         {
-            var entities = _context.Redirections.FindAll();
+            var entities = await _context.Redirections.ToListAsync();
             return entities.Select(x => new RedirectionDetails(x.Name, x.Url)).ToList();
         }
 

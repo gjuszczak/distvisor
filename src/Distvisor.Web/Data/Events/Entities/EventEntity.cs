@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 
-namespace Distvisor.Web.Data.Events.Core
+namespace Distvisor.Web.Data.Events.Entities
 {
     public class EventEntity
     {

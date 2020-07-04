@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Distvisor.Web.Data.Events.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Distvisor.Web.Data.Events.Core
 {
@@ -10,7 +11,7 @@ namespace Distvisor.Web.Data.Events.Core
         {
         }
 
-        public EventStoreContext(DbContextOptions options) : base(options)
+        public EventStoreContext(DbContextOptions<EventStoreContext> options) : base(options)
         {
         }
 
