@@ -2,6 +2,7 @@
 using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Data.Reads.Core;
 using System;
+using System.Threading.Tasks;
 
 namespace Distvisor.Web.Data.Events
 {
@@ -21,7 +22,7 @@ namespace Distvisor.Web.Data.Events
             _context = context;
         }
 
-        public void Handle(AddUserEvent payload)
+        public async Task Handle(AddUserEvent payload)
         {
             _context.Users.Add(new UserEntity
             {
@@ -30,7 +31,7 @@ namespace Distvisor.Web.Data.Events
                 Username = payload.Username,
                 PasswordHash = payload.PasswordHash
             });
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

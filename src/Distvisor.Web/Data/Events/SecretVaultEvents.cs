@@ -2,6 +2,7 @@
 using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Data.Reads.Core;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Distvisor.Web.Data.Events
 {
@@ -25,20 +26,20 @@ namespace Distvisor.Web.Data.Events
             _context = context;
         }
 
-        public void Handle(SetSecretEvent payload)
+        public async Task Handle(SetSecretEvent payload)
         {
             var entity = _context.SecretsVault.FirstOrDefault(x => x.Key == payload.Key) ?? new SecretsVaultEntity();
             entity.Key = payload.Key;
             entity.Value = payload.Value;
             _context.SecretsVault.Add(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Handle(RemoveSecretEvent payload)
+        public async Task Handle(RemoveSecretEvent payload)
         {
             var toRemove = _context.SecretsVault.Where(x => x.Key == payload.Key);
             _context.SecretsVault.RemoveRange(toRemove);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

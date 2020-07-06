@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Distvisor.Web.Data.Events.Core
 {
     public interface IEventHandler<T>
     {
-        void Handle(T payload);
+        Task Handle(T payload);
     }
 
     public class EventHandlerResolver : IEventHandler<object>
@@ -19,14 +20,14 @@ namespace Distvisor.Web.Data.Events.Core
             _handlers = handlers;
         }
 
-        public void Handle(object payload)
+        public async Task Handle(object payload)
         {
             var payloadType = payload.GetType();
             if (_handlers.TryGetValue(payloadType, out Type handlerType))
             {
                 var mi = handlerType.GetMethod(nameof(Handle));
                 var handler = _provider.GetService(handlerType);
-                mi.Invoke(handler, new[] { payload });
+                await (Task)mi.Invoke(handler, new[] { payload });
             }
             else
             {

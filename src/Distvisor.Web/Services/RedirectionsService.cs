@@ -53,7 +53,7 @@ namespace Distvisor.Web.Services
 
         public async Task RemoveRedirectionAsync(string name)
         {
-            _eventStore.Publish(new RemoveRedirectionEvent
+            await _eventStore.Publish(new RemoveRedirectionEvent
             {
                 Name = name,
             });
@@ -69,7 +69,7 @@ namespace Distvisor.Web.Services
 
         public async Task ConfigureRedirectionAsync(RedirectionDetails redirection)
         {
-            _eventStore.Publish(new SetRedirectionEvent
+            await _eventStore.Publish(new SetRedirectionEvent
             {
                 Name = redirection.Name,
                 Url = redirection.Url.ToString()

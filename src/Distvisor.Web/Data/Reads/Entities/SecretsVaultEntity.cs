@@ -1,5 +1,4 @@
-﻿using LiteDB;
-using System;
+﻿using System;
 
 namespace Distvisor.Web.Data.Entities
 {

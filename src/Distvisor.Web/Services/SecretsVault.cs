@@ -61,7 +61,7 @@ namespace Distvisor.Web.Services
 
         public async Task RemoveSecretAsync(SecretKey key)
         {
-            _eventStore.Publish(new RemoveSecretEvent { Key = key });
+            await _eventStore.Publish(new RemoveSecretEvent { Key = key });
             _cache.Remove(key);
         }
 
@@ -70,7 +70,7 @@ namespace Distvisor.Web.Services
             var valueBytes = Encoding.UTF8.GetBytes(value);
             var entityValue = Convert.ToBase64String(valueBytes);
 
-            _eventStore.Publish(new SetSecretEvent { Key = key, Value = entityValue });
+            await _eventStore.Publish(new SetSecretEvent { Key = key, Value = entityValue });
 
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                         .SetPriority(CacheItemPriority.NeverRemove);

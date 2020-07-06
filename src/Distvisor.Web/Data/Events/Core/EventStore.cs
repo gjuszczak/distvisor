@@ -1,11 +1,12 @@
 ﻿using Distvisor.Web.Data.Events.Entities;
+using System.Threading.Tasks;
 
 namespace Distvisor.Web.Data.Events.Core
 {
     public interface IEventStore
     {
-        void Publish(object payload);
-        void ReplayEvents();
+        Task Publish(object payload);
+        Task ReplayEvents();
     }
 
     public class EventStore : IEventStore
@@ -19,21 +20,21 @@ namespace Distvisor.Web.Data.Events.Core
             _handler = handler;
         }
 
-        public void Publish(object payload)
+        public async Task Publish(object payload)
         {
             var entity = new EventEntity(payload);
             _db.Events.Add(entity);
-            _db.SaveChanges();
-            _handler.Handle(payload);
+            await _db.SaveChangesAsync();
+            await _handler.Handle(payload);
         }
 
-        public void ReplayEvents()
+        public async Task ReplayEvents()
         {
             var collection = _db.Events;
             foreach (var e in collection)
             {
                 var payload = e.ToPayload();
-                _handler.Handle(payload);
+                await _handler.Handle(payload);
             }
         }
     }

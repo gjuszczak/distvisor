@@ -1,7 +1,6 @@
 ﻿using Distvisor.Web.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
 {
@@ -17,7 +16,7 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<object> GetClientConfig()
+        public object GetClientConfig()
         {
             return _clientConfig;
         }
