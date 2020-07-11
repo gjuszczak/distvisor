@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text.Json;
 
 namespace Distvisor.Web.Data.Events.Entities
@@ -27,8 +28,15 @@ namespace Distvisor.Web.Data.Events.Entities
 
         public object ToPayload()
         {
+            using var stream = new MemoryStream();
+            using var writer = new Utf8JsonWriter(stream);
+            using var reader = new StreamReader(stream);
+            PayloadValue.WriteTo(writer);
+            writer.Flush();
+
+            stream.Position = 0;
             var type = Type.GetType(PayloadType);
-            var payload = JsonSerializer.Deserialize(PayloadValue.ToString(), type);
+            var payload = JsonSerializer.Deserialize(reader.ReadToEnd(), type);
             return payload;
         }
     }

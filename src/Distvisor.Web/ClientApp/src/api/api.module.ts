@@ -6,6 +6,7 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 import { AccountService } from './services/account.service';
 import { AdminService } from './services/admin.service';
 import { ClientConfigService } from './services/client-config.service';
+import { EventLogService } from './services/event-log.service';
 import { InvoicesService } from './services/invoices.service';
 import { RedirectionsService } from './services/redirections.service';
 import { SecretsVaultService } from './services/secrets-vault.service';
@@ -21,6 +22,7 @@ import { SecretsVaultService } from './services/secrets-vault.service';
     AccountService,
     AdminService,
     ClientConfigService,
+    EventLogService,
     InvoicesService,
     RedirectionsService,
     SecretsVaultService,

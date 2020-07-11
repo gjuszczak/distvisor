@@ -1,6 +1,7 @@
 ﻿using Distvisor.Web.Data.Entities;
 using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Data.Reads.Core;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,6 +29,11 @@ namespace Distvisor.Web.Data.Events
 
         public async Task Handle(SetRedirectionEvent payload)
         {
+            if (!Uri.TryCreate(payload.Url, UriKind.Absolute, out _))
+            {
+                throw new FormatException("Invalid url in SetRedirectionEvent payload");
+            }
+
             var entity = _context.Redirections.FirstOrDefault(x => x.Name == payload.Name);
             if (entity == null)
             {

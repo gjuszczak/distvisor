@@ -6,9 +6,11 @@ import { RouterModule } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
 
 import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
 import { TableModule } from 'primeng/table';
 
 import { EventLogComponent } from './event-log/event-log.component';
+import { ApiModule } from '../api/api.module';
 
 @NgModule({
   imports: [
@@ -21,7 +23,11 @@ import { EventLogComponent } from './event-log/event-log.component';
 
     // PrimeNg
     ButtonModule,
+    DropdownModule,
     TableModule,
+
+    // internal
+    ApiModule,
   ],
   declarations: [EventLogComponent]
 })

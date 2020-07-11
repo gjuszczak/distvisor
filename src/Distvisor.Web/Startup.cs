@@ -34,6 +34,7 @@ namespace Distvisor.Web
             services.Configure<MailgunConfiguration>(Config.GetSection("Mailgun"));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IEventLogToDtoMapper, EventLogToDtoMapper>();
             services.AddScoped<IUpdateService, UpdateService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
             services.AddScoped<IMailingService, MailingService>();
