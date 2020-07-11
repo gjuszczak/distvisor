@@ -3,9 +3,12 @@ import { EventLogService } from 'src/api/services';
 import { EventLogDto } from 'src/api/models';
 import { Subscription } from 'rxjs';
 
+import 'prismjs/components/prism-json.js';
+
 @Component({
   selector: 'app-event-log',
-  templateUrl: './event-log.component.html'
+  templateUrl: './event-log.component.html',
+  styleUrls: ['./event-log.component.css']
 })
 export class EventLogComponent implements OnInit, OnDestroy {
 

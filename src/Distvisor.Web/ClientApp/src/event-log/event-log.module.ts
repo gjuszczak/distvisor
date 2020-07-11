@@ -5,9 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
 
-import { ButtonModule } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
 import { TableModule } from 'primeng/table';
+import { CodeHighlighterModule } from 'primeng/codehighlighter';
 
 import { EventLogComponent } from './event-log/event-log.component';
 import { ApiModule } from '../api/api.module';
@@ -22,9 +21,8 @@ import { ApiModule } from '../api/api.module';
     ]),
 
     // PrimeNg
-    ButtonModule,
-    DropdownModule,
     TableModule,
+    CodeHighlighterModule,
 
     // internal
     ApiModule,
