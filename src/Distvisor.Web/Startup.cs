@@ -1,6 +1,5 @@
 using Distvisor.Web.Configuration;
-using Distvisor.Web.Data.Events.Core;
-using Distvisor.Web.Data.Reads.Core;
+using Distvisor.Web.Data;
 using Distvisor.Web.Hubs;
 using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Builder;
@@ -69,8 +68,7 @@ namespace Distvisor.Web
                     c.DefaultRequestHeaders.Add("Accept", "application/json");
                 });
 
-            services.AddEventStore(Config.GetConnectionString("EventStore"));
-            services.AddReadStore(Config.GetConnectionString("ReadStore"));
+            services.AddEventSourcing(Config.GetConnectionString("EventStore"), Config.GetConnectionString("ReadStore"));
 
             services.AddControllersWithViews()
                 .AddJsonOptions(opts =>

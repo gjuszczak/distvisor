@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Distvisor.Web.Data.Events.Migrations
 {
     [DbContext(typeof(EventStoreContext))]
-    [Migration("20200704122613_InitialCreate")]
+    [Migration("20200708130301_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,7 +22,7 @@ namespace Distvisor.Web.Data.Events.Migrations
                 .HasAnnotation("ProductVersion", "3.1.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("Distvisor.Web.Data.Events.Core.EventEntity", b =>
+            modelBuilder.Entity("Distvisor.Web.Data.Events.Entities.EventEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -37,6 +37,9 @@ namespace Distvisor.Web.Data.Events.Migrations
 
                     b.Property<DateTime>("PublishDateUtc")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("Success")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 

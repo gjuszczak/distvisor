@@ -20,7 +20,7 @@ namespace Distvisor.Web.Data.Events.Migrations
                 .HasAnnotation("ProductVersion", "3.1.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("Distvisor.Web.Data.Events.Core.EventEntity", b =>
+            modelBuilder.Entity("Distvisor.Web.Data.Events.Entities.EventEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -35,6 +35,9 @@ namespace Distvisor.Web.Data.Events.Migrations
 
                     b.Property<DateTime>("PublishDateUtc")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("Success")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 

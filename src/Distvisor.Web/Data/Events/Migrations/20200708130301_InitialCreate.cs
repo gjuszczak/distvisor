@@ -17,6 +17,7 @@ namespace Distvisor.Web.Data.Events.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     PublishDateUtc = table.Column<DateTime>(nullable: false),
                     PayloadType = table.Column<string>(nullable: true),
+                    Success = table.Column<bool>(nullable: false),
                     PayloadValue = table.Column<JsonDocument>(nullable: true)
                 },
                 constraints: table =>

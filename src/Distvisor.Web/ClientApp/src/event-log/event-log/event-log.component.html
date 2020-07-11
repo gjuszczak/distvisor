@@ -1,0 +1,20 @@
+<div class="container mt-3 mb-5">
+    <p-table [value]="cars">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Vin</th>
+                <th>Year</th>
+                <th>Brand</th>
+                <th>Color</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-car>
+            <tr>
+                <td>123</td>
+                <td>1992</td>
+                <td>Merc</td>
+                <td>Red</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

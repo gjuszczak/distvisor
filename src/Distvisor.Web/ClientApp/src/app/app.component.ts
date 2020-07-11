@@ -63,6 +63,13 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     this.navigationService.registerApp({
+      name: 'Event Log',
+      icon: 'pi pi-directions',
+      routerLink: '/event-log',
+      menuVisibile: this.authService.isInUserRole()
+    });
+
+    this.navigationService.registerApp({
       name: 'Settings',
       icon: 'pi pi-cog',
       routerLink: '/settings',

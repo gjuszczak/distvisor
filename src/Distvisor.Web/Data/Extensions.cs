@@ -1,19 +1,24 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Distvisor.Web.Data.Events.Core;
+using Distvisor.Web.Data.Reads.Core;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 
-namespace Distvisor.Web.Data.Events.Core
+namespace Distvisor.Web.Data
 {
     public static class Extensions
     {
-        public static void AddEventStore(this IServiceCollection services, string connectionString)
+        public static void AddEventSourcing(this IServiceCollection services, string eventsConnectionString, string readsConnectionString)
         {
-            services.AddDbContext<EventStoreContext>(options => options.UseNpgsql(connectionString));
-            services.AddHostedService<EventStoreBootstrap>();
+            services.AddDbContext<EventStoreContext>(options => options.UseNpgsql(eventsConnectionString));
+            services.AddDbContext<ReadStoreContext>(options => options.UseNpgsql(readsConnectionString));
 
             services.AddScoped<IEventStore, EventStore>();
+            services.AddScoped<IReadStoreTransactionProvider, ReadStoreTransactionProvider>();
             services.RegisterEventHandlers();
+
+            services.AddHostedService<EventSourcingBootstrap>();
         }
 
         private static void RegisterEventHandlers(this IServiceCollection services)

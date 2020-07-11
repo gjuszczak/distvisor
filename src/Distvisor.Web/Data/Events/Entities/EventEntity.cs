@@ -16,11 +16,13 @@ namespace Distvisor.Web.Data.Events.Entities
             PublishDateUtc = DateTime.UtcNow;
             PayloadType = type.ToString();
             PayloadValue = JsonDocument.Parse(json);
+            Success = true;
         }
 
         public int Id { get; set; }
         public DateTime PublishDateUtc { get; set; }
         public string PayloadType { get; set; }
+        public bool Success { get; set; }
         public JsonDocument PayloadValue { get; set; }
 
         public object ToPayload()

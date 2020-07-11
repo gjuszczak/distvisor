@@ -1,4 +1,5 @@
 ﻿using Distvisor.Web.Data.Events.Entities;
+using Distvisor.Web.Data.Reads.Core;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Data.Events.Core
@@ -12,11 +13,13 @@ namespace Distvisor.Web.Data.Events.Core
     public class EventStore : IEventStore
     {
         private readonly EventStoreContext _db;
+        private readonly IReadStoreTransactionProvider _rsTransactionProvider;
         private readonly IEventHandler<object> _handler;
 
-        public EventStore(EventStoreContext db, IEventHandler<object> handler)
+        public EventStore(EventStoreContext db, IReadStoreTransactionProvider rsTransactionProvider, IEventHandler<object> handler)
         {
             _db = db;
+            _rsTransactionProvider = rsTransactionProvider;
             _handler = handler;
         }
 
@@ -24,8 +27,19 @@ namespace Distvisor.Web.Data.Events.Core
         {
             var entity = new EventEntity(payload);
             _db.Events.Add(entity);
-            await _db.SaveChangesAsync();
-            await _handler.Handle(payload);
+            try
+            {
+                using var rsTransaction = await _rsTransactionProvider.BeginTransactionAsync();
+                await _handler.Handle(payload);
+                await _db.SaveChangesAsync();
+                await rsTransaction.CommitAsync();
+            }
+            catch
+            {
+                entity.Success = false;
+                await _db.SaveChangesAsync();
+                throw;
+            }
         }
 
         public async Task ReplayEvents()

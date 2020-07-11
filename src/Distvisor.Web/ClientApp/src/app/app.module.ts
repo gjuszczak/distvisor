@@ -16,6 +16,7 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { SettingsModule } from '../settings/settings.module';
 import { InvoicesModule } from '../invoices/invoices.module';
+import { EventLogModule } from '../event-log/event-log.module';
 import { ApiModule } from '../api/api.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { FooterComponent } from './footer/footer.component';
@@ -54,6 +55,7 @@ import { LogoutComponent } from './logout/logout.component';
     SettingsModule,
     InvoicesModule,
     NotificationsModule,
+    EventLogModule,
     ApiModule
   ],
   providers: [
