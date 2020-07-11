@@ -12,7 +12,6 @@
         </ng-template>
         <ng-template pTemplate="body" let-ev>
             <tr class="ui-selectable-row" [pRowToggler]="ev">
-
                 <td><i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i></td>
                 <td>{{ ev.publishDateUtc }}</td>
                 <td>{{ ev.payloadTypeDisplayName }}</td>
