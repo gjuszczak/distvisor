@@ -1,7 +1,6 @@
 <div class="container mt-3 mb-5">
-    <p-table dataKey="id" [value]="events" [rowHover]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50]"
-        [paginator]="true" [showCurrentPageReport]="true"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+    <p-table dataKey="id" [value]="events" [rowHover]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50]" 
+        [paginator]="true" [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
             <tr>
                 <th class="tiny-header"></th>
@@ -10,10 +9,10 @@
                 <th>Status</th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-ev>
+        <ng-template pTemplate="body" let-ev let-expanded="expanded">
             <tr class="ui-selectable-row" [pRowToggler]="ev">
                 <td><i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i></td>
-                <td>{{ ev.publishDateUtc }}</td>
+                <td>{{ ev.publishDateUtc + 'Z' | date:'short' }}</td>
                 <td>{{ ev.payloadTypeDisplayName }}</td>
                 <td>{{ ev.status }}</td>
             </tr>

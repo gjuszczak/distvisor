@@ -27,10 +27,9 @@ namespace Distvisor.Web.Controllers
         [HttpGet("list")]
         public async Task<IEnumerable<EventLogDto>> ListEvents()
         {
-            var eventEntities = await _context.Events.ToListAsync();
+            var eventEntities = await _context.Events.OrderByDescending(x => x.Id).ToListAsync();
             return eventEntities.Select(x => _mapper.Map(x));
         }
-
     }
 
     public class EventLogDto
