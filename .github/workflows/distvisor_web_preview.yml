@@ -1,4 +1,4 @@
-name: Build Distvisor.Web preview
+name: Distvisor.Web preview
 
 on:
   push:
@@ -24,10 +24,10 @@ jobs:
 
     - name: dotnet publish
       working-directory: src
-      run: dotnet publish -c Release -o ../deploy/amd64/out Distvisor.Web
+      run: dotnet publish -c Release -o ../build/amd64/out Distvisor.Web
 
     - name: Create and push docker image
-      working-directory: deploy/amd64
+      working-directory: build/amd64
       run: |
         docker build -t ${{ secrets.DOCKER_IMG_NAME }}:preview-amd64 .
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
@@ -52,11 +52,42 @@ jobs:
 
     - name: dotnet publish
       working-directory: src
-      run: dotnet publish -c Release -o ../deploy/arm32v7/out -r linux-arm  Distvisor.Web
+      run: dotnet publish -c Release -o ../build/arm32v7/out -r linux-arm  Distvisor.Web
 
     - name: Create and push docker image
-      working-directory: deploy/arm32v7
+      working-directory: build/arm32v7
       run: |
         docker build -t ${{ secrets.DOCKER_IMG_NAME }}:preview-arm32v7 .
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker push ${{ secrets.DOCKER_IMG_NAME }}:preview-arm32v7
+        
+  deploy_preview_arm32v7:
+    needs: build_preview_arm32v7
+    name: Deploy preview-arm32v7
+    runs-on: ubuntu-latest
+
+    steps: 
+    - uses: actions/checkout@v1
+      
+    - name: Create config.ovpn
+      run: |
+        echo "${{ secrets.CONFIG_OVPN }}" >> config.ovpn
+        sudo chmod 600 config.ovpn
+    
+    - name: Create auth.txt
+      run: |
+        echo "${{ secrets.AUTH_OVPN }}" >> auth.txt
+        sudo chmod 600 auth.txt
+    
+    - name: Install Open VPN
+      run: sudo apt-get install openvpn
+        
+    - name: Connect Open VPN
+      run: sudo openvpn --config config.ovpn --daemon
+      
+    - name: Ping Server
+      run: sudo ping -c10 -W15 ${{ secrets.SERVER_LOCAL_IP }}
+      
+    - name: Kill Open VPN
+      if: always()
+      run: sudo killall openvpn
