@@ -1,76 +1,35 @@
 name: Distvisor.Web deploy
-on: repository_dispatch
+on:
+  push:
+    branches: [ master ]
     
 jobs:
-  deploy:
-
+  deploy_preview_arm32v7:
+    name: Deploy preview-arm32v7
     runs-on: ubuntu-latest
 
     steps: 
     - uses: actions/checkout@v1
       
-    - name: Create /tmp/config.ovpn
+    - name: Create config.ovpn
       run: |
-        echo "${{ secrets.CONFIG_OVPN }}" >> /tmp/config.ovpn
-        sudo chmod 600 /tmp/config.ovpn
+        echo "${{ secrets.CONFIG_OVPN }}" >> config.ovpn
+        sudo chmod 600 config.ovpn
     
-    - name: Create /tmp/auth.txt
+    - name: Create auth.txt
       run: |
-        echo "${{ secrets.AUTH_OVPN }}" >> /tmp/auth.txt
-        sudo chmod 600 /tmp/auth.txt
+        echo "${{ secrets.AUTH_OVPN }}" >> auth.txt
+        sudo chmod 600 auth.txt
     
     - name: Install Open VPN
       run: sudo apt-get install openvpn
         
     - name: Connect Open VPN
-      run: sudo openvpn --config /tmp/config.ovpn --daemon
+      run: sudo openvpn --config config.ovpn --daemon
       
     - name: Ping Server
       run: sudo ping -c10 -W15 ${{ secrets.SERVER_LOCAL_IP }}
-  
-    - name: SCP deploy catalog
-      uses: appleboy/scp-action@v0.0.4
-      with:
-        host: ${{ secrets.SERVER_LOCAL_IP }}
-        username: ${{ secrets.SSH_USER }}
-        password: ${{ secrets.SSH_PASSWORD }}
-        source: "deploy/*"
-        target: ${{ github.event.client_payload.to_version }}
-        overwrite: true
-        strip_components: 1
-        
-    - name: Create .env
-      uses: appleboy/ssh-action@v0.0.5
-      env:
-        ENV_FILE_PATH: ./${{ github.event.client_payload.to_version }}/.env 
-      with:
-        host: ${{ secrets.SERVER_LOCAL_IP }}
-        username: ${{ secrets.SSH_USER }}
-        password: ${{ secrets.SSH_PASSWORD }}
-        envs: ENV_FILE_PATH
-        script: |
-          rm -f $ENV_FILE_PATH
-          echo "ACME_EMAIL=${{ secrets.ACME_EMAIL }}
-          DOMAIN=${{ secrets.SERVER_DOMAIN }}
-          DOCKER_IMG=${{ secrets.DOCKER_IMG_NAME }}
-          CURRENT_VERSION=${{ github.event.client_payload.to_version }}
-          PREVIOUS_VERSION=${{ github.event.client_payload.from_version }}
-          DB_UPDATE_STRATEGY=${{ github.event.client_payload.db_update_strategy }}
-          " >> $ENV_FILE_PATH
-          sudo chmod 600 $ENV_FILE_PATH
-            
-    - name: Run deploy.sh
-      uses: appleboy/ssh-action@v0.0.5
-      with:
-        host: ${{ secrets.SERVER_LOCAL_IP }}
-        username: ${{ secrets.SSH_USER }}
-        password: ${{ secrets.SSH_PASSWORD }}
-        command_timeout: "5m" 
-        script: |
-          cd ./${{ github.event.client_payload.to_version }}
-          sudo chmod 700 ./deploy.sh
-          ./deploy.sh
-
+      
     - name: Kill Open VPN
       if: always()
       run: sudo killall openvpn
