@@ -1,8 +1,5 @@
 name: Distvisor.Web preview
-
-on:
-  push:
-    branches: [ master ]
+on: repository_dispatch
 
 jobs:
   build_preview_amd64:
