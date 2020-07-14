@@ -1,4 +1,5 @@
 import { Subject, Observable, ReplaySubject } from "rxjs";
+import { Injectable } from "@angular/core";
 
 export interface INavApp {
   name: string;
@@ -7,6 +8,7 @@ export interface INavApp {
   menuVisibile?: Observable<boolean> | null;
 }
 
+@Injectable()
 export class NavigationService {
   private apps = new ReplaySubject<INavApp>();
 
