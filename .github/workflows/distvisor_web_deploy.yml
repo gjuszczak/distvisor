@@ -1,6 +1,19 @@
 name: Distvisor.Web deploy
 on:
   workflow_dispatch:
+    inputs:
+      action:
+        description: 'Deploy or Redeploy'
+        required: true
+        default: 'Redeploy'
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'Preview'
+      version:
+        description: 'App version'
+        required: false
+        default: 'latest'
   push:
     branches: [ master ]
     
