@@ -16,7 +16,7 @@ namespace Distvisor.Web.Services
 
         void Configure(string repository, string apiKey);
         Task<IEnumerable<string>> GetReleasesAsync();
-        Task WorkflowDispatchAsync(string workflowName, string reference, object inputs);
+        Task WorkflowDispatchAsync(string workflow, string reference, object inputs);
     }
 
     public class GithubClient : IGithubClient
@@ -55,13 +55,13 @@ namespace Distvisor.Web.Services
             return releases.Select(r => r.TagName).ToList();
         }
 
-        public async Task WorkflowDispatchAsync(string workflowName, string reference, object inputs)
+        public async Task WorkflowDispatchAsync(string workflow, string reference, object inputs)
         {
             EnsureConfigured();
 
             var url = new UriBuilder(_httpClient.BaseAddress);
             url.Port = -1;
-            url.Path = $"repos/{Repository}/dispatches";
+            url.Path = $"repos/{Repository}/actions/workflows/{workflow}/dispatches";
 
             var request = new HttpRequestMessage(HttpMethod.Post, url.ToString());
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey);
@@ -108,13 +108,13 @@ namespace Distvisor.Web.Services
             return Task.FromResult((new string[] { "fake_v0.1", "fake_v0.2" }).AsEnumerable());
         }
 
-        public async Task WorkflowDispatchAsync(string workflowName, string reference, object inputs)
+        public async Task WorkflowDispatchAsync(string workflow, string reference, object inputs)
         {
             await Task.Delay(TimeSpan.FromSeconds(2));
 
             await _notifications.PushFakeApiUsedAsync("github", new
             {
-                workflowName,
+                workflow,
                 reference,
                 inputs,
             });
