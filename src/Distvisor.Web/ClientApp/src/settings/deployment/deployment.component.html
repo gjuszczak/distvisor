@@ -1,0 +1,25 @@
+<p-fieldset legend="Deployment">
+    <form class="pl-3 pb-3 pr-3" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+            <div class="form-group col-md-4 col-xl-3">
+                <label for="inputEnvironment" class="col-form-label">Environment:</label>
+                <div class="form-input ui-fluid">
+                    <p-dropdown id="inputEnvironment" name="inputEnvironment" [options]="environments"
+                        [(ngModel)]="selectedEnvironment"></p-dropdown>
+                </div>
+            </div>
+            <div class="form-group col-md-4 col-xl-3">
+                <label for="inputVersion" class="col-form-label">Version (optional):</label>
+                <div class="form-input ui-fluid">
+                    <p-dropdown id="inputVersion" name="inputVersion" [options]="versions" placeholder="none" [showClear]="true"
+                        [(ngModel)]="selectedVersion"></p-dropdown>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col">
+                <p-button icon="pi pi-download" label="{{selectedVersion ? 'Deploy' : 'Redeploy'}}" styleClass="ui-button-success" type="submit"></p-button>
+            </div>
+        </div>
+    </form>
+</p-fieldset>

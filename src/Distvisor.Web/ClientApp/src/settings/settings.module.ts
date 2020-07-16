@@ -11,7 +11,7 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { InputTextModule } from 'primeng/inputtext';
 import { ApiModule } from '../api/api.module';
 import { SettingsComponent } from './settings/settings.component';
-import { UpdatesComponent } from './updates/updates.component';
+import { DeploymentComponent } from './deployment/deployment.component';
 import { MicrosoftAuthComponent } from './microsoft-auth/microsoft-auth.component';
 import { SecretsVaultComponent } from './secrets-vault/secrets-vault.component';
 import { RedirectionsComponent } from './redirections/redirections.component';
@@ -38,7 +38,7 @@ import { RedirectionsComponent } from './redirections/redirections.component';
   ],
   declarations: [
     SettingsComponent,
-    UpdatesComponent,
+    DeploymentComponent,
     MicrosoftAuthComponent,
     SecretsVaultComponent,
     RedirectionsComponent,

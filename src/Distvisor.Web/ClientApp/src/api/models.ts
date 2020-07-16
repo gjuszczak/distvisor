@@ -1,7 +1,7 @@
 export { UserInfoDto } from './models/user-info-dto';
-export { DbUpdateStrategy } from './models/db-update-strategy';
-export { UpdateParamsResponseDto } from './models/update-params-response-dto';
-export { UpdateRequestDto } from './models/update-request-dto';
+export { DeploymentParamsResponseDto } from './models/deployment-params-response-dto';
+export { DeployRequestDto } from './models/deploy-request-dto';
+export { RedeployRequestDto } from './models/redeploy-request-dto';
 export { EventLogDto } from './models/event-log-dto';
 export { Invoice } from './models/invoice';
 export { GenerateInvoiceDto } from './models/generate-invoice-dto';

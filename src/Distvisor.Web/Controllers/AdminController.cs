@@ -1,9 +1,7 @@
 ﻿using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
@@ -14,30 +12,36 @@ namespace Distvisor.Web.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IMicrosoftOneDriveService _oneDriveService;
-        private readonly IUpdateService _updateService;
+        private readonly IDeploymentService _deploymentService;
 
-        public AdminController(IUpdateService updateService, IMicrosoftOneDriveService oneDriveService)
+        public AdminController(IDeploymentService deploymentService, IMicrosoftOneDriveService oneDriveService)
         {
-            _updateService = updateService;
+            _deploymentService = deploymentService;
             _oneDriveService = oneDriveService;
         }
 
-        [HttpGet("update-params")]
-        public async Task<UpdateParamsResponseDto> GetUpdateParams()
+        [HttpGet("deployment-params")]
+        public async Task<DeploymentParamsResponseDto> GetDeploymentParams()
         {
-            var versions = await _updateService.GetReleasesAsync();
-            var strategies = Enum.GetValues(typeof(DbUpdateStrategy)).Cast<DbUpdateStrategy>();
-            return new UpdateParamsResponseDto
+            var versions = await _deploymentService.GetReleasesAsync();
+            var environments = _deploymentService.Environments;
+            return new DeploymentParamsResponseDto
             {
                 Versions = versions,
-                DbUpdateStrategies = strategies,
+                Environments = environments,
             };
         }
 
-        [HttpPost("update")]
-        public async Task Update([FromBody]UpdateRequestDto dto)
+        [HttpPost("deploy")]
+        public Task Deploy([FromBody]DeployRequestDto dto)
         {
-            await _updateService.UpdateToVersionAsync(dto.UpdateToVersion, dto.DbUpdateStrategy.ToString());
+            return _deploymentService.DeployVersionAsync(dto.Environment, dto.Version);
+        }
+
+        [HttpPost("redeploy")]
+        public Task Redeploy([FromBody]RedeployRequestDto dto)
+        {
+            return _deploymentService.RedeployAsync(dto.Environment);
         }
 
 
@@ -48,20 +52,20 @@ namespace Distvisor.Web.Controllers
         }
     }
 
-    public class UpdateParamsResponseDto
+    public class DeploymentParamsResponseDto
     {
         public IEnumerable<string> Versions { get; set; }
-        public IEnumerable<DbUpdateStrategy> DbUpdateStrategies { get; set; }
+        public IEnumerable<string> Environments { get; set; }
     }
 
-    public class UpdateRequestDto { 
-        public string UpdateToVersion { get; set; }
-
-        public DbUpdateStrategy DbUpdateStrategy { get; set; }
+    public class DeployRequestDto
+    {
+        public string Environment { get; set; }
+        public string Version { get; set; }
     }
 
-    public enum DbUpdateStrategy {
-        MigrateToLatest,
-        EmptyDatabase,
+    public class RedeployRequestDto
+    {
+        public string Environment { get; set; }
     }
 }

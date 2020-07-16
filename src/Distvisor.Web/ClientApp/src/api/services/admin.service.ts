@@ -8,8 +8,9 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-import { UpdateParamsResponseDto } from '../models/update-params-response-dto';
-import { UpdateRequestDto } from '../models/update-request-dto';
+import { DeployRequestDto } from '../models/deploy-request-dto';
+import { DeploymentParamsResponseDto } from '../models/deployment-params-response-dto';
+import { RedeployRequestDto } from '../models/redeploy-request-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -23,21 +24,21 @@ export class AdminService extends BaseService {
   }
 
   /**
-   * Path part for operation apiAdminUpdateParamsGet
+   * Path part for operation apiAdminDeploymentParamsGet
    */
-  static readonly ApiAdminUpdateParamsGetPath = '/api/Admin/update-params';
+  static readonly ApiAdminDeploymentParamsGetPath = '/api/Admin/deployment-params';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAdminUpdateParamsGet$Plain()` instead.
+   * To access only the response body, use `apiAdminDeploymentParamsGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminUpdateParamsGet$Plain$Response(params?: {
+  apiAdminDeploymentParamsGet$Plain$Response(params?: {
 
-  }): Observable<StrictHttpResponse<UpdateParamsResponseDto>> {
+  }): Observable<StrictHttpResponse<DeploymentParamsResponseDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminUpdateParamsGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminDeploymentParamsGetPath, 'get');
     if (params) {
 
 
@@ -48,88 +49,87 @@ export class AdminService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<UpdateParamsResponseDto>;
+        return r as StrictHttpResponse<DeploymentParamsResponseDto>;
       })
     );
   }
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiAdminUpdateParamsGet$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiAdminDeploymentParamsGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminUpdateParamsGet$Plain(params?: {
+  apiAdminDeploymentParamsGet$Plain(params?: {
 
-  }): Observable<UpdateParamsResponseDto> {
+  }): Observable<DeploymentParamsResponseDto> {
 
-    return this.apiAdminUpdateParamsGet$Plain$Response(params).pipe(
-      map((r: StrictHttpResponse<UpdateParamsResponseDto>) => r.body as UpdateParamsResponseDto)
+    return this.apiAdminDeploymentParamsGet$Plain$Response(params).pipe(
+      map((r: StrictHttpResponse<DeploymentParamsResponseDto>) => r.body as DeploymentParamsResponseDto)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAdminUpdateParamsGet$Json()` instead.
+   * To access only the response body, use `apiAdminDeploymentParamsGet$Json()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminUpdateParamsGet$Json$Response(params?: {
+  apiAdminDeploymentParamsGet$Json$Response(params?: {
 
-  }): Observable<StrictHttpResponse<UpdateParamsResponseDto>> {
+  }): Observable<StrictHttpResponse<DeploymentParamsResponseDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminUpdateParamsGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminDeploymentParamsGetPath, 'get');
     if (params) {
 
 
     }
     return this.http.request(rb.build({
       responseType: 'json',
-      accept: 'application/json'
+      accept: 'text/json'
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<UpdateParamsResponseDto>;
+        return r as StrictHttpResponse<DeploymentParamsResponseDto>;
       })
     );
   }
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiAdminUpdateParamsGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiAdminDeploymentParamsGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminUpdateParamsGet$Json(params?: {
+  apiAdminDeploymentParamsGet$Json(params?: {
 
-  }): Observable<UpdateParamsResponseDto> {
+  }): Observable<DeploymentParamsResponseDto> {
 
-    return this.apiAdminUpdateParamsGet$Json$Response(params).pipe(
-      map((r: StrictHttpResponse<UpdateParamsResponseDto>) => r.body as UpdateParamsResponseDto)
+    return this.apiAdminDeploymentParamsGet$Json$Response(params).pipe(
+      map((r: StrictHttpResponse<DeploymentParamsResponseDto>) => r.body as DeploymentParamsResponseDto)
     );
   }
 
   /**
-   * Path part for operation apiAdminUpdatePost
+   * Path part for operation apiAdminDeployPost
    */
-  static readonly ApiAdminUpdatePostPath = '/api/Admin/update';
+  static readonly ApiAdminDeployPostPath = '/api/Admin/deploy';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAdminUpdatePost$Json()` instead.
+   * To access only the response body, use `apiAdminDeployPost()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiAdminUpdatePost$Json$Response(params?: {
-
-    body?: UpdateRequestDto
+  apiAdminDeployPost$Response(params?: {
+      body?: DeployRequestDto
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminUpdatePostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminDeployPostPath, 'post');
     if (params) {
 
 
-      rb.body(params.body, 'application/json');
+      rb.body(params.body, 'application/*+json');
     }
     return this.http.request(rb.build({
       responseType: 'text',
@@ -144,16 +144,62 @@ export class AdminService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiAdminUpdatePost$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiAdminDeployPost$Response()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiAdminUpdatePost$Json(params?: {
-
-    body?: UpdateRequestDto
+  apiAdminDeployPost(params?: {
+      body?: DeployRequestDto
   }): Observable<void> {
 
-    return this.apiAdminUpdatePost$Json$Response(params).pipe(
+    return this.apiAdminDeployPost$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
+  /**
+   * Path part for operation apiAdminRedeployPost
+   */
+  static readonly ApiAdminRedeployPostPath = '/api/Admin/redeploy';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiAdminRedeployPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiAdminRedeployPost$Response(params?: {
+      body?: RedeployRequestDto
+  }): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminRedeployPostPath, 'post');
+    if (params) {
+
+
+      rb.body(params.body, 'application/*+json');
+    }
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiAdminRedeployPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiAdminRedeployPost(params?: {
+      body?: RedeployRequestDto
+  }): Observable<void> {
+
+    return this.apiAdminRedeployPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }

@@ -85,7 +85,7 @@ export class InvoicesService extends BaseService {
     }
     return this.http.request(rb.build({
       responseType: 'json',
-      accept: 'application/json'
+      accept: 'text/json'
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -128,7 +128,7 @@ export class InvoicesService extends BaseService {
     const rb = new RequestBuilder(this.rootUrl, InvoicesService.ApiInvoicesInvoiceIdGetPath, 'get');
     if (params) {
 
-      rb.path('invoiceId', params.invoiceId);
+      rb.path('invoiceId', params.invoiceId, {});
 
     }
     return this.http.request(rb.build({
@@ -165,20 +165,19 @@ export class InvoicesService extends BaseService {
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiInvoicesGeneratePost$Json()` instead.
+   * To access only the response body, use `apiInvoicesGeneratePost()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiInvoicesGeneratePost$Json$Response(params?: {
-
-    body?: GenerateInvoiceDto
+  apiInvoicesGeneratePost$Response(params?: {
+      body?: GenerateInvoiceDto
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, InvoicesService.ApiInvoicesGeneratePostPath, 'post');
     if (params) {
 
 
-      rb.body(params.body, 'application/json');
+      rb.body(params.body, 'application/*+json');
     }
     return this.http.request(rb.build({
       responseType: 'text',
@@ -193,16 +192,15 @@ export class InvoicesService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiInvoicesGeneratePost$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiInvoicesGeneratePost$Response()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiInvoicesGeneratePost$Json(params?: {
-
-    body?: GenerateInvoiceDto
+  apiInvoicesGeneratePost(params?: {
+      body?: GenerateInvoiceDto
   }): Observable<void> {
 
-    return this.apiInvoicesGeneratePost$Json$Response(params).pipe(
+    return this.apiInvoicesGeneratePost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
@@ -226,7 +224,7 @@ export class InvoicesService extends BaseService {
     const rb = new RequestBuilder(this.rootUrl, InvoicesService.ApiInvoicesInvoiceIdSendMailPostPath, 'post');
     if (params) {
 
-      rb.path('invoiceId', params.invoiceId);
+      rb.path('invoiceId', params.invoiceId, {});
 
     }
     return this.http.request(rb.build({

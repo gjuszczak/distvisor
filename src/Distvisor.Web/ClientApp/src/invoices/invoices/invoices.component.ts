@@ -57,7 +57,7 @@ export class InvoicesComponent implements OnInit {
   }
 
   onSubmit() {
-    this.invoicesService.apiInvoicesGeneratePost$Json$Response({
+    this.invoicesService.apiInvoicesGeneratePost$Response({
       body: {
         templateInvoiceId: <string>this.selectedTemplateInvoice.value,
         utcIssueDate: this.issueDate.toISOString(),

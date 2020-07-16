@@ -11,13 +11,12 @@ namespace Distvisor.Web.Services
 {
     public interface IGithubClient
     {
+        string Repository { get; }
         string ApiKey { get; }
-        string RepoName { get; }
-        string RepoOwner { get; }
 
-        void Configure(string repoOwner, string repoName, string apiKey);
+        void Configure(string repository, string apiKey);
         Task<IEnumerable<string>> GetReleasesAsync();
-        Task UpdateToVersionAsync(string fromVersion, string toVersion, string dbUpdateStrategy);
+        Task WorkflowDispatchAsync(string workflowName, string reference, object inputs);
     }
 
     public class GithubClient : IGithubClient
@@ -29,16 +28,13 @@ namespace Distvisor.Web.Services
             _httpClient = client;
         }
 
-        public string RepoOwner { get; private set; }
-
-        public string RepoName { get; private set; }
+        public string Repository { get; private set; }
 
         public string ApiKey { get; private set; }
 
-        public void Configure(string repoOwner, string repoName, string apiKey)
+        public void Configure(string repository, string apiKey)
         {
-            RepoOwner = repoOwner;
-            RepoName = repoName;
+            Repository = repository;
             ApiKey = apiKey;
         }
 
@@ -48,7 +44,7 @@ namespace Distvisor.Web.Services
 
             var url = new UriBuilder(_httpClient.BaseAddress);
             url.Port = -1;
-            url.Path = $"repos/{RepoOwner}/{RepoName}/releases";
+            url.Path = $"repos/{Repository}/releases";
 
             var request = new HttpRequestMessage(HttpMethod.Get, url.ToString());
             var response = await _httpClient.SendAsync(request);
@@ -59,25 +55,20 @@ namespace Distvisor.Web.Services
             return releases.Select(r => r.TagName).ToList();
         }
 
-        public async Task UpdateToVersionAsync(string fromVersion, string toVersion, string dbUpdateStrategy)
+        public async Task WorkflowDispatchAsync(string workflowName, string reference, object inputs)
         {
             EnsureConfigured();
 
             var url = new UriBuilder(_httpClient.BaseAddress);
             url.Port = -1;
-            url.Path = $"repos/{RepoOwner}/{RepoName}/dispatches";
+            url.Path = $"repos/{Repository}/dispatches";
 
             var request = new HttpRequestMessage(HttpMethod.Post, url.ToString());
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ApiKey);
             request.Content = new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(new
             {
-                event_type = "deploy",
-                client_payload = new
-                {
-                    from_version = fromVersion,
-                    to_version = toVersion,
-                    db_update_strategy = dbUpdateStrategy,
-                }
+                @ref = reference,
+                inputs
             }));
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
@@ -85,7 +76,7 @@ namespace Distvisor.Web.Services
 
         private void EnsureConfigured()
         {
-            if (string.IsNullOrEmpty(RepoOwner) || string.IsNullOrEmpty(RepoName) || string.IsNullOrEmpty(ApiKey))
+            if (string.IsNullOrEmpty(Repository) || string.IsNullOrEmpty(ApiKey))
             {
                 throw new InvalidOperationException("Github client must be configured before first use");
             }
@@ -107,9 +98,8 @@ namespace Distvisor.Web.Services
             _notifications = notifications;
         }
         public string ApiKey { get; }
-        public string RepoName { get; }
-        public string RepoOwner { get; }
-        public void Configure(string repoOwner, string repoName, string apiKey)
+        public string Repository { get; }
+        public void Configure(string repository, string apiKey)
         {
         }
 
@@ -118,15 +108,15 @@ namespace Distvisor.Web.Services
             return Task.FromResult((new string[] { "fake_v0.1", "fake_v0.2" }).AsEnumerable());
         }
 
-        public async Task UpdateToVersionAsync(string fromVersion, string toVersion, string dbUpdateStrategy)
+        public async Task WorkflowDispatchAsync(string workflowName, string reference, object inputs)
         {
             await Task.Delay(TimeSpan.FromSeconds(2));
 
             await _notifications.PushFakeApiUsedAsync("github", new
             {
-                fromVersion,
-                toVersion,
-                dbUpdateStrategy,
+                workflowName,
+                reference,
+                inputs,
             });
         }
     }

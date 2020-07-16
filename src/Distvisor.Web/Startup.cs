@@ -30,12 +30,12 @@ namespace Distvisor.Web
         {
             services.Configure<ClientConfiguration>(Config.GetSection("ClientConfig"));
             services.Configure<AzureAdConfiguration>(Config.GetSection("AzureAd"));
-            services.Configure<DistvisorConfiguration>(Config.GetSection("Distvisor"));
+            services.Configure<DeploymentConfiguration>(Config.GetSection("Deployment"));
             services.Configure<MailgunConfiguration>(Config.GetSection("Mailgun"));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IEventLogToDtoMapper, EventLogToDtoMapper>();
-            services.AddScoped<IUpdateService, UpdateService>();
+            services.AddScoped<IDeploymentService, DeploymentService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
             services.AddScoped<IMailingService, MailingService>();
             services.AddScoped<ISecretsVault, SecretsVault>();

@@ -84,7 +84,7 @@ export class EventLogService extends BaseService {
     }
     return this.http.request(rb.build({
       responseType: 'json',
-      accept: 'application/json'
+      accept: 'text/json'
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {

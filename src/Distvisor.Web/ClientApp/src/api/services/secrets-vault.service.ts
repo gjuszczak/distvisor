@@ -84,7 +84,7 @@ export class SecretsVaultService extends BaseService {
     }
     return this.http.request(rb.build({
       responseType: 'json',
-      accept: 'application/json'
+      accept: 'text/json'
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -128,8 +128,8 @@ export class SecretsVaultService extends BaseService {
     const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecretsVaultKeyPostPath, 'post');
     if (params) {
 
-      rb.path('key', params.key);
-      rb.query('value', params.value);
+      rb.path('key', params.key, {});
+      rb.query('value', params.value, {});
 
     }
     return this.http.request(rb.build({
@@ -179,7 +179,7 @@ export class SecretsVaultService extends BaseService {
     const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecretsVaultKeyDeletePath, 'delete');
     if (params) {
 
-      rb.path('key', params.key);
+      rb.path('key', params.key, {});
 
     }
     return this.http.request(rb.build({

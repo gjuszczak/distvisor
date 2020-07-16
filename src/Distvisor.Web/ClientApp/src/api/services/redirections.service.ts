@@ -40,7 +40,7 @@ export class RedirectionsService extends BaseService {
     const rb = new RequestBuilder(this.rootUrl, RedirectionsService.ApiRedirectionsNameGetPath, 'get');
     if (params) {
 
-      rb.path('name', params.name);
+      rb.path('name', params.name, {});
 
     }
     return this.http.request(rb.build({
@@ -89,7 +89,7 @@ export class RedirectionsService extends BaseService {
     const rb = new RequestBuilder(this.rootUrl, RedirectionsService.ApiRedirectionsNameDeletePath, 'delete');
     if (params) {
 
-      rb.path('name', params.name);
+      rb.path('name', params.name, {});
 
     }
     return this.http.request(rb.build({
@@ -182,7 +182,7 @@ export class RedirectionsService extends BaseService {
     }
     return this.http.request(rb.build({
       responseType: 'json',
-      accept: 'application/json'
+      accept: 'text/json'
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -213,20 +213,19 @@ export class RedirectionsService extends BaseService {
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiRedirectionsPost$Json()` instead.
+   * To access only the response body, use `apiRedirectionsPost()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiRedirectionsPost$Json$Response(params?: {
-
-    body?: RedirectionDetails
+  apiRedirectionsPost$Response(params?: {
+      body?: RedirectionDetails
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, RedirectionsService.ApiRedirectionsPostPath, 'post');
     if (params) {
 
 
-      rb.body(params.body, 'application/json');
+      rb.body(params.body, 'application/*+json');
     }
     return this.http.request(rb.build({
       responseType: 'text',
@@ -241,16 +240,15 @@ export class RedirectionsService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiRedirectionsPost$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiRedirectionsPost$Response()` instead.
    *
-   * This method sends `application/json` and handles request body of type `application/json`.
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiRedirectionsPost$Json(params?: {
-
-    body?: RedirectionDetails
+  apiRedirectionsPost(params?: {
+      body?: RedirectionDetails
   }): Observable<void> {
 
-    return this.apiRedirectionsPost$Json$Response(params).pipe(
+    return this.apiRedirectionsPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }

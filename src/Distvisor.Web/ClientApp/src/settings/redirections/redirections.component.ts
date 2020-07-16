@@ -28,7 +28,7 @@ export class RedirectionsComponent implements OnInit, OnDestroy {
   }
 
   onSave() {
-    this.subscriptions.push(this.redirectionsService.apiRedirectionsPost$Json({
+    this.subscriptions.push(this.redirectionsService.apiRedirectionsPost({
       body:{
         name: this.inputRedirectionName,
         url: this.inputRedirectionUrl
