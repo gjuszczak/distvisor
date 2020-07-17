@@ -14,8 +14,6 @@ on:
         description: 'App version'
         required: false
         default: 'latest'
-  push:
-    branches: [ master ]
     
 jobs:
   deploy_preview_arm32v7:
