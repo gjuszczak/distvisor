@@ -59,17 +59,3 @@ jobs:
         docker build -t ${{ secrets.DOCKER_IMG_NAME }}:preview-arm32v7 .
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker push ${{ secrets.DOCKER_IMG_NAME }}:preview-arm32v7
-        
-  deploy_preview_arm32v7:
-    needs: build_preview_arm32v7
-    name: Redeploy preview-arm32v7
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Workflow dispatch
-        run: |
-          curl \
-          -X POST \
-          -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/gjuszczak/distvisor/actions/workflows/distvisor_web_deploy.yml/dispatches \
-          -d '{"ref":"master", "inputs":{ "action":"Redeploy", "environment":"Preview" }}'
