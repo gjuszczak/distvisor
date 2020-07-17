@@ -1,5 +1,7 @@
 name: Distvisor.Web preview
-on: repository_dispatch
+on:
+  push:
+    branches: [ master ]
 
 jobs:
   build_preview_amd64:
@@ -60,31 +62,14 @@ jobs:
         
   deploy_preview_arm32v7:
     needs: build_preview_arm32v7
-    name: Deploy preview-arm32v7
+    name: Redeploy preview-arm32v7
     runs-on: ubuntu-latest
-
-    steps: 
-    - uses: actions/checkout@v1
-      
-    - name: Create config.ovpn
-      run: |
-        echo "${{ secrets.CONFIG_OVPN }}" >> config.ovpn
-        sudo chmod 600 config.ovpn
     
-    - name: Create auth.txt
-      run: |
-        echo "${{ secrets.AUTH_OVPN }}" >> auth.txt
-        sudo chmod 600 auth.txt
-    
-    - name: Install Open VPN
-      run: sudo apt-get install openvpn
-        
-    - name: Connect Open VPN
-      run: sudo openvpn --config config.ovpn --daemon
-      
-    - name: Ping Server
-      run: sudo ping -c10 -W15 ${{ secrets.SERVER_LOCAL_IP }}
-      
-    - name: Kill Open VPN
-      if: always()
-      run: sudo killall openvpn
+    steps:
+      - name: Workflow dispatch
+        run: |
+          curl \
+          -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/gjuszczak/distvisor/actions/workflows/distvisor_web_deploy.yml/dispatches \
+          -d '{"ref":"master", "inputs":{ "action":"Redeploy", "environment":"Preview" }}'
