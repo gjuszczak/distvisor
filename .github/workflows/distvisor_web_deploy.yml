@@ -35,8 +35,8 @@ jobs:
     
     - name: Create kubeconfig 
       run: |
-        echo "${{ secrets.KUBECONFIG }}" > /tmp/kubeconfig
-        export KUBECONFIG=/tmp/kubeconfig
+        echo "${{ secrets.KUBECONFIG }}" > /tmp/config
+        export KUBECONFIG=/tmp/config
     
     - name: Create config.ovpn
       run: |
@@ -58,7 +58,7 @@ jobs:
       run: sudo ping -c10 -W15 ${{ secrets.SERVER_LOCAL_IP }}
     
     - name: Redeploy Preview environment
-      run: sudo kubectl rollout restart deployment distvisor-preview
+      run: kubectl rollout restart deployment distvisor-preview
       
     - name: Kill Open VPN
       if: always()
