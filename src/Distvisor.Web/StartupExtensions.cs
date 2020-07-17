@@ -1,6 +1,8 @@
 ﻿using Distvisor.Web.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -68,6 +70,27 @@ namespace Distvisor.Web
                 var policy = new AuthorizationPolicyBuilder(options.DefaultPolicy);
                 policy.RequireRole("user");
                 options.DefaultPolicy = policy.Build();
+            });
+        }
+
+        public static void UseAccessCookie(this IApplicationBuilder app, string accessCookieValue)
+        {
+            if (string.IsNullOrEmpty(accessCookieValue))
+            {
+                return;
+            }
+
+            app.Use(async (context, next) =>
+            {
+                var accessCookie = context.Request.Cookies.FirstOrDefault(x => x.Key == "AccessCookie");
+                if (accessCookie.Value != accessCookieValue)
+                {
+                    context.Response.StatusCode = 404;
+                    await context.Response.WriteAsync("404 Not Found.");
+                    return;
+                }
+
+                await next.Invoke();
             });
         }
     }

@@ -114,6 +114,8 @@ namespace Distvisor.Web
                 app.UseExceptionHandler("/Error");
             }
 
+            app.UseAccessCookie(Config.GetValue<string>("AccessCookie"));
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 ContentTypeProvider = pwaProvider
