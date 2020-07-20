@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { map, skipWhile } from 'rxjs/operators';
+import { skipWhile } from 'rxjs/operators';
 import { NavigationService } from './navigation.service';
 import { AuthService } from './auth.service';
 import { ApiConfiguration } from '../api/api-configuration';
@@ -23,7 +23,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.configureAuth();
     this.configureApi();
     this.configureNavigation();
     this.configureNotifications();
@@ -35,10 +34,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   configureApi() {
     this.apiConfiguration.rootUrl = this.baseUrl.replace(/\/$/, "");
-  }
-  
-  configureAuth() {
-
   }
 
   configureNavigation() {
@@ -86,13 +81,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   configureNotifications() {
     this.authSubscription = this.authService.accessToken()
-      .pipe(skipWhile(token => token === null))
       .subscribe(token => {
-        if (token === null) {
-          this.signalrService.disconnect();
+        if (token) {
+          this.signalrService.connect(this.baseUrl, token);
         }
         else {
-          this.signalrService.connect(this.baseUrl, token);
+          this.signalrService.disconnect();
         }
       });
   }

@@ -138,7 +138,7 @@ namespace Distvisor.Web
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
 
-                endpoints.MapHub<NotificationsHub>("/notificationshub");
+                endpoints.MapHub<NotificationsHub>("/hubs/notificationshub");
             });
 
             app.UseSpa(spa =>

@@ -23,7 +23,7 @@ export class AuthService {
     });
 
     this.broadcastService.subscribe('msal:loginFailure', () => {
-      this.isAuthenticatedSubject.next(true);
+      this.isAuthenticatedSubject.next(false);
     });
 
     this.broadcastService.subscribe("msal:acquireTokenSuccess", payload => {

@@ -16,7 +16,7 @@ export class SignalrService {
     const baseUrlClean = baseUrl.replace(/\/$/, "");
     this.connection = new signalR.HubConnectionBuilder()
       .configureLogging(signalR.LogLevel.Information)
-      .withUrl(`${baseUrlClean}/notificationshub`, { accessTokenFactory: () => userSession })
+      .withUrl(`${baseUrlClean}/hubs/notificationshub`, { accessTokenFactory: () => userSession })
       .build();
 
     this.connection.start().then(function () {
@@ -44,7 +44,10 @@ export class SignalrService {
   }
 
   disconnect() {
-    this.connection.stop();
+    if (this.connection) {
+      this.connection.stop();
+      this.connection = null;
+    }
   }
 }
 
