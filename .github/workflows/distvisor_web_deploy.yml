@@ -14,8 +14,6 @@ on:
         description: 'App version'
         required: false
         default: 'latest'
-  push:
-    branches: [ master ]
     
 jobs:
   deploy_preview_arm32v7:
@@ -25,6 +23,17 @@ jobs:
     steps: 
     - uses: actions/checkout@v1
       
+    - name: Install kubectl
+      run: |
+        sudo apt-get update && sudo apt-get install -y apt-transport-https gnupg2
+        curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+        echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+        sudo apt-get update
+        sudo apt-get install -y kubectl
+    
+    - name: Create kubeconfig 
+      run: echo "${{ secrets.KUBECONFIG }}" > kubeconfig
+    
     - name: Create config.ovpn
       run: |
         echo "${{ secrets.CONFIG_OVPN }}" >> config.ovpn
@@ -43,6 +52,9 @@ jobs:
       
     - name: Ping Server
       run: sudo ping -c10 -W15 ${{ secrets.SERVER_LOCAL_IP }}
+    
+    - name: Redeploy Preview environment
+      run: kubectl rollout restart deployment distvisor-preview --kubeconfig=kubeconfig
       
     - name: Kill Open VPN
       if: always()
