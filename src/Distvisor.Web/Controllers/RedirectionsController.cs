@@ -1,6 +1,8 @@
 ﻿using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -20,12 +22,19 @@ namespace Distvisor.Web.Controllers
         [HttpGet("{name}")]
         public async Task<IActionResult> RedirectTo(string name)
         {
+            if (Request.Cookies.ContainsKey("DoNotRedirect"))
+            {
+                return Redirect("/");
+            }
+
+            Response.Cookies.Append("DoNotRedirect", "", new CookieOptions { MaxAge = TimeSpan.FromMinutes(5) });
+
             var redirection = await _redirections.GetRedirectionAsync(name);
             if (redirection == null)
             {
-                return RedirectPermanent("/");
+                return Redirect("/");
             }
-            return RedirectPermanent(redirection.Url.ToString());
+            return Redirect(redirection.Url.ToString());
         }
 
         [HttpDelete("{name}")]

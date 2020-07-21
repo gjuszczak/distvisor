@@ -90,26 +90,6 @@ namespace Distvisor.Web.Services
                 User = secretsVault.GetSecretValue(SecretKey.AccountingUser),
             };
         }
-
-        public static GithubSecrets GetGithubSecrets(this ISecretsVault secretsVault)
-        {
-            return new GithubSecrets
-            {
-                ApiKey = secretsVault.GetSecretValue(SecretKey.GithubApiKey),
-                RepoOwner = secretsVault.GetSecretValue(SecretKey.GithubRepoOwner),
-                RepoName = secretsVault.GetSecretValue(SecretKey.GithubRepoName),
-            };
-        }
-
-        public static MicrosoftSecrets GetMicrosoftSecrets(this ISecretsVault secretsVault)
-        {
-            return new MicrosoftSecrets
-            {
-                AppClientId = secretsVault.GetSecretValue(SecretKey.MicrosoftAppClientId),
-                AppSecret = secretsVault.GetSecretValue(SecretKey.MicrosoftAppSecret),
-                AuthRedirectUri = secretsVault.GetSecretValue(SecretKey.MicrosoftAuthRedirectUri),
-            };
-        }
     }
 
     public class AccountingSecrets
@@ -117,19 +97,5 @@ namespace Distvisor.Web.Services
         public string InvoicesApiKey { get; set; }
         public string SubscriberApiKey { get; set; }
         public string User { get; set; }
-    }
-
-    public class GithubSecrets
-    {
-        public string ApiKey { get; set; }
-        public string RepoOwner { get; set; }
-        public string RepoName { get; set; }
-    }
-
-    public class MicrosoftSecrets
-    {
-        public string AppClientId { get; set; }
-        public string AppSecret { get; set; }
-        public string AuthRedirectUri { get; set; }
     }
 }

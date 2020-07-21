@@ -115,6 +115,7 @@ namespace Distvisor.Web
             }
 
             app.UseAccessCookie(Config.GetValue<string>("AccessCookie"));
+            app.UseDoNotRedirectCookie();
 
             app.UseStaticFiles(new StaticFileOptions
             {

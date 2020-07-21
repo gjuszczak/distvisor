@@ -63,12 +63,13 @@ namespace Distvisor.Web
                     },
                     OnTokenValidated = ctx =>
                     {
-                        var username = ctx.Principal.FindFirst("preferred_username").Value;
+                        var username = ctx.Principal.FindFirstValue("preferred_username");                        
                         var role = (roles?.User?.Contains(username) ?? false) ? "user" : "guest";
                         var appClaims = new[]
                         {
-                                new Claim(ClaimTypes.Role, role)
-                            };
+                            new Claim(ClaimTypes.Name, username),
+                            new Claim(ClaimTypes.Role, role)
+                        };
                         ctx.Principal.AddIdentity(new ClaimsIdentity(appClaims));
                         return Task.CompletedTask;
                     }
@@ -101,6 +102,19 @@ namespace Distvisor.Web
                 }
 
                 await next.Invoke();
+            });
+        }
+
+        public static void UseDoNotRedirectCookie(this IApplicationBuilder app)
+        {
+            app.Use(async (context, next) =>
+            {
+                await next.Invoke();
+
+                if (context.Request.Cookies.ContainsKey("DoNotRedirect"))
+                {
+                    context.Response.Cookies.Delete("DoNotRedirect");
+                };
             });
         }
     }

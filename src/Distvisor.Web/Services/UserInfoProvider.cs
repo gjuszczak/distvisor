@@ -10,7 +10,7 @@ namespace Distvisor.Web.Services
     {
         bool IsAuthenticated { get; }
         string Username { get; }
-        Guid UserId { get; }
+        string UserId { get; }
         string Role { get; }
 
         Task<string> GetAccessTokenAsync();
@@ -27,9 +27,9 @@ namespace Distvisor.Web.Services
 
         public bool IsAuthenticated => _httpContext.User.Identity.IsAuthenticated;
 
-        public string Username => _httpContext.User.FindFirstValue("preferred_username");
+        public string Username => _httpContext.User.FindFirstValue(ClaimTypes.Name);
 
-        public Guid UserId => Guid.Parse(_httpContext.User.FindFirstValue("http://schemas.microsoft.com/identity/claims/objectidentifier"));
+        public string UserId => _httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         public string Role => _httpContext.User.IsInRole("user") ? "user" : "guest";
 

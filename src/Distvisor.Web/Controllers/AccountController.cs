@@ -31,7 +31,7 @@ namespace Distvisor.Web.Controllers
 
     public class UserInfoDto
     {
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
         public string Username { get; set; }
         public string Role { get; set; }
     }

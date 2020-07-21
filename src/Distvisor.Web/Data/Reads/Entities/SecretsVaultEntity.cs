@@ -14,11 +14,5 @@ namespace Distvisor.Web.Data.Entities
         AccountingInvoicesApiKey,
         AccountingSubscriberApiKey,
         AccountingUser,
-        GithubApiKey,
-        GithubRepoName,
-        GithubRepoOwner,
-        MicrosoftAppClientId,
-        MicrosoftAppSecret,
-        MicrosoftAuthRedirectUri,
     }
 }

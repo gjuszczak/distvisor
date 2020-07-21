@@ -58,7 +58,9 @@ namespace Distvisor.Web.Services
         private async Task StoreAndPushAsync(Notification notification)
         {
             await _notificationStore.StoreNotificationAsync(notification);
-            await _notificationsHub.Clients.User(_userInfo.UserId.ToString()).PushNotification(notification.ToJsonString());
+            await _notificationsHub.Clients
+                .User(_userInfo.UserId)
+                .PushNotification(notification.ToJsonString());
         }
     }
 }
