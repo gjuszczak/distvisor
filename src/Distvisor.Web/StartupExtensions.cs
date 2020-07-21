@@ -63,7 +63,7 @@ namespace Distvisor.Web
                     },
                     OnTokenValidated = ctx =>
                     {
-                        var username = ctx.Principal.FindFirstValue("preferred_username");                        
+                        var username = ctx.Principal.FindFirstValue("preferred_username");
                         var role = (roles?.User?.Contains(username) ?? false) ? "user" : "guest";
                         var appClaims = new[]
                         {
@@ -109,12 +109,17 @@ namespace Distvisor.Web
         {
             app.Use(async (context, next) =>
             {
-                await next.Invoke();
-
                 if (context.Request.Cookies.ContainsKey("DoNotRedirect"))
                 {
-                    context.Response.Cookies.Delete("DoNotRedirect");
+                    context.Response.OnStarting(state =>
+                    {
+                        var ctx = (HttpContext)state;
+                        ctx.Response.Cookies.Delete("DoNotRedirect");
+                        return Task.CompletedTask;
+                    }, context);
                 };
+
+                await next.Invoke();
             });
         }
     }
