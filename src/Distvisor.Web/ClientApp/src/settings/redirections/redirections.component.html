@@ -1,7 +1,7 @@
 <p-fieldset legend="Redirections">
     <p-dataView [value]="storedRedirections" styleClass="no-header">
         <ng-template let-item pTemplate="listItem">
-            <div class="d-flex flex-row justify-content-between align-items-center p-3"
+            <div class="d-flex flex-row justify-content-between align-items-center p-3 col-12"
                 [ngClass]="{'border-bottom': !isLast(item)}">
                 <div>
                     {{item.name}}

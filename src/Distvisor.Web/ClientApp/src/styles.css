@@ -12,9 +12,17 @@ code {
   border-color: #1861ac;
 }
 
+.p-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -0.5rem;
+  margin-left: -0.5rem;
+  margin-top: -0.5rem;
+}
+
 legend {
   width: auto;
-  font-size: 1rem;
+  font-size: 1.3rem;
 }
 
 .no-header .ui-dataview-header  {
@@ -37,7 +45,7 @@ legend {
 }
 
 .pi-large {
-  font-size: 1.2rem !important;
+  font-size: 1rem !important;
 }
 
 .home-jumbo {
@@ -62,9 +70,4 @@ legend {
 
 .rounded-img {
   border-radius: 50%;
-}
-
-body .ui-paginator .ui-dropdown{
-  height: initial !important;
-  min-width: initial !important;
 }
