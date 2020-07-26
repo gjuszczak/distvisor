@@ -1,0 +1,18 @@
+<p-fieldset legend="DBs and backups" styleClass="backups">
+    <div class="mx-3 mb-3">
+        <p-panel styleClass="mt-1" [toggleable]="true" [collapsed]="true" expandIcon="pi pi-chevron-right" collapseIcon="pi pi-chevron-down">
+            <p-header>
+                <span class="ui-panel-title ml-2">Event Store</span>
+                <p-splitButton label="Backup" icon="pi pi-cloud-upload" (onClick)="save()" [model]="items" styleClass="ui-button-success"></p-splitButton>
+            </p-header>
+            Content
+        </p-panel>
+        <p-panel styleClass="mt-1" [toggleable]="true" [collapsed]="true" expandIcon="pi pi-chevron-right" collapseIcon="pi pi-chevron-down">
+            <p-header>
+                <span class="ui-panel-title ml-2">Read Store</span>
+                <p-splitButton label="Backup" icon="pi pi-cloud-upload" (onClick)="save()" [model]="items" styleClass="ui-button-success"></p-splitButton>
+            </p-header>
+            Content
+        </p-panel>
+    </div>
+</p-fieldset>

@@ -6,6 +6,10 @@ code {
   color: #e01a76;
 }
 
+body .pi {
+  font-size: 1em;
+}
+
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;
@@ -27,6 +31,20 @@ legend {
 
 .no-header .ui-dataview-header  {
   display: none !important;
+}
+
+.backups .ui-panel-titlebar {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  background-color: transparent !important;
+}
+
+.backups p-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .form-input {

@@ -66,7 +66,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.navigationService.registerApp({
       name: 'Settings',
-      icon: 'pi pi-cog',
+      icon: 'pi pi-sliders-h',
       routerLink: '/settings',
       menuVisibile: this.authService.isInUserRole()
     });
