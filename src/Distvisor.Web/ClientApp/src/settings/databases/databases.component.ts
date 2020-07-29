@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminService } from 'src/api/services';
 import { MenuItem } from 'primeng/api';
+import { BackupFileInfoDto } from 'src/api/models';
 
 
 @Component({
@@ -9,12 +10,13 @@ import { MenuItem } from 'primeng/api';
 })
 export class DatabasesComponent implements OnInit {
 
-  items: MenuItem[];
+  splitBtnBackupItems: MenuItem[];
+  esBackups: BackupFileInfoDto[];
 
   constructor(private adminService: AdminService) { }
 
   ngOnInit() {
-    this.items = [
+    this.splitBtnBackupItems = [
       {
         label: 'Recreate',
         icon: 'pi pi-fw pi-refresh',
@@ -23,6 +25,15 @@ export class DatabasesComponent implements OnInit {
         }
       }
     ];
+
+    this.adminService.apiAdminListBackupsGet$Json()
+      .subscribe(backups => {
+        this.esBackups = backups;
+      });
+  }
+
+  isLast(backup: BackupFileInfoDto) {
+    return this.esBackups.indexOf(backup) === this.esBackups.length -1;
   }
 
   save() {

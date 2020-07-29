@@ -8,6 +8,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { BackupFileInfoDto } from '../models/backup-file-info-dto';
 import { DeployRequestDto } from '../models/deploy-request-dto';
 import { DeploymentParamsResponseDto } from '../models/deployment-params-response-dto';
 import { RedeployRequestDto } from '../models/redeploy-request-dto';
@@ -201,6 +202,93 @@ export class AdminService extends BaseService {
 
     return this.apiAdminRedeployPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
+  /**
+   * Path part for operation apiAdminListBackupsGet
+   */
+  static readonly ApiAdminListBackupsGetPath = '/api/Admin/list-backups';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiAdminListBackupsGet$Plain()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiAdminListBackupsGet$Plain$Response(params?: {
+
+  }): Observable<StrictHttpResponse<Array<BackupFileInfoDto>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminListBackupsGetPath, 'get');
+    if (params) {
+
+
+    }
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: 'text/plain'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<BackupFileInfoDto>>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiAdminListBackupsGet$Plain$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiAdminListBackupsGet$Plain(params?: {
+
+  }): Observable<Array<BackupFileInfoDto>> {
+
+    return this.apiAdminListBackupsGet$Plain$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<BackupFileInfoDto>>) => r.body as Array<BackupFileInfoDto>)
+    );
+  }
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiAdminListBackupsGet$Json()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiAdminListBackupsGet$Json$Response(params?: {
+
+  }): Observable<StrictHttpResponse<Array<BackupFileInfoDto>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminListBackupsGetPath, 'get');
+    if (params) {
+
+
+    }
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'text/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<BackupFileInfoDto>>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiAdminListBackupsGet$Json$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiAdminListBackupsGet$Json(params?: {
+
+  }): Observable<Array<BackupFileInfoDto>> {
+
+    return this.apiAdminListBackupsGet$Json$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<BackupFileInfoDto>>) => r.body as Array<BackupFileInfoDto>)
     );
   }
 

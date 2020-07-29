@@ -18,6 +18,7 @@ import { MicrosoftAuthComponent } from './microsoft-auth/microsoft-auth.componen
 import { SecretsVaultComponent } from './secrets-vault/secrets-vault.component';
 import { RedirectionsComponent } from './redirections/redirections.component';
 import { DatabasesComponent } from './databases/databases.component';
+import { UtilsModule } from 'src/utils/utils.module';
 
 
 @NgModule({
@@ -40,6 +41,7 @@ import { DatabasesComponent } from './databases/databases.component';
 
     // internal
     ApiModule,
+    UtilsModule,
   ],
   declarations: [
     SettingsComponent,

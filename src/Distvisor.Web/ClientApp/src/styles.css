@@ -21,7 +21,6 @@ body .pi {
   flex-wrap: wrap;
   margin-right: -0.5rem;
   margin-left: -0.5rem;
-  margin-top: -0.5rem;
 }
 
 legend {
@@ -31,6 +30,11 @@ legend {
 
 .no-header .ui-dataview-header  {
   display: none !important;
+}
+
+.no-border .ui-dataview-content  {
+  border: 0 !important;
+  padding: 0 !important;
 }
 
 .backups .ui-panel-titlebar {

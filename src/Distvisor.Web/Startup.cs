@@ -36,12 +36,12 @@ namespace Distvisor.Web
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IEventLogToDtoMapper, EventLogToDtoMapper>();
             services.AddScoped<IDeploymentService, DeploymentService>();
+            services.AddScoped<IBackupService, BackupService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
             services.AddScoped<IMailingService, MailingService>();
             services.AddScoped<ISecretsVault, SecretsVault>();
             services.AddScoped<IMicrosoftAuthService, MicrosoftAuthService>();
             services.AddScoped<IAuthTokenStore, AuthTokenStore>();
-            services.AddScoped<IMicrosoftOneDriveService, MicrosoftOneDriveService>();
             services.AddScoped<IUserInfoProvider, UserInfoProvider>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<INotificationStore, NotificationStore>();
@@ -66,6 +66,13 @@ namespace Distvisor.Web
                 .ConfigureHttpClient(c =>
                 {
                     c.BaseAddress = new Uri("https://www.ifirma.pl/");
+                    c.DefaultRequestHeaders.Add("Accept", "application/json");
+                });
+
+            services.AddHttpClient<IOneDriveClient, OneDriveClient>()
+                .ConfigureHttpClient(c =>
+                {
+                    c.BaseAddress = new Uri("https://graph.microsoft.com/");
                     c.DefaultRequestHeaders.Add("Accept", "application/json");
                 });
 

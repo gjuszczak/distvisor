@@ -1,7 +1,9 @@
 ﻿using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
@@ -11,13 +13,15 @@ namespace Distvisor.Web.Controllers
     [Route("api/[controller]")]
     public class AdminController : ControllerBase
     {
-        private readonly IMicrosoftOneDriveService _oneDriveService;
         private readonly IDeploymentService _deploymentService;
+        private readonly IOneDriveClient _oneDriveService;
+        private readonly IBackupService _backupService;
 
-        public AdminController(IDeploymentService deploymentService, IMicrosoftOneDriveService oneDriveService)
+        public AdminController(IDeploymentService deploymentService, IOneDriveClient oneDriveService, IBackupService backupService)
         {
             _deploymentService = deploymentService;
             _oneDriveService = oneDriveService;
+            _backupService = backupService;
         }
 
         [HttpGet("deployment-params")]
@@ -45,6 +49,21 @@ namespace Distvisor.Web.Controllers
         }
 
 
+        [HttpGet("list-backups")]
+        public async Task<List<BackupFileInfoDto>> ListBackups()
+        {
+            var files = (await _backupService.ListStoredBackups())
+                .Select(x => new BackupFileInfoDto
+                {
+                    Name = x.Name,
+                    CreatedDateTime = x.CreatedDateTime,
+                    Size = x.Size
+                })
+                .ToList();
+
+            return files;
+        }
+
         [HttpPost("backup")]
         public async Task Backup()
         {
@@ -56,6 +75,13 @@ namespace Distvisor.Web.Controllers
     {
         public IEnumerable<string> Versions { get; set; }
         public IEnumerable<string> Environments { get; set; }
+    }
+
+    public class BackupFileInfoDto
+    {
+        public string Name { get; set; }
+        public long Size { get; set; }
+        public DateTime CreatedDateTime { get; set; }
     }
 
     public class DeployRequestDto
