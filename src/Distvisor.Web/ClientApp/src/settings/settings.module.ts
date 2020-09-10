@@ -9,6 +9,7 @@ import { DataViewModule } from 'primeng/dataview';
 import { DropdownModule } from 'primeng/dropdown';
 import { FieldsetModule } from 'primeng/fieldset';
 import { InputTextModule } from 'primeng/inputtext';
+import { MenuModule } from 'primeng/menu';
 import { PanelModule } from 'primeng/panel';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { ApiModule } from '../api/api.module';
@@ -36,6 +37,7 @@ import { UtilsModule } from 'src/utils/utils.module';
     DropdownModule,
     FieldsetModule,
     InputTextModule,
+    MenuModule,
     PanelModule,
     SplitButtonModule,
 

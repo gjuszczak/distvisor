@@ -37,6 +37,10 @@ legend {
   padding: 0 !important;
 }
 
+.btn-long .ui-button-text {
+  margin-right: 28px;
+}
+
 .backups .ui-panel-titlebar {
   display: flex;
   flex-direction: row-reverse;
