@@ -52,7 +52,7 @@ namespace Distvisor.Web.Controllers
         [HttpGet("list-backups")]
         public async Task<List<BackupFileInfoDto>> ListBackups()
         {
-            var files = (await _backupService.ListStoredBackups())
+            var files = (await _backupService.ListStoredBackupsAsync())
                 .Select(x => new BackupFileInfoDto
                 {
                     Name = x.Name,
@@ -67,7 +67,7 @@ namespace Distvisor.Web.Controllers
         [HttpPost("backup")]
         public async Task Backup()
         {
-            await _oneDriveService.BackupDb();
+            await _backupService.CreateBackupAsync();
         }
     }
 

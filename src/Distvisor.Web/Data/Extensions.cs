@@ -52,5 +52,20 @@ namespace Distvisor.Web.Data
             var mapping = handlers.ToDictionary(h => h.EventType, h => h.HandlerType);
             services.AddScoped<IEventHandler<object>>(sp => new EventHandlerResolver(sp, mapping));
         }
+
+        public static void DetachAllEntities(this DbContext context)
+        {
+            var entries = context.ChangeTracker.Entries()
+                .Where(e => e.State != EntityState.Detached)
+                .ToList();
+
+            foreach (var entry in entries)
+            {
+                if (entry.Entity != null)
+                {
+                    entry.State = EntityState.Detached;
+                }
+            }
+        }
     }
 }

@@ -11,15 +11,15 @@ import { Menu } from 'primeng/menu';
 })
 export class DatabasesComponent implements OnInit {
 
-  rsMenuItems: MenuItem[];
+  btnMenuItems: MenuItem[];
   backupFiles: BackupFileInfoDto[];
 
   constructor(private adminService: AdminService) { }
 
   ngOnInit() {
-    this.rsMenuItems = [
+    this.btnMenuItems = [
       {
-        label: 'Recreate from ES',
+        label: 'Replay events to RS',
         icon: 'pi pi-refresh',
         command: () => {
           this.save();
@@ -38,6 +38,6 @@ export class DatabasesComponent implements OnInit {
   }
 
   save() {
-
+    this.adminService.apiAdminBackupPost().subscribe();
   }
 }
