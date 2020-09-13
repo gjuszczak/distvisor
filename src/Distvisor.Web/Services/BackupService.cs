@@ -9,6 +9,7 @@ namespace Distvisor.Web.Services
     {
         Task<IEnumerable<OneDriveFileInfo>> ListStoredBackupsAsync();
         Task CreateBackupAsync();
+        Task DeleteBackupAsync(string fileName);
     }
 
     public class BackupService : IBackupService
@@ -50,7 +51,10 @@ namespace Distvisor.Web.Services
                 var path = await _backupFilesManager.GenerateBackupFileAsync();
                 try
                 {
-                    await _backupFilesManager.RestoreBackupFileAsync(path);
+                    var dateString = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    using var session = await _oneDrive.CreateUploadSession($"/es_db_{dateString}.bak");
+                    await session.Upload(path);
+                    await _notifications.PushSuccessAsync("Backup created successfully");
                 }
                 finally
                 {
@@ -60,6 +64,21 @@ namespace Distvisor.Web.Services
             catch (Exception exc)
             {
                 await _notifications.PushErrorAsync("Unable to create backup", exc);
+                throw;
+            }
+        }
+
+        public async Task DeleteBackupAsync(string fileName)
+        {
+            try
+            {
+                await _oneDrive.DeleteFile($"/{fileName}");
+                await _notifications.PushSuccessAsync("Backup deleted successfully");
+
+            }
+            catch (Exception exc)
+            {
+                await _notifications.PushErrorAsync("Unable to delete backup", exc);
                 throw;
             }
         }

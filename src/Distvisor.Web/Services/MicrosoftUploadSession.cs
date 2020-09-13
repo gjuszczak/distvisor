@@ -11,13 +11,13 @@ namespace Distvisor.Web.Services
         private const long BytesThrottle = 327680; //320 KiB
 
         private readonly MicrosoftUploadSessionInfo _sessionInfo;
-        private readonly IMicrosoftAuthService _authService;
+        private readonly Func<Task<string>> _accessTokenProvider;
         private readonly RestClient _httpClient;
 
-        public MicrosoftUploadSession(MicrosoftUploadSessionInfo sessionInfo, IMicrosoftAuthService authService)
+        public MicrosoftUploadSession(MicrosoftUploadSessionInfo sessionInfo, Func<Task<string>> accessTokenProvider)
         {
             _sessionInfo = sessionInfo;
-            _authService = authService;
+            _accessTokenProvider = accessTokenProvider;
             _httpClient = new RestClient(_sessionInfo.UploadUrl);
         }
 
@@ -41,12 +41,12 @@ namespace Distvisor.Web.Services
 
             while (remainingBytes > 0)
             {
-                var batchSize = (int)(remainingBytes > BytesThrottle ? BytesThrottle : remainingBytes);
+                var batchSize = (int)Math.Min(remainingBytes, BytesThrottle);
                 stream.Read(buffer, 0, batchSize);
                                 
-                var token = await _authService.GetUserActiveTokenAsync();
+                var accessToken = await _accessTokenProvider();
                 var request = new RestRequest(Method.PUT);
-                request.AddHeader("Authorization", "Bearer " + token.AccessToken);
+                request.AddHeader("Authorization", "Bearer " + accessToken);
                 request.AddHeader("Content-Length", $"{batchSize}");
                 request.AddHeader("Content-Range", $"bytes {offset}-{offset + batchSize - 1}/{bytes}");
                 request.AddHeader("Content-Type", "application/binary");
@@ -60,16 +60,23 @@ namespace Distvisor.Web.Services
                 request.AddParameter("application/binary", body, ParameterType.RequestBody);
 
                 var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
+                if (response.IsSuccessful)
+                {
+                    remainingBytes -= batchSize;
+                }
+                else
+                {
+                    throw new Exception($"Failed to upload file. {response.StatusCode} {response.StatusDescription}");
+                }
             }
 
         }
 
         public async Task Cancel()
         {
-            var token = await _authService.GetUserActiveTokenAsync();
-
+            var accessToken = await _accessTokenProvider();
             var request = new RestRequest(Method.DELETE);
-            request.AddHeader("Authorization", "Bearer " + token.AccessToken);
+            request.AddHeader("Authorization", "Bearer " + accessToken);
             var response = await _httpClient.ExecuteAsync(request, CancellationToken.None);
         }
 

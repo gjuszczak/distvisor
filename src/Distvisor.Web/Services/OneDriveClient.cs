@@ -15,9 +15,9 @@ namespace Distvisor.Web.Services
         Func<Task<string>> AccessTokenProvider { get; }
 
         void Configure(Func<Task<string>> accessTokenProvider);
-        Task BackupDb();
         Task<IEnumerable<OneDriveFileInfo>> ListStoredBackupsAsync();
         Task<MicrosoftUploadSession> CreateUploadSession(string filename);
+        Task DeleteFile(string filename);
     }
 
     public class OneDriveClient : IOneDriveClient
@@ -58,7 +58,7 @@ namespace Distvisor.Web.Services
             var responseContent = await response.Content.ReadAsStringAsync();
             var sessionInfo = JsonConvert.DeserializeObject<MicrosoftUploadSessionInfo>(responseContent);
 
-            return new MicrosoftUploadSession(sessionInfo, null);
+            return new MicrosoftUploadSession(sessionInfo, AccessTokenProvider);
         }
 
         public async Task<IEnumerable<OneDriveFileInfo>> ListStoredBackupsAsync()
@@ -94,16 +94,24 @@ namespace Distvisor.Web.Services
             return files ?? Enumerable.Empty<OneDriveFileInfo>();
         }
 
-        public async Task BackupDb()
+        public async Task DeleteFile(string filename)
         {
-            var databases = Directory.GetFiles("./Data", "*.db");
-            foreach (var dbPath in databases)
+            EnsureConfigured();
+
+            var accessToken = await AccessTokenProvider();
+
+            await EnsureAppRootIsReady(accessToken);
+
+            var url = new UriBuilder(_httpClient.BaseAddress)
             {
-                var dbName = Path.GetFileName(dbPath);
-                var dateString = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                using var session = await CreateUploadSession($"/backup_{dateString}_{dbName}");
-                await session.Upload(dbPath);
-            }
+                Port = -1,
+                Path = $"v1.0/me/drive/special/approot:{filename}:"
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Delete, url.ToString());
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
         }
 
         private async Task EnsureAppRootIsReady(string accessToken)

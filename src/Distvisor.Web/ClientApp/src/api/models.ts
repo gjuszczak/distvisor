@@ -3,6 +3,7 @@ export { DeploymentParamsResponseDto } from './models/deployment-params-response
 export { DeployRequestDto } from './models/deploy-request-dto';
 export { RedeployRequestDto } from './models/redeploy-request-dto';
 export { BackupFileInfoDto } from './models/backup-file-info-dto';
+export { DeleteBackupRequestDto } from './models/delete-backup-request-dto';
 export { EventLogDto } from './models/event-log-dto';
 export { Invoice } from './models/invoice';
 export { GenerateInvoiceDto } from './models/generate-invoice-dto';

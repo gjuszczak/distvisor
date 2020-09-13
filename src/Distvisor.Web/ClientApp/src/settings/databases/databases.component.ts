@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { AdminService } from 'src/api/services';
 import { MenuItem } from 'primeng/api';
 import { BackupFileInfoDto } from 'src/api/models';
-import { Menu } from 'primeng/menu';
 
 
 @Component({
@@ -11,13 +10,14 @@ import { Menu } from 'primeng/menu';
 })
 export class DatabasesComponent implements OnInit {
 
-  btnMenuItems: MenuItem[];
+  dbBtnMenuItems: MenuItem[];
+  bakBtnMenuItems: MenuItem[][];
   backupFiles: BackupFileInfoDto[];
 
   constructor(private adminService: AdminService) { }
 
   ngOnInit() {
-    this.btnMenuItems = [
+    this.dbBtnMenuItems = [
       {
         label: 'Replay events to RS',
         icon: 'pi pi-refresh',
@@ -30,14 +30,39 @@ export class DatabasesComponent implements OnInit {
     this.adminService.apiAdminListBackupsGet$Json()
       .subscribe(backups => {
         this.backupFiles = backups;
+
+        this.bakBtnMenuItems = [];
+        backups.forEach(b => {
+          this.bakBtnMenuItems[b.name] = [
+            {
+              label: 'Remove',
+              icon: 'pi pi-times',
+              command: () => {
+                this.remove(b);
+              }
+            }
+          ]
+        })
       });
   }
 
-  isLast(backup: BackupFileInfoDto) {
-    return this.backupFiles.indexOf(backup) === this.backupFiles.length - 1;
+  isLast(backupFile: BackupFileInfoDto) {
+    return this.backupFiles.indexOf(backupFile) === this.backupFiles.length - 1;
   }
 
   save() {
     this.adminService.apiAdminBackupPost().subscribe();
+  }
+
+  restore(backupFile: BackupFileInfoDto) {
+
+  }
+
+  remove(backupFile: BackupFileInfoDto) {
+    this.adminService.apiAdminDeleteBackupPost({
+      body: {
+        name: backupFile.name
+      }
+    }).subscribe();
   }
 }

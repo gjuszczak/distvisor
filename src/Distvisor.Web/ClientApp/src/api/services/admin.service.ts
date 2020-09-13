@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { BackupFileInfoDto } from '../models/backup-file-info-dto';
+import { DeleteBackupRequestDto } from '../models/delete-backup-request-dto';
 import { DeployRequestDto } from '../models/deploy-request-dto';
 import { DeploymentParamsResponseDto } from '../models/deployment-params-response-dto';
 import { RedeployRequestDto } from '../models/redeploy-request-dto';
@@ -334,6 +335,53 @@ export class AdminService extends BaseService {
   }): Observable<void> {
 
     return this.apiAdminBackupPost$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
+  /**
+   * Path part for operation apiAdminDeleteBackupPost
+   */
+  static readonly ApiAdminDeleteBackupPostPath = '/api/Admin/delete-backup';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiAdminDeleteBackupPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiAdminDeleteBackupPost$Response(params?: {
+      body?: DeleteBackupRequestDto
+  }): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminDeleteBackupPostPath, 'post');
+    if (params) {
+
+
+      rb.body(params.body, 'application/*+json');
+    }
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiAdminDeleteBackupPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiAdminDeleteBackupPost(params?: {
+      body?: DeleteBackupRequestDto
+  }): Observable<void> {
+
+    return this.apiAdminDeleteBackupPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }

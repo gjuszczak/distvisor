@@ -69,6 +69,12 @@ namespace Distvisor.Web.Controllers
         {
             await _backupService.CreateBackupAsync();
         }
+
+        [HttpPost("delete-backup")]
+        public async Task DeleteBackup([FromBody]DeleteBackupRequestDto dto)
+        {
+            await _backupService.DeleteBackupAsync(dto.Name);
+        }
     }
 
     public class DeploymentParamsResponseDto
@@ -82,6 +88,11 @@ namespace Distvisor.Web.Controllers
         public string Name { get; set; }
         public long Size { get; set; }
         public DateTime CreatedDateTime { get; set; }
+    }
+
+    public class DeleteBackupRequestDto
+    {
+        public string Name { get; set; }
     }
 
     public class DeployRequestDto
