@@ -22,16 +22,20 @@ export class DatabasesComponent implements OnInit {
         label: 'Replay events to RS',
         icon: 'pi pi-refresh',
         command: () => {
-          this.save();
+          this.replayEvents();
         }
       }
     ];
 
+    this.bakBtnMenuItems = [];
+    this.reloadBackupList();
+  }
+
+  reloadBackupList() {
     this.adminService.apiAdminListBackupsGet$Json()
       .subscribe(backups => {
         this.backupFiles = backups;
-
-        this.bakBtnMenuItems = [];
+        
         backups.forEach(b => {
           this.bakBtnMenuItems[b.name] = [
             {
@@ -50,19 +54,25 @@ export class DatabasesComponent implements OnInit {
     return this.backupFiles.indexOf(backupFile) === this.backupFiles.length - 1;
   }
 
-  save() {
-    this.adminService.apiAdminBackupPost().subscribe();
+  create() {
+    this.adminService.apiAdminCreateBackupPost()
+      .subscribe(() => this.reloadBackupList());
+  }
+
+  replayEvents() {
+    this.adminService.apiAdminReplayEventsPost()
+      .subscribe(() => location.reload());
   }
 
   restore(backupFile: BackupFileInfoDto) {
-
+    this.adminService.apiAdminRestoreBackupPost({
+      body: backupFile
+    }).subscribe(() => this.reloadBackupList());
   }
 
   remove(backupFile: BackupFileInfoDto) {
     this.adminService.apiAdminDeleteBackupPost({
-      body: {
-        name: backupFile.name
-      }
-    }).subscribe();
+      body: backupFile
+    }).subscribe(() => this.reloadBackupList());
   }
 }

@@ -15,7 +15,6 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { ApiModule } from '../api/api.module';
 import { SettingsComponent } from './settings/settings.component';
 import { DeploymentComponent } from './deployment/deployment.component';
-import { MicrosoftAuthComponent } from './microsoft-auth/microsoft-auth.component';
 import { SecretsVaultComponent } from './secrets-vault/secrets-vault.component';
 import { RedirectionsComponent } from './redirections/redirections.component';
 import { DatabasesComponent } from './databases/databases.component';
@@ -48,7 +47,6 @@ import { UtilsModule } from 'src/utils/utils.module';
   declarations: [
     SettingsComponent,
     DeploymentComponent,
-    MicrosoftAuthComponent,
     DatabasesComponent,
     SecretsVaultComponent,
     RedirectionsComponent,

@@ -16,8 +16,9 @@ namespace Distvisor.Web.Services
 
         void Configure(Func<Task<string>> accessTokenProvider);
         Task<IEnumerable<OneDriveFileInfo>> ListStoredBackupsAsync();
-        Task<MicrosoftUploadSession> CreateUploadSession(string filename);
-        Task DeleteFile(string filename);
+        Task<MicrosoftUploadSession> CreateUploadSessionAsync(string filename);
+        Task<string> DownloadFileAsync(string filename);
+        Task DeleteFileAsync(string filename);
     }
 
     public class OneDriveClient : IOneDriveClient
@@ -36,7 +37,7 @@ namespace Distvisor.Web.Services
             AccessTokenProvider = accessTokenProvider;
         }
 
-        public async Task<MicrosoftUploadSession> CreateUploadSession(string filename)
+        public async Task<MicrosoftUploadSession> CreateUploadSessionAsync(string filename)
         {
             EnsureConfigured();
 
@@ -94,13 +95,32 @@ namespace Distvisor.Web.Services
             return files ?? Enumerable.Empty<OneDriveFileInfo>();
         }
 
-        public async Task DeleteFile(string filename)
+        public async Task<string> DownloadFileAsync(string filename)
+        {
+            EnsureConfigured();
+            var accessToken = await AccessTokenProvider();
+            var url = new UriBuilder(_httpClient.BaseAddress)
+            {
+                Port = -1,
+                Path = $"v1.0/me/drive/special/approot:{filename}:/content"
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url.ToString());
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var path = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            using var downloadStream = await response.Content.ReadAsStreamAsync();
+            using var fileStream = File.Create(path);
+            await downloadStream.CopyToAsync(fileStream);
+            return path;
+        }
+
+        public async Task DeleteFileAsync(string filename)
         {
             EnsureConfigured();
 
             var accessToken = await AccessTokenProvider();
-
-            await EnsureAppRootIsReady(accessToken);
 
             var url = new UriBuilder(_httpClient.BaseAddress)
             {

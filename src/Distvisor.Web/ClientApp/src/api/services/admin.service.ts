@@ -9,7 +9,6 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { BackupFileInfoDto } from '../models/backup-file-info-dto';
-import { DeleteBackupRequestDto } from '../models/delete-backup-request-dto';
 import { DeployRequestDto } from '../models/deploy-request-dto';
 import { DeploymentParamsResponseDto } from '../models/deployment-params-response-dto';
 import { RedeployRequestDto } from '../models/redeploy-request-dto';
@@ -294,21 +293,21 @@ export class AdminService extends BaseService {
   }
 
   /**
-   * Path part for operation apiAdminBackupPost
+   * Path part for operation apiAdminCreateBackupPost
    */
-  static readonly ApiAdminBackupPostPath = '/api/Admin/backup';
+  static readonly ApiAdminCreateBackupPostPath = '/api/Admin/create-backup';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAdminBackupPost()` instead.
+   * To access only the response body, use `apiAdminCreateBackupPost()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminBackupPost$Response(params?: {
+  apiAdminCreateBackupPost$Response(params?: {
 
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminBackupPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminCreateBackupPostPath, 'post');
     if (params) {
 
 
@@ -326,15 +325,62 @@ export class AdminService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiAdminBackupPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiAdminCreateBackupPost$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminBackupPost(params?: {
+  apiAdminCreateBackupPost(params?: {
 
   }): Observable<void> {
 
-    return this.apiAdminBackupPost$Response(params).pipe(
+    return this.apiAdminCreateBackupPost$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
+  /**
+   * Path part for operation apiAdminRestoreBackupPost
+   */
+  static readonly ApiAdminRestoreBackupPostPath = '/api/Admin/restore-backup';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiAdminRestoreBackupPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiAdminRestoreBackupPost$Response(params?: {
+      body?: BackupFileInfoDto
+  }): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminRestoreBackupPostPath, 'post');
+    if (params) {
+
+
+      rb.body(params.body, 'application/*+json');
+    }
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiAdminRestoreBackupPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiAdminRestoreBackupPost(params?: {
+      body?: BackupFileInfoDto
+  }): Observable<void> {
+
+    return this.apiAdminRestoreBackupPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
@@ -351,7 +397,7 @@ export class AdminService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiAdminDeleteBackupPost$Response(params?: {
-      body?: DeleteBackupRequestDto
+      body?: BackupFileInfoDto
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminDeleteBackupPostPath, 'post');
@@ -378,10 +424,56 @@ export class AdminService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiAdminDeleteBackupPost(params?: {
-      body?: DeleteBackupRequestDto
+      body?: BackupFileInfoDto
   }): Observable<void> {
 
     return this.apiAdminDeleteBackupPost$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
+  /**
+   * Path part for operation apiAdminReplayEventsPost
+   */
+  static readonly ApiAdminReplayEventsPostPath = '/api/Admin/replay-events';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiAdminReplayEventsPost()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiAdminReplayEventsPost$Response(params?: {
+
+  }): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminReplayEventsPostPath, 'post');
+    if (params) {
+
+
+    }
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiAdminReplayEventsPost$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiAdminReplayEventsPost(params?: {
+
+  }): Observable<void> {
+
+    return this.apiAdminReplayEventsPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }

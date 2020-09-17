@@ -1,6 +1,7 @@
 ﻿using Distvisor.Web.Data;
 using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Data.Events.Entities;
+using Distvisor.Web.Data.Reads.Core;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,20 +14,25 @@ using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
 {
-    public interface IBackupFilesManager
+    public interface IBackupProcessManager
     {
         Task<string> GenerateBackupFileAsync();
         Task RestoreBackupFileAsync(string filePath);
+        Task ReplayEventsToReadStoreAsync();
     }
 
-    public class BackupFilesManager : IBackupFilesManager
+    public class BackupProcessManager : IBackupProcessManager
     {
         private const int EventsBatchSize = 1000;
-        private readonly EventStoreContext _context;
+        private readonly IEventStore _es;
+        private readonly EventStoreContext _esContext;
+        private readonly ReadStoreContext _rsContext;
 
-        public BackupFilesManager(EventStoreContext context)
+        public BackupProcessManager(IEventStore es, EventStoreContext esContext, ReadStoreContext rsContext)
         {
-            _context = context;
+            _es = es;
+            _esContext = esContext;
+            _rsContext = rsContext;
         }
 
         public async Task<string> GenerateBackupFileAsync()
@@ -73,16 +79,16 @@ namespace Distvisor.Web.Services
                     throw new Exception("Backup content files validation failed. Invalid content file extensions.");
                 }
 
-                using var transaction = await _context.Database.BeginTransactionAsync();
-                await _context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"Events\";");
+                using var transaction = await _esContext.Database.BeginTransactionAsync();
+                await _esContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"Events\";");
                 foreach ((var contentFilePath, var _) in backupContentFiles)
                 {
                     using FileStream fs = File.OpenRead(contentFilePath);
                     var events = await JsonSerializer.DeserializeAsync<List<EventEntity>>(fs, JsonDocumentConverter.Options);
                     events.ForEach(x => x.Id = 0);
-                    _context.Events.AddRange(events);
-                    await _context.SaveChangesAsync();
-                    _context.DetachAllEntities();
+                    _esContext.Events.AddRange(events);
+                    await _esContext.SaveChangesAsync();
+                    _esContext.DetachAllEntities();
                 };
                 await transaction.CommitAsync();
             }
@@ -92,12 +98,25 @@ namespace Distvisor.Web.Services
             }
         }
 
+
+        public async Task ReplayEventsToReadStoreAsync()
+        {
+            using var transaction = await _rsContext.Database.BeginTransactionAsync();
+            await _rsContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"Users\" CASCADE;");
+            await _rsContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"OAuthTokens\" CASCADE;");
+            await _rsContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"Notifications\" CASCADE;");
+            await _rsContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"SecretsVault\" CASCADE;");
+            await _rsContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"Redirections\" CASCADE;");
+            await _es.ReplayEvents();
+            await transaction.CommitAsync();
+        }
+
         private async IAsyncEnumerable<IEnumerable<EventEntity>> GetAllDbEventsInBatchesAsync()
         {
-            var eventsCount = await _context.Events.CountAsync();
+            var eventsCount = await _esContext.Events.CountAsync();
             for (int i = 0; i < eventsCount; i += EventsBatchSize)
             {
-                yield return await _context.Events
+                yield return await _esContext.Events
                     .AsNoTracking()
                     .OrderBy(x => x.Id)
                     .Skip(i)

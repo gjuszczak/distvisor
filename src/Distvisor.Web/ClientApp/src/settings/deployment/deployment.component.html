@@ -18,7 +18,8 @@
         </div>
         <div class="form-row">
             <div class="col">
-                <p-button icon="pi pi-download" label="{{selectedVersion ? 'Deploy' : 'Redeploy'}}" styleClass="ui-button-success" type="submit"></p-button>
+                <button pButton *ngIf="selectedVersion" icon="pi pi-download" label="Deploy" class="ui-button-success" type="submit"></button>
+                <button pButton *ngIf="!selectedVersion" icon="pi pi-download" label="Redeploy" class="ui-button-success" type="submit"></button>
             </div>
         </div>
     </form>

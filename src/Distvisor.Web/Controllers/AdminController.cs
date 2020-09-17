@@ -14,13 +14,11 @@ namespace Distvisor.Web.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IDeploymentService _deploymentService;
-        private readonly IOneDriveClient _oneDriveService;
         private readonly IBackupService _backupService;
 
-        public AdminController(IDeploymentService deploymentService, IOneDriveClient oneDriveService, IBackupService backupService)
+        public AdminController(IDeploymentService deploymentService, IBackupService backupService)
         {
             _deploymentService = deploymentService;
-            _oneDriveService = oneDriveService;
             _backupService = backupService;
         }
 
@@ -64,16 +62,28 @@ namespace Distvisor.Web.Controllers
             return files;
         }
 
-        [HttpPost("backup")]
-        public async Task Backup()
+        [HttpPost("create-backup")]
+        public async Task CreateBackup()
         {
             await _backupService.CreateBackupAsync();
         }
 
+        [HttpPost("restore-backup")]
+        public async Task RestoreBackup([FromBody]BackupFileInfoDto dto)
+        {
+            await _backupService.RestoreBackupAsync(dto.Name);
+        }
+
         [HttpPost("delete-backup")]
-        public async Task DeleteBackup([FromBody]DeleteBackupRequestDto dto)
+        public async Task DeleteBackup([FromBody]BackupFileInfoDto dto)
         {
             await _backupService.DeleteBackupAsync(dto.Name);
+        }
+
+        [HttpPost("replay-events")]
+        public async Task ReplayEvents()
+        {
+            await _backupService.ReplayEventsToReadStoreAsync();
         }
     }
 
@@ -88,11 +98,6 @@ namespace Distvisor.Web.Controllers
         public string Name { get; set; }
         public long Size { get; set; }
         public DateTime CreatedDateTime { get; set; }
-    }
-
-    public class DeleteBackupRequestDto
-    {
-        public string Name { get; set; }
     }
 
     public class DeployRequestDto

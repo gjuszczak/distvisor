@@ -3,7 +3,7 @@
         <p-panel styleClass="mt-1" [toggleable]="true" [collapsed]="true" expandIcon="pi pi-chevron-right" collapseIcon="pi pi-chevron-down">
             <p-header>
                 <span class="ui-panel-title ml-2">Event Store</span>
-                <p-splitButton label="Backup" icon="pi pi-cloud-upload" styleClass="ui-button-success" [model]="dbBtnMenuItems" (onClick)="save()"></p-splitButton>
+                <p-splitButton label="Backup" icon="pi pi-cloud-upload" styleClass="ui-button-success" [model]="dbBtnMenuItems" (onClick)="create()"></p-splitButton>
             </p-header>
             <p-dataView [value]="backupFiles" styleClass="no-header no-border">
                 <ng-template let-backupFile pTemplate="listItem">
@@ -14,7 +14,7 @@
                             {{backupFile.size | fileSize}}
                         </div>
                         <p-splitButton label="Restore" icon="pi pi-cloud-download" styleClass="ui-button-secondary" 
-                            [model]="bakBtnMenuItems[backupFile.name]" (onClick)="save(backupFile)"></p-splitButton>
+                            [model]="bakBtnMenuItems[backupFile.name]" (onClick)="restore(backupFile)"></p-splitButton>
                     </div>
                 </ng-template>
             </p-dataView>
