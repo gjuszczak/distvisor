@@ -11,7 +11,7 @@ export class FooterComponent {
   
   constructor(
     private authService: AuthService,
-    @Inject('BACKEND_DETAILS') private backendDetails: BackendDetails) {    
+    @Inject('BACKEND_DETAILS') public backendDetails: BackendDetails) {    
   }
 
   login() {
