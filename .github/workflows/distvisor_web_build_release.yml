@@ -24,10 +24,10 @@ jobs:
 
     - name: dotnet publish
       working-directory: src
-      run: dotnet publish -c Release -o ../deploy/amd64/out /p:Version=${GITHUB_REF#refs/tags/} Distvisor.Web
+      run: dotnet publish -c Release -o ../build/amd64/out /p:Version=${GITHUB_REF#refs/tags/} Distvisor.Web
 
     - name: Create and push docker image
-      working-directory: deploy/amd64
+      working-directory: build/amd64
       run: |
         docker build -t ${{ secrets.DOCKER_IMG_NAME }}:${GITHUB_REF#refs/tags/} -t ${{ secrets.DOCKER_IMG_NAME }}:latest .
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
@@ -53,10 +53,10 @@ jobs:
 
     - name: dotnet publish
       working-directory: src
-      run: dotnet publish -c Release -o ../deploy/arm32v7/out -r linux-arm /p:Version=${GITHUB_REF#refs/tags/} Distvisor.Web
+      run: dotnet publish -c Release -o ../build/arm32v7/out -r linux-arm /p:Version=${GITHUB_REF#refs/tags/} Distvisor.Web
 
     - name: Create and push docker image
-      working-directory: deploy/arm32v7
+      working-directory: build/arm32v7
       run: |
         docker build -t ${{ secrets.DOCKER_IMG_NAME }}:${GITHUB_REF#refs/tags/}-arm32v7 .
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
