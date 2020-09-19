@@ -3,6 +3,12 @@ export { DeploymentParamsResponseDto } from './models/deployment-params-response
 export { DeployRequestDto } from './models/deploy-request-dto';
 export { RedeployRequestDto } from './models/redeploy-request-dto';
 export { BackupFileInfoDto } from './models/backup-file-info-dto';
+export { AuthMsalConfiguration } from './models/auth-msal-configuration';
+export { CacheMsalConfiguration } from './models/cache-msal-configuration';
+export { MsalConfiguration } from './models/msal-configuration';
+export { MsalAngularConfiguration } from './models/msal-angular-configuration';
+export { BackendDetails } from './models/backend-details';
+export { ClientConfiguration } from './models/client-configuration';
 export { EventLogDto } from './models/event-log-dto';
 export { Invoice } from './models/invoice';
 export { GenerateInvoiceDto } from './models/generate-invoice-dto';

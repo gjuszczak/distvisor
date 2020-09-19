@@ -4,6 +4,14 @@
     {
         public MsalConfiguration Msal { get; set; }
         public MsalAngularConfiguration MsalAngular { get; set; }
+        public BackendDetails BackendDetails { get; set; }
+    }
+
+    public class BackendDetails
+    {
+        public string AppVersion { get; set; }
+        public string RuntimeVersion { get; set; }
+        public string Environment { get; set; }
     }
 
     public class MsalConfiguration
@@ -11,6 +19,7 @@
         public AuthMsalConfiguration Auth { get; set; }
         public CacheMsalConfiguration Cache { get; set; }
     }
+
     public class MsalAngularConfiguration
     {
         public string[] ConsentScopes { get; set; }

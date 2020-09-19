@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { AuthService } from '../auth.service';
+import { BackendDetails } from 'src/api/models';
 
 @Component({
   selector: 'app-footer',
@@ -8,7 +9,9 @@ import { AuthService } from '../auth.service';
 })
 export class FooterComponent {
   
-  constructor(private authService: AuthService) {    
+  constructor(
+    private authService: AuthService,
+    @Inject('BACKEND_DETAILS') private backendDetails: BackendDetails) {    
   }
 
   login() {

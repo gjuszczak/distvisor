@@ -11,6 +11,11 @@
     <!-- Set this to true if you enable server-side prerendering -->
     <BuildServerSideRenderer>false</BuildServerSideRenderer>
     <UserSecretsId>841c369a-5002-4674-873d-c9769712861a</UserSecretsId>
+    <Authors>Distvisor Grzegorz Juszczak</Authors>
+    <Product>Distvisor.Web</Product>
+    <Copyright>Distvisor Grzegorz Juszczak</Copyright>
+    <VersionPrefix>0.10.$([System.DateTime]::UtcNow.ToString(yyM)).$([System.DateTime]::UtcNow.ToString(dd))</VersionPrefix>
+    <VersionSuffix>build-$([System.DateTime]::UtcNow.ToString(HHmmss))</VersionSuffix>
   </PropertyGroup>
 
   <ItemGroup>

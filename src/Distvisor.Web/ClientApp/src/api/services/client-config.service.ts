@@ -8,6 +8,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { ClientConfiguration } from '../models/client-configuration';
 
 @Injectable({
   providedIn: 'root',
@@ -27,13 +28,13 @@ export class ClientConfigService extends BaseService {
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiClientConfigGet()` instead.
+   * To access only the response body, use `apiClientConfigGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiClientConfigGet$Response(params?: {
+  apiClientConfigGet$Plain$Response(params?: {
 
-  }): Observable<StrictHttpResponse<void>> {
+  }): Observable<StrictHttpResponse<ClientConfiguration>> {
 
     const rb = new RequestBuilder(this.rootUrl, ClientConfigService.ApiClientConfigGetPath, 'get');
     if (params) {
@@ -42,27 +43,68 @@ export class ClientConfigService extends BaseService {
     }
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: '*/*'
+      accept: 'text/plain'
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+        return r as StrictHttpResponse<ClientConfiguration>;
       })
     );
   }
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiClientConfigGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiClientConfigGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiClientConfigGet(params?: {
+  apiClientConfigGet$Plain(params?: {
 
-  }): Observable<void> {
+  }): Observable<ClientConfiguration> {
 
-    return this.apiClientConfigGet$Response(params).pipe(
-      map((r: StrictHttpResponse<void>) => r.body as void)
+    return this.apiClientConfigGet$Plain$Response(params).pipe(
+      map((r: StrictHttpResponse<ClientConfiguration>) => r.body as ClientConfiguration)
+    );
+  }
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiClientConfigGet$Json()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiClientConfigGet$Json$Response(params?: {
+
+  }): Observable<StrictHttpResponse<ClientConfiguration>> {
+
+    const rb = new RequestBuilder(this.rootUrl, ClientConfigService.ApiClientConfigGetPath, 'get');
+    if (params) {
+
+
+    }
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'text/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<ClientConfiguration>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiClientConfigGet$Json$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiClientConfigGet$Json(params?: {
+
+  }): Observable<ClientConfiguration> {
+
+    return this.apiClientConfigGet$Json$Response(params).pipe(
+      map((r: StrictHttpResponse<ClientConfiguration>) => r.body as ClientConfiguration)
     );
   }
 
