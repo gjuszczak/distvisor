@@ -29,9 +29,9 @@ jobs:
     - name: Create and push docker image
       working-directory: build/amd64
       run: |
-        docker build -t ${{ secrets.DOCKER_IMG_NAME }}:${GITHUB_REF#refs/tags/} -t ${{ secrets.DOCKER_IMG_NAME }}:latest .
+        docker build -t ${{ secrets.DOCKER_IMG_NAME }}:${GITHUB_REF#refs/tags/}-amd64 -t ${{ secrets.DOCKER_IMG_NAME }}:latest .
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker push ${{ secrets.DOCKER_IMG_NAME }}:${GITHUB_REF#refs/tags/}
+        docker push ${{ secrets.DOCKER_IMG_NAME }}:${GITHUB_REF#refs/tags/}-amd64
         docker push ${{ secrets.DOCKER_IMG_NAME }}:latest
      
   build_release_arm32v7:
