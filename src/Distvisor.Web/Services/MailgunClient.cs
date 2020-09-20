@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
@@ -14,6 +15,7 @@ namespace Distvisor.Web.Services
     {
         MailgunConfiguration Config { get; }
         Task SendEmailAsync(MailgunEmail email);
+        Task SendEmailAsync(MailgunTemplateEmail email);
     }
 
     public class MailgunClient : IMailgunClient
@@ -30,6 +32,39 @@ namespace Distvisor.Web.Services
         }
 
         public MailgunConfiguration Config { get; }
+
+        public async Task SendEmailAsync(MailgunTemplateEmail email)
+        {
+            var url = new UriBuilder(_httpClient.BaseAddress)
+            {
+                Port = -1,
+                Path = $"v3/{Config.Domain}/messages"
+            };
+
+            var jsonVariables = JsonSerializer.Serialize(email.Variables);
+
+            var requestContent = new MultipartFormDataContent();
+            requestContent.Add(new StringContent(email.From), "from");
+            requestContent.Add(new StringContent(email.To), "to");
+            requestContent.Add(new StringContent(email.Subject), "subject");
+            requestContent.Add(new StringContent(email.Template), "template");
+            requestContent.Add(new StringContent(jsonVariables), "h:X-Mailgun-Variables");
+
+            if (email.Attachments.Any())
+            {
+                foreach (var attachment in email.Attachments)
+                {
+                    var fileContent = new ByteArrayContent(attachment.Bytes);
+                    fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(attachment.ContentType);
+                    requestContent.Add(fileContent, "attachment", attachment.FileName);
+                }
+            }
+
+            var request = new HttpRequestMessage(HttpMethod.Post, url.ToString());
+            request.Content = requestContent;
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+        }
 
         public async Task SendEmailAsync(MailgunEmail email)
         {
@@ -90,6 +125,20 @@ namespace Distvisor.Web.Services
                 Attachments = string.Join(", ", email.Attachments.Select(x => x.FileName))
             });
         }
+
+        public async Task SendEmailAsync(MailgunTemplateEmail email)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            await _notifications.PushFakeApiUsedAsync("mailgun", new
+            {
+                email.From,
+                email.To,
+                email.Template,
+                email.Variables,
+                Attachments = string.Join(", ", email.Attachments.Select(x => x.FileName))
+            });
+        }
     }
 
     public class MailgunEmail
@@ -98,6 +147,17 @@ namespace Distvisor.Web.Services
         public string To { get; set; }
         public string Subject { get; set; }
         public string Text { get; set; }
+
+        public IEnumerable<MailgunAttachment> Attachments { get; set; }
+    }
+
+    public class MailgunTemplateEmail
+    {
+        public string From { get; set; }
+        public string To { get; set; }
+        public string Subject { get; set; }
+        public string Template { get; set; }
+        public object Variables { get; set; }
 
         public IEnumerable<MailgunAttachment> Attachments { get; set; }
     }

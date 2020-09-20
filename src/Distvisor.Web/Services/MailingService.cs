@@ -5,7 +5,7 @@ namespace Distvisor.Web.Services
 {
     public interface IMailingService
     {
-        Task SendInvoicePdfAsync(byte[] invoicePdf);
+        Task SendInvoicePdfAsync(Invoice invoice, byte[] invoicePdf);
     }
 
     public class MailingService : IMailingService
@@ -19,21 +19,26 @@ namespace Distvisor.Web.Services
             _notifications = notifications;
         }
 
-        public async Task SendInvoicePdfAsync(byte[] invoicePdf)
+        public async Task SendInvoicePdfAsync(Invoice invoice, byte[] invoicePdf)
         {
             try
             {
-                await _client.SendEmailAsync(new MailgunEmail
+                await _client.SendEmailAsync(new MailgunTemplateEmail
                 {
                     From = $"Distvisor <noreply@{_client.Config.Domain}>",
                     To = _client.Config.ToAddress,
-                    Subject = "Faktura od Distvisior",
-                    Text = "Hejka. Faktura w zalaczniku.",
+                    Subject = $"{invoice.Number} za {invoice.IssueDate:MM.yyyy}",
+                    Template = "distvisor-invoice",
+                    Variables = new
+                    {
+                        invoice.Number,
+                        IssueDate = invoice.IssueDate.ToString("MM.yyyy"),
+                    },
                     Attachments = new MailgunAttachment[]
                     {
                         new MailgunAttachment
                         {
-                            FileName = "faktura.pdf",
+                            FileName = $"{invoice.Number.ToLower().Replace(' ','_').Replace('/','_')}_{invoice.IssueDate:dd-MM-yyyy}.pdf",
                             ContentType = "application/pdf",
                             Bytes = invoicePdf
                         }

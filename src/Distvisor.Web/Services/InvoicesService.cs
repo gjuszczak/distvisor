@@ -7,6 +7,7 @@ namespace Distvisor.Web.Services
     public interface IInvoicesService
     {
         Task GenerateInvoiceAsync(string templateInvoiceId, DateTime issueDate, int quantity);
+        Task<Invoice> GetInvoiceAsync(string invoiceId);
         Task<byte[]> GetInvoicePdfAsync(string invoiceId);
         Task<IEnumerable<Invoice>> GetInvoicesAsync();
     }
@@ -34,6 +35,19 @@ namespace Distvisor.Web.Services
             catch (Exception exc)
             {
                 await _notifications.PushErrorAsync("Unable to get invoices from remote api", exc);
+                throw;
+            }
+        }
+
+        public async Task<Invoice> GetInvoiceAsync(string invoiceId)
+        {
+            try
+            {
+                return await _client.GetInvoiceAsync(invoiceId);
+            }
+            catch (Exception exc)
+            {
+                await _notifications.PushErrorAsync("Unable to get invoice details from remote api", exc);
                 throw;
             }
         }

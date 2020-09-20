@@ -20,6 +20,7 @@ namespace Distvisor.Web.Services
         void Configure(string invoicesApiKey, string subscriberApiKey, string user);
         Task GenerateInvoiceAsync(string templateInvoiceId, DateTime issueDate, int quantity);
         Task<DateTime> GetActiveMonthAsync();
+        Task<Invoice> GetInvoiceAsync(string invoiceId);
         Task<JObject> GetInvoiceJsonAsync(string invoiceId);
         Task<byte[]> GetInvoicePdfAsync(string invoiceId);
         Task<IEnumerable<Invoice>> GetInvoicesAsync();
@@ -72,15 +73,7 @@ namespace Distvisor.Web.Services
             var invoices = jobject.SelectToken("response.Wynik").Value<JArray>();
             var result = invoices
                 .Select(x => x.Value<JObject>())
-                .Select(x => new Invoice
-                {
-                    Id = x["FakturaId"].Value<string>(),
-                    Number = "FV " + x["PelnyNumer"].Value<string>(),
-                    Customer = x["IdentyfikatorKontrahenta"].Value<string>(),
-                    Amount = x["Brutto"].Value<decimal>(),
-                    IssueDate = DateTime.ParseExact(x["DataWystawienia"].Value<string>(), "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                    WorkDays = 0,
-                })
+                .Select(x => ConvertJObjectToInvoice(x))
                 .ToList();
 
             return result;
@@ -175,6 +168,15 @@ namespace Distvisor.Web.Services
                 var response = await _httpClient.SendAsync(request);
                 await ParseResponseContentAsync(response);
             }
+        }
+
+        public async Task<Invoice> GetInvoiceAsync(string invoiceId)
+        {
+            var json = await GetInvoiceJsonAsync(invoiceId);
+            json["FakturaId"] = invoiceId;
+            json["IdentyfikatorKontrahenta"] = json["Kontrahent"]["Identyfikator"];
+            json["Brutto"] = json["Pozycje"][0]["CenaZRabatem"];
+            return ConvertJObjectToInvoice(json);
         }
 
         public async Task<JObject> GetInvoiceJsonAsync(string invoiceId)
@@ -272,6 +274,19 @@ namespace Distvisor.Web.Services
             return jobject;
         }
 
+        private Invoice ConvertJObjectToInvoice(JObject jobject)
+        {
+            return new Invoice
+            {
+                Id = jobject["FakturaId"].Value<string>(),
+                Number = "FV " + jobject["PelnyNumer"].Value<string>(),
+                Customer = jobject["IdentyfikatorKontrahenta"].Value<string>(),
+                Amount = jobject["Brutto"].Value<decimal>(),
+                IssueDate = DateTime.ParseExact(jobject["DataWystawienia"].Value<string>(), "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                WorkDays = 0,
+            };
+        }
+
         private void EnsureConfigured()
         {
             if (string.IsNullOrEmpty(InvoicesApiKey) || string.IsNullOrEmpty(SubscriberApiKey) || string.IsNullOrEmpty(User))
@@ -354,6 +369,19 @@ namespace Distvisor.Web.Services
         public Task<DateTime> GetActiveMonthAsync()
         {
             return Task.FromResult(DateTime.Now);
+        }
+
+        public Task<Invoice> GetInvoiceAsync(string invoiceId)
+        {
+            return Task.FromResult(new Invoice
+            {
+                Id = $"FVFake{invoiceId}",
+                Amount = 1000,
+                Customer = "FakeCustomer",
+                IssueDate = new DateTime(2020, 1, 1),
+                Number = "FV Fake 01/1111",
+                WorkDays = 20
+            });
         }
 
         public Task<JObject> GetInvoiceJsonAsync(string invoiceId)

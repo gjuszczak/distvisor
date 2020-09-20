@@ -47,8 +47,9 @@ namespace Distvisor.Web.Controllers
         [HttpPost("{invoiceId}/send-mail")]
         public async Task SendMailInvoicePdf(string invoiceId)
         {
+            var invoice = await _invoices.GetInvoiceAsync(invoiceId);
             var invoicePdf = await _invoices.GetInvoicePdfAsync(invoiceId);
-            await _mailService.SendInvoicePdfAsync(invoicePdf);
+            await _mailService.SendInvoicePdfAsync(invoice, invoicePdf);
         }
     }
 
