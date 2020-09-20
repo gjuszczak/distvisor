@@ -34,10 +34,6 @@ namespace Distvisor.Web.Services
 
                 new EventPayloadMapper<RemoveSecretEvent>()
                     .ConfigurePayloadTypeDisplayName("Remove Secret"),
-
-                new EventPayloadMapper<AddUserEvent>()
-                    .ConfigurePayloadTypeDisplayName("Add User")
-                    .ConfigureMaskPayloadProperty(x=> x.PasswordHash),
             };
 
             _mappers = configs.ToDictionary(x => x.GetPayloadType());

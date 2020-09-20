@@ -101,12 +101,12 @@ namespace Distvisor.Web.Services
 
         public async Task ReplayEventsToReadStoreAsync()
         {
+            var tables = _rsContext.Model.GetEntityTypes().Select(x => x.GetTableName());
             using var transaction = await _rsContext.Database.BeginTransactionAsync();
-            await _rsContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"Users\" CASCADE;");
-            await _rsContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"OAuthTokens\" CASCADE;");
-            await _rsContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"Notifications\" CASCADE;");
-            await _rsContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"SecretsVault\" CASCADE;");
-            await _rsContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"Redirections\" CASCADE;");
+            foreach (var table in tables)
+            {
+                await _rsContext.Database.ExecuteSqlRawAsync($"TRUNCATE TABLE \"{table}\" CASCADE;");
+            }
             await _es.ReplayEvents();
             await transaction.CommitAsync();
         }

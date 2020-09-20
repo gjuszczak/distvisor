@@ -1,5 +1,4 @@
 ﻿using Distvisor.Web.Configuration;
-using Distvisor.Web.Data.Entities;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RestSharp;
@@ -48,5 +47,32 @@ namespace Distvisor.Web.Services
 
             return token;
         }
+    }
+
+    public class OAuthToken
+    {
+        public OAuthTokenIssuer Issuer { get; set; }
+
+        [JsonProperty("access_token")]
+        public string AccessToken { get; set; }
+
+        [JsonProperty("token_type")]
+        public string TokenType { get; set; }
+
+        [JsonProperty("expires_in")]
+        public int ExpiresIn { get; set; }
+
+        [JsonProperty("scope")]
+        public string Scope { get; set; }
+
+        [JsonProperty("refresh_token")]
+        public string RefreshToken { get; set; }
+
+        public DateTime UtcIssueDate { get; set; }
+    }
+
+    public enum OAuthTokenIssuer
+    {
+        MicrosoftIdentity,
     }
 }

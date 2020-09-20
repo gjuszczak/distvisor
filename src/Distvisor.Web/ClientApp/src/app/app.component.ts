@@ -44,13 +44,6 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     this.navigationService.registerNavMenuItem({
-      name: 'Notifications',
-      icon: 'pi pi-bell',
-      routerLink: '/notifications',
-      menuVisibile: this.authService.isInUserRole()
-    });
-
-    this.navigationService.registerNavMenuItem({
       name: 'Invoices',
       icon: 'pi pi-dollar',
       routerLink: '/invoices',

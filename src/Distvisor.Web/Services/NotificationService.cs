@@ -1,5 +1,7 @@
 ﻿using Distvisor.Web.Hubs;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Threading.Tasks;
 
@@ -15,23 +17,20 @@ namespace Distvisor.Web.Services
     public class NotificationService : INotificationService
     {
         private readonly IHubContext<NotificationsHub, INotificationClient> _notificationsHub;
-        private readonly INotificationStore _notificationStore;
         private readonly IUserInfoProvider _userInfo;
 
         public NotificationService(
             IHubContext<NotificationsHub, INotificationClient> notifictionsHub,
-            INotificationStore notificationStore,
             IUserInfoProvider userInfo)
         {
             _notificationsHub = notifictionsHub;
-            _notificationStore = notificationStore;
             _userInfo = userInfo;
         }
 
         public async Task PushSuccessAsync(string message)
         {
             var notification = new SuccessNotification { Message = message };
-            await StoreAndPushAsync(notification);
+            await PushAsync(notification);
         }
 
         public async Task PushErrorAsync(string message, Exception exception = null)
@@ -42,7 +41,7 @@ namespace Distvisor.Web.Services
                 ExceptionMessage = exception?.Message,
                 ExceptionDetails = exception?.ToString()
             };
-            await StoreAndPushAsync(notification);
+            await PushAsync(notification);
         }
 
         public async Task PushFakeApiUsedAsync(string api, object requestParams)
@@ -52,15 +51,52 @@ namespace Distvisor.Web.Services
                 Api = api,
                 RequestParams = requestParams,
             };
-            await StoreAndPushAsync(notification);
+            await PushAsync(notification);
         }
 
-        private async Task StoreAndPushAsync(Notification notification)
+        private async Task PushAsync(Notification notification)
         {
-            await _notificationStore.StoreNotificationAsync(notification);
             await _notificationsHub.Clients
                 .User(_userInfo.UserId)
                 .PushNotification(notification.ToJsonString());
         }
+    }
+
+    public abstract class Notification
+    {
+        public Notification()
+        {
+            GenerationDate = DateTime.Now;
+        }
+
+        public DateTime GenerationDate { get; set; }
+
+        public string ToJsonString()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.None, new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All,
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc
+            });
+        }
+    }
+
+    public class SuccessNotification : Notification
+    {
+        public string Message { get; set; }
+    }
+
+    public class ErrorNotification : Notification
+    {
+        public string Message { get; set; }
+        public string ExceptionMessage { get; set; }
+        public string ExceptionDetails { get; set; }
+    }
+
+    public class FakeApiUsedNotification : Notification
+    {
+        public string Api { get; set; }
+        public object RequestParams { get; set; }
     }
 }

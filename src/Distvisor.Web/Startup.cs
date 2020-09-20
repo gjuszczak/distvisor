@@ -41,10 +41,8 @@ namespace Distvisor.Web
             services.AddScoped<IMailingService, MailingService>();
             services.AddScoped<ISecretsVault, SecretsVault>();
             services.AddScoped<IMicrosoftAuthService, MicrosoftAuthService>();
-            services.AddScoped<IAuthTokenStore, AuthTokenStore>();
             services.AddScoped<IUserInfoProvider, UserInfoProvider>();
             services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<INotificationStore, NotificationStore>();
             services.AddScoped<IRedirectionsService, RedirectionsService>();
             services.AddScoped<IBackupProcessManager, BackupProcessManager>();
 
