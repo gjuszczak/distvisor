@@ -1,7 +1,7 @@
 import { Subject, Observable, ReplaySubject } from "rxjs";
 import { Injectable } from "@angular/core";
 
-export interface INavApp {
+export interface INavMenuItems {
   name: string;
   icon: string | null;
   routerLink: string;
@@ -10,13 +10,13 @@ export interface INavApp {
 
 @Injectable()
 export class NavigationService {
-  private apps = new ReplaySubject<INavApp>();
+  private apps = new ReplaySubject<INavMenuItems>();
 
-  registerApp(app: INavApp) {
+  registerNavMenuItem(app: INavMenuItems) {
     this.apps.next(app);
   }
 
-  getRegisteredApps(): Observable<INavApp> {
+  getRegisteredNavMenuItems(): Observable<INavMenuItems> {
     return this.apps;
   }
 }

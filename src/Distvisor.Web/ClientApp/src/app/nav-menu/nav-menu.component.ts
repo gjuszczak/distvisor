@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { MenuItem } from 'primeng/api';
-import { NavigationService, INavApp } from '../navigation.service';
+import { NavigationService, INavMenuItems } from '../navigation.service';
+import { filter, map, first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-nav-menu',
@@ -11,7 +12,6 @@ import { NavigationService, INavApp } from '../navigation.service';
 })
 export class NavMenuComponent implements OnInit, OnDestroy {
   navBrand: string;
-  availableApps: INavApp[] = [];
   menuItems: MenuItem[] = [];
   isAnyMenuItem: boolean = false;
   subscriptions: Subscription[] = [];
@@ -22,51 +22,30 @@ export class NavMenuComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscriptions.push(
-      this.navigationService.getRegisteredApps().subscribe(app => {
-        this.availableApps.push(app);
-        if (app.menuVisibile != null) {
+      this.navigationService.getRegisteredNavMenuItems().subscribe(item => {
+        const menuItem = {
+          label: item.name,
+          icon: item.icon,
+          routerLink: item.routerLink,
+          visible: false
+        };
+        if (item.menuVisibile != null) {
           this.subscriptions.push(
-            app.menuVisibile.subscribe(visible => this.toggleAppMenuVisibility(app, visible)));
+            item.menuVisibile.subscribe(visible => {
+              menuItem.visible = visible;
+              this.isAnyMenuItem = this.menuItems.some(item => item.visible)
+            }));
         }
+        const navigatedMenu = this.router.events.pipe(
+          filter(event => event instanceof NavigationEnd),
+          map(event => event as NavigationEnd),
+          map(event => this.menuItems.findIndex(x => event.url.match('[^?]*')[0] === x.routerLink)),
+          first(index => index >= 0)
+        );
+        this.subscriptions.push(
+          navigatedMenu.subscribe(index => this.navBrand = this.menuItems[index].label, _ => this.navBrand = ""));
+        this.menuItems.push(menuItem);
       }));
-
-    this.subscriptions.push(
-      this.router.events.subscribe(event => {
-        if (event instanceof NavigationEnd) {
-          var ix = this.availableApps.findIndex(x => event.url.match('[^?]*')[0] === x.routerLink);
-          if (ix >= 0) {
-            this.navBrand = this.availableApps[ix].name;
-          }
-          else {
-            this.navBrand = "";
-          }
-        }
-      }));
-  }
-
-  toggleAppMenuVisibility(app: INavApp, visible: boolean) {
-    if (visible) {
-      var ix = this.menuItems.findIndex(x => x.label === app.name);
-      if (ix < 0) {
-        this.menuItems.push({
-          label: app.name,
-          icon: app.icon,
-          routerLink: app.routerLink
-        });
-      }
-    }
-    else {
-      var ix = this.menuItems.findIndex(x => x.label === app.name);
-      if (ix >= 0) {
-        this.menuItems.splice(ix, 1);
-      }
-    }
-
-    this.isAnyMenuItem = (this.menuItems.length > 0);
-  }
-
-  onNavBrandUpdate(newNavBrand: string) {
-    this.navBrand = newNavBrand;
   }
 
   ngOnDestroy(): void {

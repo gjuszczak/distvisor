@@ -37,41 +37,41 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   configureNavigation() {
-    this.navigationService.registerApp({
+    this.navigationService.registerNavMenuItem({
       name: 'Distvisor',
       icon: 'pi pi-home',
       routerLink: '/'
     });
 
-    this.navigationService.registerApp({
+    this.navigationService.registerNavMenuItem({
       name: 'Notifications',
       icon: 'pi pi-bell',
       routerLink: '/notifications',
       menuVisibile: this.authService.isInUserRole()
     });
 
-    this.navigationService.registerApp({
+    this.navigationService.registerNavMenuItem({
       name: 'Invoices',
       icon: 'pi pi-dollar',
       routerLink: '/invoices',
       menuVisibile: this.authService.isInUserRole()
     });
 
-    this.navigationService.registerApp({
+    this.navigationService.registerNavMenuItem({
       name: 'Event Log',
       icon: 'pi pi-directions',
       routerLink: '/event-log',
       menuVisibile: this.authService.isInUserRole()
     });
 
-    this.navigationService.registerApp({
+    this.navigationService.registerNavMenuItem({
       name: 'Settings',
       icon: 'pi pi-sliders-h',
       routerLink: '/settings',
       menuVisibile: this.authService.isInUserRole()
     });
 
-    this.navigationService.registerApp({
+    this.navigationService.registerNavMenuItem({
       name: 'Logout',
       icon: 'pi pi-sign-out',
       routerLink: '/logout',
