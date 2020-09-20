@@ -3,15 +3,17 @@ using System;
 using Distvisor.Web.Data.Reads.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Distvisor.Web.Data.Reads.Migrations
 {
     [DbContext(typeof(ReadStoreContext))]
-    partial class ReadStoreContextModelSnapshot : ModelSnapshot
+    [Migration("20200920094528_RemoveUnusedTables")]
+    partial class RemoveUnusedTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
