@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Distvisor.Web.Services
 {
@@ -16,6 +17,7 @@ namespace Distvisor.Web.Services
         MailgunConfiguration Config { get; }
         Task SendEmailAsync(MailgunEmail email);
         Task SendEmailAsync(MailgunTemplateEmail email);
+        Task<IEnumerable<MailgunStoredEvent>> ListStoredEmailsAsync();
     }
 
     public class MailgunClient : IMailgunClient
@@ -95,6 +97,37 @@ namespace Distvisor.Web.Services
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
         }
+
+        public async Task<IEnumerable<MailgunStoredEvent>> ListStoredEmailsAsync()
+        {
+            var query = HttpUtility.ParseQueryString(string.Empty);
+            query.Add("begin", DateTimeOffset.Now.AddDays(-2).ToUnixTimeSeconds().ToString());
+            query.Add("end", DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
+            query.Add("event", "stored");
+
+            var url = new UriBuilder(_httpClient.BaseAddress)
+            {
+                Port = -1,
+                Path = $"v3/{Config.Domain}/events",
+                Query = query.ToString()
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url.ToString());
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+
+            var stream = await response.Content.ReadAsStreamAsync();
+            var content = await JsonDocument.ParseAsync(stream);
+
+            var result = content.RootElement.GetProperty("items").EnumerateArray().Select(item => new MailgunStoredEvent()
+            {
+                Timestamp = item.GetProperty("timestamp").GetDecimal(),
+                StorageKey = item.GetProperty("storage").GetProperty("key").GetString()
+            }).ToArray();
+
+            return result;
+        }
     }
 
     public class FakeMailgunClient : IMailgunClient
@@ -111,6 +144,11 @@ namespace Distvisor.Web.Services
             ApiKey = "fakeApiKey",
             Domain = "fakeDomain",
         };
+
+        public Task<IEnumerable<MailgunStoredEvent>> ListStoredEmailsAsync()
+        {
+            return Task.FromResult((IEnumerable<MailgunStoredEvent>)new MailgunStoredEvent[0]);
+        }
 
         public async Task SendEmailAsync(MailgunEmail email)
         {
@@ -167,5 +205,11 @@ namespace Distvisor.Web.Services
         public string FileName { get; set; }
         public string ContentType { get; set; }
         public byte[] Bytes { get; set; }
+    }
+
+    public class MailgunStoredEvent
+    {
+        public decimal Timestamp { get; set; }
+        public string StorageKey { get; set; }
     }
 }
