@@ -12,7 +12,7 @@ export class InvoicesComponent implements OnInit {
   issueDate: Date;
   workdays: number;
   templateInvoices: SelectItem[];
-  selectedTemplateInvoice: SelectItem;
+  selectedTemplateInvoiceId: string;
 
   constructor(private invoicesService: InvoicesService) { }
 
@@ -29,7 +29,7 @@ export class InvoicesComponent implements OnInit {
         this.invoices = x;
         this.templateInvoices =
           x.map(inv => <SelectItem>{ label: inv.number, value: inv.id });
-        this.selectedTemplateInvoice = this.templateInvoices[0];
+        this.selectedTemplateInvoiceId = this.templateInvoices[0].value;
       });
   }
 
@@ -59,7 +59,7 @@ export class InvoicesComponent implements OnInit {
   onSubmit() {
     this.invoicesService.apiInvoicesGeneratePost$Response({
       body: {
-        templateInvoiceId: <string>this.selectedTemplateInvoice.value,
+        templateInvoiceId: this.selectedTemplateInvoiceId,
         utcIssueDate: this.issueDate.toISOString(),
         workdays: this.workdays
       }
