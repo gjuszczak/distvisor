@@ -12,6 +12,10 @@ export function getBaseUrl() {
   return document.getElementsByTagName('base')[0].href;
 }
 
+export function getHostname() {
+  return location.hostname
+}
+
 export function getBackendDetails(clientConfig: any): BackendDetails {
   const config = clientConfig['backendDetails'] || {};
   return (config as BackendDetails);
@@ -36,6 +40,7 @@ window.fetch('api/clientConfig')
   .then((resp) => {
     const providers = [
       { provide: 'BASE_URL', useFactory: getBaseUrl, deps: [] },
+      { provide: 'HOSTNAME', useFactory: getHostname, deps: [] },
       { provide: 'BACKEND_DETAILS', useValue: getBackendDetails(resp) },
       { provide: MSAL_CONFIG, useValue: getMsalConfig(resp) },
       { provide: MSAL_CONFIG_ANGULAR, useValue: getMsalConfigAngular(resp) }

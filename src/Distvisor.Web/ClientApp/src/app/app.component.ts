@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { skipWhile } from 'rxjs/operators';
+import { NgcCookieConsentService } from 'ngx-cookieconsent';
 import { NavigationService } from './navigation.service';
 import { AuthService } from './auth.service';
 import { ApiConfiguration } from '../api/api-configuration';
@@ -19,13 +19,16 @@ export class AppComponent implements OnInit, OnDestroy {
     private navigationService: NavigationService,
     private apiConfiguration: ApiConfiguration,
     private signalrService: SignalrService,
-    @Inject('BASE_URL') private baseUrl: string) {
+    private ccService: NgcCookieConsentService,
+    @Inject('BASE_URL') private baseUrl: string,
+    @Inject('HOSTNAME') private hostname: string) {
   }
 
   ngOnInit() {
     this.configureApi();
     this.configureNavigation();
     this.configureNotifications();
+    this.configureCookieConsent();
   }
 
   ngOnDestroy() {
@@ -41,6 +44,12 @@ export class AppComponent implements OnInit, OnDestroy {
       name: 'Distvisor',
       icon: 'pi pi-home',
       routerLink: '/'
+    });
+
+    this.navigationService.registerNavMenuItem({
+      name: 'Privacy Policy',
+      icon: 'pi pi-info',
+      routerLink: '/privacy-policy'
     });
 
     this.navigationService.registerNavMenuItem({
@@ -82,5 +91,31 @@ export class AppComponent implements OnInit, OnDestroy {
           this.signalrService.disconnect();
         }
       });
+  }
+
+  configureCookieConsent(){
+    this.ccService.init({
+      cookie: {
+        domain: this.hostname
+      },
+      position: "bottom-right",
+      theme: "classic",
+      palette: {
+        popup: {
+          background: "#23272b",
+          text: "#ffffff",
+          link: "#ffffff"
+        },
+        button: {
+          background: "#34A835",
+          text: "#ffffff",
+          border: "transparent"
+        }
+      },
+      type: "info",
+      content: {
+        href: "/privacy-policy"
+      }
+    });
   }
 }

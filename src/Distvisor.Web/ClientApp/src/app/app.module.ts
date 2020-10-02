@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { MsalModule, MsalInterceptor, MsalService } from '@azure/msal-angular';
+import { NgcCookieConsentModule } from 'ngx-cookieconsent';
 
 import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
@@ -20,6 +21,7 @@ import { EventLogModule } from '../event-log/event-log.module';
 import { ApiModule } from '../api/api.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { FooterComponent } from './footer/footer.component';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { NavigationService } from './navigation.service';
 import { AuthService } from './auth.service';
@@ -31,7 +33,8 @@ import { LogoutComponent } from './logout/logout.component';
     HomeComponent,
     LogoutComponent,
     NavMenuComponent,
-    FooterComponent
+    FooterComponent,
+    PrivacyPolicyComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -41,8 +44,10 @@ import { LogoutComponent } from './logout/logout.component';
     FormsModule,
     RouterModule.forRoot([
       { path: 'logout', component: LogoutComponent, pathMatch: 'full' },
+      { path: 'privacy-policy', component: PrivacyPolicyComponent, pathMatch: 'full' },
       { path: '', component: HomeComponent, pathMatch: 'full' },
     ]),
+    NgcCookieConsentModule.forRoot({ cookie: { domain: '' }, enabled: false }),
 
     // Msal
     MsalModule,
