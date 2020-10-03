@@ -1,3 +1,4 @@
+using Distvisor.Web.BackgroundServices;
 using Distvisor.Web.Configuration;
 using Distvisor.Web.Data;
 using Distvisor.Web.Hubs;
@@ -91,6 +92,8 @@ namespace Distvisor.Web
             services.AddSignalR();
 
             services.AddDistvisorAuth(Config);
+
+            services.AddHostedService<EmailPoolingBackgroundService>();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

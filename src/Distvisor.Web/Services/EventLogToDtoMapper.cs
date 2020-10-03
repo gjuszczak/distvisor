@@ -34,6 +34,9 @@ namespace Distvisor.Web.Services
 
                 new EventPayloadMapper<RemoveSecretEvent>()
                     .ConfigurePayloadTypeDisplayName("Remove Secret"),
+
+                new EventPayloadMapper<EmailReceivedEvent>()
+                    .ConfigurePayloadTypeDisplayName("Email Received"),
             };
 
             _mappers = configs.ToDictionary(x => x.GetPayloadType());

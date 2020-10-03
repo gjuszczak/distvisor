@@ -18,6 +18,7 @@ namespace Distvisor.Web.Services
         Task SendEmailAsync(MailgunEmail email);
         Task SendEmailAsync(MailgunTemplateEmail email);
         Task<IEnumerable<MailgunStoredEvent>> ListStoredEmailsAsync();
+        Task<JsonDocument> GetStoredEmailAsync(string url);
     }
 
     public class MailgunClient : IMailgunClient
@@ -117,15 +118,28 @@ namespace Distvisor.Web.Services
             response.EnsureSuccessStatusCode();
 
 
-            var stream = await response.Content.ReadAsStreamAsync();
+            using var stream = await response.Content.ReadAsStreamAsync();
             var content = await JsonDocument.ParseAsync(stream);
 
             var result = content.RootElement.GetProperty("items").EnumerateArray().Select(item => new MailgunStoredEvent()
             {
                 Timestamp = item.GetProperty("timestamp").GetDecimal(),
-                StorageKey = item.GetProperty("storage").GetProperty("key").GetString()
+                StorageKey = item.GetProperty("storage").GetProperty("key").GetString(),
+                Url = item.GetProperty("storage").GetProperty("url").GetString(),
             }).ToArray();
 
+            return result;
+        }
+
+        public async Task<JsonDocument> GetStoredEmailAsync(string url)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+
+            using var stream = await response.Content.ReadAsStreamAsync();
+            var result = await JsonDocument.ParseAsync(stream);
             return result;
         }
     }
@@ -144,6 +158,11 @@ namespace Distvisor.Web.Services
             ApiKey = "fakeApiKey",
             Domain = "fakeDomain",
         };
+
+        public Task<JsonDocument> GetStoredEmailAsync(string url)
+        {
+            return Task.FromResult(JsonDocument.Parse($"{{ url: '{url}'}}"));
+        }
 
         public Task<IEnumerable<MailgunStoredEvent>> ListStoredEmailsAsync()
         {
@@ -211,5 +230,6 @@ namespace Distvisor.Web.Services
     {
         public decimal Timestamp { get; set; }
         public string StorageKey { get; set; }
+        public string Url { get; set; }
     }
 }
