@@ -1,4 +1,5 @@
-﻿using Distvisor.Web.Data.Events;
+﻿using Distvisor.Web.BackgroundServices;
+using Distvisor.Web.Data.Events;
 using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,13 @@ namespace Distvisor.Web.Controllers
     {
         private readonly IMailgunClient _mailgun;
         private readonly IEventStore _eventStore;
+        private readonly IEmailReceivedNotifier _emailReceivedNotifier;
 
-        public FinancesController(IMailgunClient mailgun, IEventStore eventStore)
+        public FinancesController(IMailgunClient mailgun, IEventStore eventStore, IEmailReceivedNotifier emailReceivedNotifier)
         {
             _mailgun = mailgun;
             _eventStore = eventStore;
+            _emailReceivedNotifier = emailReceivedNotifier;
         }
 
         [HttpGet]
@@ -35,6 +38,12 @@ namespace Distvisor.Web.Controllers
             });
 
             return r;
+        }
+
+        [HttpPost("notify")]
+        public void Notify()
+        {
+            _emailReceivedNotifier.Notify();
         }
     }
 }

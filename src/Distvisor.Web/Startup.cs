@@ -36,6 +36,7 @@ namespace Distvisor.Web
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IEventLogToDtoMapper, EventLogToDtoMapper>();
+            services.AddSingleton<IEmailReceivedNotifier, EmailReceivedNotifier>();
             services.AddScoped<IDeploymentService, DeploymentService>();
             services.AddScoped<IBackupService, BackupService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
