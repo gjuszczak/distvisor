@@ -41,9 +41,9 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpPost("notify")]
-        public void Notify()
+        public async Task Notify()
         {
-            _emailReceivedNotifier.Notify();
+            await _emailReceivedNotifier.NotifyAsync(new EmailReceivedNotification { Key = "notify" });
         }
     }
 }

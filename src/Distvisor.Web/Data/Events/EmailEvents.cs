@@ -23,7 +23,7 @@ namespace Distvisor.Web.Data.Events
 
         public async Task Handle(EmailReceivedEvent payload)
         {
-           
+            await Task.CompletedTask;
         }
     }
 }

@@ -7,31 +7,33 @@ namespace Distvisor.Web.BackgroundServices
 {
     public class EmailPoolingBackgroundService : BackgroundService
     {
-        private readonly TimeSpan _poolTimeSpan = TimeSpan.FromSeconds(5);
+        private readonly Timer _timer;
         private readonly IEmailReceivedNotifier _emailReceivedNotifier;
 
         public EmailPoolingBackgroundService(IEmailReceivedNotifier emailReceivedNotifier)
         {
             _emailReceivedNotifier = emailReceivedNotifier;
-        }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            return Task.Factory.StartNew(() =>
+            async void TimerCallback(object _)
             {
-                while (!stoppingToken.IsCancellationRequested)
-                {
-                    try
-                    {
-                        var isNotified = _emailReceivedNotifier.Wait(_poolTimeSpan, stoppingToken);
-                        PoolEmailsAsync().Wait();
-                    }
-                    catch { }
-                }
-            }, TaskCreationOptions.LongRunning);
+                await _emailReceivedNotifier.NotifyAsync(new EmailReceivedNotification { Key = "timer" });
+            }
+
+            _timer = new Timer(TimerCallback, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
         }
 
-        private async Task PoolEmailsAsync()
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                await foreach(var notification in _emailReceivedNotifier.ConsumeAsync(stoppingToken))
+                {
+                    await PoolEmailAsync(notification);
+                }
+            }
+        }
+
+        private async Task PoolEmailAsync(EmailReceivedNotification notification)
         {
             await Task.CompletedTask;
         }

@@ -1,29 +1,44 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Channels;
+using System.Threading.Tasks;
 
 namespace Distvisor.Web.BackgroundServices
 {
     public interface IEmailReceivedNotifier
     {
-        void Notify();
-        bool Wait(TimeSpan timeout, CancellationToken cancellationToken);
+        Task NotifyAsync(EmailReceivedNotification notification);
+        IAsyncEnumerable<EmailReceivedNotification> ConsumeAsync(CancellationToken cancellationToken);
     }
 
     public class EmailReceivedNotifier : IEmailReceivedNotifier
     {
-        private readonly ManualResetEventSlim _isNotified = new ManualResetEventSlim(false);
+        private readonly Channel<EmailReceivedNotification> _channel;
 
-        public void Notify()
+        public EmailReceivedNotifier()
         {
-            _isNotified.Set();
+            _channel = Channel.CreateUnbounded<EmailReceivedNotification>(new UnboundedChannelOptions
+            {
+                AllowSynchronousContinuations = false,
+                SingleReader = true,
+                SingleWriter = false,
+            });
         }
 
-        public bool Wait(TimeSpan timeout, CancellationToken cancellationToken)
+        public async Task NotifyAsync(EmailReceivedNotification notification)
         {
-            var isNotified = _isNotified.Wait(timeout, cancellationToken);
-            _isNotified.Reset();
-
-            return isNotified;
+            await _channel.Writer.WriteAsync(notification);
         }
+
+        public IAsyncEnumerable<EmailReceivedNotification> ConsumeAsync(CancellationToken cancellationToken)
+        {
+            // warning: must be consumed by single reader only !
+            return _channel.Reader.ReadAllAsync(cancellationToken);
+        }
+    }
+
+    public class EmailReceivedNotification
+    {
+        public string Key { get; set; }
     }
 }
