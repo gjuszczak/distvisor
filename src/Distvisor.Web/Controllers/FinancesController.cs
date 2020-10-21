@@ -3,7 +3,10 @@ using Distvisor.Web.Data.Events;
 using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Mvc;
+using MimeKit;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
@@ -24,20 +27,24 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<object> GetEmail()
+        public async Task<string> GetEmail()
         {
             var l = await _mailgun.ListStoredEmailsAsync();
             var sl = l.ToArray().Last();
             var r = await _mailgun.GetStoredEmailAsync(sl.Url);
+            var b = r.RootElement.GetProperty("body-mime").GetString();
 
             await _eventStore.Publish(new EmailReceivedEvent
             {
                 StorageKey = sl.StorageKey,
                 Timestamp = sl.Timestamp,
-                Content = r.RootElement
+                BodyMime = b
             });
 
-            return r;
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(b));
+            var msg = await MimeMessage.LoadAsync(stream);
+
+            return b;
         }
 
         [HttpPost("notify")]

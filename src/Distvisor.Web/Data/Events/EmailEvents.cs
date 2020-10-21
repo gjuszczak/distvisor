@@ -9,7 +9,7 @@ namespace Distvisor.Web.Data.Events
     {
         public decimal Timestamp { get; set; }
         public string StorageKey { get; set; }
-        public JsonElement Content { get; set; }
+        public string BodyMime { get; set; }
     }
 
     public class EmailReceivedEventHandler : IEventHandler<EmailReceivedEvent>

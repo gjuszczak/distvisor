@@ -134,6 +134,7 @@ namespace Distvisor.Web.Services
         public async Task<JsonDocument> GetStoredEmailAsync(string url)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Add("Accept", "message/rfc2822");
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
