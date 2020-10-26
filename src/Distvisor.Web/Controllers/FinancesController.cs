@@ -31,20 +31,19 @@ namespace Distvisor.Web.Controllers
         {
             var l = await _mailgun.ListStoredEmailsAsync();
             var sl = l.ToArray().Last();
-            var r = await _mailgun.GetStoredEmailAsync(sl.Url);
-            var b = r.RootElement.GetProperty("body-mime").GetString();
+            var r = await _mailgun.GetStoredEmailContentAsync(sl.Url);
 
             await _eventStore.Publish(new EmailReceivedEvent
             {
                 StorageKey = sl.StorageKey,
                 Timestamp = sl.Timestamp,
-                BodyMime = b
+                BodyMime = r
             });
 
-            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(b));
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(r));
             var msg = await MimeMessage.LoadAsync(stream);
 
-            return b;
+            return r;
         }
 
         [HttpPost("notify")]

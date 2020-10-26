@@ -14,12 +14,12 @@ namespace Distvisor.Web.Controllers
     public class InvoicesController : ControllerBase
     {
         private readonly IInvoicesService _invoices;
-        private readonly IMailingService _mailService;
+        private readonly IEmailSendingService _mailSendingService;
 
-        public InvoicesController(IInvoicesService invoices, IMailingService mailService)
+        public InvoicesController(IInvoicesService invoices, IEmailSendingService mailSendingService)
         {
             _invoices = invoices;
-            _mailService = mailService;
+            _mailSendingService = mailSendingService;
         }
 
         [HttpGet("list")]
@@ -49,7 +49,7 @@ namespace Distvisor.Web.Controllers
         {
             var invoice = await _invoices.GetInvoiceAsync(invoiceId);
             var invoicePdf = await _invoices.GetInvoicePdfAsync(invoiceId);
-            await _mailService.SendInvoicePdfAsync(invoice, invoicePdf);
+            await _mailSendingService.SendInvoicePdfAsync(invoice, invoicePdf);
         }
     }
 

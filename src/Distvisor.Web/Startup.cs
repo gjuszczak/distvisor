@@ -40,7 +40,8 @@ namespace Distvisor.Web
             services.AddScoped<IDeploymentService, DeploymentService>();
             services.AddScoped<IBackupService, BackupService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
-            services.AddScoped<IMailingService, MailingService>();
+            services.AddScoped<IEmailSendingService, EmailSendingService>();
+            services.AddScoped<IEmailReceivingService, EmailReceivingService>();
             services.AddScoped<ISecretsVault, SecretsVault>();
             services.AddScoped<IMicrosoftAuthService, MicrosoftAuthService>();
             services.AddScoped<IUserInfoProvider, UserInfoProvider>();

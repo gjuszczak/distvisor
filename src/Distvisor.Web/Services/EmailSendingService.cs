@@ -3,17 +3,17 @@ using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
 {
-    public interface IMailingService
+    public interface IEmailSendingService
     {
         Task SendInvoicePdfAsync(Invoice invoice, byte[] invoicePdf);
     }
 
-    public class MailingService : IMailingService
+    public class EmailSendingService : IEmailSendingService
     {
         private readonly IMailgunClient _client;
         private readonly INotificationService _notifications;
 
-        public MailingService(IMailgunClient mailgunClient, INotificationService notifications)
+        public EmailSendingService(IMailgunClient mailgunClient, INotificationService notifications)
         {
             _client = mailgunClient;
             _notifications = notifications;

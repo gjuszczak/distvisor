@@ -18,7 +18,7 @@ namespace Distvisor.Web.Services
         Task SendEmailAsync(MailgunEmail email);
         Task SendEmailAsync(MailgunTemplateEmail email);
         Task<IEnumerable<MailgunStoredEvent>> ListStoredEmailsAsync();
-        Task<JsonDocument> GetStoredEmailAsync(string url);
+        Task<string> GetStoredEmailContentAsync(string url);
     }
 
     public class MailgunClient : IMailgunClient
@@ -131,7 +131,7 @@ namespace Distvisor.Web.Services
             return result;
         }
 
-        public async Task<JsonDocument> GetStoredEmailAsync(string url)
+        public async Task<string> GetStoredEmailContentAsync(string url)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Add("Accept", "message/rfc2822");
@@ -140,7 +140,8 @@ namespace Distvisor.Web.Services
 
 
             using var stream = await response.Content.ReadAsStreamAsync();
-            var result = await JsonDocument.ParseAsync(stream);
+            var jsonResult = await JsonDocument.ParseAsync(stream);
+            var result = jsonResult.RootElement.GetProperty("body-mime").GetString();
             return result;
         }
     }
@@ -160,9 +161,9 @@ namespace Distvisor.Web.Services
             Domain = "fakeDomain",
         };
 
-        public Task<JsonDocument> GetStoredEmailAsync(string url)
+        public Task<string> GetStoredEmailContentAsync(string url)
         {
-            return Task.FromResult(JsonDocument.Parse($"{{ url: '{url}'}}"));
+            return Task.FromResult($"{{ url: '{url}'}}");
         }
 
         public Task<IEnumerable<MailgunStoredEvent>> ListStoredEmailsAsync()
