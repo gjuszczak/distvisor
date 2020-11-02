@@ -1,7 +1,9 @@
 ﻿using Distvisor.Web.Data.Events;
 using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,24 +14,24 @@ namespace Distvisor.Web.BackgroundServices
     {
         private readonly Timer _timer;
         private readonly IEmailReceivedNotifier _emailReceivedNotifier;
-        private readonly IEmailReceivingService _emailReceivingService;
-        private readonly IEventStore _eventStore;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ILogger _logger;
 
         public EmailPoolingBackgroundService(
             IEmailReceivedNotifier emailReceivedNotifier, 
-            IEmailReceivingService emailReceivingService,
-            IEventStore eventStore)
+            IServiceProvider serviceProvider,
+            ILogger<EmailPoolingBackgroundService> logger)
         {
             _emailReceivedNotifier = emailReceivedNotifier;
-            _emailReceivingService = emailReceivingService;
-            _eventStore = eventStore;
+            _serviceProvider = serviceProvider;
+            _logger = logger;
 
             async void TimerCallback(object _)
             {
                 await _emailReceivedNotifier.NotifyAsync(new EmailReceivedNotification { Key = "timer" });
             }
 
-            _timer = new Timer(TimerCallback, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+            _timer = new Timer(TimerCallback, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(5));
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -38,18 +40,28 @@ namespace Distvisor.Web.BackgroundServices
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                await foreach(var notification in _emailReceivedNotifier.ConsumeAsync(stoppingToken))
+                try
                 {
-                    await PoolEmailAsync(notification);
+                    await foreach (var notification in _emailReceivedNotifier.ConsumeAsync(stoppingToken))
+                    {
+                        await PoolEmailAsync(notification);
+                    }
+                }
+                catch (Exception exc)
+                {
+                    _logger.LogError(exc, "Unhandled exception while handling email received notification");
                 }
             }
         }
 
         private async Task PoolEmailAsync(EmailReceivedNotification notification)
         {
-            await foreach (var receivedEmail in _emailReceivingService.PoolStoredEmailsAsync())
+            using var scope = _serviceProvider.CreateScope();
+            var emailReceivingService = scope.ServiceProvider.GetService<IEmailReceivingService>();
+            var eventStore = scope.ServiceProvider.GetService<IEventStore>();
+            await foreach (var receivedEmail in emailReceivingService.PoolStoredEmailsAsync())
             {
-                await _eventStore.Publish(new EmailReceivedEvent
+                await eventStore.Publish(new EmailReceivedEvent
                 {
                     StorageKey = receivedEmail.StorageKey,
                     Timestamp = receivedEmail.Timestamp,

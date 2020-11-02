@@ -1,4 +1,4 @@
-﻿using Distvisor.Web.Data.Entities;
+﻿using Distvisor.Web.Data.Reads.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Distvisor.Web.Data.Reads.Core
@@ -16,7 +16,15 @@ namespace Distvisor.Web.Data.Reads.Core
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ProcessedEmailEntity>()
+                .HasIndex(e => e.UniqueKey)
+                .IsUnique();
+        }
+
         public DbSet<SecretsVaultEntity> SecretsVault { get; set; }
         public DbSet<RedirectionEntity> Redirections { get; set; }
+        public DbSet<ProcessedEmailEntity> ProcessedEmails { get; set; }
     }
 }

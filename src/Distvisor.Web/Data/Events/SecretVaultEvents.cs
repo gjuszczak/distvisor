@@ -1,4 +1,4 @@
-﻿using Distvisor.Web.Data.Entities;
+﻿using Distvisor.Web.Data.Reads.Entities;
 using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Data.Reads.Core;
 using System.Linq;

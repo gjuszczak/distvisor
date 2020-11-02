@@ -1,6 +1,6 @@
 ﻿using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Data.Reads.Core;
-using System.Text.Json;
+using Distvisor.Web.Data.Reads.Entities;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Data.Events
@@ -23,7 +23,13 @@ namespace Distvisor.Web.Data.Events
 
         public async Task Handle(EmailReceivedEvent payload)
         {
-            await Task.CompletedTask;
+            _context.ProcessedEmails.Add(new ProcessedEmailEntity
+            {
+                UniqueKey = $"{payload.Timestamp}_{payload.StorageKey}",
+                BodyMime = payload.BodyMime,
+            });
+
+            await _context.SaveChangesAsync();
         }
     }
 }

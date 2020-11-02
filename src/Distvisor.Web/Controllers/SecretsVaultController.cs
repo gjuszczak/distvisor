@@ -1,4 +1,4 @@
-﻿using Distvisor.Web.Data.Entities;
+﻿using Distvisor.Web.Data.Reads.Entities;
 using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

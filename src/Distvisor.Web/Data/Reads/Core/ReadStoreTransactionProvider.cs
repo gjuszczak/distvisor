@@ -1,5 +1,4 @@
-﻿using Distvisor.Web.Data.Reads.Core;
-using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore.Storage;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Data.Reads.Core
