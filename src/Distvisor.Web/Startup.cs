@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Distvisor.Web
@@ -37,6 +38,10 @@ namespace Distvisor.Web
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IEventLogToDtoMapper, EventLogToDtoMapper>();
             services.AddSingleton<IEmailReceivedNotifier, EmailReceivedNotifier>();
+            services.AddSingleton<IFinancialEmailDataExtractor, FinancialEmailDataExtractor>();
+            services.AddSingleton<IFinancialEmailAnalyzer, AccountIncomeEmailAnalyzer>();
+            services.AddSingleton<IFinancialEmailAnalyzer, AccountDebtEmailAnalyzer>();
+            services.AddSingleton<IFinancialEmailAnalyzer, CardPaymentEmailAnalyzer>();
             services.AddScoped<IDeploymentService, DeploymentService>();
             services.AddScoped<IBackupService, BackupService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
