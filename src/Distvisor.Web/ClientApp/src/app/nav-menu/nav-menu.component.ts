@@ -36,16 +36,16 @@ export class NavMenuComponent implements OnInit, OnDestroy {
               this.isAnyMenuItem = this.menuItems.some(item => item.visible)
             }));
         }
-        const navigatedMenu = this.router.events.pipe(
-          filter(event => event instanceof NavigationEnd),
-          map(event => event as NavigationEnd),
-          map(event => this.menuItems.findIndex(x => event.url.match('[^?]*')[0] === x.routerLink)),
-          first(index => index >= 0)
-        );
-        this.subscriptions.push(
-          navigatedMenu.subscribe(index => this.navBrand = this.menuItems[index].label, _ => this.navBrand = ""));
         this.menuItems.push(menuItem);
       }));
+    const navigatedMenuLabel = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      map(event => event as NavigationEnd),
+      map(event => this.menuItems.findIndex(x => event.url.match('[^?]*')[0] === x.routerLink)),
+      map(index => index >= 0 ? this.menuItems[index].label : "")
+    );
+    this.subscriptions.push(
+      navigatedMenuLabel.subscribe(label => this.navBrand = label));
   }
 
   ngOnDestroy(): void {
