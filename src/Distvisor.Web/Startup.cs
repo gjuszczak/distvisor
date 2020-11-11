@@ -53,6 +53,7 @@ namespace Distvisor.Web
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IRedirectionsService, RedirectionsService>();
             services.AddScoped<IBackupProcessManager, BackupProcessManager>();
+            services.AddScoped<IEmailFileImportService, EmailFileImportService>();
 
             services.AddHttpClient<IMailgunClient, MailgunClient, FakeMailgunClient>(Config)
                 .ConfigureHttpClient(c =>

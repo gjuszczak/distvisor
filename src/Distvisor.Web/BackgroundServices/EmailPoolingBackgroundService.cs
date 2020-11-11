@@ -63,8 +63,7 @@ namespace Distvisor.Web.BackgroundServices
             {
                 await eventStore.Publish(new EmailReceivedEvent
                 {
-                    StorageKey = receivedEmail.StorageKey,
-                    Timestamp = receivedEmail.Timestamp,
+                    MimeMessageId = receivedEmail.MimeMessageId,
                     BodyMime = receivedEmail.BodyMime
                 });
             }

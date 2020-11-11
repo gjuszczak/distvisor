@@ -2,8 +2,10 @@
 using Distvisor.Web.Data.Events;
 using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MimeKit;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -18,12 +20,17 @@ namespace Distvisor.Web.Controllers
         private readonly IMailgunClient _mailgun;
         private readonly IEventStore _eventStore;
         private readonly IEmailReceivedNotifier _emailReceivedNotifier;
+        private readonly IEmailFileImportService _emailFileImportService;
 
-        public FinancesController(IMailgunClient mailgun, IEventStore eventStore, IEmailReceivedNotifier emailReceivedNotifier)
+        public FinancesController(IMailgunClient mailgun, 
+            IEventStore eventStore, 
+            IEmailReceivedNotifier emailReceivedNotifier,
+            IEmailFileImportService emailFileImportService)
         {
             _mailgun = mailgun;
             _eventStore = eventStore;
             _emailReceivedNotifier = emailReceivedNotifier;
+            _emailFileImportService = emailFileImportService;
         }
 
         [HttpGet]
@@ -35,8 +42,7 @@ namespace Distvisor.Web.Controllers
 
             await _eventStore.Publish(new EmailReceivedEvent
             {
-                StorageKey = sl.StorageKey,
-                Timestamp = sl.Timestamp,
+                MimeMessageId = sl.MimeMessageId,
                 BodyMime = r
             });
 
@@ -50,6 +56,12 @@ namespace Distvisor.Web.Controllers
         public async Task Notify()
         {
             await _emailReceivedNotifier.NotifyAsync(new EmailReceivedNotification { Key = "notify" });
+        }
+
+        [HttpPost("upload-eml")]
+        public async Task UploadEml(IEnumerable<IFormFile> files)
+        {
+            await _emailFileImportService.ImportEmailFilesAsync(files); 
         }
     }
 }

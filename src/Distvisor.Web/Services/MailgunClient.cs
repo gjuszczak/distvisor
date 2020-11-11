@@ -123,8 +123,7 @@ namespace Distvisor.Web.Services
 
             var result = content.RootElement.GetProperty("items").EnumerateArray().Select(item => new MailgunStoredEvent()
             {
-                Timestamp = item.GetProperty("timestamp").GetDecimal(),
-                StorageKey = item.GetProperty("storage").GetProperty("key").GetString(),
+                MimeMessageId = item.GetProperty("message").GetProperty("headers").GetProperty("message-id").GetString(),
                 Url = item.GetProperty("storage").GetProperty("url").GetString(),
             }).ToArray();
 
@@ -230,8 +229,7 @@ namespace Distvisor.Web.Services
 
     public class MailgunStoredEvent
     {
-        public decimal Timestamp { get; set; }
-        public string StorageKey { get; set; }
+        public string MimeMessageId { get; set; }
         public string Url { get; set; }
     }
 }

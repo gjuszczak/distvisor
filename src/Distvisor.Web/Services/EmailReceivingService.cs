@@ -38,8 +38,7 @@ namespace Distvisor.Web.Services
                 var emailContent = await _mailgun.GetStoredEmailContentAsync(emailInfo.Url);
                 yield return new ReceivedEmail
                 {
-                    Timestamp = emailInfo.Timestamp,
-                    StorageKey = emailInfo.StorageKey,
+                    MimeMessageId = emailInfo.MimeMessageId,
                     BodyMime = emailContent
                 };
             }
@@ -47,7 +46,7 @@ namespace Distvisor.Web.Services
 
         private async Task<bool> IsEmailEventAlreadyProcessed(MailgunStoredEvent emailReceivedEvent)
         {
-            var key = $"{emailReceivedEvent.Timestamp}_{emailReceivedEvent.StorageKey}";
+            var key = emailReceivedEvent.MimeMessageId;
             if (!_cache.TryGetValue(key, out _))
             {
                 var exists = await _readStore.ProcessedEmails.AnyAsync(x => x.UniqueKey == key);
@@ -68,8 +67,7 @@ namespace Distvisor.Web.Services
 
     public class ReceivedEmail
     {
-        public decimal Timestamp { get; set; }
-        public string StorageKey { get; set; }
+        public string MimeMessageId { get; set; }
         public string BodyMime { get; set; }
     }
 }

@@ -8,8 +8,7 @@ namespace Distvisor.Web.Data.Events
 {
     public class EmailReceivedEvent
     {
-        public decimal Timestamp { get; set; }
-        public string StorageKey { get; set; }
+        public string MimeMessageId { get; set; }
         public string BodyMime { get; set; }
     }
 
@@ -30,7 +29,7 @@ namespace Distvisor.Web.Data.Events
 
             _context.ProcessedEmails.Add(new ProcessedEmailEntity
             {
-                UniqueKey = $"{payload.Timestamp}_{payload.StorageKey}",
+                UniqueKey = payload.MimeMessageId,
                 BodyMime = payload.BodyMime,
             });
 
