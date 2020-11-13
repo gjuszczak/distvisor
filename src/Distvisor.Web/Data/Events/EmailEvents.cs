@@ -2,6 +2,7 @@
 using Distvisor.Web.Data.Reads.Core;
 using Distvisor.Web.Data.Reads.Entities;
 using Distvisor.Web.Services;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Data.Events
@@ -27,13 +28,21 @@ namespace Distvisor.Web.Data.Events
         {
             await _financialEmailDataExtractor.ExtractAsync(payload.BodyMime);
 
-            _context.ProcessedEmails.Add(new ProcessedEmailEntity
+            var entry = _context.ProcessedEmails.Add(new ProcessedEmailEntity
             {
                 UniqueKey = payload.MimeMessageId,
                 BodyMime = payload.BodyMime,
             });
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                entry.State = EntityState.Detached;
+                throw;
+            }
         }
     }
 }

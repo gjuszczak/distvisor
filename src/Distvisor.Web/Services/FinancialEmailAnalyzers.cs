@@ -35,17 +35,17 @@ namespace Distvisor.Web.Services
     public class AccountDebtEmailAnalyzer : IFinancialEmailAnalyzer
     {
         private readonly string _regexSubjectPattern = @"Alerty24: rachunek (?<accnum>[\d ]*) - obciążenie rachunku";
-        private readonly string _regexBodyPattern = @"Stan Twojego konta zmniejszył się(.|\n)*Z konta:\n\* (?<accnum>[\d ]*) \*(.|\n)*Ile:\n\* (?<amount>[\d,]*) PLN \*(.|\n)*Kiedy:\n\* (?<date>[\d-]*) \*(.|\n)*Saldo:\n\* (?<balance>[\d, ]*) PLN \*";
+        private readonly string _regexBodyPattern = @"(?s)Stan Twojego konta zmniejszył się o <b>(?<amount>\d[\d, ]+\d).+?Z konta:.+?<b>.+?(?<accnum>\d[\d ]+\d).+?Kiedy:.+?<b>.+?(?<date>\d[\d-]+\d).+?Saldo:.+?<b>.+?(?<balance>\d[\d, ]+\d)";
 
         public bool CanAnalyze(MimeMessage emailBody)
         {
-            return Regex.IsMatch(emailBody.Subject, _regexSubjectPattern) &&
-                Regex.IsMatch(emailBody.TextBody, _regexBodyPattern);
+            return Regex.IsMatch(emailBody.Subject ?? "", _regexSubjectPattern) &&
+                Regex.IsMatch(emailBody.HtmlBody ?? "", _regexBodyPattern);
         }
 
         public FinancialEmailAnalysis Analyze(MimeMessage emailBody)
         {
-            var bodyMatch = Regex.Match(emailBody.TextBody, _regexBodyPattern);
+            var bodyMatch = Regex.Match(emailBody.HtmlBody, _regexBodyPattern);
 
             return new FinancialEmailAnalysis
             {
