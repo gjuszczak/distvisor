@@ -34,6 +34,7 @@ namespace Distvisor.Web
             services.Configure<AzureAdConfiguration>(Config.GetSection("AzureAd"));
             services.Configure<DeploymentConfiguration>(Config.GetSection("Deployment"));
             services.Configure<MailgunConfiguration>(Config.GetSection("Mailgun"));
+            services.Configure<FinancesConfiguration>(Config.GetSection("Finances"));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IEventLogToDtoMapper, EventLogToDtoMapper>();

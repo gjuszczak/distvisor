@@ -1,4 +1,6 @@
-﻿using MimeKit;
+﻿using Distvisor.Web.Configuration;
+using Microsoft.Extensions.Options;
+using MimeKit;
 using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -16,57 +18,71 @@ namespace Distvisor.Web.Services
         public string AccountNumber { get; set; }
         public decimal Amount { get; set; }
         public decimal Balance { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime MessageUtcDateTime { get; set; }
+        public DateTime TransactionUtcDate { get; set; }
     }
 
-    public class AccountIncomeEmailAnalyzer : IFinancialEmailAnalyzer
+    public class RegexAccountEmailAnalyzer : IFinancialEmailAnalyzer
     {
+        protected virtual RegexAccountEmailAnalyzerConfig Config { get; }
+
+        public RegexAccountEmailAnalyzer(RegexAccountEmailAnalyzerConfig config)
+        {
+            Config = config;
+        }
+
         public bool CanAnalyze(MimeMessage emailBody)
         {
-            return false;
+            return Regex.IsMatch(emailBody.Subject ?? "", Config.RegexSubjectPattern) &&
+                Regex.IsMatch(emailBody.HtmlBody ?? "", Config.RegexBodyPattern);
         }
 
         public FinancialEmailAnalysis Analyze(MimeMessage emailBody)
         {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class AccountDebtEmailAnalyzer : IFinancialEmailAnalyzer
-    {
-        private readonly string _regexSubjectPattern = @"Alerty24: rachunek (?<accnum>[\d ]*) - obciążenie rachunku";
-        private readonly string _regexBodyPattern = @"(?s)Stan Twojego konta zmniejszył się o <b>(?<amount>\d[\d, ]+\d).+?Z konta:.+?<b>.+?(?<accnum>\d[\d ]+\d).+?Kiedy:.+?<b>.+?(?<date>\d[\d-]+\d).+?Saldo:.+?<b>.+?(?<balance>\d[\d, ]+\d)";
-
-        public bool CanAnalyze(MimeMessage emailBody)
-        {
-            return Regex.IsMatch(emailBody.Subject ?? "", _regexSubjectPattern) &&
-                Regex.IsMatch(emailBody.HtmlBody ?? "", _regexBodyPattern);
-        }
-
-        public FinancialEmailAnalysis Analyze(MimeMessage emailBody)
-        {
-            var bodyMatch = Regex.Match(emailBody.HtmlBody, _regexBodyPattern);
+            var bodyMatch = new Lazy<Match>(() => Regex.Match(emailBody.HtmlBody, Config.RegexBodyPattern));
+            var subjectMatch = new Lazy<Match>(() => Regex.Match(emailBody.Subject, Config.RegexSubjectPattern));
 
             return new FinancialEmailAnalysis
             {
-                AccountNumber = bodyMatch.Groups["accnum"].Value.Replace(" ", string.Empty),
-                Amount = decimal.Parse(bodyMatch.Groups["amount"].Value.Replace(" ", string.Empty).Replace(",", "."), CultureInfo.InvariantCulture),
-                Balance = decimal.Parse(bodyMatch.Groups["balance"].Value.Replace(" ", string.Empty).Replace(",", "."), CultureInfo.InvariantCulture),
-                Date = DateTime.ParseExact(bodyMatch.Groups["date"].Value, "dd-MM-yyyy", CultureInfo.InvariantCulture),
+                AccountNumber = GetAccountNumber(emailBody, bodyMatch, subjectMatch),
+                Amount = GetAmount(emailBody, bodyMatch, subjectMatch),
+                Balance = GetBalance(emailBody, bodyMatch, subjectMatch),
+                TransactionUtcDate = GetTransactionUtcDate(emailBody, bodyMatch, subjectMatch),
+                MessageUtcDateTime = GetMessageUtcDateTime(emailBody, bodyMatch, subjectMatch),
             };
         }
+
+        protected virtual string GetAccountNumber(MimeMessage emailBody, Lazy<Match> bodyMatch, Lazy<Match> subjectMatch) =>
+            bodyMatch.Value.Groups["accnum"].Value.Replace(" ", string.Empty);
+
+        protected virtual decimal GetAmount(MimeMessage emailBody, Lazy<Match> bodyMatch, Lazy<Match> subjectMatch) =>
+            decimal.Parse(bodyMatch.Value.Groups["amount"].Value.Replace(" ", string.Empty).Replace(",", "."), CultureInfo.InvariantCulture);
+
+        protected virtual decimal GetBalance(MimeMessage emailBody, Lazy<Match> bodyMatch, Lazy<Match> subjectMatch) =>
+            decimal.Parse(bodyMatch.Value.Groups["balance"].Value.Replace(" ", string.Empty).Replace(",", "."), CultureInfo.InvariantCulture);
+
+        protected virtual DateTime GetTransactionUtcDate(MimeMessage emailBody, Lazy<Match> bodyMatch, Lazy<Match> subjectMatch) =>
+            DateTime.ParseExact(bodyMatch.Value.Groups["date"].Value, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+
+        protected virtual DateTime GetMessageUtcDateTime(MimeMessage emailBody, Lazy<Match> bodyMatch, Lazy<Match> subjectMatch) =>
+            emailBody.Date.UtcDateTime;
     }
 
-    public class CardPaymentEmailAnalyzer : IFinancialEmailAnalyzer
+    public class AccountIncomeEmailAnalyzer : RegexAccountEmailAnalyzer
     {
-        public bool CanAnalyze(MimeMessage emailBody)
-        {
-            return false;
-        }
+        public AccountIncomeEmailAnalyzer(IOptions<FinancesConfiguration> config) 
+            : base(config.Value.AccountIncomeEmailAnalyzer) { }
+    }
 
-        public FinancialEmailAnalysis Analyze(MimeMessage emailBody)
-        {
-            throw new NotImplementedException();
-        }
+    public class AccountDebtEmailAnalyzer : RegexAccountEmailAnalyzer
+    {
+        public AccountDebtEmailAnalyzer(IOptions<FinancesConfiguration> config)
+            : base(config.Value.AccountDebtEmailAnalyzer) { }
+    }
+
+    public class CardPaymentEmailAnalyzer : RegexAccountEmailAnalyzer
+    {
+        public CardPaymentEmailAnalyzer(IOptions<FinancesConfiguration> config)
+            : base(config.Value.CardPaymentEmailAnalyzer) { }
     }
 }
