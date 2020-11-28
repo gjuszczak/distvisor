@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Distvisor.Web.Configuration;
+using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -13,10 +15,12 @@ namespace Distvisor.Web.BackgroundServices
 
     public class EmailReceivedNotifier : IEmailReceivedNotifier
     {
+        private readonly FinancesConfiguration _config;
         private readonly Channel<EmailReceivedNotification> _channel;
 
-        public EmailReceivedNotifier()
+        public EmailReceivedNotifier(IOptions<FinancesConfiguration> config)
         {
+            _config = config.Value;
             _channel = Channel.CreateUnbounded<EmailReceivedNotification>(new UnboundedChannelOptions
             {
                 AllowSynchronousContinuations = false,
@@ -27,7 +31,10 @@ namespace Distvisor.Web.BackgroundServices
 
         public async Task NotifyAsync(EmailReceivedNotification notification)
         {
-            await _channel.Writer.WriteAsync(notification);
+            if (_config.IsEmailPoolingEnabled)
+            {
+                await _channel.Writer.WriteAsync(notification);
+            }
         }
 
         public IAsyncEnumerable<EmailReceivedNotification> ConsumeAsync(CancellationToken cancellationToken)

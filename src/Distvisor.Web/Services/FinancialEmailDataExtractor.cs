@@ -26,7 +26,7 @@ namespace Distvisor.Web.Services
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(emailBodyMime));
             var emailBody = await MimeMessage.LoadAsync(stream);
             var matchAnalyzer = _analyzers.FirstOrDefault(a => a.CanAnalyze(emailBody));
-            if(matchAnalyzer == null)
+            if (matchAnalyzer == null)
             {
                 return;
             }

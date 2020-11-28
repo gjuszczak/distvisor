@@ -1,9 +1,11 @@
-﻿using Distvisor.Web.Data.Events;
+﻿using Distvisor.Web.Configuration;
+using Distvisor.Web.Data.Events;
 using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,23 +22,28 @@ namespace Distvisor.Web.BackgroundServices
         public EmailPoolingBackgroundService(
             IEmailReceivedNotifier emailReceivedNotifier, 
             IServiceProvider serviceProvider,
-            ILogger<EmailPoolingBackgroundService> logger)
+            ILogger<EmailPoolingBackgroundService> logger,
+            IOptions<FinancesConfiguration> config)
         {
             _emailReceivedNotifier = emailReceivedNotifier;
             _serviceProvider = serviceProvider;
             _logger = logger;
+
 
             async void TimerCallback(object _)
             {
                 await _emailReceivedNotifier.NotifyAsync(new EmailReceivedNotification { Key = "timer" });
             }
 
-            _timer = new Timer(TimerCallback, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(5));
+            if (config.Value.IsEmailPoolingEnabled)
+            {
+                _timer = new Timer(TimerCallback, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(config.Value.EmailPoolingMinutesInterval));
+            }
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            stoppingToken.Register(() => _timer.Dispose());
+            stoppingToken.Register(() => _timer?.Dispose());
 
             while (!stoppingToken.IsCancellationRequested)
             {

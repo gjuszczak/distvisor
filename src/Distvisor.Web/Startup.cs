@@ -43,6 +43,7 @@ namespace Distvisor.Web
             services.AddSingleton<IFinancialEmailAnalyzer, AccountIncomeEmailAnalyzer>();
             services.AddSingleton<IFinancialEmailAnalyzer, AccountDebtEmailAnalyzer>();
             services.AddSingleton<IFinancialEmailAnalyzer, CardPaymentEmailAnalyzer>();
+            services.AddSingleton<IFinancialEmailAnalyzer, CardPaymentSettledEmailAnalyzer>();
             services.AddScoped<IDeploymentService, DeploymentService>();
             services.AddScoped<IBackupService, BackupService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
