@@ -8,10 +8,10 @@ import { filter, map, first } from 'rxjs/operators';
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
-  styleUrls: ['./nav-menu.component.css']
+  styleUrls: ['./nav-menu.component.scss']
 })
 export class NavMenuComponent implements OnInit, OnDestroy {
-  navBrand: string;
+  navBrand: string = '';
   menuItems: MenuItem[] = [];
   isAnyMenuItem: boolean = false;
   subscriptions: Subscription[] = [];
@@ -23,7 +23,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscriptions.push(
       this.navigationService.getRegisteredNavMenuItems().subscribe(item => {
-        const menuItem = {
+        const menuItem = <MenuItem>{
           label: item.name,
           icon: item.icon,
           routerLink: item.routerLink,
@@ -41,11 +41,13 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     const navigatedMenuLabel = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       map(event => event as NavigationEnd),
-      map(event => this.menuItems.findIndex(x => event.url.match('[^?]*')[0] === x.routerLink)),
+      map(event => event.url.match('[^?]*')),
+      filter(match => match !== null),
+      map(match => this.menuItems.findIndex(x => match![0] === x.routerLink)),
       map(index => index >= 0 ? this.menuItems[index].label : "")
     );
     this.subscriptions.push(
-      navigatedMenuLabel.subscribe(label => this.navBrand = label));
+      navigatedMenuLabel.subscribe(label => this.navBrand = (label || '')));
   }
 
   ngOnDestroy(): void {

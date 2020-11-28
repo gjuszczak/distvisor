@@ -20,7 +20,7 @@ interface INotification {
 }
 
 export class SuccessNotification implements INotification {
-  message: string;
+  message: string = 'unknown_message';
 
   show(messageService: MessageService): void {
     messageService.add({
@@ -32,9 +32,9 @@ export class SuccessNotification implements INotification {
 }
 
 export class ErrorNotification implements INotification {
-  message: string;
-  exceptionMessage: string;
-  exceptionDetails: string;
+  message: string = 'unknown_message';
+  exceptionMessage: string = 'unknown_excepiton_message';
+  exceptionDetails: string = 'unknown_exception_details';
 
   show(messageService: MessageService): void {
     messageService.add({
@@ -46,8 +46,8 @@ export class ErrorNotification implements INotification {
 }
 
 export class FakeApiUsedNotification implements INotification {
-  api: string;
-  requestParams: object;
+  api: string = 'unknown_api';
+  requestParams: any = 'unknown_params';
 
   show(messageService: MessageService): void {
     if(this.requestParams['$type']){

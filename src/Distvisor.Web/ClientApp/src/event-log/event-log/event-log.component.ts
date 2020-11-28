@@ -8,12 +8,12 @@ import 'prismjs/components/prism-json.js';
 @Component({
   selector: 'app-event-log',
   templateUrl: './event-log.component.html',
-  styleUrls: ['./event-log.component.css']
+  styleUrls: ['./event-log.component.scss']
 })
 export class EventLogComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
-  events: EventLogDto[];
+  events: EventLogDto[] = [];
 
   constructor(private eventLogService: EventLogService) {
   }

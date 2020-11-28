@@ -12,7 +12,7 @@ import { SignalrService } from '../notifications/signalr.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
 
-  private authSubscription: Subscription;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private authService: AuthService,
@@ -32,7 +32,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.authSubscription.unsubscribe();
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 
   configureApi() {
@@ -89,7 +89,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   configureNotifications() {
-    this.authSubscription = this.authService.accessToken()
+    this.subscriptions.push(this.authService.accessToken()
       .subscribe(token => {
         if (token) {
           this.signalrService.connect(this.baseUrl, token);
@@ -97,7 +97,7 @@ export class AppComponent implements OnInit, OnDestroy {
         else {
           this.signalrService.disconnect();
         }
-      });
+      }));
   }
 
   configureCookieConsent(){

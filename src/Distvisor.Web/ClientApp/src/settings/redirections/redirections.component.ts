@@ -10,9 +10,9 @@ import { RedirectionDetails } from '../../api/models';
 export class RedirectionsComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
-  storedRedirections: RedirectionDetails[];
-  inputRedirectionName: string;
-  inputRedirectionUrl: string;
+  storedRedirections: RedirectionDetails[] = [];
+  inputRedirectionName: string = '';
+  inputRedirectionUrl: string = '';
 
   constructor(private redirectionsService: RedirectionsService) { }
 

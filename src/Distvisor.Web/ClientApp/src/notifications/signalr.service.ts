@@ -6,7 +6,7 @@ import * as signalR from '@aspnet/signalr';
 @Injectable()
 export class SignalrService {
 
-  private connection: signalR.HubConnection;
+  private connection: signalR.HubConnection | null;
 
   constructor(private notificationsService: NotificationsService) {
     this.connection = null;

@@ -16,7 +16,7 @@ export class AuthService {
     private broadcastService: BroadcastService) {
 
     this.isAuthenticatedSubject = new DistinctBehaviorSubject(!!this.getUser());
-    this.accessTokenSubject = new DistinctBehaviorSubject(null);
+    this.accessTokenSubject = new DistinctBehaviorSubject<string | null>(null);
 
     this.broadcastService.subscribe('msal:loginSuccess', () => {
       this.isAuthenticatedSubject.next(true);

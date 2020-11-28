@@ -10,19 +10,23 @@ import { DeployRequestDto, RedeployRequestDto } from 'src/api/models';
 })
 export class DeploymentComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
-  environments: SelectItem[];
-  selectedEnvironment: string;
-  versions: SelectItem[];
-  selectedVersion: string;
+  environments: SelectItem[] = [];
+  selectedEnvironment: string | null = null;
+  versions: SelectItem[] = [];
+  selectedVersion: string | null = null;
 
   constructor(private adminService: AdminService) { }
 
   ngOnInit() {
     this.subscriptions.push(this.adminService.apiAdminDeploymentParamsGet$Json()
       .subscribe(deployParams => {
-        this.environments = deployParams.environments.map(v => <SelectItem>{ label: v, value: v });
-        this.selectedEnvironment = this.environments[0].value;
-        this.versions = deployParams.versions.map(v => <SelectItem>{ label: v, value: v });
+        if (deployParams.environments) {
+          this.environments = deployParams.environments.map(v => <SelectItem>{ label: v, value: v });
+          this.selectedEnvironment = this.environments[0].value;
+        }
+        if (deployParams.versions) {
+          this.versions = deployParams.versions.map(v => <SelectItem>{ label: v, value: v });
+        }
         this.selectedVersion = null;
       }));
   }

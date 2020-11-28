@@ -10,7 +10,7 @@ export class FinancesComponent {
 
   constructor(private messageService: MessageService) {}
 
-  onUpload(event) {
+  onUpload(event: any) {
       for(let file of event.files) {
           this.uploadedFiles.push(file);
       }

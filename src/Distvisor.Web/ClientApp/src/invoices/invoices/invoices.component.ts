@@ -8,18 +8,18 @@ import { SelectItem } from 'primeng/api';
   templateUrl: './invoices.component.html'
 })
 export class InvoicesComponent implements OnInit {
-  invoices: Invoice[];
+  invoices: Invoice[] = [];
   issueDate: Date;
   workdays: number;
-  templateInvoices: SelectItem[];
-  selectedTemplateInvoiceId: string;
+  templateInvoices: SelectItem[] = [];
+  selectedTemplateInvoiceId: string | null = null;
 
-  constructor(private invoicesService: InvoicesService) { }
-
-  ngOnInit() {
+  constructor(private invoicesService: InvoicesService) {
     this.issueDate = new Date(Date.now());
     this.workdays = 20;
+  }
 
+  ngOnInit() {
     this.reloadInvoices();
   }
 
@@ -34,16 +34,17 @@ export class InvoicesComponent implements OnInit {
   }
 
   onPreviewInvoiceClicked(invoiceId: string) {
-    var newWindow = window.open('', '_blank');
-    newWindow.document.write('Loading pdf...');
-    this.invoicesService.apiInvoicesInvoiceIdGet$Response({ invoiceId: invoiceId })
-      .subscribe(resp => {
-        const fileURL = URL.createObjectURL(resp.body);
-        newWindow.location.href = fileURL;
-      },
-        _ => {
+    const newWindow = window.open('', '_blank');
+    if (newWindow) {
+      newWindow.document.write('Loading pdf...');
+      this.invoicesService.apiInvoicesInvoiceIdGet$Response({ invoiceId: invoiceId })
+        .subscribe(resp => {
+          const fileURL = URL.createObjectURL(resp.body);
+          newWindow.location.href = fileURL;
+        }, _ => {
           newWindow.document.write('Loading failed!');
         });
+    }
   }
 
   onSendMailInvoiceClicked(invoiceId: string) {
@@ -57,19 +58,19 @@ export class InvoicesComponent implements OnInit {
   }
 
   onSubmit() {
-    this.invoicesService.apiInvoicesGeneratePost$Response({
-      body: {
-        templateInvoiceId: this.selectedTemplateInvoiceId,
-        utcIssueDate: this.issueDate.toISOString(),
-        workdays: this.workdays
-      }
-    })
-      .subscribe(_ => {
+    if (this.selectedTemplateInvoiceId) {
+      this.invoicesService.apiInvoicesGeneratePost$Response({
+        body: {
+          templateInvoiceId: this.selectedTemplateInvoiceId,
+          utcIssueDate: this.issueDate.toISOString(),
+          workdays: this.workdays
+        }
+      }).subscribe(_ => {
         console.log("generated");
         this.reloadInvoices();
-      },
-        _ => {
-          console.error("generate-error");
-        });
+      }, _ => {
+        console.error("generate-error");
+      });
+    }
   }
 }

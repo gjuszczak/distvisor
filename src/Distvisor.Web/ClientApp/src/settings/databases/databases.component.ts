@@ -10,9 +10,9 @@ import { BackupFileInfoDto } from 'src/api/models';
 })
 export class DatabasesComponent implements OnInit {
 
-  dbBtnMenuItems: MenuItem[];
-  bakBtnMenuItems: MenuItem[][];
-  backupFiles: BackupFileInfoDto[];
+  dbBtnMenuItems: MenuItem[] = [];
+  bakBtnMenuItems: {[key:string]: MenuItem[]} = {};
+  backupFiles: BackupFileInfoDto[] = [];
 
   constructor(private adminService: AdminService) { }
 
@@ -27,7 +27,7 @@ export class DatabasesComponent implements OnInit {
       }
     ];
 
-    this.bakBtnMenuItems = [];
+    this.bakBtnMenuItems = {};
     this.reloadBackupList();
   }
 
@@ -37,7 +37,7 @@ export class DatabasesComponent implements OnInit {
         this.backupFiles = backups;
         
         backups.forEach(b => {
-          this.bakBtnMenuItems[b.name] = [
+          this.bakBtnMenuItems[b.name || ''] = [
             {
               label: 'Remove',
               icon: 'pi pi-times',

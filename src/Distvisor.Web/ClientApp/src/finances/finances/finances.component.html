@@ -1,7 +1,7 @@
 <div class="container mt-3 mb-5">
     <p-fieldset legend="Import finance data from .eml file">
         <p-fileUpload name="files" url="/api/finances/upload-eml" (onUpload)="onUpload($event)"
-            multiple="multiple" accept=".eml" maxFileSize="1000000">
+            [multiple]="true" accept=".eml" [maxFileSize]="1000000">
                 <ng-template pTemplate="content">
                     <ul *ngIf="uploadedFiles.length">
                         <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
