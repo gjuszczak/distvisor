@@ -1,29 +1,32 @@
-<p-fieldset legend="DBs and backups" styleClass="backups">
-    <div class="mb-3">
-        <p-panel styleClass="mt-1" [toggleable]="true" [collapsed]="true" expandIcon="pi pi-chevron-right"
-            collapseIcon="pi pi-chevron-down">
-            <p-header>
-                <span class="ui-panel-title ml-2">Event Store</span>
-                <p-splitButton label="Backup" icon="pi pi-cloud-upload" styleClass="ui-button-success"
-                    [model]="dbBtnMenuItems" (onClick)="create()"></p-splitButton>
-            </p-header>
-            <p-dataView [value]="backupFiles" styleClass="no-header no-border">
-                <ng-template let-backupFile pTemplate="listItem">
-                    <div class="d-flex flex-row justify-content-between align-items-center py-3 px-md-3 px-sm-1 w-100"
-                        [ngClass]="{'border-bottom': !isLast(backupFile)}">
-                        <div class="d-flex flex-wrap text-truncate pr-1">
-                            <div class="pr-1 text-truncate">{{backupFile.createdDateTime | date:'short'}},</div>
-                            <div class="pr-1 text-truncate">{{backupFile.name}},</div>
-                            <div class="pr-1 text-truncate">{{backupFile.size | fileSize}}</div>
+<div class="card p-mt-3 p-p-3">
+    <p-fieldset legend="DBs and backups" styleClass="backups">
+        <div class="mb-3">
+            <p-panel styleClass="mt-1" [toggleable]="true" [collapsed]="true" expandIcon="pi pi-chevron-right"
+                collapseIcon="pi pi-chevron-down">
+                <p-header>
+                    <span class="ui-panel-title ml-2">Event Store</span>
+                    <p-splitButton label="Backup" icon="pi pi-cloud-upload" styleClass="ui-button-success"
+                        [model]="dbBtnMenuItems" (onClick)="create()"></p-splitButton>
+                </p-header>
+                <p-dataView [value]="backupFiles" styleClass="no-header no-border">
+                    <ng-template let-backupFile pTemplate="listItem">
+                        <div class="d-flex flex-row justify-content-between align-items-center py-3 px-md-3 px-sm-1 w-100"
+                            [ngClass]="{'border-bottom': !isLast(backupFile)}">
+                            <div class="d-flex flex-wrap text-truncate pr-1">
+                                <div class="pr-1 text-truncate">{{backupFile.createdDateTime | date:'short'}},</div>
+                                <div class="pr-1 text-truncate">{{backupFile.name}},</div>
+                                <div class="pr-1 text-truncate">{{backupFile.size | fileSize}}</div>
+                            </div>
+                            <div style="min-width: 123px;">
+                                <p-splitButton label="Restore" icon="pi pi-cloud-download"
+                                    styleClass="ui-button-secondary" [model]="bakBtnMenuItems[backupFile.name]"
+                                    (onClick)="restore(backupFile)">
+                                </p-splitButton>
+                            </div>
                         </div>
-                        <div style="min-width: 123px;">
-                            <p-splitButton label="Restore" icon="pi pi-cloud-download" styleClass="ui-button-secondary"
-                                [model]="bakBtnMenuItems[backupFile.name]" (onClick)="restore(backupFile)">
-                            </p-splitButton>
-                        </div>
-                    </div>
-                </ng-template>
-            </p-dataView>
-        </p-panel>
-    </div>
-</p-fieldset>
+                    </ng-template>
+                </p-dataView>
+            </p-panel>
+        </div>
+    </p-fieldset>
+</div>

@@ -1,14 +1,14 @@
-.fab, .far {
+.fab {
   font-size: 30px;
   padding: 15px;
   width: 60px;
   margin: 10px;
   text-decoration: none;
   border-radius: 50%;
-}
 
-.fab:hover, .far:hover {
-  opacity: 0.7;
+  &:hover {
+    opacity: 0.7;
+  }
 }
 
 .fa-envelope {

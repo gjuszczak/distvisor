@@ -1,13 +1,81 @@
-a {
-  color: #0366d6;
+html {
+  font-size: 14px;
+  height: 100%;
 }
 
-code {
-  color: #e01a76;
-}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  margin: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: var(--surface-b);
+  font-family: var(--font-family);
+  font-weight: 400;
+  color: var(--text-color);
 
-body .pi {
-  font-size: 1em;
+  a {
+    color: #62abff;
+  }
+
+  code {
+    color: #e01a76;
+  }
+
+  header {
+    background-color: var(--surface-a);
+
+    .brand-text {
+      font-size: 1.5rem;
+    }
+  }
+
+  app-root, app-home, app-footer {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  footer {
+    flex: 1;
+    background-color: var(--surface-a);
+  }
+
+  th {
+    &.tiny-col {
+      width: 3em;
+    }
+  }
+
+  .container {
+    max-width: 1200px;
+    padding: 0 1rem 0 1rem;
+    margin: auto;
+  }
+
+  .card {
+    background-color: var(--surface-a);
+    border-radius: 0.3rem;
+  }
+
+  .home-jumbo {
+    padding-top: 3.7rem;
+    padding-bottom: 3.7rem;
+    text-align: center;
+  }
+  
+  .home-short-header {
+    font-size: 3rem;
+  }
+  
+  .home-short-description {
+    max-width: 576px;
+    margin: auto;
+    text-align: justify;
+    font-size: 1.5rem;
+    font-weight: normal;
+  }
 }
 
 .btn-primary {
@@ -28,11 +96,11 @@ legend {
   font-size: 1.3rem;
 }
 
-.no-header .ui-dataview-header  {
+.no-header .ui-dataview-header {
   display: none !important;
 }
 
-.no-border .ui-dataview-content  {
+.no-border .ui-dataview-content {
   border: 0 !important;
   padding: 0 !important;
 }
@@ -60,11 +128,12 @@ legend {
   width: 100%;
 }
 
-.borderless td, .borderless th {
+.borderless td,
+.borderless th {
   border: none;
 }
 
-.table td.fit, 
+.table td.fit,
 .table th.fit {
   white-space: nowrap;
   width: 1%;
@@ -72,26 +141,6 @@ legend {
 
 .pi-large {
   font-size: 1rem !important;
-}
-
-.home-jumbo {
-  background-color: #343a40;
-  color: #ffffff;
-  padding-top: 3.7rem;
-  padding-bottom: 3.7rem;
-  text-align: center;
-}
-
-.home-short-header {
-  font-size: 3rem;
-}
-
-.home-short-description {
-  max-width: 576px;
-  margin: auto;
-  text-align: justify;
-  font-size: 1.5rem;
-  font-weight: normal;
 }
 
 .rounded-img {

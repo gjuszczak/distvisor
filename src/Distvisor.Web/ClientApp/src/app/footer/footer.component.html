@@ -1,27 +1,20 @@
-<footer class="page-footer font-small blue pt-4">
-    <div class="container text-center">
-        <div class="row">
-            <div class="col-12">
-                <h5 class="text-uppercase">Stay in touch</h5>
-            </div>
+<footer>
+    <div class="container p-pt-4 p-text-center">
+        <h3 class="text-uppercase">Stay in touch</h3>
+        <div>
+            <a href="/api/redirections/linkedin" class="fab fa-linkedin-in"></a>
+            <a href="/api/redirections/facebook" class="fab fa-facebook-f"></a>
+            <a href="/api/redirections/github" class="fab fa-github"></a>
         </div>
-        <div class="row">
-            <div class="col-12">
-                <a href="/api/redirections/linkedin" class="fab fa-linkedin-in"></a>
-                <a href="/api/redirections/facebook" class="fab fa-facebook-f"></a>
-                <a href="/api/redirections/github" class="fab fa-github"></a>
+        <div class="p-py-3">
+            <div>
+                <a class="hidden-link" (click)="login()">©</a> 2020 Copyright: <a href="/">Distvisor Grzegorz
+                    Juszczak</a>
             </div>
-        </div>
-        <div class="footer-copyright d-flex justify-content-center flex-wrap py-3">
-            <div class="mx-1">
-                <a class="hidden-link" (click)="login()">©</a> 2020 Copyright: <a href="/">Distvisor Grzegorz Juszczak</a>
-            </div>
-            <div class="mx-1">
-                <span *ngIf="backendDetails.appVersion">v{{backendDetails.appVersion}}</span>
-            </div> 
-            <div class="mx-1">
+            <div>
+                <span *ngIf="backendDetails.appVersion" class="p-pr-1">v{{backendDetails.appVersion}}</span>
                 <span *ngIf="backendDetails.runtimeVersion">Powered by {{backendDetails.runtimeVersion}}</span>
-            </div>            
+            </div>
         </div>
     </div>
 </footer>

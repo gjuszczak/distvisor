@@ -7,8 +7,7 @@ import { filter, map, first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-nav-menu',
-  templateUrl: './nav-menu.component.html',
-  styleUrls: ['./nav-menu.component.scss']
+  templateUrl: './nav-menu.component.html'
 })
 export class NavMenuComponent implements OnInit, OnDestroy {
   navBrand: string = '';

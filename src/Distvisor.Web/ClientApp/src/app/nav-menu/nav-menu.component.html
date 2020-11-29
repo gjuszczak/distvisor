@@ -1,16 +1,12 @@
 <header>
-  <nav class="navbar box-shadow">
-    <div class="container">
-      <div class="navbar-brand">
-        <a [routerLink]="['/']" class="align-middle"><img src="assets/icons/icon-72x72.png" width="32"
-            height="32" /></a>
-        <a *ngIf="navBrand" class="ml-3 align-middle">{{navBrand}}</a>
-      </div>
-      <div *ngIf="isAnyMenuItem">
-        <p-menu #menu [popup]="true" [model]="menuItems"></p-menu>
-        <button class="btn btn-dark" (click)="menu.toggle($event)">Menu <i
-            class="pi pi-chevron-down align-middle"></i></button>
-      </div>
+  <nav class="container p-d-flex p-jc-between p-ai-center p-py-3">
+    <div class="p-d-flex p-ai-center">
+      <a [routerLink]="['/']" class="p-d-flex p-ai-center"><img src="assets/icons/icon-72x72.png" width="32" height="32" /></a>
+      <div *ngIf="navBrand" class="p-ml-3 brand-text">{{navBrand}}</div>
+    </div>
+    <div *ngIf="isAnyMenuItem">
+      <p-menu #menu [popup]="true" [model]="menuItems"></p-menu>
+      <button type="button" pButton (click)="menu.toggle($event)" label="Menu" icon="pi pi-chevron-down" iconPos="right"></button>
     </div>
   </nav>
 </header>

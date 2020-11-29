@@ -1,4 +1,5 @@
-<div class="container mt-3 mb-5">
+<div class="container">
+    <div class="card p-mt-3 p-p-3">
     <p-fieldset legend="Import finance data from .eml file">
         <p-fileUpload name="files" url="/api/finances/upload-eml" (onUpload)="onUpload($event)"
             [multiple]="true" accept=".eml" [maxFileSize]="1000000">
@@ -9,4 +10,5 @@
                 </ng-template>
         </p-fileUpload>
     </p-fieldset>
+    </div>
 </div>
