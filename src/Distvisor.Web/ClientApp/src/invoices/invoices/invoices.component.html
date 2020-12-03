@@ -1,82 +1,63 @@
 <div class="container">
-    <div class="card p-mt-3 p-p-3">
+    <p-card header="Invoices" styleClass="p-mt-3">
         <p-dataView [value]="invoices" [paginator]="true" [rows]="6" layout="grid">
-            <p-header>
-                <div class="d-flex justify-content-start align-items-center">
-                    <div class="font-weight-bold">Invoices</div>
-                    <div class="ml-auto">
-                        <p-dropdown placeholder="Sort By"></p-dropdown>
-                    </div>
-                </div>
-            </p-header>
             <ng-template let-invoice pTemplate="gridItem">
-                <div class="p-2 col-sm-6 col-lg-4">
-                    <p-panel [header]="invoice.number">
-                        <table class="table table-sm borderless">
+                <div class="p-p-2 p-col-12 p-sm-6 p-md-4">
+                    <p-card [header]="invoice.number" styleClass="p-shadow-6">
+                        <table>
                             <tbody>
                                 <tr>
-                                    <th class="fit pr-3">Customer:</th>
+                                    <th class="auto-fit p-text-right p-pr-3">Customer:</th>
                                     <td>{{invoice.customer}}</td>
                                 </tr>
                                 <tr>
-                                    <th>Amount:</th>
+                                    <th class="auto-fit p-text-right p-pr-3">Amount:</th>
                                     <td>{{invoice.amount}}</td>
                                 </tr>
                                 <tr>
-                                    <th>Issued:</th>
+                                    <th class="auto-fit p-text-right p-pr-3">Issued:</th>
                                     <td>{{invoice.issueDate | date: 'yyyy-MM-dd'}}</td>
                                 </tr>
                             </tbody>
                         </table>
-                        <div class="d-flex flex-row-reverse">
-                            <div class="ml-3">
-                                <button pButton type="button" class="pi-large" icon="pi pi-search"
+                        <div class="p-d-flex p-flex-row-reverse p-pt-3">
+                            <div class="p-ml-3">
+                                <button pButton type="button" class="p-button-lg" icon="pi pi-search"
                                     (click)="onPreviewInvoiceClicked(invoice.id)"></button>
                             </div>
-                            <div class="ml-3">
-                                <button pButton type="button" class="pi-large" icon="pi pi-envelope"
+                            <div class="p-ml-3">
+                                <button pButton type="button" class="p-button-lg" icon="pi pi-envelope"
                                     (click)="onSendMailInvoiceClicked(invoice.id)"></button>
                             </div>
                         </div>
-                    </p-panel>
+                    </p-card>
                 </div>
             </ng-template>
         </p-dataView>
-    </div>
-    <div class="card p-mt-3 p-p-3">
-        <p-fieldset legend="Generate new invoice">
-            <form class="pl-3 pb-3" (ngSubmit)="onSubmit()">
-                <div class="form-row">
-                    <div class="form-group col-md-4 col-xl-3">
-                        <label for="inputTemplate" class="col-form-label">Template:</label>
-                        <div class="form-input">
-                            <p-dropdown id="inputTemplate" name="inputTemplate" [options]="templateInvoices"
-                                [(ngModel)]="selectedTemplateInvoiceId" showButtonBar="true">
-                            </p-dropdown>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-4 col-xl-3">
-                        <label for="inputIssueDate" class="col-form-label">Issue date:</label>
-                        <div class="form-input">
-                            <p-calendar id="inputIssueDate" name="inputIssueDate" [(ngModel)]="issueDate"
-                                [showButtonBar]="true">
-                            </p-calendar>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-4 col-xl-3">
-                        <label for="inputWorkdays" class="col-form-label">Workdays:</label>
-                        <div class="form-input">
-                            <p-spinner id="inputWorkdays" name="inputWorkdays" [(ngModel)]="workdays" [min]="1"
-                                [max]="31">
-                            </p-spinner>
-                        </div>
-                    </div>
+    </p-card>
+    <p-card header="Generate new invoice" styleClass="p-mt-3">
+        <form (ngSubmit)="onSubmit()">
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field p-col-12 p-md-4">
+                    <label for="inputTemplate">Template:</label>
+                    <p-dropdown inputId="inputTemplate" name="inputTemplate" [options]="templateInvoices"
+                        [(ngModel)]="selectedTemplateInvoiceId" showButtonBar="true"></p-dropdown>
                 </div>
-                <div class="mt-3">
-                    <button pButton icon="pi pi-check" label="Generate" class="ui-button-success"
-                        type="submit"></button>
+                <div class="p-field p-col-12 p-md-4">
+                    <label for="inputIssueDate">Issue date:</label>
+                    <p-calendar inputId="inputIssueDate" name="inputIssueDate" [(ngModel)]="issueDate"
+                        dateFormat="yy-mm-dd" [showButtonBar]="true"></p-calendar>
                 </div>
-            </form>
-        </p-fieldset>
-    </div>
+                <div class="p-field p-col-12 p-md-4">
+                    <label for="inputWorkdays">Workdays:</label>
+                    <p-inputNumber inputId="inputWorkdays" name="inputWorkdays" [(ngModel)]="workdays" mode="decimal"
+                        [showButtons]="true" [min]="1" [max]="31">
+                    </p-inputNumber>
+                </div>
+            </div>
+            <div class="p-mt-2">
+                <button pButton icon="pi pi-check" label="Generate" class="ui-button-success" type="submit"></button>
+            </div>
+        </form>
+    </p-card>
 </div>

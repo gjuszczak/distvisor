@@ -9,14 +9,12 @@ import { SelectItem } from 'primeng/api';
 })
 export class InvoicesComponent implements OnInit {
   invoices: Invoice[] = [];
-  issueDate: Date;
-  workdays: number;
+  issueDate: Date = new Date(Date.now());
+  workdays: number = 20;
   templateInvoices: SelectItem[] = [];
   selectedTemplateInvoiceId: string | null = null;
 
   constructor(private invoicesService: InvoicesService) {
-    this.issueDate = new Date(Date.now());
-    this.workdays = 20;
   }
 
   ngOnInit() {

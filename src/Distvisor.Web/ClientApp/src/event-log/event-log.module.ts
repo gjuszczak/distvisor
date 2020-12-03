@@ -5,8 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
 
-import { TableModule } from 'primeng/table';
+import { CardModule } from 'primeng/card';
 import { CodeHighlighterModule } from 'primeng/codehighlighter';
+import { TableModule } from 'primeng/table';
 
 import { EventLogComponent } from './event-log/event-log.component';
 import { ApiModule } from '../api/api.module';
@@ -21,8 +22,9 @@ import { ApiModule } from '../api/api.module';
     ]),
 
     // PrimeNg
-    TableModule,
+    CardModule,
     CodeHighlighterModule,
+    TableModule,
 
     // internal
     ApiModule,

@@ -27,7 +27,7 @@ namespace Distvisor.Web.Controllers
         {
             return _invoices.GetInvoicesAsync();
         }
-
+         
         [HttpGet("{invoiceId}")]
         [ProducesResponseType(typeof(FileContentResult), 200)]
         [Produces("application/pdf")]
@@ -38,7 +38,7 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpPost("generate")]
-        public async Task<IActionResult> GenerateInvoice([FromBody]GenerateInvoiceDto dto)
+        public async Task<IActionResult> GenerateInvoice([FromBody] GenerateInvoiceDto dto)
         {
             await _invoices.GenerateInvoiceAsync(dto.TemplateInvoiceId, dto.UtcIssueDate.ToLocalTime(), dto.Workdays);
             return Ok();

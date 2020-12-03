@@ -31,7 +31,9 @@ body {
     }
   }
 
-  app-root, app-home, app-footer {
+  app-root,
+  app-home,
+  app-footer {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -42,9 +44,15 @@ body {
     background-color: var(--surface-a);
   }
 
-  th {
+  th,
+  td {
     &.tiny-col {
       width: 3em;
+    }
+
+    &.auto-fit {
+      white-space: nowrap;
+      width: 1%;
     }
   }
 
@@ -54,9 +62,8 @@ body {
     margin: auto;
   }
 
-  .card {
-    background-color: var(--surface-a);
-    border-radius: 0.3rem;
+  .w-100 {
+    width: 100%;
   }
 
   .home-jumbo {
@@ -64,11 +71,11 @@ body {
     padding-bottom: 3.7rem;
     text-align: center;
   }
-  
+
   .home-short-header {
     font-size: 3rem;
   }
-  
+
   .home-short-description {
     max-width: 576px;
     margin: auto;
@@ -76,73 +83,34 @@ body {
     font-size: 1.5rem;
     font-weight: normal;
   }
-}
 
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
-}
+  .rounded-img {
+    border-radius: 50%;
+  }
 
-.p-grid {
-  display: flex;
-  flex-wrap: wrap;
-  margin-right: -0.5rem;
-  margin-left: -0.5rem;
-}
+  .databases {
+    .p-panel-header {
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+    }
 
-legend {
-  width: auto;
-  font-size: 1.3rem;
-}
+    p-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
 
-.no-header .ui-dataview-header {
-  display: none !important;
-}
-
-.no-border .ui-dataview-content {
-  border: 0 !important;
-  padding: 0 !important;
-}
-
-.btn-long .ui-button-text {
-  margin-right: 28px;
-}
-
-.backups .ui-panel-titlebar {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  background-color: transparent !important;
-}
-
-.backups p-header {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  .text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .form-input {
   display: block;
   width: 100%;
-}
-
-.borderless td,
-.borderless th {
-  border: none;
-}
-
-.table td.fit,
-.table th.fit {
-  white-space: nowrap;
-  width: 1%;
-}
-
-.pi-large {
-  font-size: 1rem !important;
-}
-
-.rounded-img {
-  border-radius: 50%;
 }

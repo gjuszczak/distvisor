@@ -1,47 +1,35 @@
-<div class="card p-mt-3 p-p-3">
-    <p-fieldset legend="Redirections">
-        <p-dataView [value]="storedRedirections" styleClass="no-header">
-            <ng-template let-item pTemplate="listItem">
-                <div class="d-flex justify-content-between align-items-center py-3 px-md-3 px-xs-1 w-100"
-                    [ngClass]="{'border-bottom': !isLast(item)}">
-                    <div class="text-truncate pr-1">
-                        <div>
-                            {{item.name}}
-                        </div>
-                        <div class="text-truncate">
-                            <a [href]="item.url">{{item.url}}</a>
-                        </div>
-                    </div>
+<p-card header="Redirections" styleClass="p-mt-3">
+    <p-dataView [value]="storedRedirections">
+        <ng-template let-item pTemplate="listItem">
+            <div class="p-d-flex p-flex-row p-jc-between p-ai-center p-py-3 p-px-md-3 p-px-sm-1 w-100">
+                <div class="p-pr-1 text-truncate">
                     <div>
-                        <button pButton label="Remove" icon="pi pi-times" class="ui-button-secondary"
-                            (click)="onRemove(item.name)"></button>
+                        {{item.name}}
+                    </div>
+                    <div class="text-truncate">
+                        <a [href]="item.url">{{item.url}}</a>
                     </div>
                 </div>
-            </ng-template>
-        </p-dataView>
-        <form class="p-3" (ngSubmit)="onSave()">
-            <h5>Modify stored redirections:</h5>
-            <div class="form-row">
-                <div class="form-group col-md-4 col-xl-3">
-                    <label for="inputRedirectionName" class="col-form-label">Name:</label>
-                    <div class="form-input ui-fluid">
-                        <input pInputText type="text" id="inputRedirectionName" name="inputRedirectionName"
-                            [(ngModel)]="inputRedirectionName" />
-                    </div>
-                </div>
-                <div class="form-group col">
-                    <label for="inputRedirectionUrl" class="col-form-label">Url:</label>
-                    <div class="form-input ui-fluid">
-                        <input pInputText type="text" id="inputRedirectionUrl" name="inputRedirectionUrl"
-                            [(ngModel)]="inputRedirectionUrl" />
-                    </div>
-                </div>
+                <button pButton label="Remove" icon="pi pi-times" (click)="onRemove(item.name)"></button>
             </div>
-            <div class="form-row">
-                <div class="col">
-                    <button pButton icon="pi pi-check" label="Save" class="ui-button-success" type="submit"></button>
-                </div>
+        </ng-template>
+    </p-dataView>
+    <form class="p-3" (ngSubmit)="onSave()">
+        <h3>Modify stored redirections:</h3>
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field p-col-12 p-md-4 p-xl-3">
+                <label for="inputRedirectionName">Name:</label>
+                <input pInputText type="text" inputId="inputRedirectionName" name="inputRedirectionName"
+                    [(ngModel)]="inputRedirectionName" />
             </div>
-        </form>
-    </p-fieldset>
-</div>
+            <div class="p-field p-col">
+                <label for="inputRedirectionUrl">Url:</label>
+                <input pInputText type="text" inputId="inputRedirectionUrl" name="inputRedirectionUrl"
+                    [(ngModel)]="inputRedirectionUrl" />
+            </div>
+        </div>
+        <div class="p-mt-2">
+            <button pButton icon="pi pi-check" label="Save" type="submit"></button>
+        </div>
+    </form>
+</p-card>

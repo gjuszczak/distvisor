@@ -7,12 +7,10 @@ import { MsalGuard } from '@azure/msal-angular';
 
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
+import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
-import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
-import { FieldsetModule } from 'primeng/fieldset';
-import { SpinnerModule } from 'primeng/spinner';
-import { PanelModule } from 'primeng/panel';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 import { InvoicesComponent } from './invoices/invoices.component';
 
@@ -28,12 +26,10 @@ import { InvoicesComponent } from './invoices/invoices.component';
     // PrimeNg
     ButtonModule,
     CalendarModule,
+    CardModule,
     DataViewModule,
-    DialogModule,
     DropdownModule,
-    FieldsetModule,
-    PanelModule,
-    SpinnerModule,
+    InputNumberModule,
   ],
   declarations: [InvoicesComponent]
 })

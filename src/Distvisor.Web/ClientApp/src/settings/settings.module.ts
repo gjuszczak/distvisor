@@ -5,9 +5,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MsalGuard } from '@azure/msal-angular';
 import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
 import { DropdownModule } from 'primeng/dropdown';
-import { FieldsetModule } from 'primeng/fieldset';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
 import { PanelModule } from 'primeng/panel';
@@ -32,9 +32,9 @@ import { UtilsModule } from 'src/utils/utils.module';
 
     // PrimeNg
     ButtonModule,
+    CardModule,
     DataViewModule,
     DropdownModule,
-    FieldsetModule,
     InputTextModule,
     MenuModule,
     PanelModule,
