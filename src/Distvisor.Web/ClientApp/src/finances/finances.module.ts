@@ -5,9 +5,14 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
 
+import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { DialogModule } from 'primeng/dialog';
 import { FileUploadModule } from 'primeng/fileupload';
+import { RippleModule } from 'primeng/ripple';
+import { TableModule } from 'primeng/table';
 
+import { AddAccountDialogComponent } from './add-acccount-dialog/add-account-dialog.component';
 import { FinancesComponent } from './finances/finances.component';
 
 @NgModule({
@@ -20,9 +25,16 @@ import { FinancesComponent } from './finances/finances.component';
     ]),
 
     // PrimeNg
+    ButtonModule,
     CardModule,
+    DialogModule,
     FileUploadModule,
+    RippleModule,
+    TableModule
   ],
-  declarations: [FinancesComponent]
+  declarations: [
+    AddAccountDialogComponent,
+    FinancesComponent
+  ]
 })
 export class FinancesModule { }

@@ -1,0 +1,12 @@
+<p-dialog [(visible)]="isVisible" header="Add account" [modal]="true" [resizable]="false" styleClass="p-fluid" (onHide)="onCancelClicked()">
+    <ng-template pTemplate="content">
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text p-button-info"
+            (click)="onCancelClicked()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text p-button-info"
+            (click)="onSaveClicked()"></button>
+    </ng-template>
+</p-dialog>

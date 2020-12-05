@@ -46,7 +46,7 @@ import { LogoutComponent } from './logout/logout.component';
     RouterModule.forRoot([
       { path: 'logout', component: LogoutComponent, pathMatch: 'full' },
       { path: 'privacy-policy', component: PrivacyPolicyComponent, pathMatch: 'full' },
-      { path: '', component: HomeComponent, pathMatch: 'full' },
+      { path: '**', component: HomeComponent, pathMatch: 'full' },
     ]),
     NgcCookieConsentModule.forRoot({ cookie: { domain: '' }, enabled: false }),
 
