@@ -27,7 +27,7 @@ export class AuthService {
     });
 
     this.broadcastService.subscribe("msal:acquireTokenSuccess", payload => {
-      this.accessTokenSubject.next(payload['accessToken']);
+      this.accessTokenSubject.next(payload['idToken']['rawIdToken']);
     });
 
     this.broadcastService.subscribe("msal:acquireTokenFailure", payload => {

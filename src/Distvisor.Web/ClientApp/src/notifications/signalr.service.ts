@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NotificationsService, SuccessNotification, ErrorNotification, FakeApiUsedNotification } from './notifications.service';
 
-import * as signalR from '@aspnet/signalr';
+import * as signalR from '@microsoft/signalr';
 
 @Injectable()
 export class SignalrService {
@@ -17,6 +17,7 @@ export class SignalrService {
     this.connection = new signalR.HubConnectionBuilder()
       .configureLogging(signalR.LogLevel.Information)
       .withUrl(`${baseUrlClean}/hubs/notificationshub`, { accessTokenFactory: () => userSession })
+      .withAutomaticReconnect()
       .build();
 
     this.connection.start().then(function () {
