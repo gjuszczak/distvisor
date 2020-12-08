@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 export interface Invoice {
   amount?: number;
   customer?: null | string;

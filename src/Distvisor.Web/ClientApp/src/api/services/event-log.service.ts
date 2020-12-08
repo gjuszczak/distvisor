@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { BaseService } from '../base-service';
@@ -33,14 +34,12 @@ export class EventLogService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiEventLogListGet$Plain$Response(params?: {
-
   }): Observable<StrictHttpResponse<Array<EventLogDto>>> {
 
     const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiEventLogListGetPath, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: 'text/plain'
@@ -59,7 +58,6 @@ export class EventLogService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiEventLogListGet$Plain(params?: {
-
   }): Observable<Array<EventLogDto>> {
 
     return this.apiEventLogListGet$Plain$Response(params).pipe(
@@ -74,14 +72,12 @@ export class EventLogService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiEventLogListGet$Json$Response(params?: {
-
   }): Observable<StrictHttpResponse<Array<EventLogDto>>> {
 
     const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiEventLogListGetPath, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'text/json'
@@ -100,7 +96,6 @@ export class EventLogService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiEventLogListGet$Json(params?: {
-
   }): Observable<Array<EventLogDto>> {
 
     return this.apiEventLogListGet$Json$Response(params).pipe(

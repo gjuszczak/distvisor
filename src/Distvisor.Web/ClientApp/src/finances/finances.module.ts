@@ -7,8 +7,11 @@ import { MsalGuard } from '@azure/msal-angular';
 
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { ChipsModule } from 'primeng/chips';
 import { DialogModule } from 'primeng/dialog';
 import { FileUploadModule } from 'primeng/fileupload';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
 import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
 
@@ -27,8 +30,11 @@ import { FinancesComponent } from './finances/finances.component';
     // PrimeNg
     ButtonModule,
     CardModule,
+    ChipsModule,
     DialogModule,
     FileUploadModule,
+    InputNumberModule,
+    InputTextModule,
     RippleModule,
     TableModule
   ],

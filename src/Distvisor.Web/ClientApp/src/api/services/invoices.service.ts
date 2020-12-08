@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { BaseService } from '../base-service';
@@ -34,14 +35,12 @@ export class InvoicesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiInvoicesListGet$Plain$Response(params?: {
-
   }): Observable<StrictHttpResponse<Array<Invoice>>> {
 
     const rb = new RequestBuilder(this.rootUrl, InvoicesService.ApiInvoicesListGetPath, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: 'text/plain'
@@ -60,7 +59,6 @@ export class InvoicesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiInvoicesListGet$Plain(params?: {
-
   }): Observable<Array<Invoice>> {
 
     return this.apiInvoicesListGet$Plain$Response(params).pipe(
@@ -75,14 +73,12 @@ export class InvoicesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiInvoicesListGet$Json$Response(params?: {
-
   }): Observable<StrictHttpResponse<Array<Invoice>>> {
 
     const rb = new RequestBuilder(this.rootUrl, InvoicesService.ApiInvoicesListGetPath, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'text/json'
@@ -101,7 +97,6 @@ export class InvoicesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiInvoicesListGet$Json(params?: {
-
   }): Observable<Array<Invoice>> {
 
     return this.apiInvoicesListGet$Json$Response(params).pipe(
@@ -121,16 +116,14 @@ export class InvoicesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiInvoicesInvoiceIdGet$Response(params: {
-    invoiceId: null | string;
-
+    invoiceId: string;
   }): Observable<StrictHttpResponse<Blob>> {
 
     const rb = new RequestBuilder(this.rootUrl, InvoicesService.ApiInvoicesInvoiceIdGetPath, 'get');
     if (params) {
-
       rb.path('invoiceId', params.invoiceId, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'blob',
       accept: 'application/pdf'
@@ -149,8 +142,7 @@ export class InvoicesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiInvoicesInvoiceIdGet(params: {
-    invoiceId: null | string;
-
+    invoiceId: string;
   }): Observable<Blob> {
 
     return this.apiInvoicesInvoiceIdGet$Response(params).pipe(
@@ -170,15 +162,14 @@ export class InvoicesService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiInvoicesGeneratePost$Response(params?: {
-      body?: GenerateInvoiceDto
+    body?: GenerateInvoiceDto
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, InvoicesService.ApiInvoicesGeneratePostPath, 'post');
     if (params) {
-
-
       rb.body(params.body, 'application/*+json');
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -197,7 +188,7 @@ export class InvoicesService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiInvoicesGeneratePost(params?: {
-      body?: GenerateInvoiceDto
+    body?: GenerateInvoiceDto
   }): Observable<void> {
 
     return this.apiInvoicesGeneratePost$Response(params).pipe(
@@ -217,16 +208,14 @@ export class InvoicesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiInvoicesInvoiceIdSendMailPost$Response(params: {
-    invoiceId: null | string;
-
+    invoiceId: string;
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, InvoicesService.ApiInvoicesInvoiceIdSendMailPostPath, 'post');
     if (params) {
-
       rb.path('invoiceId', params.invoiceId, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -245,8 +234,7 @@ export class InvoicesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiInvoicesInvoiceIdSendMailPost(params: {
-    invoiceId: null | string;
-
+    invoiceId: string;
   }): Observable<void> {
 
     return this.apiInvoicesInvoiceIdSendMailPost$Response(params).pipe(

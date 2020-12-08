@@ -13,7 +13,7 @@
                 </div>
             </div>
         </p-header>
-        <p-table [columns]="cols" [value]="accountSummaries" styleClass="p-datatable-responsive-demo">
+        <p-table [columns]="cols" [value]="accounts" styleClass="p-datatable-responsive-demo">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th *ngFor="let col of columns">
@@ -41,6 +41,6 @@
             </ng-template>
         </p-fileUpload>
     </p-card>
-    <app-add-account-dialog [isVisible]="isAddAccountDialogVisible" (onSave)="hideAddAccountDialog()"
-        (onCancel)="hideAddAccountDialog()"></app-add-account-dialog>
+    <app-add-account-dialog [isVisible]="isAddAccountDialogVisible" (onHide)="hideAddAccountDialog()">
+    </app-add-account-dialog>
 </div>

@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { BaseService } from '../base-service';
@@ -33,16 +34,14 @@ export class RedirectionsService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiRedirectionsNameGet$Response(params: {
-    name: null | string;
-
+    name: string;
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, RedirectionsService.ApiRedirectionsNameGetPath, 'get');
     if (params) {
-
       rb.path('name', params.name, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -61,8 +60,7 @@ export class RedirectionsService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiRedirectionsNameGet(params: {
-    name: null | string;
-
+    name: string;
   }): Observable<void> {
 
     return this.apiRedirectionsNameGet$Response(params).pipe(
@@ -82,16 +80,14 @@ export class RedirectionsService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiRedirectionsNameDelete$Response(params: {
-    name: null | string;
-
+    name: string;
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, RedirectionsService.ApiRedirectionsNameDeletePath, 'delete');
     if (params) {
-
       rb.path('name', params.name, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -110,8 +106,7 @@ export class RedirectionsService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiRedirectionsNameDelete(params: {
-    name: null | string;
-
+    name: string;
   }): Observable<void> {
 
     return this.apiRedirectionsNameDelete$Response(params).pipe(
@@ -131,14 +126,12 @@ export class RedirectionsService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiRedirectionsGet$Plain$Response(params?: {
-
   }): Observable<StrictHttpResponse<Array<RedirectionDetails>>> {
 
     const rb = new RequestBuilder(this.rootUrl, RedirectionsService.ApiRedirectionsGetPath, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: 'text/plain'
@@ -157,7 +150,6 @@ export class RedirectionsService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiRedirectionsGet$Plain(params?: {
-
   }): Observable<Array<RedirectionDetails>> {
 
     return this.apiRedirectionsGet$Plain$Response(params).pipe(
@@ -172,14 +164,12 @@ export class RedirectionsService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiRedirectionsGet$Json$Response(params?: {
-
   }): Observable<StrictHttpResponse<Array<RedirectionDetails>>> {
 
     const rb = new RequestBuilder(this.rootUrl, RedirectionsService.ApiRedirectionsGetPath, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'text/json'
@@ -198,7 +188,6 @@ export class RedirectionsService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiRedirectionsGet$Json(params?: {
-
   }): Observable<Array<RedirectionDetails>> {
 
     return this.apiRedirectionsGet$Json$Response(params).pipe(
@@ -218,15 +207,14 @@ export class RedirectionsService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiRedirectionsPost$Response(params?: {
-      body?: RedirectionDetails
+    body?: RedirectionDetails
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, RedirectionsService.ApiRedirectionsPostPath, 'post');
     if (params) {
-
-
       rb.body(params.body, 'application/*+json');
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -245,7 +233,7 @@ export class RedirectionsService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiRedirectionsPost(params?: {
-      body?: RedirectionDetails
+    body?: RedirectionDetails
   }): Observable<void> {
 
     return this.apiRedirectionsPost$Response(params).pipe(

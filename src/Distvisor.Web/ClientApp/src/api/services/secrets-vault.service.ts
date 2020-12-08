@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { BaseService } from '../base-service';
@@ -33,14 +34,12 @@ export class SecretsVaultService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecretsVaultListGet$Plain$Response(params?: {
-
   }): Observable<StrictHttpResponse<Array<SecretKey>>> {
 
     const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecretsVaultListGetPath, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: 'text/plain'
@@ -59,7 +58,6 @@ export class SecretsVaultService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecretsVaultListGet$Plain(params?: {
-
   }): Observable<Array<SecretKey>> {
 
     return this.apiSecretsVaultListGet$Plain$Response(params).pipe(
@@ -74,14 +72,12 @@ export class SecretsVaultService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecretsVaultListGet$Json$Response(params?: {
-
   }): Observable<StrictHttpResponse<Array<SecretKey>>> {
 
     const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecretsVaultListGetPath, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'text/json'
@@ -100,7 +96,6 @@ export class SecretsVaultService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecretsVaultListGet$Json(params?: {
-
   }): Observable<Array<SecretKey>> {
 
     return this.apiSecretsVaultListGet$Json$Response(params).pipe(
@@ -121,17 +116,15 @@ export class SecretsVaultService extends BaseService {
    */
   apiSecretsVaultKeyPost$Response(params: {
     key: SecretKey;
-    value?: null | string;
-
+    value?: string;
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecretsVaultKeyPostPath, 'post');
     if (params) {
-
       rb.path('key', params.key, {});
       rb.query('value', params.value, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -151,8 +144,7 @@ export class SecretsVaultService extends BaseService {
    */
   apiSecretsVaultKeyPost(params: {
     key: SecretKey;
-    value?: null | string;
-
+    value?: string;
   }): Observable<void> {
 
     return this.apiSecretsVaultKeyPost$Response(params).pipe(
@@ -173,15 +165,13 @@ export class SecretsVaultService extends BaseService {
    */
   apiSecretsVaultKeyDelete$Response(params: {
     key: SecretKey;
-
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecretsVaultKeyDeletePath, 'delete');
     if (params) {
-
       rb.path('key', params.key, {});
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -201,7 +191,6 @@ export class SecretsVaultService extends BaseService {
    */
   apiSecretsVaultKeyDelete(params: {
     key: SecretKey;
-
   }): Observable<void> {
 
     return this.apiSecretsVaultKeyDelete$Response(params).pipe(

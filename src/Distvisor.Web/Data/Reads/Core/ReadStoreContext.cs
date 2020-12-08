@@ -26,5 +26,7 @@ namespace Distvisor.Web.Data.Reads.Core
         public DbSet<SecretsVaultEntity> SecretsVault { get; set; }
         public DbSet<RedirectionEntity> Redirections { get; set; }
         public DbSet<ProcessedEmailEntity> ProcessedEmails { get; set; }
+        public DbSet<FinancialAccountEntity> FinancialAccounts { get; set; }
+        public DbSet<FinancialAccountPaycardEntity> FinancialAccountPaycards { get; set; }
     }
 }

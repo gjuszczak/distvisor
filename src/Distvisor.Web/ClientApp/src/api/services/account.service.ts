@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { BaseService } from '../base-service';
@@ -33,14 +34,12 @@ export class AccountService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAccountGet$Plain$Response(params?: {
-
   }): Observable<StrictHttpResponse<UserInfoDto>> {
 
     const rb = new RequestBuilder(this.rootUrl, AccountService.ApiAccountGetPath, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: 'text/plain'
@@ -59,7 +58,6 @@ export class AccountService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAccountGet$Plain(params?: {
-
   }): Observable<UserInfoDto> {
 
     return this.apiAccountGet$Plain$Response(params).pipe(
@@ -74,14 +72,12 @@ export class AccountService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAccountGet$Json$Response(params?: {
-
   }): Observable<StrictHttpResponse<UserInfoDto>> {
 
     const rb = new RequestBuilder(this.rootUrl, AccountService.ApiAccountGetPath, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'text/json'
@@ -100,7 +96,6 @@ export class AccountService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAccountGet$Json(params?: {
-
   }): Observable<UserInfoDto> {
 
     return this.apiAccountGet$Json$Response(params).pipe(

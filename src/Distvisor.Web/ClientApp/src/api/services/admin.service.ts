@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { BaseService } from '../base-service';
@@ -36,14 +37,12 @@ export class AdminService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAdminDeploymentParamsGet$Plain$Response(params?: {
-
   }): Observable<StrictHttpResponse<DeploymentParamsResponseDto>> {
 
     const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminDeploymentParamsGetPath, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: 'text/plain'
@@ -62,7 +61,6 @@ export class AdminService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAdminDeploymentParamsGet$Plain(params?: {
-
   }): Observable<DeploymentParamsResponseDto> {
 
     return this.apiAdminDeploymentParamsGet$Plain$Response(params).pipe(
@@ -77,14 +75,12 @@ export class AdminService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAdminDeploymentParamsGet$Json$Response(params?: {
-
   }): Observable<StrictHttpResponse<DeploymentParamsResponseDto>> {
 
     const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminDeploymentParamsGetPath, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'text/json'
@@ -103,7 +99,6 @@ export class AdminService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAdminDeploymentParamsGet$Json(params?: {
-
   }): Observable<DeploymentParamsResponseDto> {
 
     return this.apiAdminDeploymentParamsGet$Json$Response(params).pipe(
@@ -123,15 +118,14 @@ export class AdminService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiAdminDeployPost$Response(params?: {
-      body?: DeployRequestDto
+    body?: DeployRequestDto
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminDeployPostPath, 'post');
     if (params) {
-
-
       rb.body(params.body, 'application/*+json');
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -150,7 +144,7 @@ export class AdminService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiAdminDeployPost(params?: {
-      body?: DeployRequestDto
+    body?: DeployRequestDto
   }): Observable<void> {
 
     return this.apiAdminDeployPost$Response(params).pipe(
@@ -170,15 +164,14 @@ export class AdminService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiAdminRedeployPost$Response(params?: {
-      body?: RedeployRequestDto
+    body?: RedeployRequestDto
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminRedeployPostPath, 'post');
     if (params) {
-
-
       rb.body(params.body, 'application/*+json');
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -197,7 +190,7 @@ export class AdminService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiAdminRedeployPost(params?: {
-      body?: RedeployRequestDto
+    body?: RedeployRequestDto
   }): Observable<void> {
 
     return this.apiAdminRedeployPost$Response(params).pipe(
@@ -217,14 +210,12 @@ export class AdminService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAdminListBackupsGet$Plain$Response(params?: {
-
   }): Observable<StrictHttpResponse<Array<BackupFileInfoDto>>> {
 
     const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminListBackupsGetPath, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: 'text/plain'
@@ -243,7 +234,6 @@ export class AdminService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAdminListBackupsGet$Plain(params?: {
-
   }): Observable<Array<BackupFileInfoDto>> {
 
     return this.apiAdminListBackupsGet$Plain$Response(params).pipe(
@@ -258,14 +248,12 @@ export class AdminService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAdminListBackupsGet$Json$Response(params?: {
-
   }): Observable<StrictHttpResponse<Array<BackupFileInfoDto>>> {
 
     const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminListBackupsGetPath, 'get');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'json',
       accept: 'text/json'
@@ -284,7 +272,6 @@ export class AdminService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAdminListBackupsGet$Json(params?: {
-
   }): Observable<Array<BackupFileInfoDto>> {
 
     return this.apiAdminListBackupsGet$Json$Response(params).pipe(
@@ -304,14 +291,12 @@ export class AdminService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAdminCreateBackupPost$Response(params?: {
-
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminCreateBackupPostPath, 'post');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -330,7 +315,6 @@ export class AdminService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAdminCreateBackupPost(params?: {
-
   }): Observable<void> {
 
     return this.apiAdminCreateBackupPost$Response(params).pipe(
@@ -350,15 +334,14 @@ export class AdminService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiAdminRestoreBackupPost$Response(params?: {
-      body?: BackupFileInfoDto
+    body?: BackupFileInfoDto
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminRestoreBackupPostPath, 'post');
     if (params) {
-
-
       rb.body(params.body, 'application/*+json');
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -377,7 +360,7 @@ export class AdminService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiAdminRestoreBackupPost(params?: {
-      body?: BackupFileInfoDto
+    body?: BackupFileInfoDto
   }): Observable<void> {
 
     return this.apiAdminRestoreBackupPost$Response(params).pipe(
@@ -397,15 +380,14 @@ export class AdminService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiAdminDeleteBackupPost$Response(params?: {
-      body?: BackupFileInfoDto
+    body?: BackupFileInfoDto
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminDeleteBackupPostPath, 'post');
     if (params) {
-
-
       rb.body(params.body, 'application/*+json');
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -424,7 +406,7 @@ export class AdminService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiAdminDeleteBackupPost(params?: {
-      body?: BackupFileInfoDto
+    body?: BackupFileInfoDto
   }): Observable<void> {
 
     return this.apiAdminDeleteBackupPost$Response(params).pipe(
@@ -444,14 +426,12 @@ export class AdminService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAdminReplayEventsPost$Response(params?: {
-
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminReplayEventsPostPath, 'post');
     if (params) {
-
-
     }
+
     return this.http.request(rb.build({
       responseType: 'text',
       accept: '*/*'
@@ -470,7 +450,6 @@ export class AdminService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiAdminReplayEventsPost(params?: {
-
   }): Observable<void> {
 
     return this.apiAdminReplayEventsPost$Response(params).pipe(

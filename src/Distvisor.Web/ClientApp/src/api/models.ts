@@ -10,6 +10,7 @@ export { MsalAngularConfiguration } from './models/msal-angular-configuration';
 export { BackendDetails } from './models/backend-details';
 export { ClientConfiguration } from './models/client-configuration';
 export { EventLogDto } from './models/event-log-dto';
+export { FinancialAccount } from './models/financial-account';
 export { Invoice } from './models/invoice';
 export { GenerateInvoiceDto } from './models/generate-invoice-dto';
 export { RedirectionDetails } from './models/redirection-details';

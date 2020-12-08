@@ -1,4 +1,5 @@
 /* tslint:disable */
+/* eslint-disable */
 import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
@@ -7,6 +8,7 @@ import { AccountService } from './services/account.service';
 import { AdminService } from './services/admin.service';
 import { ClientConfigService } from './services/client-config.service';
 import { EventLogService } from './services/event-log.service';
+import { FinancesService } from './services/finances.service';
 import { InvoicesService } from './services/invoices.service';
 import { RedirectionsService } from './services/redirections.service';
 import { SecretsVaultService } from './services/secrets-vault.service';
@@ -23,6 +25,7 @@ import { SecretsVaultService } from './services/secrets-vault.service';
     AdminService,
     ClientConfigService,
     EventLogService,
+    FinancesService,
     InvoicesService,
     RedirectionsService,
     SecretsVaultService,

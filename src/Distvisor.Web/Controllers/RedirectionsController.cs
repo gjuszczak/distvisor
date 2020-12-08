@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace Distvisor.Web.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class RedirectionsController : ControllerBase
     {
@@ -20,6 +21,7 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpGet("{name}")]
+        [AllowAnonymous]
         public async Task<IActionResult> RedirectTo(string name)
         {
             if (Request.Cookies.ContainsKey("DoNotRedirect"))
@@ -38,7 +40,6 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpDelete("{name}")]
-        [Authorize]
         public async Task<IActionResult> RemoveRedirection(string name)
         {
             await _redirections.RemoveRedirectionAsync(name);
@@ -46,14 +47,12 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public Task<IEnumerable<RedirectionDetails>> ListRedirections()
         {
             return _redirections.ListRedirectionsAsync();
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> ConfigureRedirection(RedirectionDetails redirection)
         {
             await _redirections.ConfigureRedirectionAsync(redirection);
