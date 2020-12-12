@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { FinancialAccount } from 'src/api/models';
 import { FinancesService } from 'src/api/services';
 
 @Component({
@@ -11,9 +10,8 @@ import { FinancesService } from 'src/api/services';
 export class FinancesComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
-  uploadedFiles: any[] = [];
-
   isAddAccountDialogVisible: boolean = false;
+  isImportFinancialFilesDialogVisible: boolean = false;
 
   cols: any[] = [
     { field: 'name', header: 'Account' },
@@ -23,7 +21,7 @@ export class FinancesComponent implements OnInit, OnDestroy {
   ];
   accounts: any[] = [];
 
-  constructor(private messageService: MessageService, private financesService: FinancesService) { }
+  constructor(private financesService: FinancesService) { }
 
   ngOnInit(): void {
     this.reloadFinances();
@@ -31,14 +29,6 @@ export class FinancesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(x => x.unsubscribe());
-  }
-
-  onUpload(event: any) {
-    for (let file of event.files) {
-      this.uploadedFiles.push(file);
-    }
-
-    this.messageService.add({ severity: 'info', summary: 'File Uploaded', detail: '' });
   }
 
   reloadFinances() {
@@ -56,11 +46,23 @@ export class FinancesComponent implements OnInit, OnDestroy {
     );
   }
 
+  onRowSelect(event: any) {
+
+  }
+
   showAddAccountDialog() {
     this.isAddAccountDialogVisible = true;
   }
 
   hideAddAccountDialog() {
     this.isAddAccountDialogVisible = false;
+  }
+
+  showImportFinancialFilesDialog() {
+    this.isImportFinancialFilesDialogVisible = true;
+  }
+
+  hideImportFinancialFilesDialog() {
+    this.isImportFinancialFilesDialogVisible = false;
   }
 }

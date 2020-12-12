@@ -11,6 +11,7 @@ namespace Distvisor.Web.Data.Events
         public string Name { get; set; }
         public string Number { get; set; }
         public string[] Paycards { get; set; }
+        public FinancialAccountType Type { get; set; }
     }
 
     public class AddFinancialAccountEventHandler : IEventHandler<AddFinancialAccountEvent>
@@ -31,7 +32,8 @@ namespace Distvisor.Web.Data.Events
                 Paycards = payload.Paycards.Select(name => new FinancialAccountPaycardEntity
                 {
                     Name = name
-                }).ToList()
+                }).ToList(),
+                Type = payload.Type,
             });
 
             await _context.SaveChangesAsync();

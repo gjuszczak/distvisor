@@ -1,0 +1,13 @@
+<p-dialog [(visible)]="isVisible" header="Import finance data from .eml files" [modal]="true" [resizable]="false" styleClass="p-fluid"
+    (onHide)="onCancelClicked()">
+    <ng-template pTemplate="content">
+        <p-fileUpload name="files" url="/api/finances/upload-eml" (onUpload)="onUpload($event)" [multiple]="true"
+            accept=".eml" [maxFileSize]="1000000">
+            <ng-template pTemplate="content">
+                <ul *ngIf="uploadedFiles.length">
+                    <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+                </ul>
+            </ng-template>
+        </p-fileUpload>
+    </ng-template>
+</p-dialog>

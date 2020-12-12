@@ -14,6 +14,19 @@
             <label for="paycards">Paycards</label>
             <p-chips inputId="paycards" [(ngModel)]="account.paycards" separator=","></p-chips>
         </div>
+        <div class="p-field">
+            <label class="p-mb-3">Type</label>
+            <div class="p-formgrid p-grid">
+                <div class="p-field-radiobutton p-col-6">
+                    <p-radioButton inputId="type1" name="type" value="Bank" [(ngModel)]="account.type"></p-radioButton>
+                    <label for="type1">Bank</label>
+                </div>
+                <div class="p-field-radiobutton p-col-6">
+                    <p-radioButton inputId="type2" name="type" value="Stock" [(ngModel)]="account.type"></p-radioButton>
+                    <label for="type2">Stock</label>
+                </div>
+            </div>
+        </div>
     </ng-template>
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text p-button-info"

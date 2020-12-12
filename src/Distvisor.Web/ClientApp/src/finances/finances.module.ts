@@ -12,11 +12,13 @@ import { DialogModule } from 'primeng/dialog';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
 
 import { AddAccountDialogComponent } from './add-acccount-dialog/add-account-dialog.component';
 import { FinancesComponent } from './finances/finances.component';
+import { ImportFinancialFilesDialogComponent } from './import-financial-files-dialog/import-financial-files-dialog.component';
 
 @NgModule({
   imports: [
@@ -35,12 +37,14 @@ import { FinancesComponent } from './finances/finances.component';
     FileUploadModule,
     InputNumberModule,
     InputTextModule,
+    RadioButtonModule,
     RippleModule,
     TableModule
   ],
   declarations: [
     AddAccountDialogComponent,
-    FinancesComponent
+    FinancesComponent,
+    ImportFinancialFilesDialogComponent
   ]
 })
 export class FinancesModule { }

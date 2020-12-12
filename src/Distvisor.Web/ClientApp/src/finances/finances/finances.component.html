@@ -6,14 +6,14 @@
                 <div class="p-d-flex">
                     <button pButton pRipple type="button" icon="pi pi-plus" (click)="showAddAccountDialog()"
                         class="p-button-rounded p-button-text p-button-info p-mr-1"></button>
-                    <button pButton pRipple type="button" icon="pi pi-upload"
+                    <button pButton pRipple type="button" icon="pi pi-upload" (click)="showImportFinancialFilesDialog()"
                         class="p-button-rounded p-button-text p-button-info p-mr-1"></button>
                     <button pButton pRipple type="button" icon="pi pi-check-square"
                         class="p-button-rounded p-button-text p-button-info"></button>
                 </div>
             </div>
         </p-header>
-        <p-table [columns]="cols" [value]="accounts" styleClass="p-datatable-responsive-demo">
+        <p-table [columns]="cols" [value]="accounts" selectionMode="single" (onRowSelect)="onRowSelect($event)" styleClass="p-datatable-responsive-demo">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th *ngFor="let col of columns">
@@ -22,7 +22,7 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-columns="columns">
-                <tr>
+                <tr [pSelectableRow]="rowData">
                     <td *ngFor="let col of columns">
                         <span class="p-column-title">{{col.header}}</span>
                         {{rowData[col.field]}}
@@ -31,16 +31,8 @@
             </ng-template>
         </p-table>
     </p-card>
-    <p-card header="Import finance data from .eml file" styleClass="p-mt-3">
-        <p-fileUpload name="files" url="/api/finances/upload-eml" (onUpload)="onUpload($event)" [multiple]="true"
-            accept=".eml" [maxFileSize]="1000000">
-            <ng-template pTemplate="content">
-                <ul *ngIf="uploadedFiles.length">
-                    <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
-                </ul>
-            </ng-template>
-        </p-fileUpload>
-    </p-card>
     <app-add-account-dialog [isVisible]="isAddAccountDialogVisible" (onHide)="hideAddAccountDialog()">
     </app-add-account-dialog>
+    <app-import-financial-files-dialog [isVisible]="isImportFinancialFilesDialogVisible" (onHide)="hideImportFinancialFilesDialog()">
+    </app-import-financial-files-dialog>
 </div>
