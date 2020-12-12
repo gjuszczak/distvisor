@@ -16,6 +16,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
 
+import { AccountTransactionsComponent } from './account-transactions/account-transactions.component';
 import { AddAccountDialogComponent } from './add-acccount-dialog/add-account-dialog.component';
 import { FinancesComponent } from './finances/finances.component';
 import { ImportFinancialFilesDialogComponent } from './import-financial-files-dialog/import-financial-files-dialog.component';
@@ -42,6 +43,7 @@ import { ImportFinancialFilesDialogComponent } from './import-financial-files-di
     TableModule
   ],
   declarations: [
+    AccountTransactionsComponent,
     AddAccountDialogComponent,
     FinancesComponent,
     ImportFinancialFilesDialogComponent

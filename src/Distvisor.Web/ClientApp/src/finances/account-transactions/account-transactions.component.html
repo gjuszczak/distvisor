@@ -1,0 +1,29 @@
+<p-card styleClass="p-mt-3 card-with-custom-header">
+    <p-header>
+        <div class="p-d-flex p-jc-between p-pt-3 p-px-3">
+            <div class="p-card-title">Account Transactions</div>
+            <div *ngIf="selectedAccount" class="p-d-flex">
+                <button pButton pRipple type="button" icon="pi pi-plus"
+                    class="p-button-rounded p-button-text p-button-info p-mr-1"></button>
+            </div>
+        </div>
+    </p-header>
+    <p *ngIf="!selectedAccount">Please select an account to display its transactions.</p>
+    <p-table *ngIf="selectedAccount" [columns]="cols" [value]="transactions" styleClass="p-datatable-responsive-demo">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr [pSelectableRow]="rowData">
+                <td *ngFor="let col of columns">
+                    <span class="p-column-title">{{col.header}}</span>
+                    {{rowData[col.field]}}
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>

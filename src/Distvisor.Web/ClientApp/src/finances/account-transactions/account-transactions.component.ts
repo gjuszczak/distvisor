@@ -1,25 +1,29 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { FinancialAccount } from 'src/api/models';
 import { FinancesService } from 'src/api/services';
 
 @Component({
-  selector: 'app-finances',
-  templateUrl: './finances.component.html'
+  selector: 'app-account-transactions',
+  templateUrl: './account-transactions.component.html'
 })
-export class FinancesComponent implements OnInit, OnDestroy {
+export class AccountTransactionsComponent implements OnInit, OnDestroy {
+  @Input() selectedAccount: FinancialAccount | null = null;
+  
   private subscriptions: Subscription[] = [];
 
   isAddAccountDialogVisible: boolean = false;
   isImportFinancialFilesDialogVisible: boolean = false;
 
+
   cols: any[] = [
-    { field: 'name', header: 'Account' },
-    { field: 'type', header: 'Type' },
-    { field: 'number', header: 'Number' }
+    { field: 'date', header: 'Date' },
+    { field: 'details', header: 'Details' },
+    { field: 'ammount', header: 'Amount' },
+    { field: 'balance', header: 'Balance' }
   ];
-  accounts: FinancialAccount[] = [];
-  selectedAccount: FinancialAccount | null = null;
+  transactions: any[] = [];
 
   constructor(private financesService: FinancesService) { }
 
@@ -33,15 +37,23 @@ export class FinancesComponent implements OnInit, OnDestroy {
 
   reloadFinances() {
     this.subscriptions.push(
-      this.financesService.apiFinancesAccountsListGet$Json().subscribe(facc => {
-        this.accounts = facc.map(x=> <FinancialAccount>{
-          name: x.name,
-          number: x.number,
-          type: x.type,
-          paycards: x.paycards
-        });
-      })
+      
+
+      // this.financesService.apiFinancesAccountsListGet$Json().subscribe(facc => {
+      //   this.accounts = facc.map(x=> <any>{
+      //     name: x.name,
+      //     number: x.number,
+      //     paycards: x.paycards,
+      //     balance: 0,
+      //     lastTransaction: 0,
+      //     monthlyIncome: 0
+      //   });
+      // })
     );
+  }
+
+  onRowSelect(event: any) {
+
   }
 
   showAddAccountDialog() {
@@ -50,7 +62,6 @@ export class FinancesComponent implements OnInit, OnDestroy {
 
   hideAddAccountDialog() {
     this.isAddAccountDialogVisible = false;
-    this.reloadFinances();
   }
 
   showImportFinancialFilesDialog() {
