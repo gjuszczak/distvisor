@@ -1,8 +1,9 @@
 ﻿using Distvisor.Web.Data.Events;
 using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Data.Reads.Core;
-using Distvisor.Web.Data.Reads.Entities;
+using Distvisor.Web.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,8 +12,9 @@ namespace Distvisor.Web.Services
 {
     public interface IFinancialAccountsService
     {
-        Task AddAccountAsync(FinancialAccount account);
-        Task<List<FinancialAccount>> ListAccountsAsync();
+        Task AddAccountAsync(FinancialAccountDto account);
+        Task AddAccountTransactionAsync(FinancialAccountTransactionDto transaction);
+        Task<List<FinancialAccountDto>> ListAccountsAsync();
     }
 
     public class FinancialAccountsService : IFinancialAccountsService
@@ -28,11 +30,11 @@ namespace Distvisor.Web.Services
             _notifications = notifiactions;
         }
 
-        public async Task AddAccountAsync(FinancialAccount account)
+        public async Task AddAccountAsync(FinancialAccountDto account)
         {
             await _notifications.PushSuccessAsync("Account added successfully.");
 
-            await _eventStore.Publish(new AddFinancialAccountEvent
+            await _eventStore.Publish(new FinancialAccountAddedEvent
             {
                 Name = account.Name,
                 Number = account.Number,
@@ -41,26 +43,45 @@ namespace Distvisor.Web.Services
             });
         }
 
-        public async Task<List<FinancialAccount>> ListAccountsAsync()
+        public async Task<List<FinancialAccountDto>> ListAccountsAsync()
         {
             var entities = await _context.FinancialAccounts
                 .Include(x => x.Paycards)
                 .ToListAsync();
 
-            return entities.Select(e => new FinancialAccount
+            return entities.Select(e => new FinancialAccountDto
             {
                 Name = e.Name,
                 Number = e.Number,
                 Paycards = e.Paycards.Select(p => p.Name).ToArray()
             }).ToList();
         }
+
+        public async Task AddAccountTransactionAsync(FinancialAccountTransactionDto transaction)
+        {
+            await _notifications.PushSuccessAsync("Transaction added successfully.");
+
+            await _eventStore.Publish(new FinancialAccountTransactionAddedEvent
+            {
+                AccountId = transaction.AccountId,
+                Amount = transaction.Amount,
+                Balance = transaction.Balance,
+                DataSource = transaction.DataSource,
+                Date = transaction.Date,
+                Details = transaction.Details,
+                IsBalanceEstimated = transaction.IsBalanceEstimated,
+            });
+        }
     }
 
-    public class FinancialAccount
+    public class FinancialAccountDto : FinancialAccount
     {
-        public string Name { get; set; }
-        public string Number { get; set; }
+        public Guid? Id { get; set; }
         public string[] Paycards { get; set; }
-        public FinancialAccountType Type { get; set; }
+    }
+
+    public class FinancialAccountTransactionDto : FinancialAccountTransaction
+    {
+        public Guid? Id { get; set; }
     }
 }

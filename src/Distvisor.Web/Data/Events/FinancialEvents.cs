@@ -1,20 +1,22 @@
 ﻿using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Data.Reads.Core;
 using Distvisor.Web.Data.Reads.Entities;
+using Distvisor.Web.Models;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Data.Events
 {
-    public class AddFinancialAccountEvent
+    public class FinancialAccountAddedEvent : FinancialAccount
     {
-        public string Name { get; set; }
-        public string Number { get; set; }
         public string[] Paycards { get; set; }
-        public FinancialAccountType Type { get; set; }
     }
 
-    public class AddFinancialAccountEventHandler : IEventHandler<AddFinancialAccountEvent>
+    public class FinancialAccountTransactionAddedEvent : FinancialAccountTransaction
+    {
+    }
+
+    public class AddFinancialAccountEventHandler : IEventHandler<FinancialAccountAddedEvent>
     {
         private readonly ReadStoreContext _context;
 
@@ -23,7 +25,7 @@ namespace Distvisor.Web.Data.Events
             _context = context;
         }
 
-        public async Task Handle(AddFinancialAccountEvent payload)
+        public async Task Handle(FinancialAccountAddedEvent payload)
         {
             _context.FinancialAccounts.Add(new FinancialAccountEntity
             {

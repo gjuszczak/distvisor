@@ -3,7 +3,7 @@ using System;
 
 namespace Distvisor.Web.Data.Reads.Entities
 {
-    public class FinancialAccountPaycardEntity : FinancialAccountPaycard
+    public class FinancialAccountTransactionEntity : FinancialAccountTransaction
     {
         public Guid Id { get; set; }
 

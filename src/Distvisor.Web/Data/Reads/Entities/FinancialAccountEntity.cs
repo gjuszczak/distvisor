@@ -1,20 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using Distvisor.Web.Models;
+using System;
+using System.Collections.Generic;
 
 namespace Distvisor.Web.Data.Reads.Entities
 {
-    public class FinancialAccountEntity
+    public class FinancialAccountEntity : FinancialAccount
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Number { get; set; }
-        public FinancialAccountType Type { get; set; }
+        public Guid Id { get; set; }
 
         public List<FinancialAccountPaycardEntity> Paycards { get; set; }
-    }
-
-    public enum FinancialAccountType
-    {
-        Bank,
-        Stock
+        public List<FinancialAccountTransactionEntity> Transactions { get; set; }
     }
 }

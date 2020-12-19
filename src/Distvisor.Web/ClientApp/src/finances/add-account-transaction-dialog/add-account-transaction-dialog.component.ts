@@ -4,10 +4,11 @@ import { FinancialAccountDto, FinancialAccountType } from 'src/api/models';
 import { FinancesService } from 'src/api/services';
 
 @Component({
-  selector: 'app-add-account-dialog',
-  templateUrl: './add-account-dialog.component.html'
+  selector: 'app-add-account-transaction-dialog',
+  templateUrl: './add-account-transaction-dialog.component.html'
 })
-export class AddAccountDialogComponent implements OnChanges, OnDestroy {
+export class AddAccountTransactionDialogComponent implements OnChanges, OnDestroy {
+  @Input() accountId: string = '';
   @Input() isVisible: boolean = false;
   @Output() onHide: EventEmitter<any> = new EventEmitter();
 

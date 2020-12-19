@@ -31,7 +31,7 @@
             </ng-template>
         </p-table>
     </p-card>
-    <app-account-transactions [(selectedAccount)]="selectedAccount"></app-account-transactions>
+    <app-account-transactions [selectedAccount]="selectedAccount"></app-account-transactions>
     <app-add-account-dialog [isVisible]="isAddAccountDialogVisible" (onHide)="hideAddAccountDialog()">
     </app-add-account-dialog>
     <app-import-financial-files-dialog [isVisible]="isImportFinancialFilesDialogVisible" (onHide)="hideImportFinancialFilesDialog()">

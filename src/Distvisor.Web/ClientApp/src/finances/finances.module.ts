@@ -18,6 +18,7 @@ import { TableModule } from 'primeng/table';
 
 import { AccountTransactionsComponent } from './account-transactions/account-transactions.component';
 import { AddAccountDialogComponent } from './add-acccount-dialog/add-account-dialog.component';
+import { AddAccountTransactionDialogComponent } from './add-account-transaction-dialog/add-account-transaction-dialog.component';
 import { FinancesComponent } from './finances/finances.component';
 import { ImportFinancialFilesDialogComponent } from './import-financial-files-dialog/import-financial-files-dialog.component';
 
@@ -45,6 +46,7 @@ import { ImportFinancialFilesDialogComponent } from './import-financial-files-di
   declarations: [
     AccountTransactionsComponent,
     AddAccountDialogComponent,
+    AddAccountTransactionDialogComponent,
     FinancesComponent,
     ImportFinancialFilesDialogComponent
   ]

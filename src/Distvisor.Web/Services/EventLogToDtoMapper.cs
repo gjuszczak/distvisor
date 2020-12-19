@@ -38,7 +38,7 @@ namespace Distvisor.Web.Services
                 new EventPayloadMapper<EmailReceivedEvent>()
                     .ConfigurePayloadTypeDisplayName("Email Received"),
 
-                new EventPayloadMapper<AddFinancialAccountEvent>()
+                new EventPayloadMapper<FinancialAccountAddedEvent>()
                     .ConfigurePayloadTypeDisplayName("Add Financial Account"),
             };
 

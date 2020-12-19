@@ -1,7 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { FinancialAccount } from 'src/api/models';
+import { FinancialAccountDto } from 'src/api/models';
 import { FinancesService } from 'src/api/services';
 
 @Component({
@@ -9,13 +8,11 @@ import { FinancesService } from 'src/api/services';
   templateUrl: './account-transactions.component.html'
 })
 export class AccountTransactionsComponent implements OnInit, OnDestroy {
-  @Input() selectedAccount: FinancialAccount | null = null;
+  @Input() selectedAccount: FinancialAccountDto | null = null;
   
   private subscriptions: Subscription[] = [];
 
-  isAddAccountDialogVisible: boolean = false;
-  isImportFinancialFilesDialogVisible: boolean = false;
-
+  isAddAccountTransactionDialogVisible: boolean = false;
 
   cols: any[] = [
     { field: 'date', header: 'Date' },
@@ -28,14 +25,14 @@ export class AccountTransactionsComponent implements OnInit, OnDestroy {
   constructor(private financesService: FinancesService) { }
 
   ngOnInit(): void {
-    this.reloadFinances();
+    this.reloadTransactions();
   }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(x => x.unsubscribe());
   }
 
-  reloadFinances() {
+  reloadTransactions() {
     this.subscriptions.push(
       
 
@@ -52,23 +49,12 @@ export class AccountTransactionsComponent implements OnInit, OnDestroy {
     );
   }
 
-  onRowSelect(event: any) {
 
+  showAddAccountTransactionDialog() {
+    this.isAddAccountTransactionDialogVisible = true;
   }
 
-  showAddAccountDialog() {
-    this.isAddAccountDialogVisible = true;
-  }
-
-  hideAddAccountDialog() {
-    this.isAddAccountDialogVisible = false;
-  }
-
-  showImportFinancialFilesDialog() {
-    this.isImportFinancialFilesDialogVisible = true;
-  }
-
-  hideImportFinancialFilesDialog() {
-    this.isImportFinancialFilesDialogVisible = false;
+  hideAddAccountTransactionDialog() {
+    this.isAddAccountTransactionDialogVisible = false;
   }
 }

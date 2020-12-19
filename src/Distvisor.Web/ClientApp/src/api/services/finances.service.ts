@@ -9,7 +9,8 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-import { FinancialAccount } from '../models/financial-account';
+import { FinancialAccountDto } from '../models/financial-account-dto';
+import { FinancialAccountTransactionDto } from '../models/financial-account-transaction-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -204,7 +205,7 @@ export class FinancesService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiFinancesAccountsAddPost$Response(params?: {
-    body?: FinancialAccount
+    body?: FinancialAccountDto
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiFinancesAccountsAddPostPath, 'post');
@@ -230,7 +231,7 @@ export class FinancesService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiFinancesAccountsAddPost(params?: {
-    body?: FinancialAccount
+    body?: FinancialAccountDto
   }): Observable<void> {
 
     return this.apiFinancesAccountsAddPost$Response(params).pipe(
@@ -250,7 +251,7 @@ export class FinancesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiFinancesAccountsListGet$Plain$Response(params?: {
-  }): Observable<StrictHttpResponse<Array<FinancialAccount>>> {
+  }): Observable<StrictHttpResponse<Array<FinancialAccountDto>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiFinancesAccountsListGetPath, 'get');
     if (params) {
@@ -262,7 +263,7 @@ export class FinancesService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<FinancialAccount>>;
+        return r as StrictHttpResponse<Array<FinancialAccountDto>>;
       })
     );
   }
@@ -274,10 +275,10 @@ export class FinancesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiFinancesAccountsListGet$Plain(params?: {
-  }): Observable<Array<FinancialAccount>> {
+  }): Observable<Array<FinancialAccountDto>> {
 
     return this.apiFinancesAccountsListGet$Plain$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<FinancialAccount>>) => r.body as Array<FinancialAccount>)
+      map((r: StrictHttpResponse<Array<FinancialAccountDto>>) => r.body as Array<FinancialAccountDto>)
     );
   }
 
@@ -288,7 +289,7 @@ export class FinancesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiFinancesAccountsListGet$Json$Response(params?: {
-  }): Observable<StrictHttpResponse<Array<FinancialAccount>>> {
+  }): Observable<StrictHttpResponse<Array<FinancialAccountDto>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiFinancesAccountsListGetPath, 'get');
     if (params) {
@@ -300,7 +301,7 @@ export class FinancesService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<FinancialAccount>>;
+        return r as StrictHttpResponse<Array<FinancialAccountDto>>;
       })
     );
   }
@@ -312,10 +313,56 @@ export class FinancesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiFinancesAccountsListGet$Json(params?: {
-  }): Observable<Array<FinancialAccount>> {
+  }): Observable<Array<FinancialAccountDto>> {
 
     return this.apiFinancesAccountsListGet$Json$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<FinancialAccount>>) => r.body as Array<FinancialAccount>)
+      map((r: StrictHttpResponse<Array<FinancialAccountDto>>) => r.body as Array<FinancialAccountDto>)
+    );
+  }
+
+  /**
+   * Path part for operation apiFinancesAccountsAddTransactionPost
+   */
+  static readonly ApiFinancesAccountsAddTransactionPostPath = '/api/Finances/accounts/add-transaction';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiFinancesAccountsAddTransactionPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiFinancesAccountsAddTransactionPost$Response(params?: {
+    body?: FinancialAccountTransactionDto
+  }): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiFinancesAccountsAddTransactionPostPath, 'post');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiFinancesAccountsAddTransactionPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiFinancesAccountsAddTransactionPost(params?: {
+    body?: FinancialAccountTransactionDto
+  }): Observable<void> {
+
+    return this.apiFinancesAccountsAddTransactionPost$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 

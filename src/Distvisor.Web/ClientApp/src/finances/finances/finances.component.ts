@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { FinancialAccount } from 'src/api/models';
+import { FinancialAccountDto } from 'src/api/models';
 import { FinancesService } from 'src/api/services';
 
 @Component({
@@ -18,8 +18,8 @@ export class FinancesComponent implements OnInit, OnDestroy {
     { field: 'type', header: 'Type' },
     { field: 'number', header: 'Number' }
   ];
-  accounts: FinancialAccount[] = [];
-  selectedAccount: FinancialAccount | null = null;
+  accounts: FinancialAccountDto[] = [];
+  selectedAccount: FinancialAccountDto | null = null;
 
   constructor(private financesService: FinancesService) { }
 
@@ -34,7 +34,7 @@ export class FinancesComponent implements OnInit, OnDestroy {
   reloadFinances() {
     this.subscriptions.push(
       this.financesService.apiFinancesAccountsListGet$Json().subscribe(facc => {
-        this.accounts = facc.map(x=> <FinancialAccount>{
+        this.accounts = facc.map(x=> <FinancialAccountDto>{
           name: x.name,
           number: x.number,
           type: x.type,

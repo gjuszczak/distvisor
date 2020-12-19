@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Distvisor.Web.Data.Reads.Migrations
 {
     [DbContext(typeof(ReadStoreContext))]
-    [Migration("20201212103432_AddFinancialAcccountType")]
-    partial class AddFinancialAcccountType
+    [Migration("20201213134927_AddFinancialTables")]
+    partial class AddFinancialTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,10 +23,9 @@ namespace Distvisor.Web.Data.Reads.Migrations
 
             modelBuilder.Entity("Distvisor.Web.Data.Reads.Entities.FinancialAccountEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -34,23 +33,26 @@ namespace Distvisor.Web.Data.Reads.Migrations
                     b.Property<string>("Number")
                         .HasColumnType("text");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Number")
+                        .IsUnique();
 
                     b.ToTable("FinancialAccounts");
                 });
 
             modelBuilder.Entity("Distvisor.Web.Data.Reads.Entities.FinancialAccountPaycardEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
+                        .HasColumnType("uuid");
 
-                    b.Property<int?>("AccountId")
-                        .HasColumnType("integer");
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -59,15 +61,52 @@ namespace Distvisor.Web.Data.Reads.Migrations
 
                     b.HasIndex("AccountId");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("FinancialAccountPaycards");
+                });
+
+            modelBuilder.Entity("Distvisor.Web.Data.Reads.Entities.FinancialAccountTransactionEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("DataSource")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsBalanceEstimated")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("FinancialAccountTransactions");
                 });
 
             modelBuilder.Entity("Distvisor.Web.Data.Reads.Entities.ProcessedEmailEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
+                        .HasColumnType("uuid");
 
                     b.Property<string>("BodyMime")
                         .HasColumnType("text");
@@ -121,7 +160,20 @@ namespace Distvisor.Web.Data.Reads.Migrations
                 {
                     b.HasOne("Distvisor.Web.Data.Reads.Entities.FinancialAccountEntity", "Account")
                         .WithMany("Paycards")
-                        .HasForeignKey("AccountId");
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("Distvisor.Web.Data.Reads.Entities.FinancialAccountTransactionEntity", b =>
+                {
+                    b.HasOne("Distvisor.Web.Data.Reads.Entities.FinancialAccountEntity", "Account")
+                        .WithMany("Transactions")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Account");
                 });
@@ -129,6 +181,8 @@ namespace Distvisor.Web.Data.Reads.Migrations
             modelBuilder.Entity("Distvisor.Web.Data.Reads.Entities.FinancialAccountEntity", b =>
                 {
                     b.Navigation("Paycards");
+
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

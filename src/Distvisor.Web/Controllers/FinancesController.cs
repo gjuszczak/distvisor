@@ -71,15 +71,21 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpPost("accounts/add")]
-        public async Task AddAccount([FromBody] FinancialAccount dto)
+        public async Task AddAccount([FromBody] FinancialAccountDto dto)
         {
             await _financialAccountsService.AddAccountAsync(dto);
         }
 
         [HttpGet("accounts/list")]
-        public async Task<List<FinancialAccount>> ListAccounts()
+        public async Task<List<FinancialAccountDto>> ListAccounts()
         {
             return await _financialAccountsService.ListAccountsAsync();
+        }
+
+        [HttpPost("accounts/add-transaction")]
+        public async Task AddAccountTransaction([FromBody] FinancialAccountTransactionDto dto)
+        {
+            await _financialAccountsService.AddAccountTransactionAsync(dto);
         }
     }
 }

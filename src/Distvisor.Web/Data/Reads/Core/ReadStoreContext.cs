@@ -21,6 +21,35 @@ namespace Distvisor.Web.Data.Reads.Core
             modelBuilder.Entity<ProcessedEmailEntity>()
                 .HasIndex(e => e.UniqueKey)
                 .IsUnique();
+
+            modelBuilder.Entity<FinancialAccountEntity>()
+                .HasIndex(e => e.Number)
+                .IsUnique();
+
+            modelBuilder.Entity<FinancialAccountEntity>()
+                .Property(e => e.Type)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<FinancialAccountPaycardEntity>()
+                .HasOne(e => e.Account)
+                .WithMany(e => e.Paycards)
+                .HasForeignKey(e => e.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FinancialAccountPaycardEntity>()
+                .HasIndex(e => e.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<FinancialAccountTransactionEntity>()
+                .HasOne(e => e.Account)
+                .WithMany(e => e.Transactions)
+                .HasForeignKey(e => e.AccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FinancialAccountTransactionEntity>()
+                .Property(e => e.DataSource)
+                .HasConversion<string>();
+
         }
 
         public DbSet<SecretsVaultEntity> SecretsVault { get; set; }
@@ -28,5 +57,6 @@ namespace Distvisor.Web.Data.Reads.Core
         public DbSet<ProcessedEmailEntity> ProcessedEmails { get; set; }
         public DbSet<FinancialAccountEntity> FinancialAccounts { get; set; }
         public DbSet<FinancialAccountPaycardEntity> FinancialAccountPaycards { get; set; }
+        public DbSet<FinancialAccountTransactionEntity> FinancialAccountTransactions { get; set; }
     }
 }
