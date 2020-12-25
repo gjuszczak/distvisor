@@ -9,8 +9,8 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { AddFinancialAccountTransactionDto } from '../models/add-financial-account-transaction-dto';
 import { FinancialAccountDto } from '../models/financial-account-dto';
-import { FinancialAccountTransactionDto } from '../models/financial-account-transaction-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -332,7 +332,7 @@ export class FinancesService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiFinancesAccountsAddTransactionPost$Response(params?: {
-    body?: FinancialAccountTransactionDto
+    body?: AddFinancialAccountTransactionDto
   }): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiFinancesAccountsAddTransactionPostPath, 'post');
@@ -358,7 +358,7 @@ export class FinancesService extends BaseService {
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiFinancesAccountsAddTransactionPost(params?: {
-    body?: FinancialAccountTransactionDto
+    body?: AddFinancialAccountTransactionDto
   }): Observable<void> {
 
     return this.apiFinancesAccountsAddTransactionPost$Response(params).pipe(

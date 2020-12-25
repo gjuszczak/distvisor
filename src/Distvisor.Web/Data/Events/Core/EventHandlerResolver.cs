@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Data.Events.Core
@@ -9,29 +9,61 @@ namespace Distvisor.Web.Data.Events.Core
         Task Handle(T payload);
     }
 
-    public class EventHandlerResolver : IEventHandler<object>
+    public interface IEventHandlerResolver
+    {
+        IEventHandler<T> GetHandler<T>();
+        IEventHandler<object> GetHandler(Type payloadType);
+    }
+
+    public class EventHandlerResolver : IEventHandlerResolver
     {
         private readonly IServiceProvider _provider;
-        private readonly Dictionary<Type, Type> _handlers;
 
-        public EventHandlerResolver(IServiceProvider provider, Dictionary<Type, Type> handlers)
+        public EventHandlerResolver(IServiceProvider provider)
         {
             _provider = provider;
-            _handlers = handlers;
         }
 
-        public async Task Handle(object payload)
+        public IEventHandler<T> GetHandler<T>()
         {
-            var payloadType = payload.GetType();
-            if (_handlers.TryGetValue(payloadType, out Type handlerType))
+            var handlerType = typeof(IEventHandler<T>);
+            var handler = (IEventHandler<T>)_provider.GetService(handlerType);
+
+            if (handler == null)
             {
-                var mi = handlerType.GetMethod(nameof(Handle));
-                var handler = _provider.GetService(handlerType);
-                await (Task)mi.Invoke(handler, new[] { payload });
+                throw new InvalidOperationException($"Handler for {typeof(T).Name} not found.");
             }
-            else
+
+            return handler;
+        }
+
+        public IEventHandler<object> GetHandler(Type payloadType)
+        {
+            var handlerType = typeof(IEventHandler<>).MakeGenericType(payloadType);
+            var handler = _provider.GetService(handlerType);
+
+            if (handler == null)
             {
                 throw new InvalidOperationException($"Handler for {payloadType.Name} not found.");
+            }
+
+            return new GenericEventHandler(handler, handlerType);
+        }
+
+        private class GenericEventHandler : IEventHandler<object>
+        {
+            private readonly object _handler;
+            private readonly MethodInfo _handleMethod;
+
+            public GenericEventHandler(object handler, Type handlerType)
+            {
+                _handler = handler;
+                _handleMethod = handlerType.GetMethod(nameof(Handle));
+            }
+
+            public async Task Handle(object payload)
+            {
+                await(Task)_handleMethod.Invoke(_handler, new[] { payload });
             }
         }
     }

@@ -2,12 +2,20 @@
     (onHide)="onCancelClicked()">
     <ng-template pTemplate="content">
         <div class="p-field">
-            <label for="name">Name</label>
+            <label for="name">Date</label>
             <input pInputText type="text" inputId="name" [(ngModel)]="account.name" required autofocus />
-            <small class="p-invalid" *ngIf="!account.name">Name is required.</small>
+            <small class="p-invalid" *ngIf="!account.name">Date is required.</small>
         </div>
         <div class="p-field">
-            <label for="number">Account number</label>
+            <label for="number">Description</label>
+            <input pInputText type="text" inputId="number" [(ngModel)]="account.number"/>
+        </div>
+        <div class="p-field">
+            <label for="number">Amount</label>
+            <input pInputText type="text" inputId="number" [(ngModel)]="account.number"/>
+        </div>
+        <div class="p-field">
+            <label for="number">Balance</label>
             <input pInputText type="text" inputId="number" [(ngModel)]="account.number"/>
         </div>
         <div class="p-field">

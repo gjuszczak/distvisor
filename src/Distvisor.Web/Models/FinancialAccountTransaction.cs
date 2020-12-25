@@ -4,6 +4,7 @@ namespace Distvisor.Web.Models
 {
     public class FinancialAccountTransaction
     {
+        public Guid Id { get; set; }
         public Guid AccountId { get; set; }
         public DateTimeOffset Date { get; set; }
         public string Details { get; set; }

@@ -1,9 +1,9 @@
-﻿using Distvisor.Web.Data.Events;
+﻿using Distvisor.Web.Data;
+using Distvisor.Web.Data.Events;
 using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Data.Reads.Core;
 using Distvisor.Web.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,9 +12,10 @@ namespace Distvisor.Web.Services
 {
     public interface IFinancialAccountsService
     {
-        Task AddAccountAsync(FinancialAccountDto account);
-        Task AddAccountTransactionAsync(FinancialAccountTransactionDto transaction);
+        Task AddAccountAsync(AddFinancialAccountDto account);
+        Task AddAccountTransactionAsync(AddFinancialAccountTransactionDto transaction);
         Task<List<FinancialAccountDto>> ListAccountsAsync();
+        Task<List<FinancialAccountTransactionDto>> ListAccountTransactionsAsync();
     }
 
     public class FinancialAccountsService : IFinancialAccountsService
@@ -30,17 +31,13 @@ namespace Distvisor.Web.Services
             _notifications = notifiactions;
         }
 
-        public async Task AddAccountAsync(FinancialAccountDto account)
+        public async Task AddAccountAsync(AddFinancialAccountDto account)
         {
             await _notifications.PushSuccessAsync("Account added successfully.");
 
-            await _eventStore.Publish(new FinancialAccountAddedEvent
-            {
-                Name = account.Name,
-                Number = account.Number,
-                Paycards = account.Paycards,
-                Type = account.Type
-            });
+            account.Id = account.Id.GenerateIfEmpty();
+
+            await _eventStore.Publish<FinancialAccountAddedEvent>(account);
         }
 
         public async Task<List<FinancialAccountDto>> ListAccountsAsync()
@@ -51,37 +48,55 @@ namespace Distvisor.Web.Services
 
             return entities.Select(e => new FinancialAccountDto
             {
+                Id = e.Id,
                 Name = e.Name,
                 Number = e.Number,
                 Paycards = e.Paycards.Select(p => p.Name).ToArray()
             }).ToList();
         }
 
-        public async Task AddAccountTransactionAsync(FinancialAccountTransactionDto transaction)
+        public async Task AddAccountTransactionAsync(AddFinancialAccountTransactionDto transaction)
         {
             await _notifications.PushSuccessAsync("Transaction added successfully.");
 
-            await _eventStore.Publish(new FinancialAccountTransactionAddedEvent
-            {
-                AccountId = transaction.AccountId,
-                Amount = transaction.Amount,
-                Balance = transaction.Balance,
-                DataSource = transaction.DataSource,
-                Date = transaction.Date,
-                Details = transaction.Details,
-                IsBalanceEstimated = transaction.IsBalanceEstimated,
-            });
+            transaction.Id = transaction.Id.GenerateIfEmpty();
+
+            await _eventStore.Publish<FinancialAccountTransactionAddedEvent>(transaction);
         }
+
+        public async Task<List<FinancialAccountTransactionDto>> ListAccountTransactionsAsync()
+        {
+            var entities = await _context.FinancialAccountTransactions
+                .ToListAsync();
+
+            return entities.Select(e => new FinancialAccountTransactionDto
+            {
+                Id = e.Id,
+                AccountId = e.AccountId,
+                Amount = e.Amount,
+                Balance = e.Balance,
+                DataSource = e.DataSource,
+                Date = e.Date,
+                Details = e.Details,
+                IsBalanceEstimated = e.IsBalanceEstimated
+            }).ToList();
+        }
+    }
+
+    public class AddFinancialAccountDto : FinancialAccountAddedEvent
+    {
     }
 
     public class FinancialAccountDto : FinancialAccount
     {
-        public Guid? Id { get; set; }
         public string[] Paycards { get; set; }
+    }
+
+    public class AddFinancialAccountTransactionDto : FinancialAccountTransactionAddedEvent
+    {
     }
 
     public class FinancialAccountTransactionDto : FinancialAccountTransaction
     {
-        public Guid? Id { get; set; }
     }
 }

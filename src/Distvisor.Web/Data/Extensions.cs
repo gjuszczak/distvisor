@@ -49,8 +49,7 @@ namespace Distvisor.Web.Data
 
             handlers.ForEach(h => services.AddScoped(h.HandlerType, h.ImplementationType));
 
-            var mapping = handlers.ToDictionary(h => h.EventType, h => h.HandlerType);
-            services.AddScoped<IEventHandler<object>>(sp => new EventHandlerResolver(sp, mapping));
+            services.AddScoped<IEventHandlerResolver>(sp => new EventHandlerResolver(sp));
         }
 
         public static void DetachAllEntities(this DbContext context)
@@ -66,6 +65,11 @@ namespace Distvisor.Web.Data
                     entry.State = EntityState.Detached;
                 }
             }
+        }
+
+        public static Guid GenerateIfEmpty(this Guid guid)
+        {
+            return guid == Guid.Empty ? Guid.NewGuid() : guid;
         }
     }
 }

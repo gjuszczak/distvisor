@@ -6,7 +6,7 @@ namespace Distvisor.Web.Data.Events.Core
 {
     public interface IEventStore
     {
-        Task Publish(object payload);
+        Task Publish<T>(T payload);
         Task ReplayEvents();
     }
 
@@ -14,23 +14,24 @@ namespace Distvisor.Web.Data.Events.Core
     {
         private readonly EventStoreContext _db;
         private readonly IReadStoreTransactionProvider _rsTransactionProvider;
-        private readonly IEventHandler<object> _handler;
+        private readonly IEventHandlerResolver _handler;
 
-        public EventStore(EventStoreContext db, IReadStoreTransactionProvider rsTransactionProvider, IEventHandler<object> handler)
+        public EventStore(EventStoreContext db, IReadStoreTransactionProvider rsTransactionProvider, IEventHandlerResolver handler)
         {
             _db = db;
             _rsTransactionProvider = rsTransactionProvider;
             _handler = handler;
         }
 
-        public async Task Publish(object payload)
+        public async Task Publish<T>(T payload)
         {
-            var entity = new EventEntity(payload);
+            var type = typeof(T);
+            var entity = new EventEntity(payload, type);
             _db.Events.Add(entity);
             try
             {
                 using var rsTransaction = await _rsTransactionProvider.BeginTransactionAsync();
-                await _handler.Handle(payload);
+                await _handler.GetHandler<T>().Handle(payload);
                 await _db.SaveChangesAsync();
                 await rsTransaction.CommitAsync();
             }
@@ -48,7 +49,7 @@ namespace Distvisor.Web.Data.Events.Core
             foreach (var e in collection)
             {
                 var payload = e.ToPayload();
-                await _handler.Handle(payload);
+                await _handler.GetHandler(payload.GetType()).Handle(payload);
             }
         }
     }

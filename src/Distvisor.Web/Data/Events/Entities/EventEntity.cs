@@ -10,9 +10,8 @@ namespace Distvisor.Web.Data.Events.Entities
         {
         }
 
-        public EventEntity(object payload)
+        public EventEntity(object payload, Type type)
         {
-            var type = payload.GetType();
             var json = JsonSerializer.Serialize(payload, type);
             PublishDateUtc = DateTime.UtcNow;
             PayloadType = type.ToString();

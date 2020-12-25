@@ -9,7 +9,7 @@ import { FinancesService } from 'src/api/services';
 })
 export class AccountTransactionsComponent implements OnInit, OnDestroy {
   @Input() selectedAccount: FinancialAccountDto | null = null;
-  
+
   private subscriptions: Subscription[] = [];
 
   isAddAccountTransactionDialogVisible: boolean = false;
@@ -24,6 +24,10 @@ export class AccountTransactionsComponent implements OnInit, OnDestroy {
 
   constructor(private financesService: FinancesService) { }
 
+  public get selectedAccountId(): string {
+    return this.selectedAccount?.id || '';
+  }
+
   ngOnInit(): void {
     this.reloadTransactions();
   }
@@ -33,20 +37,20 @@ export class AccountTransactionsComponent implements OnInit, OnDestroy {
   }
 
   reloadTransactions() {
-    this.subscriptions.push(
-      
+    // this.subscriptions.push(
 
-      // this.financesService.apiFinancesAccountsListGet$Json().subscribe(facc => {
-      //   this.accounts = facc.map(x=> <any>{
-      //     name: x.name,
-      //     number: x.number,
-      //     paycards: x.paycards,
-      //     balance: 0,
-      //     lastTransaction: 0,
-      //     monthlyIncome: 0
-      //   });
-      // })
-    );
+
+    //   this.financesService.apiFinancesAccountsListGet$Json().subscribe(facc => {
+    //     this.accounts = facc.map(x=> <any>{
+    //       name: x.name,
+    //       number: x.number,
+    //       paycards: x.paycards,
+    //       balance: 0,
+    //       lastTransaction: 0,
+    //       monthlyIncome: 0
+    //     });
+    //   })
+    // );
   }
 
 

@@ -3,7 +3,7 @@
         <div class="p-d-flex p-jc-between p-pt-3 p-px-3">
             <div class="p-card-title">Account Transactions</div>
             <div *ngIf="selectedAccount" class="p-d-flex">
-                <button pButton pRipple type="button" icon="pi pi-plus"
+                <button pButton pRipple type="button" icon="pi pi-plus" (click)="showAddAccountTransactionDialog()"
                     class="p-button-rounded p-button-text p-button-info p-mr-1"></button>
             </div>
         </div>
@@ -27,6 +27,6 @@
         </ng-template>
     </p-table>
 </p-card>
-<app-add-account-transaction-dialog [accountId]="selectedAccount.id" [isVisible]="isAddAccountTransactionDialogVisible"
+<app-add-account-transaction-dialog [accountId]="selectedAccountId" [isVisible]="isAddAccountTransactionDialogVisible"
     (onHide)="hideAddAccountTransactionDialog()">
 </app-add-account-transaction-dialog>
