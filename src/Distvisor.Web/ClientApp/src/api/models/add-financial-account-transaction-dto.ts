@@ -6,4 +6,5 @@ export interface AddFinancialAccountTransactionDto {
   balance?: null | number;
   date?: string;
   details?: null | string;
+  id?: string;
 }

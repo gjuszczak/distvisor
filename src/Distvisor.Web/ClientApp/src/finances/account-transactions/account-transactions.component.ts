@@ -24,10 +24,6 @@ export class AccountTransactionsComponent implements OnInit, OnDestroy {
 
   constructor(private financesService: FinancesService) { }
 
-  public get selectedAccountId(): string {
-    return this.selectedAccount?.id || '';
-  }
-
   ngOnInit(): void {
     this.reloadTransactions();
   }

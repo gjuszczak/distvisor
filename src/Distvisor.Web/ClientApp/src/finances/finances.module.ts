@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -7,6 +7,7 @@ import { MsalGuard } from '@azure/msal-angular';
 
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { CalendarModule } from 'primeng/calendar';
 import { ChipsModule } from 'primeng/chips';
 import { DialogModule } from 'primeng/dialog';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -34,6 +35,7 @@ import { ImportFinancialFilesDialogComponent } from './import-financial-files-di
     // PrimeNg
     ButtonModule,
     CardModule,
+    CalendarModule,
     ChipsModule,
     DialogModule,
     FileUploadModule,
@@ -49,6 +51,7 @@ import { ImportFinancialFilesDialogComponent } from './import-financial-files-di
     AddAccountTransactionDialogComponent,
     FinancesComponent,
     ImportFinancialFilesDialogComponent
-  ]
+  ],
+  providers: [DatePipe]
 })
 export class FinancesModule { }

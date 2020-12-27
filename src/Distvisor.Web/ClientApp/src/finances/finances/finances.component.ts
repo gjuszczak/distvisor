@@ -34,12 +34,7 @@ export class FinancesComponent implements OnInit, OnDestroy {
   reloadFinances() {
     this.subscriptions.push(
       this.financesService.apiFinancesAccountsListGet$Json().subscribe(facc => {
-        this.accounts = facc.map(x=> <FinancialAccountDto>{
-          name: x.name,
-          number: x.number,
-          type: x.type,
-          paycards: x.paycards
-        });
+        this.accounts = facc;
       })
     );
   }

@@ -27,6 +27,6 @@
         </ng-template>
     </p-table>
 </p-card>
-<app-add-account-transaction-dialog [accountId]="selectedAccountId" [isVisible]="isAddAccountTransactionDialogVisible"
+<app-add-account-transaction-dialog *ngIf="selectedAccount?.id" [accountId]="selectedAccount?.id" [isVisible]="isAddAccountTransactionDialogVisible"
     (onHide)="hideAddAccountTransactionDialog()">
 </app-add-account-transaction-dialog>

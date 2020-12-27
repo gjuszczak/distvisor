@@ -39,7 +39,10 @@ namespace Distvisor.Web.Services
                     .ConfigurePayloadTypeDisplayName("Email Received"),
 
                 new EventPayloadMapper<FinancialAccountAddedEvent>()
-                    .ConfigurePayloadTypeDisplayName("Add Financial Account"),
+                    .ConfigurePayloadTypeDisplayName("Financial Account Added"),
+
+                new EventPayloadMapper<FinancialAccountTransactionAddedEvent>()
+                    .ConfigurePayloadTypeDisplayName("Financial Account Transaction Added"),
             };
 
             _mappers = configs.ToDictionary(x => x.GetPayloadType());
