@@ -1,37 +1,5 @@
 <div class="container finances">
-    <p-card styleClass="p-mt-3 card-with-custom-header">
-        <p-header>
-            <div class="p-d-flex p-jc-between p-pt-3 p-px-3">
-                <div class="p-card-title">Accounts</div>
-                <div class="p-d-flex">
-                    <button pButton pRipple type="button" icon="pi pi-plus" (click)="showAddAccountDialog()"
-                        class="p-button-rounded p-button-text p-button-info p-mr-1"></button>
-                    <button pButton pRipple type="button" icon="pi pi-upload" (click)="showImportFinancialFilesDialog()"
-                        class="p-button-rounded p-button-text p-button-info p-mr-1"></button>
-                    <button pButton pRipple type="button" icon="pi pi-check-square"
-                        class="p-button-rounded p-button-text p-button-info"></button>
-                </div>
-            </div>
-        </p-header>
-        <p-table [columns]="cols" [value]="accounts" selectionMode="single" [(selection)]="selectedAccount" styleClass="p-datatable-responsive-demo">
-            <ng-template pTemplate="header" let-columns>
-                <tr>
-                    <th *ngFor="let col of columns">
-                        {{col.header}}
-                    </th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-rowData let-columns="columns">
-                <tr [pSelectableRow]="rowData">
-                    <td *ngFor="let col of columns">
-                        <span class="p-column-title">{{col.header}}</span>
-                        {{rowData[col.field]}}
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </p-card>
-    <app-account-transactions [selectedAccount]="selectedAccount"></app-account-transactions>
+    <app-accounts [accounts]="accounts" (onAdd)="showAddAccountDialog()" (onUpload)="showImportFinancialFilesDialog()"></app-accounts>
     <app-add-account-dialog [isVisible]="isAddAccountDialogVisible" (onHide)="hideAddAccountDialog()">
     </app-add-account-dialog>
     <app-import-financial-files-dialog [isVisible]="isImportFinancialFilesDialogVisible" (onHide)="hideImportFinancialFilesDialog()">

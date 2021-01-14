@@ -12,14 +12,7 @@ export class FinancesComponent implements OnInit, OnDestroy {
 
   isAddAccountDialogVisible: boolean = false;
   isImportFinancialFilesDialogVisible: boolean = false;
-
-  cols: any[] = [
-    { field: 'name', header: 'Account' },
-    { field: 'type', header: 'Type' },
-    { field: 'number', header: 'Number' }
-  ];
   accounts: FinancialAccountDto[] = [];
-  selectedAccount: FinancialAccountDto | null = null;
 
   constructor(private financesService: FinancesService) { }
 
@@ -54,5 +47,6 @@ export class FinancesComponent implements OnInit, OnDestroy {
 
   hideImportFinancialFilesDialog() {
     this.isImportFinancialFilesDialogVisible = false;
+    this.reloadFinances();
   }
 }

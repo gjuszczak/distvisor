@@ -42,8 +42,10 @@ export class NavMenuComponent implements OnInit, OnDestroy {
       map(event => event as NavigationEnd),
       map(event => event.url.match('[^?]*')),
       filter(match => match !== null),
-      map(match => this.menuItems.findIndex(x => match![0] === x.routerLink)),
-      map(index => index >= 0 ? this.menuItems[index].label : "")
+      map(match => this.menuItems
+        .filter(x => match![0].startsWith(x.routerLink))
+        .sort((a, b) => (b.routerLink?.length || 0) - (a.routerLink?.length || 0))),
+      map(matchMenuItems => matchMenuItems.length > 0 ? matchMenuItems[0].label : "")
     );
     this.subscriptions.push(
       navigatedMenuLabel.subscribe(label => this.navBrand = (label || '')));

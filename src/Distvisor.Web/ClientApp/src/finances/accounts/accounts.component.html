@@ -1,27 +1,30 @@
 <p-card styleClass="p-mt-3 card-with-custom-header">
     <p-header>
         <div class="p-d-flex p-jc-between p-pt-3 p-px-3">
-            <div class="p-card-title">Account Transactions</div>
+            <div class="p-card-title">Accounts</div>
             <div class="p-d-flex">
                 <button pButton pRipple type="button" icon="pi pi-plus" (click)="onAddClicked()"
                     class="p-button-rounded p-button-text p-button-info p-mr-1"></button>
+                <button pButton pRipple type="button" icon="pi pi-upload" (click)="onUploadClicked()"
+                    class="p-button-rounded p-button-text p-button-info p-mr-1"></button>
+                <button pButton pRipple type="button" icon="pi pi-check-square" (click)="onCheckClicked()"
+                    class="p-button-rounded p-button-text p-button-info"></button>
             </div>
         </div>
     </p-header>
-    <p-table [columns]="cols" [value]="transactions" styleClass="p-datatable-responsive-demo">
+    <p-table [columns]="cols" [value]="accounts" selectionMode="single" styleClass="p-datatable-responsive-demo">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns">
-                    <span>{{col.header}}</span>
+                    {{col.header}}
                 </th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns">
-            <tr [pSelectableRow]="rowData">
+            <tr [pSelectableRow]="rowData" [routerLink]="['account', rowData.id]">
                 <td *ngFor="let col of columns">
                     <span class="p-column-title">{{col.header}}</span>
-                    <span *ngIf="col.isDate">{{rowData[col.field] | date:'short'}}</span>
-                    <span *ngIf="!col.isDate">{{rowData[col.field]}}</span>
+                    {{rowData[col.field]}}
                 </td>
             </tr>
         </ng-template>

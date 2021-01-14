@@ -17,10 +17,12 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
 
+import { AccountsComponent } from './accounts/accounts.component';
 import { AccountTransactionsComponent } from './account-transactions/account-transactions.component';
 import { AddAccountDialogComponent } from './add-acccount-dialog/add-account-dialog.component';
 import { AddAccountTransactionDialogComponent } from './add-account-transaction-dialog/add-account-transaction-dialog.component';
 import { FinancesComponent } from './finances/finances.component';
+import { FinancesAccountComponent } from './finances-account/finances-account.component';
 import { ImportFinancialFilesDialogComponent } from './import-financial-files-dialog/import-financial-files-dialog.component';
 
 @NgModule({
@@ -30,6 +32,7 @@ import { ImportFinancialFilesDialogComponent } from './import-financial-files-di
     HttpClientModule,
     RouterModule.forRoot([
       { path: 'finances', component: FinancesComponent, pathMatch: 'full', canActivate: [MsalGuard] },
+      { path: 'finances/account/:id', component: FinancesAccountComponent, pathMatch: 'full', canActivate: [MsalGuard] },
     ]),
 
     // PrimeNg
@@ -46,10 +49,12 @@ import { ImportFinancialFilesDialogComponent } from './import-financial-files-di
     TableModule
   ],
   declarations: [
+    AccountsComponent,
     AccountTransactionsComponent,
     AddAccountDialogComponent,
     AddAccountTransactionDialogComponent,
     FinancesComponent,
+    FinancesAccountComponent,
     ImportFinancialFilesDialogComponent
   ],
   providers: [DatePipe]

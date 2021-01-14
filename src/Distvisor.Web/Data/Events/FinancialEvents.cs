@@ -2,6 +2,7 @@
 using Distvisor.Web.Data.Reads.Core;
 using Distvisor.Web.Data.Reads.Entities;
 using Distvisor.Web.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,11 +24,11 @@ namespace Distvisor.Web.Data.Events
         public decimal? Balance { get; set; }
     }
 
-    public class AddFinancialAccountEventHandler : IEventHandler<FinancialAccountAddedEvent>
+    public class FinancialEventHandlers : IEventHandler<FinancialAccountAddedEvent>, IEventHandler<FinancialAccountTransactionAddedEvent>
     {
         private readonly ReadStoreContext _context;
 
-        public AddFinancialAccountEventHandler(ReadStoreContext context)
+        public FinancialEventHandlers(ReadStoreContext context)
         {
             _context = context;
         }
@@ -43,6 +44,32 @@ namespace Distvisor.Web.Data.Events
                     Name = name
                 }).ToList(),
                 Type = payload.Type,
+            });
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Handle(FinancialAccountTransactionAddedEvent payload)
+        {
+            async Task<decimal> CalculateBalance()
+            {
+                var lastTransaction = await _context.FinancialAccountTransactions
+                    .Where(x => x.AccountId == payload.AccountId)
+                    .OrderByDescending(x => x.Date)
+                    .FirstOrDefaultAsync();
+                return (lastTransaction?.Balance ?? 0m) + payload.Amount;
+            }
+
+            _context.FinancialAccountTransactions.Add(new FinancialAccountTransactionEntity
+            {
+                Id = payload.Id,
+                AccountId = payload.AccountId,
+                Amount = payload.Amount,
+                Balance = payload.Balance ?? await CalculateBalance(),
+                DataSource = FinancialAccountTransactionDataSource.UserInput,
+                Date = payload.Date,
+                Details = payload.Details,
+                IsBalanceEstimated = !payload.Balance.HasValue
             });
 
             await _context.SaveChangesAsync();

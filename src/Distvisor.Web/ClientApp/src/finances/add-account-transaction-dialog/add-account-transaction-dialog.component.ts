@@ -14,7 +14,7 @@ interface AddFinancialAccountTransactionInputs {
   templateUrl: './add-account-transaction-dialog.component.html'
 })
 export class AddAccountTransactionDialogComponent implements OnChanges, OnDestroy {
-  @Input() accountId?: string = '';
+  @Input() accountId: string = '';
   @Input() isVisible: boolean = false;
   @Output() onHide: EventEmitter<any> = new EventEmitter();
 
