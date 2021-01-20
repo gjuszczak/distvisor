@@ -1,10 +1,14 @@
 /* tslint:disable */
 /* eslint-disable */
+import { FinancialAccountTransactionSource } from './financial-account-transaction-source';
 export interface AddFinancialAccountTransactionDto {
   accountId?: string;
   amount?: number;
-  balance?: null | number;
-  date?: string;
-  details?: null | string;
+  balance?: number;
   id?: string;
+  postingDate?: string;
+  seqNo?: number;
+  source?: FinancialAccountTransactionSource;
+  title?: null | string;
+  transactionDate?: string;
 }

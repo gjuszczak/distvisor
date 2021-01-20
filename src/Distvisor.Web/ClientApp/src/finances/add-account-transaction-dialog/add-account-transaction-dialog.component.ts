@@ -3,10 +3,11 @@ import { Subscription } from 'rxjs';
 import { FinancesService } from 'src/api/services';
 
 interface AddFinancialAccountTransactionInputs {
-  amount?: number;
-  balance?: number;
-  date?: Date;
-  details?: string;
+  transactionDate: Date;
+  postingDate: Date;
+  title: string;
+  amount: number;
+  balance: number;
 }
 
 @Component({
@@ -38,25 +39,30 @@ export class AddAccountTransactionDialogComponent implements OnChanges, OnDestro
 
   onSaveClicked() {
     this.subscriptions.push(
-      this.financesService.apiFinancesTransactionsAddPost$Response({
+      this.financesService.apiFinancesAccountsTransactionsAddPost$Response({
         body: {
           accountId: this.accountId,
+          transactionDate: this.transaction.transactionDate.toISOString(),
+          postingDate: this.transaction.postingDate.toISOString(),
+          title: this.transaction.title,
           amount: this.transaction.amount,
           balance: this.transaction.balance,
-          date: this.transaction.date?.toISOString(),
-          details: this.transaction.details,
         }
       }).subscribe(
-        _ => this.onHide.emit()
+        _ => this.onCancelClicked()
       )
     );
   }
 
   onCancelClicked() {
-    this.onHide.emit();
+    if (this.isVisible) {
+      this.onHide.emit();
+    }
   }
 
   initFinancialAccountTransaction = () => <AddFinancialAccountTransactionInputs>{
-    date: new Date(Date.now()),
+    transactionDate: new Date(Date.now()),
+    postingDate: new Date(Date.now()),
+    title: '',
   }
 }

@@ -47,9 +47,20 @@ namespace Distvisor.Web.Data.Reads.Core
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<FinancialAccountTransactionEntity>()
-                .Property(e => e.DataSource)
+                .Property(e => e.Source)
                 .HasConversion<string>();
 
+            modelBuilder.Entity<FinancialAccountTransactionEntity>()
+                .HasIndex(e => new { e.AccountId, e.SeqNo })
+                .IsUnique();
+
+            modelBuilder.Entity<FinancialAccountTransactionEntity>()
+                .Property(e => e.TransactionDate)
+                .HasColumnType("DATE");
+
+            modelBuilder.Entity<FinancialAccountTransactionEntity>()
+                .Property(e => e.PostingDate)
+                .HasColumnType("DATE");
         }
 
         public DbSet<SecretsVaultEntity> SecretsVault { get; set; }

@@ -8,6 +8,7 @@ import { MsalGuard } from '@azure/msal-angular';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { CalendarModule } from 'primeng/calendar';
+import { ChartModule } from 'primeng/chart';
 import { ChipsModule } from 'primeng/chips';
 import { DialogModule } from 'primeng/dialog';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -18,6 +19,7 @@ import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
 
 import { AccountsComponent } from './accounts/accounts.component';
+import { AccountsSummaryComponent } from './accounts-summary/accounts-summary.component';
 import { AccountTransactionsComponent } from './account-transactions/account-transactions.component';
 import { AddAccountDialogComponent } from './add-acccount-dialog/add-account-dialog.component';
 import { AddAccountTransactionDialogComponent } from './add-account-transaction-dialog/add-account-transaction-dialog.component';
@@ -39,6 +41,7 @@ import { ImportFinancialFilesDialogComponent } from './import-financial-files-di
     ButtonModule,
     CardModule,
     CalendarModule,
+    ChartModule,
     ChipsModule,
     DialogModule,
     FileUploadModule,
@@ -50,6 +53,7 @@ import { ImportFinancialFilesDialogComponent } from './import-financial-files-di
   ],
   declarations: [
     AccountsComponent,
+    AccountsSummaryComponent,
     AccountTransactionsComponent,
     AddAccountDialogComponent,
     AddAccountTransactionDialogComponent,

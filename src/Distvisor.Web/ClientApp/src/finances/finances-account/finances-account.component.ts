@@ -32,7 +32,9 @@ export class FinancesAccountComponent implements OnInit, OnDestroy {
 
   reloadTransactions() {
     this.subscriptions.push(
-      this.financesService.apiFinancesTransactionsListGet$Json().subscribe(ftran => {
+      this.financesService.apiFinancesAccountsTransactionsListGet$Json({
+        accountId: this.accountId
+      }).subscribe(ftran => {
         this.transactions = ftran;
       })
     );
@@ -44,5 +46,6 @@ export class FinancesAccountComponent implements OnInit, OnDestroy {
 
   hideAddAccountTransactionDialog() {
     this.isAddAccountTransactionDialogVisible = false;
+    this.reloadTransactions();
   }
 }

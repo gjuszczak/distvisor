@@ -7,13 +7,14 @@ import { FinancialAccountTransactionDto } from 'src/api/models';
 })
 export class AccountTransactionsComponent {
   @Input() transactions: FinancialAccountTransactionDto[] = [];
-  @Output() onAdd: EventEmitter<any> = new EventEmitter();  
-  
+  @Output() onAdd: EventEmitter<any> = new EventEmitter();
+
   cols: any[] = [
-    { field: 'date', header: 'Date', isDate: true },
-    { field: 'details', header: 'Details' },
-    { field: 'amount', header: 'Amount' },
-    { field: 'balance', header: 'Balance' }
+    { field: 'transactionDate', header: 'Transaction Date', colStyle: { width: '15%' }, format: 'date' },
+    { field: 'postingDate', header: 'Posting Date', colStyle: { width: '15%' }, format: 'date' },
+    { field: 'title', header: 'Title', colStyle: { width: '40%' } },
+    { field: 'amount', header: 'Amount', colStyle: { width: '15%' } },
+    { field: 'balance', header: 'Balance', colStyle: { width: '15%' } }
   ];
 
   onAddClicked() {

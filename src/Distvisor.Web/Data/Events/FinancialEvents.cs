@@ -2,8 +2,6 @@
 using Distvisor.Web.Data.Reads.Core;
 using Distvisor.Web.Data.Reads.Entities;
 using Distvisor.Web.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,14 +12,8 @@ namespace Distvisor.Web.Data.Events
         public string[] Paycards { get; set; }
     }
 
-    public class FinancialAccountTransactionAddedEvent
+    public class FinancialAccountTransactionAddedEvent : FinancialAccountTransaction
     {
-        public Guid Id { get; set; }
-        public Guid AccountId { get; set; }
-        public DateTimeOffset Date { get; set; }
-        public string Details { get; set; }
-        public decimal Amount { get; set; }
-        public decimal? Balance { get; set; }
     }
 
     public class FinancialEventHandlers : IEventHandler<FinancialAccountAddedEvent>, IEventHandler<FinancialAccountTransactionAddedEvent>
@@ -51,25 +43,17 @@ namespace Distvisor.Web.Data.Events
 
         public async Task Handle(FinancialAccountTransactionAddedEvent payload)
         {
-            async Task<decimal> CalculateBalance()
-            {
-                var lastTransaction = await _context.FinancialAccountTransactions
-                    .Where(x => x.AccountId == payload.AccountId)
-                    .OrderByDescending(x => x.Date)
-                    .FirstOrDefaultAsync();
-                return (lastTransaction?.Balance ?? 0m) + payload.Amount;
-            }
-
             _context.FinancialAccountTransactions.Add(new FinancialAccountTransactionEntity
             {
                 Id = payload.Id,
                 AccountId = payload.AccountId,
+                SeqNo = payload.SeqNo,
+                TransactionDate = payload.TransactionDate,
+                PostingDate = payload.PostingDate,
+                Title = payload.Title,
                 Amount = payload.Amount,
-                Balance = payload.Balance ?? await CalculateBalance(),
-                DataSource = FinancialAccountTransactionDataSource.UserInput,
-                Date = payload.Date,
-                Details = payload.Details,
-                IsBalanceEstimated = !payload.Balance.HasValue
+                Balance = payload.Balance,
+                Source = FinancialAccountTransactionSource.UserInput,
             });
 
             await _context.SaveChangesAsync();

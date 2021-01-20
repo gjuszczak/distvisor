@@ -37,6 +37,7 @@
             ],
             "scripts": [
               "node_modules/prismjs/prism.js",
+              "node_modules/chart.js/dist/Chart.js",
               "node_modules/cookieconsent/build/cookieconsent.min.js"
             ]
           },

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MimeKit;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,13 +23,13 @@ namespace Distvisor.Web.Controllers
         private readonly IMailgunClient _mailgun;
         private readonly IEventStore _eventStore;
         private readonly IEmailReceivedNotifier _emailReceivedNotifier;
-        private readonly IEmailFileImportService _emailFileImportService;
+        private readonly IFinancialFileImportService _emailFileImportService;
         private readonly IFinancialAccountsService _financialAccountsService;
 
         public FinancesController(IMailgunClient mailgun,
             IEventStore eventStore,
             IEmailReceivedNotifier emailReceivedNotifier,
-            IEmailFileImportService emailFileImportService,
+            IFinancialFileImportService emailFileImportService,
             IFinancialAccountsService financialAccountsService)
         {
             _mailgun = mailgun;
@@ -64,10 +65,10 @@ namespace Distvisor.Web.Controllers
             await _emailReceivedNotifier.NotifyAsync(new EmailReceivedNotification { Key = "notify" });
         }
 
-        [HttpPost("upload-eml")]
-        public async Task UploadEml(IEnumerable<IFormFile> files)
+        [HttpPost("import-file")]
+        public async Task ImportFile(IEnumerable<IFormFile> files)
         {
-            await _emailFileImportService.ImportEmailFilesAsync(files);
+            await _emailFileImportService.ImportFilesAsync(files);
         }
 
         [HttpPost("accounts/add")]
@@ -82,16 +83,16 @@ namespace Distvisor.Web.Controllers
             return await _financialAccountsService.ListAccountsAsync();
         }
 
-        [HttpPost("transactions/add")]
+        [HttpPost("accounts/transactions/add")]
         public async Task AddAccountTransaction([FromBody] AddFinancialAccountTransactionDto dto)
         {
             await _financialAccountsService.AddAccountTransactionAsync(dto);
         }
 
-        [HttpGet("transactions/list")]
-        public async Task<List<FinancialAccountTransactionDto>> ListTransactions()
+        [HttpGet("accounts/transactions/list")]
+        public async Task<List<FinancialAccountTransactionDto>> ListTransactions(Guid accountId)
         {
-            return await _financialAccountsService.ListAccountTransactionsAsync();
+            return await _financialAccountsService.ListAccountTransactionsAsync(accountId);
         }
     }
 }

@@ -59,12 +59,13 @@ namespace Distvisor.Web.Data.Reads.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     AccountId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    Details = table.Column<string>(type: "text", nullable: true),
+                    SeqNo = table.Column<long>(type: "bigint", nullable: false),
+                    TransactionDate = table.Column<DateTime>(type: "DATE", nullable: false),
+                    PostingDate = table.Column<DateTime>(type: "DATE", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: true),
                     Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     Balance = table.Column<decimal>(type: "numeric", nullable: false),
-                    IsBalanceEstimated = table.Column<bool>(type: "boolean", nullable: false),
-                    DataSource = table.Column<string>(type: "text", nullable: false)
+                    Source = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -95,9 +96,10 @@ namespace Distvisor.Web.Data.Reads.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_FinancialAccountTransactions_AccountId",
+                name: "IX_FinancialAccountTransactions_AccountId_SeqNo",
                 table: "FinancialAccountTransactions",
-                column: "AccountId");
+                columns: new[] { "AccountId", "SeqNo" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProcessedEmails_UniqueKey",

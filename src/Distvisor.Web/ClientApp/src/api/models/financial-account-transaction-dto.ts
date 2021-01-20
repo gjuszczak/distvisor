@@ -1,13 +1,14 @@
 /* tslint:disable */
 /* eslint-disable */
-import { FinancialAccountTransactionDataSource } from './financial-account-transaction-data-source';
+import { FinancialAccountTransactionSource } from './financial-account-transaction-source';
 export interface FinancialAccountTransactionDto {
   accountId?: string;
   amount?: number;
   balance?: number;
-  dataSource?: FinancialAccountTransactionDataSource;
-  date?: string;
-  details?: null | string;
   id?: string;
-  isBalanceEstimated?: boolean;
+  postingDate?: string;
+  seqNo?: number;
+  source?: FinancialAccountTransactionSource;
+  title?: null | string;
+  transactionDate?: string;
 }

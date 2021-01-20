@@ -4,6 +4,7 @@ using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Data.Reads.Core;
 using Distvisor.Web.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace Distvisor.Web.Services
         Task AddAccountAsync(AddFinancialAccountDto account);
         Task AddAccountTransactionAsync(AddFinancialAccountTransactionDto transaction);
         Task<List<FinancialAccountDto>> ListAccountsAsync();
-        Task<List<FinancialAccountTransactionDto>> ListAccountTransactionsAsync();
+        Task<List<FinancialAccountTransactionDto>> ListAccountTransactionsAsync(Guid accountId);
     }
 
     public class FinancialAccountsService : IFinancialAccountsService
@@ -59,12 +60,23 @@ namespace Distvisor.Web.Services
         {
             await _notifications.PushSuccessAsync("Transaction added successfully.");
 
+            async Task<long> GetNextSeqNo(ReadStoreContext ctx, Guid accountId)
+            {
+                var maxSeqNo = await ctx.FinancialAccountTransactions
+                    .Where(x => x.AccountId == accountId)
+                    .MaxAsync(x => (long?)x.SeqNo);
+                return (maxSeqNo ?? 0) + 1;
+            }
+
             transaction.Id = transaction.Id.GenerateIfEmpty();
+            transaction.SeqNo = await GetNextSeqNo(_context, transaction.AccountId);
+            transaction.TransactionDate = transaction.TransactionDate.Date;
+            transaction.PostingDate = transaction.PostingDate.Date;
 
             await _eventStore.Publish<FinancialAccountTransactionAddedEvent>(transaction);
         }
 
-        public async Task<List<FinancialAccountTransactionDto>> ListAccountTransactionsAsync()
+        public async Task<List<FinancialAccountTransactionDto>> ListAccountTransactionsAsync(Guid accountId)
         {
             var entities = await _context.FinancialAccountTransactions
                 .ToListAsync();
@@ -73,13 +85,16 @@ namespace Distvisor.Web.Services
             {
                 Id = e.Id,
                 AccountId = e.AccountId,
+                SeqNo = e.SeqNo,
+                TransactionDate = e.TransactionDate,
+                PostingDate = e.PostingDate,
+                Title = e.Title,
                 Amount = e.Amount,
                 Balance = e.Balance,
-                DataSource = e.DataSource,
-                Date = e.Date,
-                Details = e.Details,
-                IsBalanceEstimated = e.IsBalanceEstimated
-            }).ToList();
+                Source = e.Source,
+            })
+            .Where(e => e.AccountId == accountId)
+            .ToList();
         }
     }
 

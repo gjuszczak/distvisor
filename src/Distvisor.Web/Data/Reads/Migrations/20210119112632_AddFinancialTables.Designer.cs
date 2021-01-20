@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Distvisor.Web.Data.Reads.Migrations
 {
     [DbContext(typeof(ReadStoreContext))]
-    [Migration("20201213134927_AddFinancialTables")]
+    [Migration("20210119112632_AddFinancialTables")]
     partial class AddFinancialTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,22 +82,26 @@ namespace Distvisor.Web.Data.Reads.Migrations
                     b.Property<decimal>("Balance")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("DataSource")
+                    b.Property<DateTime>("PostingDate")
+                        .HasColumnType("DATE");
+
+                    b.Property<long>("SeqNo")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Source")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("Date")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Details")
+                    b.Property<string>("Title")
                         .HasColumnType("text");
 
-                    b.Property<bool>("IsBalanceEstimated")
-                        .HasColumnType("boolean");
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("DATE");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("AccountId", "SeqNo")
+                        .IsUnique();
 
                     b.ToTable("FinancialAccountTransactions");
                 });

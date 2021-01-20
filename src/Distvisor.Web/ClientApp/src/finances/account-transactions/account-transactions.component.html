@@ -11,7 +11,7 @@
     <p-table [columns]="cols" [value]="transactions" styleClass="p-datatable-responsive-demo">
         <ng-template pTemplate="header" let-columns>
             <tr>
-                <th *ngFor="let col of columns">
+                <th *ngFor="let col of columns" [ngStyle]="col.colStyle">
                     <span>{{col.header}}</span>
                 </th>
             </tr>
@@ -20,8 +20,8 @@
             <tr [pSelectableRow]="rowData">
                 <td *ngFor="let col of columns">
                     <span class="p-column-title">{{col.header}}</span>
-                    <span *ngIf="col.isDate">{{rowData[col.field] | date:'short'}}</span>
-                    <span *ngIf="!col.isDate">{{rowData[col.field]}}</span>
+                    <span *ngIf="col.format == 'date'">{{rowData[col.field] | date:'shortDate'}}</span>
+                    <span *ngIf="!col.format">{{rowData[col.field]}}</span>
                 </td>
             </tr>
         </ng-template>

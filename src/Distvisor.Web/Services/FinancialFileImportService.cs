@@ -6,28 +6,27 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
 {
-    public interface IEmailFileImportService
+    public interface IFinancialFileImportService
     {
-        Task ImportEmailFilesAsync(IEnumerable<IFormFile> files);
+        Task ImportFilesAsync(IEnumerable<IFormFile> files);
     }
 
-    public class EmailFileImportService : IEmailFileImportService
+    public class FinancialFileImportService : IFinancialFileImportService
     {
         private readonly IEventStore _events;
         private readonly INotificationService _notifications;
 
-        public EmailFileImportService(IEventStore eventStore, INotificationService notifications)
+        public FinancialFileImportService(IEventStore eventStore, INotificationService notifications)
         {
             _events = eventStore;
             _notifications = notifications;
         }
 
-        public async Task ImportEmailFilesAsync(IEnumerable<IFormFile> files)
+        public async Task ImportFilesAsync(IEnumerable<IFormFile> files)
         {
             var importedFiles = new List<IFormFile>();
 
@@ -59,7 +58,7 @@ namespace Distvisor.Web.Services
 
             if (importedFiles.Any())
             {
-                await _notifications.PushSuccessAsync($"{importedFiles.Count()}/{files.Count()} files imported successfully.");
+                await _notifications.PushSuccessAsync($"{importedFiles.Count}/{files.Count()} files imported successfully.");
             }
         }
     }

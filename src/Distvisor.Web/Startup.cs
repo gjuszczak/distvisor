@@ -12,8 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using MimeKit;
 using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Distvisor.Web
@@ -39,11 +39,14 @@ namespace Distvisor.Web
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IEventLogToDtoMapper, EventLogToDtoMapper>();
             services.AddSingleton<IEmailReceivedNotifier, EmailReceivedNotifier>();
-            services.AddSingleton<IFinancialEmailDataExtractor, FinancialEmailDataExtractor>();
-            services.AddSingleton<IFinancialEmailAnalyzer, AccountIncomeEmailAnalyzer>();
-            services.AddSingleton<IFinancialEmailAnalyzer, AccountDebtEmailAnalyzer>();
-            services.AddSingleton<IFinancialEmailAnalyzer, CardPaymentEmailAnalyzer>();
-            services.AddSingleton<IFinancialEmailAnalyzer, CardPaymentSettledEmailAnalyzer>();
+            services.AddSingleton<IFinancialDataExtractor<IFormFile>, FinancialCsvDataExtractor>();
+            services.AddSingleton<IFinancialDataExtractor<IFormFile>, FinancialEmailDataExtractor>();
+            services.AddSingleton<IFinancialDataExtractor<MimeMessage>, AccountIncomeEmailAnalyzer>();
+            services.AddSingleton<IFinancialDataExtractor<MimeMessage>, AccountDebtEmailAnalyzer>();
+            services.AddSingleton<IFinancialDataExtractor<MimeMessage>, CardPaymentEmailAnalyzer>();
+            services.AddSingleton<IFinancialDataExtractor<MimeMessage>, CardPaymentSettledEmailAnalyzer>();
+            services.AddSingleton<IFinancialDataExtractor<string>, CsvSVariantDataExtractor>();
+            services.AddSingleton<IFinancialDataExtractor<string>, CsvIVariantDataExtractor>();
             services.AddScoped<IDeploymentService, DeploymentService>();
             services.AddScoped<IBackupService, BackupService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
@@ -55,7 +58,7 @@ namespace Distvisor.Web
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IRedirectionsService, RedirectionsService>();
             services.AddScoped<IBackupProcessManager, BackupProcessManager>();
-            services.AddScoped<IEmailFileImportService, EmailFileImportService>();
+            services.AddScoped<IFinancialFileImportService, FinancialFileImportService>();
             services.AddScoped<IFinancialAccountsService, FinancialAccountsService>();
 
             services.AddHttpClient<IMailgunClient, MailgunClient, FakeMailgunClient>(Config)

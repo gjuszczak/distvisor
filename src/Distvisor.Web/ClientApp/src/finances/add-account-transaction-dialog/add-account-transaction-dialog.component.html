@@ -2,14 +2,20 @@
     (onHide)="onCancelClicked()">
     <ng-template pTemplate="content">
         <div class="p-field">
-            <label for="date">Date</label>
-            <p-calendar inputId="date" [(ngModel)]="transaction.date" dateFormat="yy-mm-dd" [showTime]="true"
+            <label for="transactionDate">Transaction Date</label>
+            <p-calendar inputId="transactionDate" [(ngModel)]="transaction.transactionDate" dateFormat="yy-mm-dd" [showTime]="false"
                 [showIcon]="true" [showButtonBar]="true" [showOnFocus]="false"></p-calendar>
-            <small class="p-invalid" *ngIf="!transaction.date">Date is required.</small>
+            <small class="p-invalid" *ngIf="!transaction.transactionDate">Transaction Date is required.</small>
         </div>
         <div class="p-field">
-            <label for="details">Details</label>
-            <input pInputText type="text" inputId="details" [(ngModel)]="transaction.details" />
+            <label for="postingDate">Posting Date</label>
+            <p-calendar inputId="postingDate" [(ngModel)]="transaction.postingDate" dateFormat="yy-mm-dd" [showTime]="false"
+                [showIcon]="true" [showButtonBar]="true" [showOnFocus]="false"></p-calendar>
+            <small class="p-invalid" *ngIf="!transaction.postingDate">Posting Date is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="title">Title</label>
+            <input pInputText type="text" inputId="title" [(ngModel)]="transaction.title" />
         </div>
         <div class="p-field">
             <label for="amount">Amount</label>
@@ -21,6 +27,7 @@
             <label for="balance">Balance</label>
             <p-inputNumber inputId="balance" [(ngModel)]="transaction.balance" mode="currency" currency="PLN">
             </p-inputNumber>
+            <small class="p-invalid" *ngIf="!transaction.balance">Balance is required.</small>
         </div>
     </ng-template>
     <ng-template pTemplate="footer">
