@@ -4,13 +4,14 @@
     {
         public bool IsEmailPoolingEnabled { get; set; }
         public int EmailPoolingMinutesInterval { get; set; }
-        public RegexAccountEmailAnalyzerConfig AccountIncomeEmailAnalyzer { get; set; }
-        public RegexAccountEmailAnalyzerConfig AccountDebtEmailAnalyzer { get; set; }
-        public RegexAccountEmailAnalyzerConfig CardPaymentEmailAnalyzer { get; set; }
-        public RegexAccountEmailAnalyzerConfig CardPaymentSettledEmailAnalyzer { get; set; }
+        public string CsvIVariantDiscriminator { get; set; }
+        public RegexFinancialEmailDataExtractorConfig AccountIncomeEmailDataExtractor { get; set; }
+        public RegexFinancialEmailDataExtractorConfig AccountDebtEmailDataExtractor { get; set; }
+        public RegexFinancialEmailDataExtractorConfig CardPaymentEmailDataExtractor { get; set; }
+        public RegexFinancialEmailDataExtractorConfig CardPaymentSettledEmailDataExtractor { get; set; }
     }
 
-    public class RegexAccountEmailAnalyzerConfig
+    public class RegexFinancialEmailDataExtractorConfig
     {
         public string RegexSubjectPattern { get; set; }
         public string RegexBodyPattern { get; set; }

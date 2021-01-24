@@ -13,5 +13,6 @@ namespace Distvisor.Web.Models
         public decimal Amount { get; set; }
         public decimal Balance { get; set; }
         public FinancialAccountTransactionSource Source { get; set; }
+        public string TransactionHash { get; set; }
     }
 }

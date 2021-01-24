@@ -65,7 +65,8 @@ namespace Distvisor.Web.Data.Reads.Migrations
                     Title = table.Column<string>(type: "text", nullable: true),
                     Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     Balance = table.Column<decimal>(type: "numeric", nullable: false),
-                    Source = table.Column<string>(type: "text", nullable: false)
+                    Source = table.Column<string>(type: "text", nullable: false),
+                    TransactionHash = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -99,6 +100,12 @@ namespace Distvisor.Web.Data.Reads.Migrations
                 name: "IX_FinancialAccountTransactions_AccountId_SeqNo",
                 table: "FinancialAccountTransactions",
                 columns: new[] { "AccountId", "SeqNo" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FinancialAccountTransactions_TransactionHash",
+                table: "FinancialAccountTransactions",
+                column: "TransactionHash",
                 unique: true);
 
             migrationBuilder.CreateIndex(

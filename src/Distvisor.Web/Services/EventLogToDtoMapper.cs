@@ -43,6 +43,9 @@ namespace Distvisor.Web.Services
 
                 new EventPayloadMapper<FinancialAccountTransactionAddedEvent>()
                     .ConfigurePayloadTypeDisplayName("Financial Account Transaction Added"),
+
+                new EventPayloadMapper<FinancialDataImportedEvent>()
+                    .ConfigurePayloadTypeDisplayName("Financial Data Imported"),
             };
 
             _mappers = configs.ToDictionary(x => x.GetPayloadType());

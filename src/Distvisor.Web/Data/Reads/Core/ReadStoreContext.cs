@@ -55,6 +55,10 @@ namespace Distvisor.Web.Data.Reads.Core
                 .IsUnique();
 
             modelBuilder.Entity<FinancialAccountTransactionEntity>()
+                .HasIndex(e => e.TransactionHash)
+                .IsUnique();
+
+            modelBuilder.Entity<FinancialAccountTransactionEntity>()
                 .Property(e => e.TransactionDate)
                 .HasColumnType("DATE");
 

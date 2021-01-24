@@ -96,7 +96,13 @@ namespace Distvisor.Web.Data.Reads.Migrations
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("DATE");
 
+                    b.Property<string>("TransactionHash")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TransactionHash")
+                        .IsUnique();
 
                     b.HasIndex("AccountId", "SeqNo")
                         .IsUnique();

@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Distvisor.Web.Data.Reads.Migrations
 {
     [DbContext(typeof(ReadStoreContext))]
-    [Migration("20210119112632_AddFinancialTables")]
+    [Migration("20210124205406_AddFinancialTables")]
     partial class AddFinancialTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -98,7 +98,13 @@ namespace Distvisor.Web.Data.Reads.Migrations
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("DATE");
 
+                    b.Property<string>("TransactionHash")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TransactionHash")
+                        .IsUnique();
 
                     b.HasIndex("AccountId", "SeqNo")
                         .IsUnique();

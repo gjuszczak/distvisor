@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using MimeKit;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,14 +11,18 @@ namespace Distvisor.Web.Services
     public interface IFinancialDataExtractor<TData>
     {
         bool CanExtract(TData data);
-        Task ExtractAsync(TData data);
+        Task<IEnumerable<FinacialExtractedData>> ExtractAsync(TData data);
     }
 
-    public class FinancialEmailDataExtractor : IFinancialDataExtractor<IFormFile>
+    public interface IFinancialDataExtractor : IFinancialDataExtractor<IFormFile>
     {
-        private readonly IEnumerable<IFinancialDataExtractor<MimeMessage>> _emailExtractors;
+    }
 
-        public FinancialEmailDataExtractor(IEnumerable<IFinancialDataExtractor<MimeMessage>> emailExtractors)
+    public class FinancialEmailDataExtractor : IFinancialDataExtractor
+    {
+        private readonly IEnumerable<IFinancialEmailDataExtractor> _emailExtractors;
+
+        public FinancialEmailDataExtractor(IEnumerable<IFinancialEmailDataExtractor> emailExtractors)
         {
             _emailExtractors = emailExtractors;
         }
@@ -27,24 +32,24 @@ namespace Distvisor.Web.Services
             return data.FileName.Contains(".eml");
         }
 
-        public async Task ExtractAsync(IFormFile data)
+        public async Task<IEnumerable<FinacialExtractedData>> ExtractAsync(IFormFile data)
         {
             using var ds = data.OpenReadStream();
             var emailBody = await MimeMessage.LoadAsync(ds);
             var matchAnalyzer = _emailExtractors.FirstOrDefault(a => a.CanExtract(emailBody));
             if (matchAnalyzer == null)
             {
-                return;
+                return Array.Empty<FinacialExtractedData>();
             }
-            await matchAnalyzer.ExtractAsync(emailBody);
+            return await matchAnalyzer.ExtractAsync(emailBody);
         }
     }
 
-    public class FinancialCsvDataExtractor : IFinancialDataExtractor<IFormFile>
+    public class FinancialCsvDataExtractor : IFinancialDataExtractor
     {
-        private readonly IEnumerable<IFinancialDataExtractor<string>> _csvExtractors;
+        private readonly IEnumerable<IFinancialCsvDataExtractor> _csvExtractors;
 
-        public FinancialCsvDataExtractor(IEnumerable<IFinancialDataExtractor<string>> csvExtractors)
+        public FinancialCsvDataExtractor(IEnumerable<IFinancialCsvDataExtractor> csvExtractors)
         {
             _csvExtractors = csvExtractors;
         }
@@ -54,18 +59,28 @@ namespace Distvisor.Web.Services
             return data.FileName.Contains(".csv");
         }
 
-        public async Task ExtractAsync(IFormFile data)
+        public async Task<IEnumerable<FinacialExtractedData>> ExtractAsync(IFormFile data)
         {
             using var ds = data.OpenReadStream();
-            using var dsr = new StreamReader(ds);
-            
-            var dataContent = await dsr.ReadToEndAsync();            
+            using var mds = new MemoryStream();
+            await ds.CopyToAsync(mds);
+            var dataContent = mds.ToArray();
             var matchAnalyzer = _csvExtractors.FirstOrDefault(a => a.CanExtract(dataContent));
             if (matchAnalyzer == null)
             {
-                return;
+                return Array.Empty<FinacialExtractedData>(); ;
             }
-            await matchAnalyzer.ExtractAsync(dataContent);
+            return await matchAnalyzer.ExtractAsync(dataContent);
         }
+    }
+
+    public class FinacialExtractedData
+    {
+        public string AccountNumber { get; set; }
+        public DateTime PostingDate { get; set; }
+        public DateTime TransactionDate { get; set; }
+        public string Title { get; set; }
+        public decimal Amount { get; set; }
+        public decimal Balance { get; set; }
     }
 }

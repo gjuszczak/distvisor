@@ -2,29 +2,22 @@
 using Microsoft.Extensions.Options;
 using MimeKit;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
 {
-    public class FinancialEmailAnalysis
+    public interface IFinancialEmailDataExtractor : IFinancialDataExtractor<MimeMessage>
     {
-        public string AccountNumber { get; set; }
-        public decimal Amount { get; set; }
-        public decimal? Balance { get; set; }
-        public DateTimeOffset MessageUtcDateTime { get; set; }
-        public DateTimeOffset TransactionUtcDate { get; set; }
-        public string Paycard { get; set; }
-        public string Details { get; set; }
-
     }
 
-    public class RegexAccountEmailAnalyzer : IFinancialDataExtractor<MimeMessage>
+    public class RegexFinancialEmailDataExtractor : IFinancialEmailDataExtractor
     {
-        protected virtual RegexAccountEmailAnalyzerConfig Config { get; }
+        protected virtual RegexFinancialEmailDataExtractorConfig Config { get; }
 
-        public RegexAccountEmailAnalyzer(RegexAccountEmailAnalyzerConfig config)
+        public RegexFinancialEmailDataExtractor(RegexFinancialEmailDataExtractorConfig config)
         {
             Config = config;
         }
@@ -35,23 +28,23 @@ namespace Distvisor.Web.Services
                 Regex.IsMatch(data.HtmlBody ?? "", Config.RegexBodyPattern);
         }
 
-        public Task ExtractAsync(MimeMessage data)
+        public Task<IEnumerable<FinacialExtractedData>> ExtractAsync(MimeMessage data)
         {
             var bodyMatch = new Lazy<Match>(() => Regex.Match(data.HtmlBody, Config.RegexBodyPattern));
             var subjectMatch = new Lazy<Match>(() => Regex.Match(data.Subject, Config.RegexSubjectPattern));
 
-            new FinancialEmailAnalysis
+            var result = new FinacialExtractedData
             {
                 AccountNumber = GetAccountNumber(data, bodyMatch, subjectMatch),
+                TransactionDate = GetTransactionUtcDate(data, bodyMatch, subjectMatch).Date,
+                PostingDate = GetMessageUtcDateTime(data, bodyMatch, subjectMatch).Date,
+                Title = GetDetails(data, bodyMatch, subjectMatch),
                 Amount = GetAmount(data, bodyMatch, subjectMatch),
-                Balance = GetBalance(data, bodyMatch, subjectMatch),
-                TransactionUtcDate = GetTransactionUtcDate(data, bodyMatch, subjectMatch),
-                MessageUtcDateTime = GetMessageUtcDateTime(data, bodyMatch, subjectMatch),
-                Paycard = GetPaycard(data, bodyMatch, subjectMatch),
-                Details = GetDetails(data, bodyMatch, subjectMatch),
+                Balance = GetBalance(data, bodyMatch, subjectMatch) ?? 0,
+                //Paycard = GetPaycard(data, bodyMatch, subjectMatch),
             };
 
-            return Task.CompletedTask;
+            return Task.FromResult<IEnumerable<FinacialExtractedData>>(new[] { result });
         }
 
         protected virtual string GetAccountNumber(MimeMessage data, Lazy<Match> bodyMatch, Lazy<Match> subjectMatch) =>
@@ -76,22 +69,22 @@ namespace Distvisor.Web.Services
             bodyMatch.Value.Groups["details"].Value.Trim();
     }
 
-    public class AccountIncomeEmailAnalyzer : RegexAccountEmailAnalyzer
+    public class AccountIncomeEmailDataExtractor : RegexFinancialEmailDataExtractor
     {
-        public AccountIncomeEmailAnalyzer(IOptions<FinancesConfiguration> config) 
-            : base(config.Value.AccountIncomeEmailAnalyzer) { }
+        public AccountIncomeEmailDataExtractor(IOptions<FinancesConfiguration> config)
+            : base(config.Value.AccountIncomeEmailDataExtractor) { }
 
         protected override DateTimeOffset GetTransactionUtcDate(MimeMessage data, Lazy<Match> bodyMatch, Lazy<Match> subjectMatch) =>
             GetMessageUtcDateTime(data, bodyMatch, subjectMatch).Date;
 
-        protected override string GetPaycard(MimeMessage data, Lazy<Match> bodyMatch, Lazy<Match> subjectMatch) => 
+        protected override string GetPaycard(MimeMessage data, Lazy<Match> bodyMatch, Lazy<Match> subjectMatch) =>
             null;
     }
 
-    public class AccountDebtEmailAnalyzer : RegexAccountEmailAnalyzer
+    public class AccountDebtEmailDataExtractor : RegexFinancialEmailDataExtractor
     {
-        public AccountDebtEmailAnalyzer(IOptions<FinancesConfiguration> config)
-            : base(config.Value.AccountDebtEmailAnalyzer) { }
+        public AccountDebtEmailDataExtractor(IOptions<FinancesConfiguration> config)
+            : base(config.Value.AccountDebtEmailDataExtractor) { }
 
         protected override decimal GetAmount(MimeMessage data, Lazy<Match> bodyMatch, Lazy<Match> subjectMatch) =>
             base.GetAmount(data, bodyMatch, subjectMatch) * -1;
@@ -100,10 +93,10 @@ namespace Distvisor.Web.Services
             null;
     }
 
-    public class CardPaymentEmailAnalyzer : RegexAccountEmailAnalyzer
+    public class CardPaymentEmailDataExtractor : RegexFinancialEmailDataExtractor
     {
-        public CardPaymentEmailAnalyzer(IOptions<FinancesConfiguration> config)
-            : base(config.Value.CardPaymentEmailAnalyzer) { }
+        public CardPaymentEmailDataExtractor(IOptions<FinancesConfiguration> config)
+            : base(config.Value.CardPaymentEmailDataExtractor) { }
 
         protected override string GetAccountNumber(MimeMessage data, Lazy<Match> bodyMatch, Lazy<Match> subjectMatch) =>
             null;
@@ -112,10 +105,10 @@ namespace Distvisor.Web.Services
             null;
     }
 
-    public class CardPaymentSettledEmailAnalyzer : RegexAccountEmailAnalyzer
+    public class CardPaymentSettledEmailDataExtractor : RegexFinancialEmailDataExtractor
     {
-        public CardPaymentSettledEmailAnalyzer(IOptions<FinancesConfiguration> config)
-            : base(config.Value.CardPaymentSettledEmailAnalyzer) { }
+        public CardPaymentSettledEmailDataExtractor(IOptions<FinancesConfiguration> config)
+            : base(config.Value.CardPaymentSettledEmailDataExtractor) { }
 
         protected override string GetAccountNumber(MimeMessage data, Lazy<Match> bodyMatch, Lazy<Match> subjectMatch) =>
             null;

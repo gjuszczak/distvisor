@@ -12,8 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using MimeKit;
 using System;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Distvisor.Web
@@ -37,16 +37,17 @@ namespace Distvisor.Web
             services.Configure<FinancesConfiguration>(Config.GetSection("Finances"));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<ICryptoService, CryptoService>();
             services.AddSingleton<IEventLogToDtoMapper, EventLogToDtoMapper>();
             services.AddSingleton<IEmailReceivedNotifier, EmailReceivedNotifier>();
-            services.AddSingleton<IFinancialDataExtractor<IFormFile>, FinancialCsvDataExtractor>();
-            services.AddSingleton<IFinancialDataExtractor<IFormFile>, FinancialEmailDataExtractor>();
-            services.AddSingleton<IFinancialDataExtractor<MimeMessage>, AccountIncomeEmailAnalyzer>();
-            services.AddSingleton<IFinancialDataExtractor<MimeMessage>, AccountDebtEmailAnalyzer>();
-            services.AddSingleton<IFinancialDataExtractor<MimeMessage>, CardPaymentEmailAnalyzer>();
-            services.AddSingleton<IFinancialDataExtractor<MimeMessage>, CardPaymentSettledEmailAnalyzer>();
-            services.AddSingleton<IFinancialDataExtractor<string>, CsvSVariantDataExtractor>();
-            services.AddSingleton<IFinancialDataExtractor<string>, CsvIVariantDataExtractor>();
+            services.AddSingleton<IFinancialDataExtractor, FinancialCsvDataExtractor>();
+            services.AddSingleton<IFinancialDataExtractor, FinancialEmailDataExtractor>();
+            services.AddSingleton<IFinancialEmailDataExtractor, AccountIncomeEmailDataExtractor>();
+            services.AddSingleton<IFinancialEmailDataExtractor, AccountDebtEmailDataExtractor>();
+            services.AddSingleton<IFinancialEmailDataExtractor, CardPaymentEmailDataExtractor>();
+            services.AddSingleton<IFinancialEmailDataExtractor, CardPaymentSettledEmailDataExtractor>();
+            services.AddSingleton<IFinancialCsvDataExtractor, CsvSVariantDataExtractor>();
+            services.AddSingleton<IFinancialCsvDataExtractor, CsvIVariantDataExtractor>();
             services.AddScoped<IDeploymentService, DeploymentService>();
             services.AddScoped<IBackupService, BackupService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
@@ -58,8 +59,7 @@ namespace Distvisor.Web
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IRedirectionsService, RedirectionsService>();
             services.AddScoped<IBackupProcessManager, BackupProcessManager>();
-            services.AddScoped<IFinancialFileImportService, FinancialFileImportService>();
-            services.AddScoped<IFinancialAccountsService, FinancialAccountsService>();
+            services.AddScoped<IFinancialService, FinancialService>();
 
             services.AddHttpClient<IMailgunClient, MailgunClient, FakeMailgunClient>(Config)
                 .ConfigureHttpClient(c =>
@@ -119,6 +119,8 @@ namespace Distvisor.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             var pwaProvider = new FileExtensionContentTypeProvider();
             pwaProvider.Mappings[".webmanifest"] = "application/manifest+json";
 

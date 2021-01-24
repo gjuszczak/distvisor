@@ -16,7 +16,15 @@ namespace Distvisor.Web.Data.Events
     {
     }
 
-    public class FinancialEventHandlers : IEventHandler<FinancialAccountAddedEvent>, IEventHandler<FinancialAccountTransactionAddedEvent>
+    public class FinancialDataImportedEvent
+    {
+        public FinancialAccountTransaction[] Transactions { get; set; }
+    }
+
+    public class FinancialEventHandlers :
+        IEventHandler<FinancialAccountAddedEvent>,
+        IEventHandler<FinancialAccountTransactionAddedEvent>,
+        IEventHandler<FinancialDataImportedEvent>
     {
         private readonly ReadStoreContext _context;
 
@@ -54,7 +62,30 @@ namespace Distvisor.Web.Data.Events
                 Amount = payload.Amount,
                 Balance = payload.Balance,
                 Source = FinancialAccountTransactionSource.UserInput,
+                TransactionHash = payload.TransactionHash,
             });
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Handle(FinancialDataImportedEvent payload)
+        {
+            foreach (var t in payload.Transactions)
+            {
+                _context.FinancialAccountTransactions.Add(new FinancialAccountTransactionEntity
+                {
+                    Id = t.Id,
+                    AccountId = t.AccountId,
+                    SeqNo = t.SeqNo,
+                    TransactionDate = t.TransactionDate,
+                    PostingDate = t.PostingDate,
+                    Title = t.Title,
+                    Amount = t.Amount,
+                    Balance = t.Balance,
+                    Source = t.Source,
+                    TransactionHash = t.TransactionHash,
+                });
+            }
 
             await _context.SaveChangesAsync();
         }

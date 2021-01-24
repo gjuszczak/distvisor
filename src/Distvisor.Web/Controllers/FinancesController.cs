@@ -23,76 +23,47 @@ namespace Distvisor.Web.Controllers
         private readonly IMailgunClient _mailgun;
         private readonly IEventStore _eventStore;
         private readonly IEmailReceivedNotifier _emailReceivedNotifier;
-        private readonly IFinancialFileImportService _emailFileImportService;
-        private readonly IFinancialAccountsService _financialAccountsService;
+        private readonly IFinancialService _financialService;
 
         public FinancesController(IMailgunClient mailgun,
             IEventStore eventStore,
             IEmailReceivedNotifier emailReceivedNotifier,
-            IFinancialFileImportService emailFileImportService,
-            IFinancialAccountsService financialAccountsService)
+            IFinancialService financialService)
         {
             _mailgun = mailgun;
             _eventStore = eventStore;
             _emailReceivedNotifier = emailReceivedNotifier;
-            _emailFileImportService = emailFileImportService;
-            _financialAccountsService = financialAccountsService;
+            _financialService = financialService;
         }
 
-        [HttpGet]
-        public async Task<string> GetEmail()
+        [HttpPost("import-files")]
+        public async Task ImportFiles(IEnumerable<IFormFile> files)
         {
-            var l = await _mailgun.ListStoredEmailsAsync();
-            var sl = l.ToArray().Last();
-            var r = await _mailgun.GetStoredEmailContentAsync(sl.Url);
-
-            await _eventStore.Publish(new EmailReceivedEvent
-            {
-                MimeMessageId = sl.MimeMessageId,
-                BodyMime = r
-            });
-
-            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(r));
-            var msg = await MimeMessage.LoadAsync(stream);
-
-            return r;
-        }
-
-        [HttpPost("notify")]
-        [AllowAnonymous]
-        public async Task Notify()
-        {
-            await _emailReceivedNotifier.NotifyAsync(new EmailReceivedNotification { Key = "notify" });
-        }
-
-        [HttpPost("import-file")]
-        public async Task ImportFile(IEnumerable<IFormFile> files)
-        {
-            await _emailFileImportService.ImportFilesAsync(files);
+            await _financialService.ImportFilesAsync(files);
         }
 
         [HttpPost("accounts/add")]
         public async Task AddAccount([FromBody] AddFinancialAccountDto dto)
         {
-            await _financialAccountsService.AddAccountAsync(dto);
+            await _financialService.AddAccountAsync(dto);
         }
 
         [HttpGet("accounts/list")]
         public async Task<List<FinancialAccountDto>> ListAccounts()
         {
-            return await _financialAccountsService.ListAccountsAsync();
+            return await _financialService.ListAccountsAsync();
         }
 
         [HttpPost("accounts/transactions/add")]
         public async Task AddAccountTransaction([FromBody] AddFinancialAccountTransactionDto dto)
         {
-            await _financialAccountsService.AddAccountTransactionAsync(dto);
+            await _financialService.AddAccountTransactionAsync(dto);
         }
 
         [HttpGet("accounts/transactions/list")]
         public async Task<List<FinancialAccountTransactionDto>> ListTransactions(Guid accountId)
         {
-            return await _financialAccountsService.ListAccountTransactionsAsync(accountId);
+            return await _financialService.ListAccountTransactionsAsync(accountId);
         }
     }
 }

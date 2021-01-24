@@ -3,6 +3,6 @@
     public enum FinancialAccountTransactionSource
     {
         UserInput,
-        UserCsvImport
+        UserFileImport
     }
 }
