@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { FinancialAccountDto } from 'src/api/models';
+import { FinancialAccountDto, FinancialSummaryDto } from 'src/api/models';
 import { FinancesService } from 'src/api/services';
 
 @Component({
@@ -13,11 +13,13 @@ export class FinancesComponent implements OnInit, OnDestroy {
   isAddAccountDialogVisible: boolean = false;
   isImportFinancialFilesDialogVisible: boolean = false;
   accounts: FinancialAccountDto[] = [];
+  summary: FinancialSummaryDto = { lineChart: { labels: [], dataSets: [] } };
 
   constructor(private financesService: FinancesService) { }
 
   ngOnInit(): void {
     this.reloadFinances();
+    this.reloadSummary();
   }
 
   ngOnDestroy(): void {
@@ -28,6 +30,14 @@ export class FinancesComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.financesService.apiFinancesAccountsListGet$Json().subscribe(facc => {
         this.accounts = facc;
+      })
+    );
+  }
+
+  reloadSummary() {
+    this.subscriptions.push(
+      this.financesService.apiFinancesSummaryGet$Json().subscribe(fsum => {
+        this.summary = fsum;
       })
     );
   }

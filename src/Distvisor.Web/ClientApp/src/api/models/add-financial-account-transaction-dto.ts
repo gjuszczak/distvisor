@@ -11,4 +11,5 @@ export interface AddFinancialAccountTransactionDto {
   source?: FinancialAccountTransactionSource;
   title?: null | string;
   transactionDate?: string;
+  transactionHash?: null | string;
 }

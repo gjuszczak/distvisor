@@ -1,11 +1,13 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FinancialAccountDto } from 'src/api/models';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { FinancialSummaryDto } from 'src/api/models';
 
 @Component({
   selector: 'app-accounts-summary',
   templateUrl: './accounts-summary.component.html'
 })
-export class AccountsSummaryComponent {
+export class AccountsSummaryComponent implements OnChanges {
+  @Input() summary: FinancialSummaryDto = { lineChart: { labels: [], dataSets: [] } };
+
   data: any;
 
   constructor() {
@@ -25,6 +27,24 @@ export class AccountsSummaryComponent {
           borderColor: '#565656'
         }
       ]
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['summary']) {
+      this.loadData();
+    }
+  }
+
+  loadData() {
+    this.data = {
+      labels: this.summary.lineChart?.labels || [],
+      datasets: this.summary.lineChart?.dataSets?.map(ds => <any>{
+        label: ds.label || "no_label",
+        data: ds.data || [],
+        fill: false,
+        borderColor: '#4bc0c0'
+      }) || []
     }
   }
 }

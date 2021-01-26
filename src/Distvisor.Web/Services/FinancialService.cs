@@ -19,6 +19,7 @@ namespace Distvisor.Web.Services
         Task<List<FinancialAccountDto>> ListAccountsAsync();
         Task<List<FinancialAccountTransactionDto>> ListAccountTransactionsAsync(Guid accountId);
         Task ImportFilesAsync(IEnumerable<IFormFile> files);
+        Task<FinancialSummaryDto> GetSummaryAsync();
     }
 
     public class FinancialService : IFinancialService
@@ -168,6 +169,37 @@ namespace Distvisor.Web.Services
             }
         }
 
+        public async Task<FinancialSummaryDto> GetSummaryAsync()
+        {
+            var lastTranPerDay = _context.FinancialAccountTransactions
+                .GroupBy(tran => new { tran.AccountId, tran.TransactionDate })
+                .Select(g => new { g.Key.AccountId, g.Key.TransactionDate, SeqNo = g.Max(tran => tran.SeqNo) });
+
+            var balancePerDay = _context.FinancialAccountTransactions
+                .Join(lastTranPerDay,
+                t1 => new { t1.AccountId, t1.SeqNo },
+                t2 => new { t2.AccountId, t2.SeqNo },
+                (t1, t2) => new { t1.AccountId, t1.Account.Name, t1.TransactionDate, t1.Balance })
+                .OrderBy(t => t.AccountId).ThenBy(t => t.TransactionDate);
+
+            var result = await balancePerDay.ToListAsync();
+
+            var summary = new FinancialSummaryDto
+            {
+                LineChart = new FinancialSummaryLineChartDto
+                {
+                    Labels = result.Select(x => x.TransactionDate.ToString("d")).Distinct().ToArray(),
+                    DataSets = result.GroupBy(r => r.Name).Select(g => new FinancialSummaryDataSetDto
+                    {
+                        Label = g.Key.ToString(),
+                        Data = g.Select(b => b.Balance).Cast<decimal?>()
+                    }).ToArray()
+                }
+            };
+
+            return summary;
+        }
+
         private async Task<long> GetAccountNextSeqNo(ReadStoreContext ctx, Guid accountId)
         {
             var maxSeqNo = await ctx.FinancialAccountTransactions
@@ -198,5 +230,22 @@ namespace Distvisor.Web.Services
 
     public class FinancialAccountTransactionDto : FinancialAccountTransaction
     {
+    }
+
+    public class FinancialSummaryDto
+    {
+        public FinancialSummaryLineChartDto LineChart { get; set; }
+    }
+
+    public class FinancialSummaryLineChartDto
+    {
+        public IEnumerable<string> Labels { get; set; }
+        public IEnumerable<FinancialSummaryDataSetDto> DataSets { get; set; }
+    }
+
+    public class FinancialSummaryDataSetDto
+    {
+        public string Label { get; set; }
+        public IEnumerable<decimal?> Data { get; set; }
     }
 }

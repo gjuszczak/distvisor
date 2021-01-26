@@ -65,5 +65,11 @@ namespace Distvisor.Web.Controllers
         {
             return await _financialService.ListAccountTransactionsAsync(accountId);
         }
+
+        [HttpGet("summary")]
+        public async Task<FinancialSummaryDto> GetSummary()
+        {
+            return await _financialService.GetSummaryAsync();
+        }
     }
 }

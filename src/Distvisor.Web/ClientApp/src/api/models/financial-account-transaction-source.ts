@@ -2,5 +2,5 @@
 /* eslint-disable */
 export enum FinancialAccountTransactionSource {
   UserInput = 'UserInput',
-  UserCsvImport = 'UserCsvImport'
+  UserFileImport = 'UserFileImport'
 }
