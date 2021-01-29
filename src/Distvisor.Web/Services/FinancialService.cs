@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
@@ -49,6 +50,7 @@ namespace Distvisor.Web.Services
             await _notifications.PushSuccessAsync("Account added successfully.");
 
             account.Id = account.Id.GenerateIfEmpty();
+            account.Number = Regex.Replace(account.Number, @"\s+", "");
 
             await _eventStore.Publish<FinancialAccountAddedEvent>(account);
         }
@@ -171,29 +173,69 @@ namespace Distvisor.Web.Services
 
         public async Task<FinancialSummaryDto> GetSummaryAsync()
         {
+            var startDate = new DateTime(2019, 1, 1);
+            var endDate = new DateTime(2021, 1, 1);
+
             var lastTranPerDay = _context.FinancialAccountTransactions
-                .GroupBy(tran => new { tran.AccountId, tran.TransactionDate })
-                .Select(g => new { g.Key.AccountId, g.Key.TransactionDate, SeqNo = g.Max(tran => tran.SeqNo) });
+                .Where(tran => tran.PostingDate >= startDate && tran.PostingDate < endDate)
+                .GroupBy(tran => new { tran.AccountId, tran.PostingDate })
+                .Select(g => new { g.Key.AccountId, SeqNo = g.Max(tran => tran.SeqNo) });
 
             var balancePerDay = _context.FinancialAccountTransactions
                 .Join(lastTranPerDay,
                 t1 => new { t1.AccountId, t1.SeqNo },
                 t2 => new { t2.AccountId, t2.SeqNo },
-                (t1, t2) => new { t1.AccountId, t1.Account.Name, t1.TransactionDate, t1.Balance })
-                .OrderBy(t => t.AccountId).ThenBy(t => t.TransactionDate);
+                (t1, t2) => new { t1.AccountId, t1.Account.Name, t1.PostingDate, t1.Balance })
+                .OrderBy(t => t.AccountId).ThenBy(t => t.PostingDate);
 
             var result = await balancePerDay.ToListAsync();
+
+            var dateSeries = Enumerable.Range(0, 1 + endDate.Subtract(startDate).Days)
+                .Select(offset => startDate.AddDays(offset))
+                .ToList();
+
+            var dataSets = result.GroupBy(r => r.Name).Select(g =>
+            {
+
+                var dataValues = new List<decimal?>();
+                var gEnumerator = g.GetEnumerator();
+                gEnumerator.MoveNext();
+                decimal? previous = null;
+                foreach (var d in dateSeries)
+                {
+                    if (gEnumerator.Current?.PostingDate.Date == d.Date)
+                    {
+                        dataValues.Add(gEnumerator.Current.Balance);
+                        previous = gEnumerator.Current.Balance;
+                        gEnumerator.MoveNext();
+                    }
+                    else
+                    {
+                        dataValues.Add(previous);
+                    }
+                }
+
+                return new FinancialSummaryDataSetDto
+                {
+                    Label = g.Key.ToString(),
+                    Data = dataValues.ToArray()
+                };
+            }).ToArray();
+
+            var arrayOfData = dataSets.Select(ds => ds.Data.ToArray()).ToArray();
+            var aggregatedData = dateSeries.Select((_, i) => arrayOfData.Sum(d => d[i])).ToArray();
 
             var summary = new FinancialSummaryDto
             {
                 LineChart = new FinancialSummaryLineChartDto
                 {
-                    Labels = result.Select(x => x.TransactionDate.ToString("d")).Distinct().ToArray(),
-                    DataSets = result.GroupBy(r => r.Name).Select(g => new FinancialSummaryDataSetDto
+                    Labels = dateSeries.Select(d => d.ToString("d")).ToArray(),
+                    SeparateDataSets = dataSets,
+                    SummaryDataSet = new FinancialSummaryDataSetDto
                     {
-                        Label = g.Key.ToString(),
-                        Data = g.Select(b => b.Balance).Cast<decimal?>()
-                    }).ToArray()
+                        Label = "Summary",
+                        Data = aggregatedData,
+                    }
                 }
             };
 
@@ -240,7 +282,8 @@ namespace Distvisor.Web.Services
     public class FinancialSummaryLineChartDto
     {
         public IEnumerable<string> Labels { get; set; }
-        public IEnumerable<FinancialSummaryDataSetDto> DataSets { get; set; }
+        public IEnumerable<FinancialSummaryDataSetDto> SeparateDataSets { get; set; }
+        public FinancialSummaryDataSetDto SummaryDataSet { get; set; }
     }
 
     public class FinancialSummaryDataSetDto

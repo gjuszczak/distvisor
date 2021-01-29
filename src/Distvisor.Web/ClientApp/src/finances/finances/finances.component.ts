@@ -13,7 +13,7 @@ export class FinancesComponent implements OnInit, OnDestroy {
   isAddAccountDialogVisible: boolean = false;
   isImportFinancialFilesDialogVisible: boolean = false;
   accounts: FinancialAccountDto[] = [];
-  summary: FinancialSummaryDto = { lineChart: { labels: [], dataSets: [] } };
+  summary: FinancialSummaryDto = { };
 
   constructor(private financesService: FinancesService) { }
 
