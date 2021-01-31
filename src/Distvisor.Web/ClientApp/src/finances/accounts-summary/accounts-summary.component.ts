@@ -17,6 +17,9 @@ export class AccountsSummaryComponent implements OnChanges {
       scales: {
         yAxes: [{
           stacked: true,
+          ticks: { 
+            min: 0,
+          },
         }]
       },
       tooltips: {
@@ -47,7 +50,7 @@ export class AccountsSummaryComponent implements OnChanges {
   }
 
   loadData() {
-    const datasets = this.summary.lineChart?.separateDataSets
+    const datasets = this.summary.lineChart?.dataSets
       ?.map(ds => this.toChartDataset(ds || {})) || [];
 
     this.data = {

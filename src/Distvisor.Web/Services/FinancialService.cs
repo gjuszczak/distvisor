@@ -51,6 +51,7 @@ namespace Distvisor.Web.Services
 
             account.Id = account.Id.GenerateIfEmpty();
             account.Number = Regex.Replace(account.Number, @"\s+", "");
+            account.CreatedDateTimeUtc = DateTime.UtcNow;
 
             await _eventStore.Publish<FinancialAccountAddedEvent>(account);
         }
@@ -58,7 +59,7 @@ namespace Distvisor.Web.Services
         public async Task<List<FinancialAccountDto>> ListAccountsAsync()
         {
             var entities = await _context.FinancialAccounts
-                .Include(x => x.Paycards)
+                .OrderBy(e => e.CreatedDateTimeUtc)
                 .ToListAsync();
 
             return entities.Select(e => new FinancialAccountDto
@@ -66,7 +67,6 @@ namespace Distvisor.Web.Services
                 Id = e.Id,
                 Name = e.Name,
                 Number = e.Number,
-                Paycards = e.Paycards.Select(p => p.Name).ToArray()
             }).ToList();
         }
 
@@ -75,7 +75,7 @@ namespace Distvisor.Web.Services
             await _notifications.PushSuccessAsync("Transaction added successfully.");
 
             transaction.Id = transaction.Id.GenerateIfEmpty();
-            transaction.SeqNo = await GetAccountNextSeqNo(_context, transaction.AccountId);
+            transaction.SeqNo = await GetAccountNextSeqNo(transaction.AccountId);
             transaction.TransactionDate = transaction.TransactionDate.Date;
             transaction.PostingDate = transaction.PostingDate.Date;
 
@@ -132,7 +132,7 @@ namespace Distvisor.Web.Services
                             throw new InvalidOperationException($"Account number: {g.Key} not found.");
                         }
 
-                        var nextSeq = await GetAccountNextSeqNo(_context, account.Id);
+                        var nextSeq = await GetAccountNextSeqNo(account.Id);
 
                         var trans = g.Select((tran, i) => new FinancialAccountTransaction
                         {
@@ -174,7 +174,7 @@ namespace Distvisor.Web.Services
         public async Task<FinancialSummaryDto> GetSummaryAsync()
         {
             var startDate = new DateTime(2019, 1, 1);
-            var endDate = new DateTime(2021, 1, 1);
+            var endDate = DateTime.Now; //new DateTime(2021, 1, 1);
 
             var lastTranPerDay = _context.FinancialAccountTransactions
                 .Where(tran => tran.PostingDate >= startDate && tran.PostingDate < endDate)
@@ -185,8 +185,8 @@ namespace Distvisor.Web.Services
                 .Join(lastTranPerDay,
                 t1 => new { t1.AccountId, t1.SeqNo },
                 t2 => new { t2.AccountId, t2.SeqNo },
-                (t1, t2) => new { t1.AccountId, t1.Account.Name, t1.PostingDate, t1.Balance })
-                .OrderBy(t => t.AccountId).ThenBy(t => t.PostingDate);
+                (t1, t2) => new { t1.Account.CreatedDateTimeUtc, t1.Account.Name, t1.PostingDate, t1.Balance })
+                .OrderBy(t => t.CreatedDateTimeUtc).ThenBy(t => t.PostingDate);
 
             var result = await balancePerDay.ToListAsync();
 
@@ -196,10 +196,9 @@ namespace Distvisor.Web.Services
 
             var dataSets = result.GroupBy(r => r.Name).Select(g =>
             {
-
                 var dataValues = new List<decimal?>();
                 var gEnumerator = g.GetEnumerator();
-                gEnumerator.MoveNext();
+                var isEnd = !gEnumerator.MoveNext();
                 decimal? previous = null;
                 foreach (var d in dateSeries)
                 {
@@ -207,44 +206,36 @@ namespace Distvisor.Web.Services
                     {
                         dataValues.Add(gEnumerator.Current.Balance);
                         previous = gEnumerator.Current.Balance;
-                        gEnumerator.MoveNext();
+                        isEnd = !gEnumerator.MoveNext();
                     }
                     else
                     {
-                        dataValues.Add(previous);
+                        dataValues.Add(isEnd && previous == 0 ? null : previous);
                     }
                 }
 
                 return new FinancialSummaryDataSetDto
                 {
-                    Label = g.Key.ToString(),
-                    Data = dataValues.ToArray()
+                    Label = g.Key,
+                    Data = dataValues.ToArray(),
                 };
             }).ToArray();
-
-            var arrayOfData = dataSets.Select(ds => ds.Data.ToArray()).ToArray();
-            var aggregatedData = dateSeries.Select((_, i) => arrayOfData.Sum(d => d[i])).ToArray();
 
             var summary = new FinancialSummaryDto
             {
                 LineChart = new FinancialSummaryLineChartDto
                 {
                     Labels = dateSeries.Select(d => d.ToString("d")).ToArray(),
-                    SeparateDataSets = dataSets,
-                    SummaryDataSet = new FinancialSummaryDataSetDto
-                    {
-                        Label = "Summary",
-                        Data = aggregatedData,
-                    }
+                    DataSets = dataSets,
                 }
             };
 
             return summary;
         }
 
-        private async Task<long> GetAccountNextSeqNo(ReadStoreContext ctx, Guid accountId)
+        private async Task<long> GetAccountNextSeqNo(Guid accountId)
         {
-            var maxSeqNo = await ctx.FinancialAccountTransactions
+            var maxSeqNo = await _context.FinancialAccountTransactions
                 .Where(x => x.AccountId == accountId)
                 .MaxAsync(x => (long?)x.SeqNo);
             return (maxSeqNo ?? 0) + 1;
@@ -263,7 +254,6 @@ namespace Distvisor.Web.Services
 
     public class FinancialAccountDto : FinancialAccount
     {
-        public string[] Paycards { get; set; }
     }
 
     public class AddFinancialAccountTransactionDto : FinancialAccountTransactionAddedEvent
@@ -282,8 +272,7 @@ namespace Distvisor.Web.Services
     public class FinancialSummaryLineChartDto
     {
         public IEnumerable<string> Labels { get; set; }
-        public IEnumerable<FinancialSummaryDataSetDto> SeparateDataSets { get; set; }
-        public FinancialSummaryDataSetDto SummaryDataSet { get; set; }
+        public IEnumerable<FinancialSummaryDataSetDto> DataSets { get; set; }
     }
 
     public class FinancialSummaryDataSetDto

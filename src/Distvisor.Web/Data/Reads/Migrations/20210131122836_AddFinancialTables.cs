@@ -14,7 +14,8 @@ namespace Distvisor.Web.Data.Reads.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
                     Number = table.Column<string>(type: "text", nullable: true),
-                    Type = table.Column<string>(type: "text", nullable: false)
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    CreatedDateTimeUtc = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -32,25 +33,6 @@ namespace Distvisor.Web.Data.Reads.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProcessedEmails", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FinancialAccountPaycards",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    AccountId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FinancialAccountPaycards", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_FinancialAccountPaycards_FinancialAccounts_AccountId",
-                        column: x => x.AccountId,
-                        principalTable: "FinancialAccounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -80,17 +62,6 @@ namespace Distvisor.Web.Data.Reads.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_FinancialAccountPaycards_AccountId",
-                table: "FinancialAccountPaycards",
-                column: "AccountId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FinancialAccountPaycards_Name",
-                table: "FinancialAccountPaycards",
-                column: "Name",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_FinancialAccounts_Number",
                 table: "FinancialAccounts",
                 column: "Number",
@@ -117,9 +88,6 @@ namespace Distvisor.Web.Data.Reads.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "FinancialAccountPaycards");
-
             migrationBuilder.DropTable(
                 name: "FinancialAccountTransactions");
 

@@ -2,14 +2,12 @@
 using Distvisor.Web.Data.Reads.Core;
 using Distvisor.Web.Data.Reads.Entities;
 using Distvisor.Web.Models;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Data.Events
 {
     public class FinancialAccountAddedEvent : FinancialAccount
     {
-        public string[] Paycards { get; set; }
     }
 
     public class FinancialAccountTransactionAddedEvent : FinancialAccountTransaction
@@ -37,13 +35,11 @@ namespace Distvisor.Web.Data.Events
         {
             _context.FinancialAccounts.Add(new FinancialAccountEntity
             {
+                Id = payload.Id,
                 Name = payload.Name,
                 Number = payload.Number,
-                Paycards = payload.Paycards.Select(name => new FinancialAccountPaycardEntity
-                {
-                    Name = name
-                }).ToList(),
                 Type = payload.Type,
+                CreatedDateTimeUtc = payload.CreatedDateTimeUtc,
             });
 
             await _context.SaveChangesAsync();

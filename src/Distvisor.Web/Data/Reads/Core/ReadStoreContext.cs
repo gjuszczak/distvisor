@@ -30,16 +30,6 @@ namespace Distvisor.Web.Data.Reads.Core
                 .Property(e => e.Type)
                 .HasConversion<string>();
 
-            modelBuilder.Entity<FinancialAccountPaycardEntity>()
-                .HasOne(e => e.Account)
-                .WithMany(e => e.Paycards)
-                .HasForeignKey(e => e.AccountId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<FinancialAccountPaycardEntity>()
-                .HasIndex(e => e.Name)
-                .IsUnique();
-
             modelBuilder.Entity<FinancialAccountTransactionEntity>()
                 .HasOne(e => e.Account)
                 .WithMany(e => e.Transactions)
@@ -71,7 +61,6 @@ namespace Distvisor.Web.Data.Reads.Core
         public DbSet<RedirectionEntity> Redirections { get; set; }
         public DbSet<ProcessedEmailEntity> ProcessedEmails { get; set; }
         public DbSet<FinancialAccountEntity> FinancialAccounts { get; set; }
-        public DbSet<FinancialAccountPaycardEntity> FinancialAccountPaycards { get; set; }
         public DbSet<FinancialAccountTransactionEntity> FinancialAccountTransactions { get; set; }
     }
 }

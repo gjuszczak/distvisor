@@ -46,7 +46,6 @@ export class AddAccountDialogComponent implements OnChanges, OnDestroy {
   initFinancialAccount = () => <FinancialAccountDto>{
     name: '',
     number: '',
-    paycards: [],
     type: FinancialAccountType.Bank,
   }
 }

@@ -25,6 +25,9 @@ namespace Distvisor.Web.Data.Reads.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("CreatedDateTimeUtc")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
@@ -41,28 +44,6 @@ namespace Distvisor.Web.Data.Reads.Migrations
                         .IsUnique();
 
                     b.ToTable("FinancialAccounts");
-                });
-
-            modelBuilder.Entity("Distvisor.Web.Data.Reads.Entities.FinancialAccountPaycardEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("AccountId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("FinancialAccountPaycards");
                 });
 
             modelBuilder.Entity("Distvisor.Web.Data.Reads.Entities.FinancialAccountTransactionEntity", b =>
@@ -164,17 +145,6 @@ namespace Distvisor.Web.Data.Reads.Migrations
                     b.ToTable("SecretsVault");
                 });
 
-            modelBuilder.Entity("Distvisor.Web.Data.Reads.Entities.FinancialAccountPaycardEntity", b =>
-                {
-                    b.HasOne("Distvisor.Web.Data.Reads.Entities.FinancialAccountEntity", "Account")
-                        .WithMany("Paycards")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-                });
-
             modelBuilder.Entity("Distvisor.Web.Data.Reads.Entities.FinancialAccountTransactionEntity", b =>
                 {
                     b.HasOne("Distvisor.Web.Data.Reads.Entities.FinancialAccountEntity", "Account")
@@ -188,8 +158,6 @@ namespace Distvisor.Web.Data.Reads.Migrations
 
             modelBuilder.Entity("Distvisor.Web.Data.Reads.Entities.FinancialAccountEntity", b =>
                 {
-                    b.Navigation("Paycards");
-
                     b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618

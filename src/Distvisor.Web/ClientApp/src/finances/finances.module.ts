@@ -9,7 +9,6 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { CalendarModule } from 'primeng/calendar';
 import { ChartModule } from 'primeng/chart';
-import { ChipsModule } from 'primeng/chips';
 import { DialogModule } from 'primeng/dialog';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -42,7 +41,6 @@ import { ImportFinancialFilesDialogComponent } from './import-financial-files-di
     CardModule,
     CalendarModule,
     ChartModule,
-    ChipsModule,
     DialogModule,
     FileUploadModule,
     InputNumberModule,
