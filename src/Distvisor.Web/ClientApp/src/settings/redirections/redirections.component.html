@@ -10,7 +10,7 @@
                         <a [href]="item.url">{{item.url}}</a>
                     </div>
                 </div>
-                <button pButton label="Remove" icon="pi pi-times" (click)="onRemove(item.name)"></button>
+                <button pButton pRipple class="p-button-info p-button-text" label="Remove" icon="pi pi-times" (click)="onRemove(item.name)"></button>
             </div>
         </ng-template>
     </p-dataView>
@@ -29,7 +29,7 @@
             </div>
         </div>
         <div class="p-mt-2">
-            <button pButton icon="pi pi-check" label="Save" type="submit"></button>
+            <button pButton pRipple class="p-button-info p-button-outlined" icon="pi pi-check" label="Save" type="submit"></button>
         </div>
     </form>
 </p-card>

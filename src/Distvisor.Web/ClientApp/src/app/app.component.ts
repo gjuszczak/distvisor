@@ -5,6 +5,7 @@ import { NavigationService } from './navigation.service';
 import { AuthService } from './auth.service';
 import { ApiConfiguration } from '../api/api-configuration';
 import { SignalrService } from '../notifications/signalr.service';
+import { PrimeNGConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
@@ -20,15 +21,21 @@ export class AppComponent implements OnInit, OnDestroy {
     private apiConfiguration: ApiConfiguration,
     private signalrService: SignalrService,
     private ccService: NgcCookieConsentService,
+    private primengConfig: PrimeNGConfig,
     @Inject('BASE_URL') private baseUrl: string,
     @Inject('HOSTNAME') private hostname: string) {
   }
 
   ngOnInit() {
+    this.configurePrimeNg();
     this.configureApi();
     this.configureNavigation();
     this.configureNotifications();
     this.configureCookieConsent();
+  }
+
+  configurePrimeNg() {
+    this.primengConfig.ripple = true;
   }
 
   ngOnDestroy() {

@@ -13,9 +13,9 @@
             </div>
         </div>
         <div class="p-mt-2">
-            <button pButton *ngIf="selectedVersion" icon="pi pi-download" label="Deploy" class="ui-button-success"
+            <button pButton pRipple *ngIf="selectedVersion" icon="pi pi-download" label="Deploy" class="p-button-info p-button-outlined"
                 type="submit"></button>
-            <button pButton *ngIf="!selectedVersion" icon="pi pi-download" label="Redeploy" class="ui-button-success"
+            <button pButton pRipple *ngIf="!selectedVersion" icon="pi pi-download" label="Redeploy" class="p-button-info p-button-outlined"
                 type="submit"></button>
         </div>
     </form>

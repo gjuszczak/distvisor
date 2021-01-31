@@ -11,6 +11,7 @@ import { NgcCookieConsentModule } from 'ngx-cookieconsent';
 
 import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
 
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
@@ -56,6 +57,7 @@ import { LogoutComponent } from './logout/logout.component';
     // PrimeNg
     MenuModule,
     ButtonModule,
+    RippleModule,
 
     // internal
     SettingsModule,

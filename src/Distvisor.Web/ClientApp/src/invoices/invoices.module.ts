@@ -11,6 +11,7 @@ import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { RippleModule } from 'primeng/ripple';
 
 import { InvoicesComponent } from './invoices/invoices.component';
 
@@ -30,6 +31,7 @@ import { InvoicesComponent } from './invoices/invoices.component';
     DataViewModule,
     DropdownModule,
     InputNumberModule,
+    RippleModule,
   ],
   declarations: [InvoicesComponent]
 })

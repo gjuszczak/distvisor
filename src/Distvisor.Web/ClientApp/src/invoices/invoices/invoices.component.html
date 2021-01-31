@@ -22,11 +22,11 @@
                         </table>
                         <div class="p-d-flex p-flex-row-reverse p-pt-3">
                             <div class="p-ml-3">
-                                <button pButton type="button" class="p-button-lg" icon="pi pi-search"
+                                <button pButton pRipple type="button" class="p-button-lg p-button-info p-button-text" icon="pi pi-search"
                                     (click)="onPreviewInvoiceClicked(invoice.id)"></button>
                             </div>
                             <div class="p-ml-3">
-                                <button pButton type="button" class="p-button-lg" icon="pi pi-envelope"
+                                <button pButton pRipple type="button" class="p-button-lg p-button-info p-button-text" icon="pi pi-envelope"
                                     (click)="onSendMailInvoiceClicked(invoice.id)"></button>
                             </div>
                         </div>
@@ -51,12 +51,13 @@
                 <div class="p-field p-col-12 p-md-4">
                     <label for="inputWorkdays">Workdays:</label>
                     <p-inputNumber inputId="inputWorkdays" name="inputWorkdays" [(ngModel)]="workdays" mode="decimal"
+                        decrementButtonClass="p-button-secondary" incrementButtonClass="p-button-secondary"
                         [showButtons]="true" [min]="1" [max]="31">
                     </p-inputNumber>
                 </div>
             </div>
             <div class="p-mt-2">
-                <button pButton icon="pi pi-check" label="Generate" class="ui-button-success" type="submit"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-info p-button-outlined" label="Generate" type="submit"></button>
             </div>
         </form>
     </p-card>

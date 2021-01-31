@@ -1,7 +1,8 @@
-$primarycolor: #673AB7;
+$primarycolor: #5dc8f9;
 
 :root {
-    --primary-color: $primarycolor;
+    --primary-color: #{$primarycolor};
+    --primary-color-transparent: #{rgba($primarycolor, 0.16)};
 }
 
     .p-link:focus {

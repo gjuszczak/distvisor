@@ -16,7 +16,7 @@ body {
   color: var(--text-color);
 
   a {
-    color: #62abff;
+    color: var(--primary-color);
   }
 
   code {
@@ -111,6 +111,23 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .p-fileupload-buttonbar, .p-splitbutton {
+    .p-button {
+      background-color: transparent;
+      color: var(--primary-color);
+
+      &:enabled:hover {
+        background-color: var(--primary-color-transparent);
+        color: var(--primary-color);
+      }
+    }
+
+    .p-fileupload-choose:not(.p-disabled):hover {
+      background-color: var(--primary-color-transparent);
+      color: var(--primary-color);
+    }
   }
 
   .finances {

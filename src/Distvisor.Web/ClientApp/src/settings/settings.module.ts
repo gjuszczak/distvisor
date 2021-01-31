@@ -11,6 +11,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
 import { PanelModule } from 'primeng/panel';
+import { RippleModule } from 'primeng/ripple';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { ApiModule } from '../api/api.module';
 import { SettingsComponent } from './settings/settings.component';
@@ -38,6 +39,7 @@ import { UtilsModule } from 'src/utils/utils.module';
     InputTextModule,
     MenuModule,
     PanelModule,
+    RippleModule,
     SplitButtonModule,
 
     // internal
