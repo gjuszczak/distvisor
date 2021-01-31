@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:5.0.0-buster-slim-arm32v7
+FROM --platform=linux/arm/v7 mcr.microsoft.com/dotnet/aspnet:5.0
 WORKDIR /app
 COPY out .
 EXPOSE 80
