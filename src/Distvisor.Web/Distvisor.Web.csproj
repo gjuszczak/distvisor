@@ -14,7 +14,7 @@
     <Authors>Distvisor Grzegorz Juszczak</Authors>
     <Product>Distvisor.Web</Product>
     <Copyright>Distvisor Grzegorz Juszczak</Copyright>
-    <VersionPrefix>0.12.$([System.DateTime]::UtcNow.ToString(yyM)).$([System.DateTime]::UtcNow.ToString(dd))</VersionPrefix>
+    <VersionPrefix>0.13.$([System.DateTime]::UtcNow.ToString(yyM)).$([System.DateTime]::UtcNow.ToString(dd))</VersionPrefix>
     <VersionSuffix>build-$([System.DateTime]::UtcNow.ToString(HHmm))</VersionSuffix>
   </PropertyGroup>
 

@@ -35,6 +35,7 @@ namespace Distvisor.Web
             services.Configure<DeploymentConfiguration>(Config.GetSection("Deployment"));
             services.Configure<MailgunConfiguration>(Config.GetSection("Mailgun"));
             services.Configure<FinancesConfiguration>(Config.GetSection("Finances"));
+            services.Configure<EwelinkConfiguration>(Config.GetSection("Ewelink"));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ICryptoService, CryptoService>();
@@ -90,6 +91,13 @@ namespace Distvisor.Web
                     c.DefaultRequestHeaders.Add("Accept", "application/json");
                 });
 
+            services.AddHttpClient<IEwelinkClient, EwelinkClient>()
+                .ConfigureHttpClient(c =>
+                {
+                    c.BaseAddress = new Uri("https://eu-api.coolkit.cc:8080/");
+                    c.DefaultRequestHeaders.Add("Accept", "application/json");
+                });
+
             services.AddEventSourcing(Config.GetConnectionString("EventStore"), Config.GetConnectionString("ReadStore"));
 
             services.AddControllersWithViews()
@@ -108,6 +116,8 @@ namespace Distvisor.Web
             services.AddDistvisorAuth(Config);
 
             services.AddHostedService<EmailPoolingBackgroundService>();
+
+            services.AddRazorPages();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -165,6 +175,8 @@ namespace Distvisor.Web
                     pattern: "{controller}/{action=Index}/{id?}");
 
                 endpoints.MapHub<NotificationsHub>("/hubs/notificationshub");
+
+                endpoints.MapRazorPages();
             });
 
             app.UseSpa(spa =>
