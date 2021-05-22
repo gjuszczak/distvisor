@@ -6,18 +6,12 @@ namespace Distvisor.Web.Services
 {
     public interface ICryptoService
     {
-        void FillWithRandomNumbers(Span<byte> data);
         string GetHashString(string input);
         string HmacSha256Base64(string message, string key);
     }
 
     public class CryptoService : ICryptoService
     {
-        public void FillWithRandomNumbers(Span<byte> data)
-        {
-            RandomNumberGenerator.Fill(data);
-        }
-
         public string GetHashString(string input)
         {
             using var hashAlg = SHA256.Create();

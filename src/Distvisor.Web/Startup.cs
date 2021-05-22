@@ -49,6 +49,7 @@ namespace Distvisor.Web
             services.AddSingleton<IFinancialEmailDataExtractor, CardPaymentSettledEmailDataExtractor>();
             services.AddSingleton<IFinancialCsvDataExtractor, CsvSVariantDataExtractor>();
             services.AddSingleton<IFinancialCsvDataExtractor, CsvIVariantDataExtractor>();
+            services.AddSingleton<IEwelinkClientWebSocketFactory, EwelinkClientWebSocketFactory>();
             services.AddScoped<IDeploymentService, DeploymentService>();
             services.AddScoped<IBackupService, BackupService>();
             services.AddScoped<IInvoicesService, InvoicesService>();
@@ -94,7 +95,7 @@ namespace Distvisor.Web
             services.AddHttpClient<IEwelinkClient, EwelinkClient>()
                 .ConfigureHttpClient(c =>
                 {
-                    c.BaseAddress = new Uri("https://eu-api.coolkit.cc:8080/");
+                    c.BaseAddress = new Uri(Config.GetValue<string>("Ewelink:ApiUrl"));
                     c.DefaultRequestHeaders.Add("Accept", "application/json");
                 });
 
