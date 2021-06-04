@@ -78,24 +78,4 @@ namespace Distvisor.Web.Services
             _cache.Set(key, value, cacheEntryOptions);
         }
     }
-
-    public static class KeyVaultExtensions
-    {
-        public static AccountingSecrets GetAccountingSecrets(this ISecretsVault secretsVault)
-        {
-            return new AccountingSecrets
-            {
-                InvoicesApiKey = secretsVault.GetSecretValue(SecretKey.AccountingInvoicesApiKey),
-                SubscriberApiKey = secretsVault.GetSecretValue(SecretKey.AccountingSubscriberApiKey),
-                User = secretsVault.GetSecretValue(SecretKey.AccountingUser),
-            };
-        }
-    }
-
-    public class AccountingSecrets
-    {
-        public string InvoicesApiKey { get; set; }
-        public string SubscriberApiKey { get; set; }
-        public string User { get; set; }
-    }
 }

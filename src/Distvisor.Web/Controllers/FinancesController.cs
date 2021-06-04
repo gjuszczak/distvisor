@@ -1,6 +1,4 @@
-﻿using Distvisor.Web.BackgroundServices;
-using Distvisor.Web.Data.Events.Core;
-using Distvisor.Web.Services;
+﻿using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

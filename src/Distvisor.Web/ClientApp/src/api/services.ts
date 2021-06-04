@@ -4,7 +4,6 @@ export { ClientConfigService } from './services/client-config.service';
 export { EventLogService } from './services/event-log.service';
 export { EwelinkService } from './services/ewelink.service';
 export { FinancesService } from './services/finances.service';
-export { InvoicesService } from './services/invoices.service';
 export { RedirectionsService } from './services/redirections.service';
 export { RedirectToService } from './services/redirect-to.service';
 export { SecretsVaultService } from './services/secrets-vault.service';

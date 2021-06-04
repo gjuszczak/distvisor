@@ -5,5 +5,4 @@ export interface AuthMsalConfiguration {
   clientId?: null | string;
   postLogoutRedirectUri?: null | string;
   redirectUri?: null | string;
-  validateAuthority?: boolean;
 }

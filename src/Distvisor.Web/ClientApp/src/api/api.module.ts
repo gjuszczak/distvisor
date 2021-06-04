@@ -10,7 +10,6 @@ import { ClientConfigService } from './services/client-config.service';
 import { EventLogService } from './services/event-log.service';
 import { EwelinkService } from './services/ewelink.service';
 import { FinancesService } from './services/finances.service';
-import { InvoicesService } from './services/invoices.service';
 import { RedirectionsService } from './services/redirections.service';
 import { RedirectToService } from './services/redirect-to.service';
 import { SecretsVaultService } from './services/secrets-vault.service';
@@ -29,7 +28,6 @@ import { SecretsVaultService } from './services/secrets-vault.service';
     EventLogService,
     EwelinkService,
     FinancesService,
-    InvoicesService,
     RedirectionsService,
     RedirectToService,
     SecretsVaultService,

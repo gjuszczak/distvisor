@@ -21,7 +21,5 @@ export { FinancialAccountTransactionDto } from './models/financial-account-trans
 export { FinancialSummaryDataSetDto } from './models/financial-summary-data-set-dto';
 export { FinancialSummaryLineChartDto } from './models/financial-summary-line-chart-dto';
 export { FinancialSummaryDto } from './models/financial-summary-dto';
-export { Invoice } from './models/invoice';
-export { GenerateInvoiceDto } from './models/generate-invoice-dto';
 export { RedirectionDetails } from './models/redirection-details';
 export { SecretKey } from './models/secret-key';

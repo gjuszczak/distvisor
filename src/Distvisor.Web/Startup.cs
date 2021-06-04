@@ -52,8 +52,6 @@ namespace Distvisor.Web
             services.AddSingleton<IEwelinkClientWebSocketFactory, EwelinkClientWebSocketFactory>();
             services.AddScoped<IDeploymentService, DeploymentService>();
             services.AddScoped<IBackupService, BackupService>();
-            services.AddScoped<IInvoicesService, InvoicesService>();
-            services.AddScoped<IEmailSendingService, EmailSendingService>();
             services.AddScoped<IEmailReceivingService, EmailReceivingService>();
             services.AddScoped<ISecretsVault, SecretsVault>();
             services.AddScoped<IMicrosoftAuthService, MicrosoftAuthService>();
@@ -76,13 +74,6 @@ namespace Distvisor.Web
                     c.BaseAddress = new Uri("https://api.github.com/");
                     c.DefaultRequestHeaders.Add("User-Agent", "distvisor");
                     c.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
-                });
-
-            services.AddHttpClient<IIFirmaClient, IFirmaClient, FakeIFirmaClient>(Config)
-                .ConfigureHttpClient(c =>
-                {
-                    c.BaseAddress = new Uri("https://www.ifirma.pl/");
-                    c.DefaultRequestHeaders.Add("Accept", "application/json");
                 });
 
             services.AddHttpClient<IOneDriveClient, OneDriveClient>()
