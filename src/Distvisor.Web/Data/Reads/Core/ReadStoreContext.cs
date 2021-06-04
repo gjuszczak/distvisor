@@ -18,10 +18,6 @@ namespace Distvisor.Web.Data.Reads.Core
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ProcessedEmailEntity>()
-                .HasIndex(e => e.UniqueKey)
-                .IsUnique();
-
             modelBuilder.Entity<FinancialAccountEntity>()
                 .HasIndex(e => e.Number)
                 .IsUnique();
@@ -59,7 +55,6 @@ namespace Distvisor.Web.Data.Reads.Core
 
         public DbSet<SecretsVaultEntity> SecretsVault { get; set; }
         public DbSet<RedirectionEntity> Redirections { get; set; }
-        public DbSet<ProcessedEmailEntity> ProcessedEmails { get; set; }
         public DbSet<FinancialAccountEntity> FinancialAccounts { get; set; }
         public DbSet<FinancialAccountTransactionEntity> FinancialAccountTransactions { get; set; }
     }

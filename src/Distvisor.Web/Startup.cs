@@ -1,4 +1,3 @@
-using Distvisor.Web.BackgroundServices;
 using Distvisor.Web.Configuration;
 using Distvisor.Web.Data;
 using Distvisor.Web.Hubs;
@@ -40,19 +39,12 @@ namespace Distvisor.Web
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ICryptoService, CryptoService>();
             services.AddSingleton<IEventLogToDtoMapper, EventLogToDtoMapper>();
-            services.AddSingleton<IEmailReceivedNotifier, EmailReceivedNotifier>();
             services.AddSingleton<IFinancialDataExtractor, FinancialCsvDataExtractor>();
-            services.AddSingleton<IFinancialDataExtractor, FinancialEmailDataExtractor>();
-            services.AddSingleton<IFinancialEmailDataExtractor, AccountIncomeEmailDataExtractor>();
-            services.AddSingleton<IFinancialEmailDataExtractor, AccountDebtEmailDataExtractor>();
-            services.AddSingleton<IFinancialEmailDataExtractor, CardPaymentEmailDataExtractor>();
-            services.AddSingleton<IFinancialEmailDataExtractor, CardPaymentSettledEmailDataExtractor>();
             services.AddSingleton<IFinancialCsvDataExtractor, CsvSVariantDataExtractor>();
             services.AddSingleton<IFinancialCsvDataExtractor, CsvIVariantDataExtractor>();
             services.AddSingleton<IEwelinkClientWebSocketFactory, EwelinkClientWebSocketFactory>();
             services.AddScoped<IDeploymentService, DeploymentService>();
             services.AddScoped<IBackupService, BackupService>();
-            services.AddScoped<IEmailReceivingService, EmailReceivingService>();
             services.AddScoped<ISecretsVault, SecretsVault>();
             services.AddScoped<IMicrosoftAuthService, MicrosoftAuthService>();
             services.AddScoped<IUserInfoProvider, UserInfoProvider>();
@@ -106,8 +98,6 @@ namespace Distvisor.Web
             services.AddSignalR();
 
             services.AddDistvisorAuth(Config);
-
-            services.AddHostedService<EmailPoolingBackgroundService>();
 
             services.AddRazorPages();
 

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using MimeKit;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,33 +15,6 @@ namespace Distvisor.Web.Services
 
     public interface IFinancialDataExtractor : IFinancialDataExtractor<IFormFile>
     {
-    }
-
-    public class FinancialEmailDataExtractor : IFinancialDataExtractor
-    {
-        private readonly IEnumerable<IFinancialEmailDataExtractor> _emailExtractors;
-
-        public FinancialEmailDataExtractor(IEnumerable<IFinancialEmailDataExtractor> emailExtractors)
-        {
-            _emailExtractors = emailExtractors;
-        }
-
-        public bool CanExtract(IFormFile data)
-        {
-            return data.FileName.Contains(".eml");
-        }
-
-        public async Task<IEnumerable<FinacialExtractedData>> ExtractAsync(IFormFile data)
-        {
-            using var ds = data.OpenReadStream();
-            var emailBody = await MimeMessage.LoadAsync(ds);
-            var matchAnalyzer = _emailExtractors.FirstOrDefault(a => a.CanExtract(emailBody));
-            if (matchAnalyzer == null)
-            {
-                return Array.Empty<FinacialExtractedData>();
-            }
-            return await matchAnalyzer.ExtractAsync(emailBody);
-        }
     }
 
     public class FinancialCsvDataExtractor : IFinancialDataExtractor
