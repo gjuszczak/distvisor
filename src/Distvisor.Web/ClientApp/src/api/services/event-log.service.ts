@@ -23,20 +23,20 @@ export class EventLogService extends BaseService {
   }
 
   /**
-   * Path part for operation apiEventLogListGet
+   * Path part for operation apiSecEventLogListGet
    */
-  static readonly ApiEventLogListGetPath = '/api/EventLog/list';
+  static readonly ApiSecEventLogListGetPath = '/api/sec/EventLog/list';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiEventLogListGet$Plain()` instead.
+   * To access only the response body, use `apiSecEventLogListGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiEventLogListGet$Plain$Response(params?: {
+  apiSecEventLogListGet$Plain$Response(params?: {
   }): Observable<StrictHttpResponse<Array<EventLogDto>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiEventLogListGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiSecEventLogListGetPath, 'get');
     if (params) {
     }
 
@@ -53,28 +53,28 @@ export class EventLogService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiEventLogListGet$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecEventLogListGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiEventLogListGet$Plain(params?: {
+  apiSecEventLogListGet$Plain(params?: {
   }): Observable<Array<EventLogDto>> {
 
-    return this.apiEventLogListGet$Plain$Response(params).pipe(
+    return this.apiSecEventLogListGet$Plain$Response(params).pipe(
       map((r: StrictHttpResponse<Array<EventLogDto>>) => r.body as Array<EventLogDto>)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiEventLogListGet$Json()` instead.
+   * To access only the response body, use `apiSecEventLogListGet$Json()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiEventLogListGet$Json$Response(params?: {
+  apiSecEventLogListGet$Json$Response(params?: {
   }): Observable<StrictHttpResponse<Array<EventLogDto>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiEventLogListGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiSecEventLogListGetPath, 'get');
     if (params) {
     }
 
@@ -91,14 +91,14 @@ export class EventLogService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiEventLogListGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecEventLogListGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiEventLogListGet$Json(params?: {
+  apiSecEventLogListGet$Json(params?: {
   }): Observable<Array<EventLogDto>> {
 
-    return this.apiEventLogListGet$Json$Response(params).pipe(
+    return this.apiSecEventLogListGet$Json$Response(params).pipe(
       map((r: StrictHttpResponse<Array<EventLogDto>>) => r.body as Array<EventLogDto>)
     );
   }

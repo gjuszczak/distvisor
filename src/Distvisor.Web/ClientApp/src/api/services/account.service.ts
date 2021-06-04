@@ -23,20 +23,20 @@ export class AccountService extends BaseService {
   }
 
   /**
-   * Path part for operation apiAccountGet
+   * Path part for operation apiSecAccountGet
    */
-  static readonly ApiAccountGetPath = '/api/Account';
+  static readonly ApiSecAccountGetPath = '/api/sec/Account';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAccountGet$Plain()` instead.
+   * To access only the response body, use `apiSecAccountGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAccountGet$Plain$Response(params?: {
+  apiSecAccountGet$Plain$Response(params?: {
   }): Observable<StrictHttpResponse<UserInfoDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AccountService.ApiAccountGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, AccountService.ApiSecAccountGetPath, 'get');
     if (params) {
     }
 
@@ -53,28 +53,28 @@ export class AccountService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiAccountGet$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecAccountGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAccountGet$Plain(params?: {
+  apiSecAccountGet$Plain(params?: {
   }): Observable<UserInfoDto> {
 
-    return this.apiAccountGet$Plain$Response(params).pipe(
+    return this.apiSecAccountGet$Plain$Response(params).pipe(
       map((r: StrictHttpResponse<UserInfoDto>) => r.body as UserInfoDto)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAccountGet$Json()` instead.
+   * To access only the response body, use `apiSecAccountGet$Json()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAccountGet$Json$Response(params?: {
+  apiSecAccountGet$Json$Response(params?: {
   }): Observable<StrictHttpResponse<UserInfoDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AccountService.ApiAccountGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, AccountService.ApiSecAccountGetPath, 'get');
     if (params) {
     }
 
@@ -91,14 +91,14 @@ export class AccountService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiAccountGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecAccountGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAccountGet$Json(params?: {
+  apiSecAccountGet$Json(params?: {
   }): Observable<UserInfoDto> {
 
-    return this.apiAccountGet$Json$Response(params).pipe(
+    return this.apiSecAccountGet$Json$Response(params).pipe(
       map((r: StrictHttpResponse<UserInfoDto>) => r.body as UserInfoDto)
     );
   }

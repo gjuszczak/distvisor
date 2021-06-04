@@ -23,7 +23,7 @@ export class EventLogComponent implements OnInit, OnDestroy {
 
   reloadList() {
     this.subscriptions.push(
-      this.eventLogService.apiEventLogListGet$Json()
+      this.eventLogService.apiSecEventLogListGet$Json()
         .subscribe(events => {
           this.events = events;
         }));

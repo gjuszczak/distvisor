@@ -18,7 +18,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
   constructor(private adminService: AdminService) { }
 
   ngOnInit() {
-    this.subscriptions.push(this.adminService.apiAdminDeploymentParamsGet$Json()
+    this.subscriptions.push(this.adminService.apiSecAdminDeploymentParamsGet$Json()
       .subscribe(deployParams => {
         if (deployParams.environments) {
           this.environments = deployParams.environments.map(v => <SelectItem>{ label: v, value: v });
@@ -33,7 +33,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     if (this.selectedVersion) {
-      this.subscriptions.push(this.adminService.apiAdminDeployPost({
+      this.subscriptions.push(this.adminService.apiSecAdminDeployPost({
         body: <DeployRequestDto>{
           environment: this.selectedEnvironment,
           version: this.selectedVersion,
@@ -41,7 +41,7 @@ export class DeploymentComponent implements OnInit, OnDestroy {
       }).subscribe());
     }
     else {
-      this.subscriptions.push(this.adminService.apiAdminRedeployPost({
+      this.subscriptions.push(this.adminService.apiSecAdminRedeployPost({
         body: <RedeployRequestDto>{
           environment: this.selectedEnvironment,
         }

@@ -27,21 +27,21 @@ export class SecretsVaultComponent implements OnInit, OnDestroy {
   }
 
   reloadList() {
-    this.subscriptions.push(this.secretsVaultService.apiSecretsVaultListGet$Json()
+    this.subscriptions.push(this.secretsVaultService.apiSecSecretsVaultListGet$Json()
       .subscribe(keys => {
         this.storedSecretKeys = keys;
       }));
   }
 
   onSave() {
-    this.subscriptions.push(this.secretsVaultService.apiSecretsVaultKeyPost({
+    this.subscriptions.push(this.secretsVaultService.apiSecSecretsVaultKeyPost({
       key: this.selectedSecretKey,
       value: this.inputSecretValue,
     }).subscribe(() => this.reloadList()));
   }
 
   onRemove(key: SecretKey) {
-    this.subscriptions.push(this.secretsVaultService.apiSecretsVaultKeyDelete({
+    this.subscriptions.push(this.secretsVaultService.apiSecSecretsVaultKeyDelete({
       key: key,
     }).subscribe(() => this.reloadList()));
   }

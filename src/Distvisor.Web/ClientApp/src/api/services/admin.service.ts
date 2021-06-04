@@ -26,20 +26,20 @@ export class AdminService extends BaseService {
   }
 
   /**
-   * Path part for operation apiAdminDeploymentParamsGet
+   * Path part for operation apiSecAdminDeploymentParamsGet
    */
-  static readonly ApiAdminDeploymentParamsGetPath = '/api/Admin/deployment-params';
+  static readonly ApiSecAdminDeploymentParamsGetPath = '/api/sec/Admin/deployment-params';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAdminDeploymentParamsGet$Plain()` instead.
+   * To access only the response body, use `apiSecAdminDeploymentParamsGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminDeploymentParamsGet$Plain$Response(params?: {
+  apiSecAdminDeploymentParamsGet$Plain$Response(params?: {
   }): Observable<StrictHttpResponse<DeploymentParamsResponseDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminDeploymentParamsGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiSecAdminDeploymentParamsGetPath, 'get');
     if (params) {
     }
 
@@ -56,28 +56,28 @@ export class AdminService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiAdminDeploymentParamsGet$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecAdminDeploymentParamsGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminDeploymentParamsGet$Plain(params?: {
+  apiSecAdminDeploymentParamsGet$Plain(params?: {
   }): Observable<DeploymentParamsResponseDto> {
 
-    return this.apiAdminDeploymentParamsGet$Plain$Response(params).pipe(
+    return this.apiSecAdminDeploymentParamsGet$Plain$Response(params).pipe(
       map((r: StrictHttpResponse<DeploymentParamsResponseDto>) => r.body as DeploymentParamsResponseDto)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAdminDeploymentParamsGet$Json()` instead.
+   * To access only the response body, use `apiSecAdminDeploymentParamsGet$Json()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminDeploymentParamsGet$Json$Response(params?: {
+  apiSecAdminDeploymentParamsGet$Json$Response(params?: {
   }): Observable<StrictHttpResponse<DeploymentParamsResponseDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminDeploymentParamsGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiSecAdminDeploymentParamsGetPath, 'get');
     if (params) {
     }
 
@@ -94,34 +94,34 @@ export class AdminService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiAdminDeploymentParamsGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecAdminDeploymentParamsGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminDeploymentParamsGet$Json(params?: {
+  apiSecAdminDeploymentParamsGet$Json(params?: {
   }): Observable<DeploymentParamsResponseDto> {
 
-    return this.apiAdminDeploymentParamsGet$Json$Response(params).pipe(
+    return this.apiSecAdminDeploymentParamsGet$Json$Response(params).pipe(
       map((r: StrictHttpResponse<DeploymentParamsResponseDto>) => r.body as DeploymentParamsResponseDto)
     );
   }
 
   /**
-   * Path part for operation apiAdminDeployPost
+   * Path part for operation apiSecAdminDeployPost
    */
-  static readonly ApiAdminDeployPostPath = '/api/Admin/deploy';
+  static readonly ApiSecAdminDeployPostPath = '/api/sec/Admin/deploy';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAdminDeployPost()` instead.
+   * To access only the response body, use `apiSecAdminDeployPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiAdminDeployPost$Response(params?: {
+  apiSecAdminDeployPost$Response(params?: {
     body?: DeployRequestDto
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminDeployPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiSecAdminDeployPostPath, 'post');
     if (params) {
       rb.body(params.body, 'application/*+json');
     }
@@ -139,35 +139,35 @@ export class AdminService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiAdminDeployPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecAdminDeployPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiAdminDeployPost(params?: {
+  apiSecAdminDeployPost(params?: {
     body?: DeployRequestDto
   }): Observable<void> {
 
-    return this.apiAdminDeployPost$Response(params).pipe(
+    return this.apiSecAdminDeployPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
   /**
-   * Path part for operation apiAdminRedeployPost
+   * Path part for operation apiSecAdminRedeployPost
    */
-  static readonly ApiAdminRedeployPostPath = '/api/Admin/redeploy';
+  static readonly ApiSecAdminRedeployPostPath = '/api/sec/Admin/redeploy';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAdminRedeployPost()` instead.
+   * To access only the response body, use `apiSecAdminRedeployPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiAdminRedeployPost$Response(params?: {
+  apiSecAdminRedeployPost$Response(params?: {
     body?: RedeployRequestDto
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminRedeployPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiSecAdminRedeployPostPath, 'post');
     if (params) {
       rb.body(params.body, 'application/*+json');
     }
@@ -185,34 +185,34 @@ export class AdminService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiAdminRedeployPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecAdminRedeployPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiAdminRedeployPost(params?: {
+  apiSecAdminRedeployPost(params?: {
     body?: RedeployRequestDto
   }): Observable<void> {
 
-    return this.apiAdminRedeployPost$Response(params).pipe(
+    return this.apiSecAdminRedeployPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
   /**
-   * Path part for operation apiAdminListBackupsGet
+   * Path part for operation apiSecAdminListBackupsGet
    */
-  static readonly ApiAdminListBackupsGetPath = '/api/Admin/list-backups';
+  static readonly ApiSecAdminListBackupsGetPath = '/api/sec/Admin/list-backups';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAdminListBackupsGet$Plain()` instead.
+   * To access only the response body, use `apiSecAdminListBackupsGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminListBackupsGet$Plain$Response(params?: {
+  apiSecAdminListBackupsGet$Plain$Response(params?: {
   }): Observable<StrictHttpResponse<Array<BackupFileInfoDto>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminListBackupsGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiSecAdminListBackupsGetPath, 'get');
     if (params) {
     }
 
@@ -229,28 +229,28 @@ export class AdminService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiAdminListBackupsGet$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecAdminListBackupsGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminListBackupsGet$Plain(params?: {
+  apiSecAdminListBackupsGet$Plain(params?: {
   }): Observable<Array<BackupFileInfoDto>> {
 
-    return this.apiAdminListBackupsGet$Plain$Response(params).pipe(
+    return this.apiSecAdminListBackupsGet$Plain$Response(params).pipe(
       map((r: StrictHttpResponse<Array<BackupFileInfoDto>>) => r.body as Array<BackupFileInfoDto>)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAdminListBackupsGet$Json()` instead.
+   * To access only the response body, use `apiSecAdminListBackupsGet$Json()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminListBackupsGet$Json$Response(params?: {
+  apiSecAdminListBackupsGet$Json$Response(params?: {
   }): Observable<StrictHttpResponse<Array<BackupFileInfoDto>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminListBackupsGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiSecAdminListBackupsGetPath, 'get');
     if (params) {
     }
 
@@ -267,33 +267,33 @@ export class AdminService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiAdminListBackupsGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecAdminListBackupsGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminListBackupsGet$Json(params?: {
+  apiSecAdminListBackupsGet$Json(params?: {
   }): Observable<Array<BackupFileInfoDto>> {
 
-    return this.apiAdminListBackupsGet$Json$Response(params).pipe(
+    return this.apiSecAdminListBackupsGet$Json$Response(params).pipe(
       map((r: StrictHttpResponse<Array<BackupFileInfoDto>>) => r.body as Array<BackupFileInfoDto>)
     );
   }
 
   /**
-   * Path part for operation apiAdminCreateBackupPost
+   * Path part for operation apiSecAdminCreateBackupPost
    */
-  static readonly ApiAdminCreateBackupPostPath = '/api/Admin/create-backup';
+  static readonly ApiSecAdminCreateBackupPostPath = '/api/sec/Admin/create-backup';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAdminCreateBackupPost()` instead.
+   * To access only the response body, use `apiSecAdminCreateBackupPost()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminCreateBackupPost$Response(params?: {
+  apiSecAdminCreateBackupPost$Response(params?: {
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminCreateBackupPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiSecAdminCreateBackupPostPath, 'post');
     if (params) {
     }
 
@@ -310,34 +310,34 @@ export class AdminService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiAdminCreateBackupPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecAdminCreateBackupPost$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminCreateBackupPost(params?: {
+  apiSecAdminCreateBackupPost(params?: {
   }): Observable<void> {
 
-    return this.apiAdminCreateBackupPost$Response(params).pipe(
+    return this.apiSecAdminCreateBackupPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
   /**
-   * Path part for operation apiAdminRestoreBackupPost
+   * Path part for operation apiSecAdminRestoreBackupPost
    */
-  static readonly ApiAdminRestoreBackupPostPath = '/api/Admin/restore-backup';
+  static readonly ApiSecAdminRestoreBackupPostPath = '/api/sec/Admin/restore-backup';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAdminRestoreBackupPost()` instead.
+   * To access only the response body, use `apiSecAdminRestoreBackupPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiAdminRestoreBackupPost$Response(params?: {
+  apiSecAdminRestoreBackupPost$Response(params?: {
     body?: BackupFileInfoDto
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminRestoreBackupPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiSecAdminRestoreBackupPostPath, 'post');
     if (params) {
       rb.body(params.body, 'application/*+json');
     }
@@ -355,35 +355,35 @@ export class AdminService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiAdminRestoreBackupPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecAdminRestoreBackupPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiAdminRestoreBackupPost(params?: {
+  apiSecAdminRestoreBackupPost(params?: {
     body?: BackupFileInfoDto
   }): Observable<void> {
 
-    return this.apiAdminRestoreBackupPost$Response(params).pipe(
+    return this.apiSecAdminRestoreBackupPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
   /**
-   * Path part for operation apiAdminDeleteBackupPost
+   * Path part for operation apiSecAdminDeleteBackupPost
    */
-  static readonly ApiAdminDeleteBackupPostPath = '/api/Admin/delete-backup';
+  static readonly ApiSecAdminDeleteBackupPostPath = '/api/sec/Admin/delete-backup';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAdminDeleteBackupPost()` instead.
+   * To access only the response body, use `apiSecAdminDeleteBackupPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiAdminDeleteBackupPost$Response(params?: {
+  apiSecAdminDeleteBackupPost$Response(params?: {
     body?: BackupFileInfoDto
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminDeleteBackupPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiSecAdminDeleteBackupPostPath, 'post');
     if (params) {
       rb.body(params.body, 'application/*+json');
     }
@@ -401,34 +401,34 @@ export class AdminService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiAdminDeleteBackupPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecAdminDeleteBackupPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiAdminDeleteBackupPost(params?: {
+  apiSecAdminDeleteBackupPost(params?: {
     body?: BackupFileInfoDto
   }): Observable<void> {
 
-    return this.apiAdminDeleteBackupPost$Response(params).pipe(
+    return this.apiSecAdminDeleteBackupPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
   /**
-   * Path part for operation apiAdminReplayEventsPost
+   * Path part for operation apiSecAdminReplayEventsPost
    */
-  static readonly ApiAdminReplayEventsPostPath = '/api/Admin/replay-events';
+  static readonly ApiSecAdminReplayEventsPostPath = '/api/sec/Admin/replay-events';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiAdminReplayEventsPost()` instead.
+   * To access only the response body, use `apiSecAdminReplayEventsPost()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminReplayEventsPost$Response(params?: {
+  apiSecAdminReplayEventsPost$Response(params?: {
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiAdminReplayEventsPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, AdminService.ApiSecAdminReplayEventsPostPath, 'post');
     if (params) {
     }
 
@@ -445,14 +445,14 @@ export class AdminService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiAdminReplayEventsPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecAdminReplayEventsPost$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiAdminReplayEventsPost(params?: {
+  apiSecAdminReplayEventsPost(params?: {
   }): Observable<void> {
 
-    return this.apiAdminReplayEventsPost$Response(params).pipe(
+    return this.apiSecAdminReplayEventsPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }

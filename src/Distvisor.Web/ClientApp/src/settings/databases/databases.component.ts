@@ -32,7 +32,7 @@ export class DatabasesComponent implements OnInit {
   }
 
   reloadBackupList() {
-    this.adminService.apiAdminListBackupsGet$Json()
+    this.adminService.apiSecAdminListBackupsGet$Json()
       .subscribe(backups => {
         this.backupFiles = backups;
         
@@ -55,23 +55,23 @@ export class DatabasesComponent implements OnInit {
   }
 
   create() {
-    this.adminService.apiAdminCreateBackupPost()
+    this.adminService.apiSecAdminCreateBackupPost()
       .subscribe(() => this.reloadBackupList());
   }
 
   replayEvents() {
-    this.adminService.apiAdminReplayEventsPost()
+    this.adminService.apiSecAdminReplayEventsPost()
       .subscribe(() => location.reload());
   }
 
   restore(backupFile: BackupFileInfoDto) {
-    this.adminService.apiAdminRestoreBackupPost({
+    this.adminService.apiSecAdminRestoreBackupPost({
       body: backupFile
     }).subscribe(() => this.reloadBackupList());
   }
 
   remove(backupFile: BackupFileInfoDto) {
-    this.adminService.apiAdminDeleteBackupPost({
+    this.adminService.apiSecAdminDeleteBackupPost({
       body: backupFile
     }).subscribe(() => this.reloadBackupList());
   }

@@ -3,7 +3,9 @@
     public class ClientConfiguration
     {
         public MsalConfiguration Msal { get; set; }
-        public MsalAngularConfiguration MsalAngular { get; set; }
+        public MsalInterceptorConfiguration MsalInterceptor { get; set; }
+        public MsalGuardConfiguration MsalGuard { get; set; }
+        public MsalProtectedResource[] MsalProtectedResources { get; set; }
         public BackendDetails BackendDetails { get; set; }
     }
 
@@ -20,17 +22,29 @@
         public CacheMsalConfiguration Cache { get; set; }
     }
 
-    public class MsalAngularConfiguration
+    public class MsalInterceptorConfiguration
     {
-        public string[] ConsentScopes { get; set; }
+        public string InteractionType { get; set; }
+    }
+
+    public class MsalGuardConfiguration
+    {
+        public string InteractionType { get; set; }
+        public string LoginFailedRoute { get; set; }
+    }
+
+    public class MsalProtectedResource
+    {
+        public string[] Urls { get; set; }
+        public string[] Scopes { get; set; }
     }
 
     public class AuthMsalConfiguration
     {
         public string Authority { get; set; }
         public string ClientId { get; set; }
+        public string RedirectUri { get; set; }
         public string PostLogoutRedirectUri { get; set; }
-        public bool ValidateAuthority { get; set; }
     }
 
     public class CacheMsalConfiguration

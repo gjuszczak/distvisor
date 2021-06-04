@@ -27,21 +27,21 @@ export class FinancesService extends BaseService {
   }
 
   /**
-   * Path part for operation apiFinancesImportFilesPost
+   * Path part for operation apiSecFinancesImportFilesPost
    */
-  static readonly ApiFinancesImportFilesPostPath = '/api/Finances/import-files';
+  static readonly ApiSecFinancesImportFilesPostPath = '/api/sec/Finances/import-files';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiFinancesImportFilesPost()` instead.
+   * To access only the response body, use `apiSecFinancesImportFilesPost()` instead.
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiFinancesImportFilesPost$Response(params?: {
+  apiSecFinancesImportFilesPost$Response(params?: {
     body?: { 'files'?: Array<Blob> }
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiFinancesImportFilesPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesImportFilesPostPath, 'post');
     if (params) {
       rb.body(params.body, 'multipart/form-data');
     }
@@ -59,35 +59,35 @@ export class FinancesService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiFinancesImportFilesPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecFinancesImportFilesPost$Response()` instead.
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
-  apiFinancesImportFilesPost(params?: {
+  apiSecFinancesImportFilesPost(params?: {
     body?: { 'files'?: Array<Blob> }
   }): Observable<void> {
 
-    return this.apiFinancesImportFilesPost$Response(params).pipe(
+    return this.apiSecFinancesImportFilesPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
   /**
-   * Path part for operation apiFinancesAccountsAddPost
+   * Path part for operation apiSecFinancesAccountsAddPost
    */
-  static readonly ApiFinancesAccountsAddPostPath = '/api/Finances/accounts/add';
+  static readonly ApiSecFinancesAccountsAddPostPath = '/api/sec/Finances/accounts/add';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiFinancesAccountsAddPost()` instead.
+   * To access only the response body, use `apiSecFinancesAccountsAddPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiFinancesAccountsAddPost$Response(params?: {
+  apiSecFinancesAccountsAddPost$Response(params?: {
     body?: AddFinancialAccountDto
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiFinancesAccountsAddPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesAccountsAddPostPath, 'post');
     if (params) {
       rb.body(params.body, 'application/*+json');
     }
@@ -105,34 +105,34 @@ export class FinancesService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiFinancesAccountsAddPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecFinancesAccountsAddPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiFinancesAccountsAddPost(params?: {
+  apiSecFinancesAccountsAddPost(params?: {
     body?: AddFinancialAccountDto
   }): Observable<void> {
 
-    return this.apiFinancesAccountsAddPost$Response(params).pipe(
+    return this.apiSecFinancesAccountsAddPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
   /**
-   * Path part for operation apiFinancesAccountsListGet
+   * Path part for operation apiSecFinancesAccountsListGet
    */
-  static readonly ApiFinancesAccountsListGetPath = '/api/Finances/accounts/list';
+  static readonly ApiSecFinancesAccountsListGetPath = '/api/sec/Finances/accounts/list';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiFinancesAccountsListGet$Plain()` instead.
+   * To access only the response body, use `apiSecFinancesAccountsListGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiFinancesAccountsListGet$Plain$Response(params?: {
+  apiSecFinancesAccountsListGet$Plain$Response(params?: {
   }): Observable<StrictHttpResponse<Array<FinancialAccountDto>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiFinancesAccountsListGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesAccountsListGetPath, 'get');
     if (params) {
     }
 
@@ -149,28 +149,28 @@ export class FinancesService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiFinancesAccountsListGet$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecFinancesAccountsListGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiFinancesAccountsListGet$Plain(params?: {
+  apiSecFinancesAccountsListGet$Plain(params?: {
   }): Observable<Array<FinancialAccountDto>> {
 
-    return this.apiFinancesAccountsListGet$Plain$Response(params).pipe(
+    return this.apiSecFinancesAccountsListGet$Plain$Response(params).pipe(
       map((r: StrictHttpResponse<Array<FinancialAccountDto>>) => r.body as Array<FinancialAccountDto>)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiFinancesAccountsListGet$Json()` instead.
+   * To access only the response body, use `apiSecFinancesAccountsListGet$Json()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiFinancesAccountsListGet$Json$Response(params?: {
+  apiSecFinancesAccountsListGet$Json$Response(params?: {
   }): Observable<StrictHttpResponse<Array<FinancialAccountDto>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiFinancesAccountsListGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesAccountsListGetPath, 'get');
     if (params) {
     }
 
@@ -187,34 +187,34 @@ export class FinancesService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiFinancesAccountsListGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecFinancesAccountsListGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiFinancesAccountsListGet$Json(params?: {
+  apiSecFinancesAccountsListGet$Json(params?: {
   }): Observable<Array<FinancialAccountDto>> {
 
-    return this.apiFinancesAccountsListGet$Json$Response(params).pipe(
+    return this.apiSecFinancesAccountsListGet$Json$Response(params).pipe(
       map((r: StrictHttpResponse<Array<FinancialAccountDto>>) => r.body as Array<FinancialAccountDto>)
     );
   }
 
   /**
-   * Path part for operation apiFinancesAccountsTransactionsAddPost
+   * Path part for operation apiSecFinancesAccountsTransactionsAddPost
    */
-  static readonly ApiFinancesAccountsTransactionsAddPostPath = '/api/Finances/accounts/transactions/add';
+  static readonly ApiSecFinancesAccountsTransactionsAddPostPath = '/api/sec/Finances/accounts/transactions/add';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiFinancesAccountsTransactionsAddPost()` instead.
+   * To access only the response body, use `apiSecFinancesAccountsTransactionsAddPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiFinancesAccountsTransactionsAddPost$Response(params?: {
+  apiSecFinancesAccountsTransactionsAddPost$Response(params?: {
     body?: AddFinancialAccountTransactionDto
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiFinancesAccountsTransactionsAddPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesAccountsTransactionsAddPostPath, 'post');
     if (params) {
       rb.body(params.body, 'application/*+json');
     }
@@ -232,35 +232,35 @@ export class FinancesService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiFinancesAccountsTransactionsAddPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecFinancesAccountsTransactionsAddPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiFinancesAccountsTransactionsAddPost(params?: {
+  apiSecFinancesAccountsTransactionsAddPost(params?: {
     body?: AddFinancialAccountTransactionDto
   }): Observable<void> {
 
-    return this.apiFinancesAccountsTransactionsAddPost$Response(params).pipe(
+    return this.apiSecFinancesAccountsTransactionsAddPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
   /**
-   * Path part for operation apiFinancesAccountsTransactionsListGet
+   * Path part for operation apiSecFinancesAccountsTransactionsListGet
    */
-  static readonly ApiFinancesAccountsTransactionsListGetPath = '/api/Finances/accounts/transactions/list';
+  static readonly ApiSecFinancesAccountsTransactionsListGetPath = '/api/sec/Finances/accounts/transactions/list';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiFinancesAccountsTransactionsListGet$Plain()` instead.
+   * To access only the response body, use `apiSecFinancesAccountsTransactionsListGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiFinancesAccountsTransactionsListGet$Plain$Response(params?: {
+  apiSecFinancesAccountsTransactionsListGet$Plain$Response(params?: {
     accountId?: string;
   }): Observable<StrictHttpResponse<Array<FinancialAccountTransactionDto>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiFinancesAccountsTransactionsListGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesAccountsTransactionsListGetPath, 'get');
     if (params) {
       rb.query('accountId', params.accountId, {});
     }
@@ -278,30 +278,30 @@ export class FinancesService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiFinancesAccountsTransactionsListGet$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecFinancesAccountsTransactionsListGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiFinancesAccountsTransactionsListGet$Plain(params?: {
+  apiSecFinancesAccountsTransactionsListGet$Plain(params?: {
     accountId?: string;
   }): Observable<Array<FinancialAccountTransactionDto>> {
 
-    return this.apiFinancesAccountsTransactionsListGet$Plain$Response(params).pipe(
+    return this.apiSecFinancesAccountsTransactionsListGet$Plain$Response(params).pipe(
       map((r: StrictHttpResponse<Array<FinancialAccountTransactionDto>>) => r.body as Array<FinancialAccountTransactionDto>)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiFinancesAccountsTransactionsListGet$Json()` instead.
+   * To access only the response body, use `apiSecFinancesAccountsTransactionsListGet$Json()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiFinancesAccountsTransactionsListGet$Json$Response(params?: {
+  apiSecFinancesAccountsTransactionsListGet$Json$Response(params?: {
     accountId?: string;
   }): Observable<StrictHttpResponse<Array<FinancialAccountTransactionDto>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiFinancesAccountsTransactionsListGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesAccountsTransactionsListGetPath, 'get');
     if (params) {
       rb.query('accountId', params.accountId, {});
     }
@@ -319,34 +319,34 @@ export class FinancesService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiFinancesAccountsTransactionsListGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecFinancesAccountsTransactionsListGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiFinancesAccountsTransactionsListGet$Json(params?: {
+  apiSecFinancesAccountsTransactionsListGet$Json(params?: {
     accountId?: string;
   }): Observable<Array<FinancialAccountTransactionDto>> {
 
-    return this.apiFinancesAccountsTransactionsListGet$Json$Response(params).pipe(
+    return this.apiSecFinancesAccountsTransactionsListGet$Json$Response(params).pipe(
       map((r: StrictHttpResponse<Array<FinancialAccountTransactionDto>>) => r.body as Array<FinancialAccountTransactionDto>)
     );
   }
 
   /**
-   * Path part for operation apiFinancesSummaryGet
+   * Path part for operation apiSecFinancesSummaryGet
    */
-  static readonly ApiFinancesSummaryGetPath = '/api/Finances/summary';
+  static readonly ApiSecFinancesSummaryGetPath = '/api/sec/Finances/summary';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiFinancesSummaryGet$Plain()` instead.
+   * To access only the response body, use `apiSecFinancesSummaryGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiFinancesSummaryGet$Plain$Response(params?: {
+  apiSecFinancesSummaryGet$Plain$Response(params?: {
   }): Observable<StrictHttpResponse<FinancialSummaryDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiFinancesSummaryGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesSummaryGetPath, 'get');
     if (params) {
     }
 
@@ -363,28 +363,28 @@ export class FinancesService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiFinancesSummaryGet$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecFinancesSummaryGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiFinancesSummaryGet$Plain(params?: {
+  apiSecFinancesSummaryGet$Plain(params?: {
   }): Observable<FinancialSummaryDto> {
 
-    return this.apiFinancesSummaryGet$Plain$Response(params).pipe(
+    return this.apiSecFinancesSummaryGet$Plain$Response(params).pipe(
       map((r: StrictHttpResponse<FinancialSummaryDto>) => r.body as FinancialSummaryDto)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiFinancesSummaryGet$Json()` instead.
+   * To access only the response body, use `apiSecFinancesSummaryGet$Json()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiFinancesSummaryGet$Json$Response(params?: {
+  apiSecFinancesSummaryGet$Json$Response(params?: {
   }): Observable<StrictHttpResponse<FinancialSummaryDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiFinancesSummaryGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesSummaryGetPath, 'get');
     if (params) {
     }
 
@@ -401,14 +401,14 @@ export class FinancesService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiFinancesSummaryGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecFinancesSummaryGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiFinancesSummaryGet$Json(params?: {
+  apiSecFinancesSummaryGet$Json(params?: {
   }): Observable<FinancialSummaryDto> {
 
-    return this.apiFinancesSummaryGet$Json$Response(params).pipe(
+    return this.apiSecFinancesSummaryGet$Json$Response(params).pipe(
       map((r: StrictHttpResponse<FinancialSummaryDto>) => r.body as FinancialSummaryDto)
     );
   }

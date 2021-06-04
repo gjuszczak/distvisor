@@ -10,7 +10,7 @@ namespace Distvisor.Web.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/sec/[controller]")]
     public class RedirectionsController : ControllerBase
     {
         private readonly IRedirectionsService _redirections;
@@ -18,25 +18,6 @@ namespace Distvisor.Web.Controllers
         public RedirectionsController(IRedirectionsService redirections)
         {
             _redirections = redirections;
-        }
-
-        [HttpGet("{name}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> RedirectTo(string name)
-        {
-            if (Request.Cookies.ContainsKey("DoNotRedirect"))
-            {
-                return Redirect("/");
-            }
-
-            Response.Cookies.Append("DoNotRedirect", "", new CookieOptions { MaxAge = TimeSpan.FromMinutes(5) });
-
-            var redirection = await _redirections.GetRedirectionAsync(name);
-            if (redirection == null)
-            {
-                return Redirect("/");
-            }
-            return Redirect(redirection.Url.ToString());
         }
 
         [HttpDelete("{name}")]

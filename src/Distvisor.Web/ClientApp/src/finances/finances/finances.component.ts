@@ -28,7 +28,7 @@ export class FinancesComponent implements OnInit, OnDestroy {
 
   reloadFinances() {
     this.subscriptions.push(
-      this.financesService.apiFinancesAccountsListGet$Json().subscribe(facc => {
+      this.financesService.apiSecFinancesAccountsListGet$Json().subscribe(facc => {
         this.accounts = facc;
       })
     );
@@ -36,7 +36,7 @@ export class FinancesComponent implements OnInit, OnDestroy {
 
   reloadSummary() {
     this.subscriptions.push(
-      this.financesService.apiFinancesSummaryGet$Json().subscribe(fsum => {
+      this.financesService.apiSecFinancesSummaryGet$Json().subscribe(fsum => {
         this.summary = fsum;
       })
     );

@@ -7,7 +7,7 @@ namespace Distvisor.Web.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/sec/[controller]")]
     public class AccountController : ControllerBase
     {
         private readonly IUserInfoProvider _userInfo;

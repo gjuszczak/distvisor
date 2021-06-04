@@ -32,7 +32,7 @@ export class FinancesAccountComponent implements OnInit, OnDestroy {
 
   reloadTransactions() {
     this.subscriptions.push(
-      this.financesService.apiFinancesAccountsTransactionsListGet$Json({
+      this.financesService.apiSecFinancesAccountsTransactionsListGet$Json({
         accountId: this.accountId
       }).subscribe(ftran => {
         this.transactions = ftran;

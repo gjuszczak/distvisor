@@ -23,20 +23,20 @@ export class SecretsVaultService extends BaseService {
   }
 
   /**
-   * Path part for operation apiSecretsVaultListGet
+   * Path part for operation apiSecSecretsVaultListGet
    */
-  static readonly ApiSecretsVaultListGetPath = '/api/SecretsVault/list';
+  static readonly ApiSecSecretsVaultListGetPath = '/api/sec/SecretsVault/list';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSecretsVaultListGet$Plain()` instead.
+   * To access only the response body, use `apiSecSecretsVaultListGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecretsVaultListGet$Plain$Response(params?: {
+  apiSecSecretsVaultListGet$Plain$Response(params?: {
   }): Observable<StrictHttpResponse<Array<SecretKey>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecretsVaultListGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecSecretsVaultListGetPath, 'get');
     if (params) {
     }
 
@@ -53,28 +53,28 @@ export class SecretsVaultService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiSecretsVaultListGet$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecSecretsVaultListGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecretsVaultListGet$Plain(params?: {
+  apiSecSecretsVaultListGet$Plain(params?: {
   }): Observable<Array<SecretKey>> {
 
-    return this.apiSecretsVaultListGet$Plain$Response(params).pipe(
+    return this.apiSecSecretsVaultListGet$Plain$Response(params).pipe(
       map((r: StrictHttpResponse<Array<SecretKey>>) => r.body as Array<SecretKey>)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSecretsVaultListGet$Json()` instead.
+   * To access only the response body, use `apiSecSecretsVaultListGet$Json()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecretsVaultListGet$Json$Response(params?: {
+  apiSecSecretsVaultListGet$Json$Response(params?: {
   }): Observable<StrictHttpResponse<Array<SecretKey>>> {
 
-    const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecretsVaultListGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecSecretsVaultListGetPath, 'get');
     if (params) {
     }
 
@@ -91,35 +91,35 @@ export class SecretsVaultService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiSecretsVaultListGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecSecretsVaultListGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecretsVaultListGet$Json(params?: {
+  apiSecSecretsVaultListGet$Json(params?: {
   }): Observable<Array<SecretKey>> {
 
-    return this.apiSecretsVaultListGet$Json$Response(params).pipe(
+    return this.apiSecSecretsVaultListGet$Json$Response(params).pipe(
       map((r: StrictHttpResponse<Array<SecretKey>>) => r.body as Array<SecretKey>)
     );
   }
 
   /**
-   * Path part for operation apiSecretsVaultKeyPost
+   * Path part for operation apiSecSecretsVaultKeyPost
    */
-  static readonly ApiSecretsVaultKeyPostPath = '/api/SecretsVault/{key}';
+  static readonly ApiSecSecretsVaultKeyPostPath = '/api/sec/SecretsVault/{key}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSecretsVaultKeyPost()` instead.
+   * To access only the response body, use `apiSecSecretsVaultKeyPost()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecretsVaultKeyPost$Response(params: {
+  apiSecSecretsVaultKeyPost$Response(params: {
     key: SecretKey;
     value?: string;
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecretsVaultKeyPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecSecretsVaultKeyPostPath, 'post');
     if (params) {
       rb.path('key', params.key, {});
       rb.query('value', params.value, {});
@@ -138,36 +138,36 @@ export class SecretsVaultService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiSecretsVaultKeyPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecSecretsVaultKeyPost$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecretsVaultKeyPost(params: {
+  apiSecSecretsVaultKeyPost(params: {
     key: SecretKey;
     value?: string;
   }): Observable<void> {
 
-    return this.apiSecretsVaultKeyPost$Response(params).pipe(
+    return this.apiSecSecretsVaultKeyPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
   /**
-   * Path part for operation apiSecretsVaultKeyDelete
+   * Path part for operation apiSecSecretsVaultKeyDelete
    */
-  static readonly ApiSecretsVaultKeyDeletePath = '/api/SecretsVault/{key}';
+  static readonly ApiSecSecretsVaultKeyDeletePath = '/api/sec/SecretsVault/{key}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSecretsVaultKeyDelete()` instead.
+   * To access only the response body, use `apiSecSecretsVaultKeyDelete()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecretsVaultKeyDelete$Response(params: {
+  apiSecSecretsVaultKeyDelete$Response(params: {
     key: SecretKey;
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecretsVaultKeyDeletePath, 'delete');
+    const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecSecretsVaultKeyDeletePath, 'delete');
     if (params) {
       rb.path('key', params.key, {});
     }
@@ -185,15 +185,15 @@ export class SecretsVaultService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiSecretsVaultKeyDelete$Response()` instead.
+   * To access the full response (for headers, for example), `apiSecSecretsVaultKeyDelete$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecretsVaultKeyDelete(params: {
+  apiSecSecretsVaultKeyDelete(params: {
     key: SecretKey;
   }): Observable<void> {
 
-    return this.apiSecretsVaultKeyDelete$Response(params).pipe(
+    return this.apiSecSecretsVaultKeyDelete$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }

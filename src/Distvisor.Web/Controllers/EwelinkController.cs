@@ -8,7 +8,7 @@ namespace Distvisor.Web.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/sec/[controller]")]
     public class EwelinkController : ControllerBase
     {
         private readonly IEwelinkClient _client;

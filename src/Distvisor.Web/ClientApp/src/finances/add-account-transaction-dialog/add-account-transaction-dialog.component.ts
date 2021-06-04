@@ -39,7 +39,7 @@ export class AddAccountTransactionDialogComponent implements OnChanges, OnDestro
 
   onSaveClicked() {
     this.subscriptions.push(
-      this.financesService.apiFinancesAccountsTransactionsAddPost$Response({
+      this.financesService.apiSecFinancesAccountsTransactionsAddPost$Response({
         body: {
           accountId: this.accountId,
           transactionDate: this.transaction.transactionDate.toISOString(),

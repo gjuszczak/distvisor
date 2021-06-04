@@ -31,7 +31,7 @@ export class AddAccountDialogComponent implements OnChanges, OnDestroy {
 
   onSaveClicked() {
     this.subscriptions.push(
-      this.financesService.apiFinancesAccountsAddPost$Response({
+      this.financesService.apiSecFinancesAccountsAddPost$Response({
         body: this.account
       }).subscribe(
         _ => this.onHide.emit()

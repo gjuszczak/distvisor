@@ -1,38 +1,24 @@
 ﻿using Distvisor.Web.BackgroundServices;
-using Distvisor.Web.Data.Events;
 using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MimeKit;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/sec/[controller]")]
     public class FinancesController : ControllerBase
     {
-        private readonly IMailgunClient _mailgun;
-        private readonly IEventStore _eventStore;
-        private readonly IEmailReceivedNotifier _emailReceivedNotifier;
         private readonly IFinancialService _financialService;
 
-        public FinancesController(IMailgunClient mailgun,
-            IEventStore eventStore,
-            IEmailReceivedNotifier emailReceivedNotifier,
-            IFinancialService financialService)
+        public FinancesController(IFinancialService financialService)
         {
-            _mailgun = mailgun;
-            _eventStore = eventStore;
-            _emailReceivedNotifier = emailReceivedNotifier;
             _financialService = financialService;
         }
 

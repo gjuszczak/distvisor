@@ -22,7 +22,7 @@ export class InvoicesComponent implements OnInit {
   }
 
   reloadInvoices() {
-    this.invoicesService.apiInvoicesListGet$Json()
+    this.invoicesService.apiSecInvoicesListGet$Json()
       .subscribe(x => {
         this.invoices = x;
         this.templateInvoices =
@@ -35,7 +35,7 @@ export class InvoicesComponent implements OnInit {
     const newWindow = window.open('', '_blank');
     if (newWindow) {
       newWindow.document.write('Loading pdf...');
-      this.invoicesService.apiInvoicesInvoiceIdGet$Response({ invoiceId: invoiceId })
+      this.invoicesService.apiSecInvoicesInvoiceIdGet$Response({ invoiceId: invoiceId })
         .subscribe(resp => {
           const fileURL = URL.createObjectURL(resp.body);
           newWindow.location.href = fileURL;
@@ -46,7 +46,7 @@ export class InvoicesComponent implements OnInit {
   }
 
   onSendMailInvoiceClicked(invoiceId: string) {
-    this.invoicesService.apiInvoicesInvoiceIdSendMailPost$Response({ invoiceId: invoiceId })
+    this.invoicesService.apiSecInvoicesInvoiceIdSendMailPost$Response({ invoiceId: invoiceId })
       .subscribe(_ => {
         console.log("mail-sent");
       },
@@ -57,7 +57,7 @@ export class InvoicesComponent implements OnInit {
 
   onSubmit() {
     if (this.selectedTemplateInvoiceId) {
-      this.invoicesService.apiInvoicesGeneratePost$Response({
+      this.invoicesService.apiSecInvoicesGeneratePost$Response({
         body: {
           templateInvoiceId: this.selectedTemplateInvoiceId,
           utcIssueDate: this.issueDate.toISOString(),

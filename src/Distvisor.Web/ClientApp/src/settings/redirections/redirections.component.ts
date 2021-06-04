@@ -21,14 +21,14 @@ export class RedirectionsComponent implements OnInit, OnDestroy {
   }
 
   reloadList() {
-    this.subscriptions.push(this.redirectionsService.apiRedirectionsGet$Json()
+    this.subscriptions.push(this.redirectionsService.apiSecRedirectionsGet$Json()
       .subscribe(redirections => {
         this.storedRedirections = redirections;
       }));
   }
 
   onSave() {
-    this.subscriptions.push(this.redirectionsService.apiRedirectionsPost({
+    this.subscriptions.push(this.redirectionsService.apiSecRedirectionsPost({
       body:{
         name: this.inputRedirectionName,
         url: this.inputRedirectionUrl
@@ -37,7 +37,7 @@ export class RedirectionsComponent implements OnInit, OnDestroy {
   }
 
   onRemove(name: string) {
-    this.subscriptions.push(this.redirectionsService.apiRedirectionsNameDelete({
+    this.subscriptions.push(this.redirectionsService.apiSecRedirectionsNameDelete({
       name: name,
     }).subscribe(() => this.reloadList()));
   }
