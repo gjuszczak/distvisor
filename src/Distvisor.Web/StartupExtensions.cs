@@ -107,24 +107,6 @@ namespace Distvisor.Web
             });
         }
 
-        public static void UseDoNotRedirectCookie(this IApplicationBuilder app)
-        {
-            app.Use(async (context, next) =>
-            {
-                if (context.Request.Cookies.ContainsKey("DoNotRedirect"))
-                {
-                    context.Response.OnStarting(state =>
-                    {
-                        var ctx = (HttpContext)state;
-                        ctx.Response.Cookies.Delete("DoNotRedirect");
-                        return Task.CompletedTask;
-                    }, context);
-                };
-
-                await next.Invoke();
-            });
-        }
-
         public static async Task<List<T>> ToListAsync<T>(this IAsyncEnumerable<T> items, CancellationToken cancellationToken = default)
         {
             var results = new List<T>();

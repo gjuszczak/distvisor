@@ -24,7 +24,7 @@ export class RedirectToService extends BaseService {
   /**
    * Path part for operation apiRedirectToNameGet
    */
-  static readonly ApiRedirectToNameGetPath = '/api/RedirectTo/{name}';
+  static readonly ApiRedirectToNameGetPath = '/api/redirect-to/{name}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Distvisor.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/redirect-to")]
     public class RedirectToController : ControllerBase
     {
         private readonly IRedirectionsService _redirections;
@@ -21,19 +21,12 @@ namespace Distvisor.Web.Controllers
         [HttpGet("{name}")]
         public async Task<IActionResult> RedirectTo(string name)
         {
-            if (Request.Cookies.ContainsKey("DoNotRedirect"))
-            {
-                return Redirect("/");
-            }
-
-            Response.Cookies.Append("DoNotRedirect", "", new CookieOptions { MaxAge = TimeSpan.FromMinutes(5) });
-
             var redirection = await _redirections.GetRedirectionAsync(name);
             if (redirection == null)
             {
-                return Redirect("/");
+                return RedirectPermanent("/");
             }
-            return Redirect(redirection.Url.ToString());
+            return RedirectPermanent(redirection.Url.ToString());
         }
     }
 }
