@@ -23,7 +23,7 @@ namespace Distvisor.Web.Services
         public BackupService(
             IOneDriveClient oneDrive,
             INotificationService notifications,
-            IMicrosoftAuthService auth,
+            IMicrosoftAuthClient auth,
             IBackupProcessManager backupProcessManager)
         {
             _oneDrive = oneDrive;

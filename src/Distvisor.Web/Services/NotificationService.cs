@@ -1,8 +1,7 @@
 ﻿using Distvisor.Web.Hubs;
 using Microsoft.AspNetCore.SignalR;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
@@ -69,15 +68,15 @@ namespace Distvisor.Web.Services
             GenerationDate = DateTime.Now;
         }
 
+        public string TypeName { get => GetType().FullName; }
         public DateTime GenerationDate { get; set; }
 
         public string ToJsonString()
         {
-            return JsonConvert.SerializeObject(this, Formatting.None, new JsonSerializerSettings
+            return JsonSerializer.Serialize(this, new JsonSerializerOptions
             {
-                TypeNameHandling = TypeNameHandling.All,
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                DateTimeZoneHandling = DateTimeZoneHandling.Utc
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                IgnoreReadOnlyProperties = false,
             });
         }
     }

@@ -46,7 +46,6 @@ namespace Distvisor.Web
             services.AddScoped<IDeploymentService, DeploymentService>();
             services.AddScoped<IBackupService, BackupService>();
             services.AddScoped<ISecretsVault, SecretsVault>();
-            services.AddScoped<IMicrosoftAuthService, MicrosoftAuthService>();
             services.AddScoped<IUserInfoProvider, UserInfoProvider>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IRedirectionsService, RedirectionsService>();
@@ -82,13 +81,16 @@ namespace Distvisor.Web
                     c.DefaultRequestHeaders.Add("Accept", "application/json");
                 });
 
-            services.AddEventSourcing(Config.GetConnectionString("EventStore"), Config.GetConnectionString("ReadStore"));
-
-            services.AddControllersWithViews()
-                .AddJsonOptions(opts =>
+            services.AddHttpClient<IMicrosoftAuthClient, MicrosoftAuthClient>()
+                .ConfigureHttpClient(c =>
                 {
-                    opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    c.BaseAddress = new Uri(Config.GetValue<string>("AzureAd:Instance"));
+                    c.DefaultRequestHeaders.Add("Accept", "application/json");
                 });
+
+            services.AddHttpClient<IOneDriveUploadSessionFactory, OneDriveUploadSessionFactory>();
+
+            services.AddEventSourcing(Config.GetConnectionString("EventStore"), Config.GetConnectionString("ReadStore"));
 
             services.AddSwaggerGen(c =>
             {
@@ -99,7 +101,11 @@ namespace Distvisor.Web
 
             services.AddDistvisorAuth(Config);
 
-            services.AddRazorPages();
+            services.AddMvc()
+                .AddJsonOptions(opts =>
+                {
+                    opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -137,6 +143,7 @@ namespace Distvisor.Web
             {
                 ContentTypeProvider = pwaProvider
             });
+
             if (!env.IsDevelopment())
             {
                 app.UseSpaStaticFiles(new StaticFileOptions
@@ -146,14 +153,13 @@ namespace Distvisor.Web
             }
 
             app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapControllers();
 
                 endpoints.MapHub<NotificationsHub>("/hubs/notificationshub");
 

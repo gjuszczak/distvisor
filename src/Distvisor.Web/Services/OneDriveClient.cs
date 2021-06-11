@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +15,7 @@ namespace Distvisor.Web.Services
 
         void Configure(Func<Task<string>> accessTokenProvider);
         Task<IEnumerable<OneDriveFileInfo>> ListStoredBackupsAsync();
-        Task<MicrosoftUploadSession> CreateUploadSessionAsync(string filename);
+        Task<OneDriveUploadSessionClient> CreateUploadSessionAsync(string filename);
         Task<string> DownloadFileAsync(string filename);
         Task DeleteFileAsync(string filename);
     }
@@ -24,10 +23,12 @@ namespace Distvisor.Web.Services
     public class OneDriveClient : IOneDriveClient
     {
         private readonly HttpClient _httpClient;
+        private readonly IOneDriveUploadSessionFactory _uploadSessionFactory;
 
-        public OneDriveClient(HttpClient client)
+        public OneDriveClient(HttpClient client, IOneDriveUploadSessionFactory uploadSessionFactory)
         {
             _httpClient = client;
+            _uploadSessionFactory = uploadSessionFactory;
         }
 
         public Func<Task<string>> AccessTokenProvider { get; private set; }
@@ -37,7 +38,7 @@ namespace Distvisor.Web.Services
             AccessTokenProvider = accessTokenProvider;
         }
 
-        public async Task<MicrosoftUploadSession> CreateUploadSessionAsync(string filename)
+        public async Task<OneDriveUploadSessionClient> CreateUploadSessionAsync(string filename)
         {
             EnsureConfigured();
 
@@ -56,10 +57,10 @@ namespace Distvisor.Web.Services
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var sessionInfo = JsonConvert.DeserializeObject<MicrosoftUploadSessionInfo>(responseContent);
+            var stream = await response.Content.ReadAsStreamAsync();
+            var sessionInfo = await JsonSerializer.DeserializeAsync<MicrosoftUploadSessionInfo>(stream);
 
-            return new MicrosoftUploadSession(sessionInfo, AccessTokenProvider);
+            return _uploadSessionFactory.CreateUploadSession(sessionInfo, AccessTokenProvider);
         }
 
         public async Task<IEnumerable<OneDriveFileInfo>> ListStoredBackupsAsync()
