@@ -13,7 +13,7 @@ import { map, filter } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root',
 })
-export class EwelinkService extends BaseService {
+export class RfLinkService extends BaseService {
   constructor(
     config: ApiConfiguration,
     http: HttpClient
@@ -22,21 +22,27 @@ export class EwelinkService extends BaseService {
   }
 
   /**
-   * Path part for operation apiSecEwelinkGet
+   * Path part for operation apiRfLinkPost
    */
-  static readonly ApiSecEwelinkGetPath = '/api/sec/Ewelink';
+  static readonly ApiRfLinkPostPath = '/api/rf-link';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSecEwelinkGet()` instead.
+   * To access only the response body, use `apiRfLinkPost()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecEwelinkGet$Response(params?: {
+  apiRfLinkPost$Response(params: {
+    code: string;
+    timestamp: number;
+    authorization: string;
   }): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, EwelinkService.ApiSecEwelinkGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, RfLinkService.ApiRfLinkPostPath, 'post');
     if (params) {
+      rb.query('code', params.code, {});
+      rb.query('timestamp', params.timestamp, {});
+      rb.header('authorization', params.authorization, {});
     }
 
     return this.http.request(rb.build({
@@ -52,14 +58,17 @@ export class EwelinkService extends BaseService {
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiSecEwelinkGet$Response()` instead.
+   * To access the full response (for headers, for example), `apiRfLinkPost$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecEwelinkGet(params?: {
+  apiRfLinkPost(params: {
+    code: string;
+    timestamp: number;
+    authorization: string;
   }): Observable<void> {
 
-    return this.apiSecEwelinkGet$Response(params).pipe(
+    return this.apiRfLinkPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }

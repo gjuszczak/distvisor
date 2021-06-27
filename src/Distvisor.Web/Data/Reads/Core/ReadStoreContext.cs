@@ -51,11 +51,33 @@ namespace Distvisor.Web.Data.Reads.Core
             modelBuilder.Entity<FinancialAccountTransactionEntity>()
                 .Property(e => e.PostingDate)
                 .HasColumnType("DATE");
+
+            modelBuilder.Entity<HomeBoxTriggerSourceEntity>()
+                .HasOne(e => e.Trigger)
+                .WithMany(e => e.Sources)
+                .HasForeignKey(e => e.TriggerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<HomeBoxTriggerTargetEntity>()
+                .HasOne(e => e.Trigger)
+                .WithMany(e => e.Targets)
+                .HasForeignKey(e => e.TriggerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<HomeBoxTriggerActionEntity>()
+                .HasOne(e => e.Trigger)
+                .WithMany(e => e.Actions)
+                .HasForeignKey(e => e.TriggerId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         public DbSet<SecretsVaultEntity> SecretsVault { get; set; }
         public DbSet<RedirectionEntity> Redirections { get; set; }
         public DbSet<FinancialAccountEntity> FinancialAccounts { get; set; }
         public DbSet<FinancialAccountTransactionEntity> FinancialAccountTransactions { get; set; }
+        public DbSet<HomeBoxTriggerEntity> HomeboxTriggers { get; set; }
+        public DbSet<HomeBoxTriggerSourceEntity> HomeboxTriggerSources { get; set; }
+        public DbSet<HomeBoxTriggerTargetEntity> HomeboxTriggerTargets { get; set; }
+        public DbSet<HomeBoxTriggerActionEntity> HomeboxTriggerActions { get; set; }
     }
 }

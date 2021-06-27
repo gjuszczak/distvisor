@@ -35,6 +35,7 @@ namespace Distvisor.Web
             services.Configure<MailgunConfiguration>(Config.GetSection("Mailgun"));
             services.Configure<FinancesConfiguration>(Config.GetSection("Finances"));
             services.Configure<EwelinkConfiguration>(Config.GetSection("Ewelink"));
+            services.Configure<RfLinkConfiguration>(Config.GetSection("RfLink"));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ICryptoService, CryptoService>();
@@ -43,6 +44,8 @@ namespace Distvisor.Web
             services.AddSingleton<IFinancialCsvDataExtractor, CsvSVariantDataExtractor>();
             services.AddSingleton<IFinancialCsvDataExtractor, CsvIVariantDataExtractor>();
             services.AddSingleton<IEwelinkClientWebSocketFactory, EwelinkClientWebSocketFactory>();
+            services.AddSingleton<ITokenCacheManager, TokenCacheManager>();
+            services.AddScoped<IHomeBoxService, HomeBoxService>();
             services.AddScoped<IDeploymentService, DeploymentService>();
             services.AddScoped<IBackupService, BackupService>();
             services.AddScoped<ISecretsVault, SecretsVault>();

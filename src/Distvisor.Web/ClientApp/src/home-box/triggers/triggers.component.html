@@ -1,0 +1,33 @@
+<p-card header="Triggers" styleClass="p-mt-3">
+    <p-table dataKey="id" [value]="triggers" [rowHover]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50]"
+        [paginator]="true" [showCurrentPageReport]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <th class="tiny-col"></th>
+                <th>Source</th>
+                <th>Target</th>
+                <th>Options</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-trg let-expanded="expanded">
+            <tr [pRowToggler]="trg">
+                <td><i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i></td>
+                <td>{{ trg.source }}</td>
+                <td>{{ trg.target }}</td>
+                <td></td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-trg>
+            <tr>
+                <td colspan="4" class="p-p-0">
+                    <pre class="p-m-0"><code class="language-json" pCode>{{ trg.params | json }}</code></pre>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="4">No triggers defined.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>

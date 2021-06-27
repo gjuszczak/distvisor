@@ -8,10 +8,11 @@ import { AccountService } from './services/account.service';
 import { AdminService } from './services/admin.service';
 import { ClientConfigService } from './services/client-config.service';
 import { EventLogService } from './services/event-log.service';
-import { EwelinkService } from './services/ewelink.service';
 import { FinancesService } from './services/finances.service';
+import { HomeBoxService } from './services/home-box.service';
 import { RedirectionsService } from './services/redirections.service';
 import { RedirectToService } from './services/redirect-to.service';
+import { RfLinkService } from './services/rf-link.service';
 import { SecretsVaultService } from './services/secrets-vault.service';
 
 /**
@@ -26,10 +27,11 @@ import { SecretsVaultService } from './services/secrets-vault.service';
     AdminService,
     ClientConfigService,
     EventLogService,
-    EwelinkService,
     FinancesService,
+    HomeBoxService,
     RedirectionsService,
     RedirectToService,
+    RfLinkService,
     SecretsVaultService,
     ApiConfiguration
   ],
