@@ -13,6 +13,7 @@ export class HomeBoxComponent implements OnDestroy {
   private subscriptions: Subscription[] = [];
 
   isDeviceDetailsDialogVisible: boolean = false;
+  isTriggerAddDialogVisible: boolean = false;
   selectedDevice: DeviceDto = { };
  
   showDeviceDetailsDialog(selectedDevice: DeviceDto){
@@ -22,6 +23,14 @@ export class HomeBoxComponent implements OnDestroy {
 
   hideDeviceDetailsDialog(){
     this.isDeviceDetailsDialogVisible = false;
+  }
+
+  showTriggerAddDialog(){
+    this.isTriggerAddDialogVisible = true;
+  }
+
+  hideTriggerAddDialog(){
+    this.isTriggerAddDialogVisible = false;
   }
 
   ngOnDestroy(): void {

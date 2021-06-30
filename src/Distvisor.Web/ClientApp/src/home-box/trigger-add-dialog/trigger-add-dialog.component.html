@@ -1,0 +1,36 @@
+<p-dialog [(visible)]="isVisible" header="Add trigger" [modal]="true" [resizable]="false" styleClass="p-fluid"
+    (onHide)="onCancelClicked()">
+    <ng-template pTemplate="content">
+
+        <div class="p-grid p-mb-3 p-shadow-3 p-ai-center" *ngFor="let src of triggerSources;">
+            <div class="p-col p-pl-3">{{src.type}}</div>
+            <div class="p-col p-pl-3">{{src.matchParam}}</div>
+            <div class="p-col-fixed">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text p-button-rounded p-button-info"
+                    (click)="onDeleteTriggerSource(src)"></button>
+            </div>
+        </div>
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field p-col">
+                <label for="sourceType">Source type</label>
+                <p-dropdown inputIdid="sourceType" [(ngModel)]="selectedSourceType" [options]="sourceTypes"
+                    optionLabel="name" optionValue="value"></p-dropdown>
+            </div>
+            <div class="p-field p-col">
+                <label for="matchParam">Match param</label>
+                <input pInputText type="text" inputId="matchParam" [(ngModel)]="selectedSourceMatchParam">
+            </div>
+            <div class="p-field p-col-fixed p-d-flex">
+                <button pButton pRipple icon="pi pi-plus" class="p-button-text p-button-rounded p-button-info p-as-end"
+                    (click)="onAddTriggerSource()"></button>
+            </div>
+        </div>
+        <hr/>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text p-button-info"
+            (click)="onCancelClicked()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text p-button-info"
+            (click)="onSaveClicked()"></button>
+    </ng-template>
+</p-dialog>

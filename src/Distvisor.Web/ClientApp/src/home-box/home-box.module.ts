@@ -8,8 +8,9 @@ import { MsalGuard } from '@azure/msal-angular';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { CodeHighlighterModule } from 'primeng/codehighlighter';
-import { DialogModule } from 'primeng/dialog';
 import { DataViewModule } from 'primeng/dataview';
+import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { RippleModule } from 'primeng/ripple';
@@ -20,6 +21,7 @@ import { HomeBoxComponent } from './home-box/home-box.component';
 import { TriggersComponent } from './triggers/triggers.component';
 import { DevicesListComponent } from './devices-list/devices-list.component';
 import { DeviceDetailsDialogComponent } from './device-details-dialog/device-details-dialog.component';
+import { TriggerAddDialogComponent } from './trigger-add-dialog/trigger-add-dialog.component';
 
 @NgModule({
   imports: [
@@ -35,8 +37,9 @@ import { DeviceDetailsDialogComponent } from './device-details-dialog/device-det
     ButtonModule,
     CardModule,
     CodeHighlighterModule,
-    DialogModule,
     DataViewModule,
+    DialogModule,
+    DropdownModule,
     InputTextareaModule,
     InputTextModule,
     RippleModule,
@@ -49,6 +52,7 @@ import { DeviceDetailsDialogComponent } from './device-details-dialog/device-det
     HomeBoxComponent,
     DevicesListComponent,
     TriggersComponent,
+    TriggerAddDialogComponent,
     DeviceDetailsDialogComponent,
   ]
 })

@@ -1,5 +1,6 @@
 <div class="container">
    <app-devices-list (onDeviceDetailsOpen)="showDeviceDetailsDialog($event)"></app-devices-list>
-   <app-triggers></app-triggers>
+   <app-triggers (onAdd)="showTriggerAddDialog()"></app-triggers>
    <app-device-details-dialog [isVisible]="isDeviceDetailsDialogVisible" [device]="selectedDevice" (onHide)="hideDeviceDetailsDialog()"></app-device-details-dialog>
+   <app-trigger-add-dialog [isVisible]="isTriggerAddDialogVisible" (onHide)="hideTriggerAddDialog()"></app-trigger-add-dialog>
 </div>

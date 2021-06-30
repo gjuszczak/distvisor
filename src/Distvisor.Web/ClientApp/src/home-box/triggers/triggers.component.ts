@@ -1,6 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { EventLogService } from 'src/api/services';
-import { EventLogDto } from 'src/api/models';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 interface Trigger {
@@ -15,6 +13,8 @@ interface Trigger {
   templateUrl: './triggers.component.html',
 })
 export class TriggersComponent implements OnInit, OnDestroy {
+
+  @Output() onAdd: EventEmitter<any> = new EventEmitter();
 
   private subscriptions: Subscription[] = [];
   triggers: Trigger[] = [];
@@ -35,6 +35,14 @@ export class TriggersComponent implements OnInit, OnDestroy {
         params: { switch: 'toggle', r: 255 },
       }
     ]
+  }
+
+  onAddClicked(): void {
+    this.onAdd.emit();
+  }
+
+  onExecuteClicked(): void {
+
   }
 
   ngOnDestroy(): void {

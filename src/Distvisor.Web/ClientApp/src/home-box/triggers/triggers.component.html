@@ -1,4 +1,13 @@
-<p-card header="Triggers" styleClass="p-mt-3">
+<p-card styleClass="p-mt-3 card-with-custom-header">
+    <p-header>
+        <div class="p-d-flex p-jc-between p-pt-3 p-px-3">
+            <div class="p-card-title">Triggers</div>
+            <div class="p-d-flex">
+                <button pButton pRipple type="button" icon="pi pi-plus" (click)="onAddClicked()"
+                    class="p-button-rounded p-button-text p-button-info p-mr-1"></button>
+            </div>
+        </div>
+    </p-header>
     <p-table dataKey="id" [value]="triggers" [rowHover]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50]"
         [paginator]="true" [showCurrentPageReport]="true">
         <ng-template pTemplate="header">
@@ -14,7 +23,10 @@
                 <td><i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i></td>
                 <td>{{ trg.source }}</td>
                 <td>{{ trg.target }}</td>
-                <td></td>
+                <td>
+                    <button pButton pRipple type="button" icon="pi pi-play" (click)="onExecuteClicked()"
+                        class="p-button-rounded p-button-text p-button-info p-mr-1"></button>
+                </td>
             </tr>
         </ng-template>
         <ng-template pTemplate="rowexpansion" let-trg>

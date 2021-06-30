@@ -18,7 +18,7 @@ namespace Distvisor.Web.Controllers
             _homeBoxService = homeBoxService;
         }
 
-        [HttpGet("devices")]        
+        [HttpGet("devices")]
         public async Task<DeviceDto[]> GetDevices()
         {
             return await _homeBoxService.GetDevicesAsync();
@@ -27,13 +27,13 @@ namespace Distvisor.Web.Controllers
         [HttpPost("devices/{identifier}/turnOn")]
         public async Task TurnOnDevice(string identifier)
         {
-            await _homeBoxService.SetDeviceParamsAsync(identifier, "on");
+            await _homeBoxService.SetDeviceParamsAsync(identifier, new { @switch = "on" });
         }
 
         [HttpPost("devices/{identifier}/turnOff")]
         public async Task TurnOffDevice(string identifier)
         {
-            await _homeBoxService.SetDeviceParamsAsync(identifier, "off");
+            await _homeBoxService.SetDeviceParamsAsync(identifier, new { @switch = "off" });
         }
 
         [HttpGet("triggers/list")]
