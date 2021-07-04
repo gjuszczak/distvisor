@@ -22,6 +22,7 @@ namespace Distvisor.Web.Services
         Task SetDeviceParamsAsync(string deviceId, object deviceParams);
         Task DeleteTriggerAsync(Guid id);
         Task<HomeBoxTriggerDto[]> ListTriggersAsync();
+        Task ExecuteTriggerAsync(Guid triggerId);
     }
 
     public class HomeBoxService : IHomeBoxService
@@ -59,6 +60,7 @@ namespace Distvisor.Web.Services
 
             var result = devices.devicelist.Select(d => new DeviceDto
             {
+                Name = d.name,
                 Identifier = d.deviceid,
                 Type = _deviceTypes.GetValueOrDefault(d.uiid, DeviceTypeDto.Unknown),
                 Online = d.online,

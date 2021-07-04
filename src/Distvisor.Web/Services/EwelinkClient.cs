@@ -154,6 +154,7 @@ namespace Distvisor.Web.Services
     public class EwelinkDtoDevice
     {
         public string apikey { get; set; }
+        public string name { get; set; }
         public string deviceid { get; set; }
         public int uiid { get; set; }
         public bool online { get; set; }

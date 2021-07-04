@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Distvisor.Web.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("api/sec/home-box")]
     public class HomeBoxController : ControllerBase
     {
@@ -46,39 +46,18 @@ namespace Distvisor.Web.Controllers
         public async Task AddTrigger(AddHomeBoxTriggerDto dto)
         {
             await _homeBoxService.AddTriggerAsync(dto);
-
-            /*
-            {
-              "enabled": true,
-              "sources": [
-                {
-                  "type": "Rf433Receiver",
-                  "matchParam": "1234567"
-                }
-              ],
-              "targets": [
-                {
-                  "deviceIdentifier": "test"
-                }
-              ],
-              "actions": [
-                {
-                  "lastExecutedActionNumber": null,
-                  "lastExecutedActionMinDelayMs": null,
-                  "lastExecutedActionMaxDelayMs": null,
-                  "isDeviceOnline": false,
-                  "isDeviceOn": false,
-                  "payload": { "switch": "on" }
-                }
-              ]
-            }
-            */
         }
 
         [HttpDelete("triggers/{id}/delete")]
         public async Task DeleteTrigger(Guid id)
         {
             await _homeBoxService.DeleteTriggerAsync(id);
+        }
+
+        [HttpPost("triggers/{id}/execute")]
+        public async Task ExecuteTrigger(Guid id)
+        {
+            await _homeBoxService.ExecuteTriggerAsync(id);
         }
     }
 }

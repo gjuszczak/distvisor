@@ -370,4 +370,50 @@ export class HomeBoxService extends BaseService {
     );
   }
 
+  /**
+   * Path part for operation apiSecHomeBoxTriggersIdExecutePost
+   */
+  static readonly ApiSecHomeBoxTriggersIdExecutePostPath = '/api/sec/home-box/triggers/{id}/execute';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiSecHomeBoxTriggersIdExecutePost()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiSecHomeBoxTriggersIdExecutePost$Response(params: {
+    id: string;
+  }): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiSecHomeBoxTriggersIdExecutePostPath, 'post');
+    if (params) {
+      rb.path('id', params.id, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiSecHomeBoxTriggersIdExecutePost$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiSecHomeBoxTriggersIdExecutePost(params: {
+    id: string;
+  }): Observable<void> {
+
+    return this.apiSecHomeBoxTriggersIdExecutePost$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
 }

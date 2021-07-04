@@ -93,6 +93,12 @@ body {
     border-radius: 50%;
   }
 
+  .button-input-attached {
+    border-left: none !important;
+    border-color: var(--surface-d) !important;
+    background-color: var(--surface-0) !important;
+  }
+
   .p-dialog {
     width: 450px;
   }
@@ -118,7 +124,8 @@ body {
     text-overflow: ellipsis;
   }
 
-  .p-fileupload-buttonbar, .p-splitbutton {
+  .p-fileupload-buttonbar,
+  .p-splitbutton {
     .p-button {
       background-color: transparent;
       color: var(--primary-color);

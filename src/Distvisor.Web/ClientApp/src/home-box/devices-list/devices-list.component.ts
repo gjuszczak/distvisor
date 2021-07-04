@@ -11,6 +11,7 @@ import { HomeBoxService } from 'src/api/services';
 export class DevicesListComponent implements OnInit, OnDestroy {
 
   @Output() onDeviceDetailsOpen: EventEmitter<DeviceDto> = new EventEmitter();
+  @Output() onDeviceListLoaded: EventEmitter<DeviceDto[]> = new EventEmitter();
   private subscriptions: Subscription[] = [];
   devices: DeviceDto[] = [];
 
@@ -25,7 +26,7 @@ export class DevicesListComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.homeBoxService.apiSecHomeBoxDevicesGet$Json()
         .subscribe(devices => {
-          this.devices = devices;
+          this.deviceListLoaded(devices);
         }));
   }
 
@@ -49,6 +50,11 @@ export class DevicesListComponent implements OnInit, OnDestroy {
 
   onDeviceShowDetailsClicked(device: DeviceDto) {
     this.onDeviceDetailsOpen.emit(device);
+  }
+
+  deviceListLoaded(devices: DeviceDto[]) {
+    this.devices = devices;
+    this.onDeviceListLoaded.emit(devices);
   }
 
   ngOnDestroy(): void {
