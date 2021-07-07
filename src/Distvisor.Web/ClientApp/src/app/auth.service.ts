@@ -32,15 +32,21 @@ export class AuthService {
 
     this.msalBroadcastService.inProgress$.pipe(
       filter((status: InteractionStatus) => status === InteractionStatus.None),
-      map(()=> !!this.getUser())
+      map(() => !!this.getUser())
     ).subscribe(isAuth => {
       this.isAuthenticatedSubject.next(isAuth);
     });
 
+    this.msalBroadcastService.msalSubject$.pipe(
+      filter(ev => ev.eventType === "msal:acquireTokenSuccess" || ev.eventType === "msal:acquireTokenFailure"),
+      map(ev => (<AuthenticationResult>ev.payload)?.accessToken || null)
+    ).subscribe(accessToken => {
+      this.accessTokenSubject.next(accessToken);
+    });
+
     this.isAuthenticatedSubject.pipe(
       mergeMap(authSuccess => {
-        if(authSuccess)
-        {
+        if (authSuccess) {
           return this.accountService.apiSecAccountGet$Json().pipe(
             map(acc => acc.role === "user"),
             catchError(_ => of(false))

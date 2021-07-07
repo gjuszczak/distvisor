@@ -13,35 +13,35 @@ export class SignalrService {
   }
 
   connect(baseUrl: string, userSession: string) {
-    // const baseUrlClean = baseUrl.replace(/\/$/, "");
-    // this.connection = new signalR.HubConnectionBuilder()
-    //   .configureLogging(signalR.LogLevel.Information)
-    //   .withUrl(`${baseUrlClean}/hubs/notificationshub`, { accessTokenFactory: () => userSession })
-    //   .withAutomaticReconnect()
-    //   .build();
+    const baseUrlClean = baseUrl.replace(/\/$/, "");
+    this.connection = new signalR.HubConnectionBuilder()
+      .configureLogging(signalR.LogLevel.Information)
+      .withUrl(`${baseUrlClean}/hubs/notificationshub`, { accessTokenFactory: () => userSession })
+      .withAutomaticReconnect()
+      .build();
 
-    // this.connection.start().then(function () {
-    //   console.log('Signalr notificationshub connected!');
-    // }).catch(function (err) {
-    //   return console.error(err.toString());
-    // });
+    this.connection.start().then(function () {
+      console.log('Signalr notificationshub connected!');
+    }).catch(function (err) {
+      return console.error(err.toString());
+    });
 
-    // this.connection.on("PushNotification", (payload: string) => {
-    //   let notification = <GenericNotification>JSON.parse(payload);
-    //   let notificationType = notification.$type;
+    this.connection.on("PushNotification", (payload: string) => {
+      let notification = <GenericNotification>JSON.parse(payload);
+      let notificationType = notification.typeName;
 
-    //   if (notificationType.includes('SuccessNotification')) {
-    //     this.notificationsService.show(Object.assign(new SuccessNotification(), notification));
-    //   }
+      if (notificationType.includes('SuccessNotification')) {
+        this.notificationsService.show(Object.assign(new SuccessNotification(), notification));
+      }
 
-    //   if (notificationType.includes('ErrorNotification')) {
-    //     this.notificationsService.show(Object.assign(new ErrorNotification(), notification));
-    //   }
+      if (notificationType.includes('ErrorNotification')) {
+        this.notificationsService.show(Object.assign(new ErrorNotification(), notification));
+      }
 
-    //   if (notificationType.includes('FakeApiUsedNotification')) {
-    //     this.notificationsService.show(Object.assign(new FakeApiUsedNotification(), notification));
-    //   }
-    // });
+      if (notificationType.includes('FakeApiUsedNotification')) {
+        this.notificationsService.show(Object.assign(new FakeApiUsedNotification(), notification));
+      }
+    });
   }
 
   disconnect() {
@@ -53,5 +53,5 @@ export class SignalrService {
 }
 
 interface GenericNotification {
-  $type: string;
+  typeName: string;
 }

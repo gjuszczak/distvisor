@@ -6,7 +6,6 @@ using Distvisor.Web.Data.Reads.Entities;
 using Distvisor.Web.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.ObjectPool;
 using System;
 using System.Collections.Generic;
 using System.Linq;

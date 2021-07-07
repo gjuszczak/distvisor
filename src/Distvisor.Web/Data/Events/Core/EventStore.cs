@@ -1,5 +1,6 @@
 ﻿using Distvisor.Web.Data.Events.Entities;
 using Distvisor.Web.Data.Reads.Core;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Data.Events.Core
@@ -45,7 +46,7 @@ namespace Distvisor.Web.Data.Events.Core
 
         public async Task ReplayEvents()
         {
-            var collection = _db.Events;
+            var collection = _db.Events.OrderBy(ev => ev.PublishDateUtc);
             foreach (var e in collection)
             {
                 var payload = e.ToPayload();

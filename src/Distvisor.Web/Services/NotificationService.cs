@@ -68,16 +68,17 @@ namespace Distvisor.Web.Services
             GenerationDate = DateTime.Now;
         }
 
-        public string TypeName { get => GetType().FullName; }
+        public string TypeName { get => GetType().Name; }
         public DateTime GenerationDate { get; set; }
 
         public string ToJsonString()
         {
-            return JsonSerializer.Serialize(this, new JsonSerializerOptions
+            var json = JsonSerializer.Serialize(this, GetType(), new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 IgnoreReadOnlyProperties = false,
             });
+            return json;
         }
     }
 
