@@ -6,6 +6,7 @@ using Distvisor.Web.Data.Reads.Entities;
 using Distvisor.Web.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.ObjectPool;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +18,13 @@ namespace Distvisor.Web.Services
     public interface IHomeBoxService
     {
         Task AddTriggerAsync(AddHomeBoxTriggerDto trigger);
-        Task<DeviceDto[]> GetDevicesAsync();
+        Task<HomeBoxDeviceDto[]> GetDevicesAsync();
         Task RfCodeReceivedAsync(string code);
         Task SetDeviceParamsAsync(string deviceId, object deviceParams);
         Task DeleteTriggerAsync(Guid id);
         Task<HomeBoxTriggerDto[]> ListTriggersAsync();
         Task ExecuteTriggerAsync(Guid triggerId);
+        Task UpdateDeviceDetailsAsync(UpdateHomeBoxDeviceDto dto);
     }
 
     public class HomeBoxService : IHomeBoxService
@@ -32,7 +34,7 @@ namespace Distvisor.Web.Services
         private readonly IEventStore _eventStore;
         private readonly ReadStoreContext _readStore;
         private readonly IMemoryCache _memoryCache;
-        private readonly Dictionary<int, DeviceTypeDto> _deviceTypes;
+        private readonly Dictionary<int, HomeBoxDeviceType> _deviceTypes;
 
         public HomeBoxService(
             IEwelinkClient ewelinkClient,
@@ -46,28 +48,51 @@ namespace Distvisor.Web.Services
             _eventStore = eventStore;
             _readStore = readStore;
             _memoryCache = memoryCache;
-            _deviceTypes = new Dictionary<int, DeviceTypeDto>
+            _deviceTypes = new Dictionary<int, HomeBoxDeviceType>
             {
-                {1, DeviceTypeDto.Switch },
-                {59, DeviceTypeDto.RgbLight },
-                {104, DeviceTypeDto.RgbwLight }
+                {1, HomeBoxDeviceType.Switch },
+                {59, HomeBoxDeviceType.RgbLight },
+                {104, HomeBoxDeviceType.RgbwLight }
             };
         }
 
-        public async Task<DeviceDto[]> GetDevicesAsync()
+        public async Task<HomeBoxDeviceDto[]> GetDevicesAsync()
         {
             var devices = await _ewelinkClient.GetDevices();
+            var deviceEntities = await _readStore.HomeboxDevices.ToListAsync();
 
-            var result = devices.devicelist.Select(d => new DeviceDto
+            var result = devices.devicelist.Select(d => new HomeBoxDeviceDto
             {
                 Name = d.name,
-                Identifier = d.deviceid,
-                Type = _deviceTypes.GetValueOrDefault(d.uiid, DeviceTypeDto.Unknown),
+                Id = d.deviceid,
+                Type = _deviceTypes.GetValueOrDefault(d.uiid, HomeBoxDeviceType.Unknown),
                 Online = d.online,
                 Params = d.@params
-            }).ToArray();
+            }).ToList();
 
-            return result;
+            result.ForEach(d =>
+            {
+                var matchEntity = deviceEntities.FirstOrDefault(dd => d.Id == dd.Id);
+                if (matchEntity != null)
+                {
+                    PropMapper<HomeBoxDeviceEntity, HomeBoxDeviceDto>.CopyTo(matchEntity, d);
+                }
+            });
+
+            return result.ToArray();
+        }
+
+        public async Task UpdateDeviceDetailsAsync(UpdateHomeBoxDeviceDto dto)
+        {
+            var entity = _readStore.HomeboxDevices.FirstOrDefault(d => d.Id == dto.Id);
+            if (entity == null || entity.Header != dto.Header || entity.Location != dto.Location || entity.Type != dto.Type)
+            {
+                await _eventStore.Publish<HomeBoxDeviceUpdatedEvent>(dto);
+            }
+            if (dto.Params.ValueKind == JsonValueKind.Object && dto.Params.EnumerateObject().Any())
+            {
+                await SetDeviceParamsAsync(dto.Id, dto.Params);
+            }
         }
 
         public async Task SetDeviceParamsAsync(string deviceId, object deviceParams)
@@ -185,11 +210,11 @@ namespace Distvisor.Web.Services
 
             var msExecutionDelay = (int)(DateTime.Now - trigger.ExecutionMemory.LastExecutedActionDateTime).TotalMilliseconds;
             var devicesStatus = (await GetDevicesAsync())
-                .Where(d => trigger.Targets.Any(t => t.DeviceIdentifier == d.Identifier))
-                .Select<DeviceDto, (string deviceId, bool isOn, bool isOnline)>(d =>
+                .Where(d => trigger.Targets.Any(t => t.DeviceIdentifier == d.Id))
+                .Select<HomeBoxDeviceDto, (string deviceId, bool isOn, bool isOnline)>(d =>
                 {
                     var isOn = d.Params.GetProperty("switch").GetString() == "on";
-                    return (d.Identifier, isOn, d.Online);
+                    return (d.Id, isOn, d.Online);
                 })
                 .ToArray();
 
@@ -204,7 +229,6 @@ namespace Distvisor.Web.Services
                 .Where(t => t.action.LastExecutedActionMinDelayMs == null || t.action.LastExecutedActionMinDelayMs > msExecutionDelay)
                 .Where(t => t.action.LastExecutedActionMaxDelayMs == null || t.action.LastExecutedActionMaxDelayMs <= msExecutionDelay)
                 .Where(t => t.action.IsDeviceOn == null || devicesStatus.Any(tt => tt.isOn == t.action.IsDeviceOn))
-                .Where(t => t.action.IsDeviceOnline == null || devicesStatus.Any(tt => tt.isOnline == t.action.IsDeviceOnline))
                 .FirstOrDefault();
 
             if (selectedAction.action == null)
@@ -212,7 +236,8 @@ namespace Distvisor.Web.Services
                 throw new Exception($"Unable to execute trigger {triggerId}. No matching action available.");
             }
 
-            foreach (var t in trigger.Targets)
+            var onlineTargets = trigger.Targets.Where(target => devicesStatus.Any(device => target.DeviceIdentifier == device.deviceId && device.isOnline));
+            foreach (var t in onlineTargets)
             {
                 await SetDeviceParamsAsync(t.DeviceIdentifier, selectedAction.action.Payload);
             }
@@ -241,22 +266,16 @@ namespace Distvisor.Web.Services
         private string TriggerSourceCacheKey(HomeBoxTriggerSourceType triggerSourceType, string matchParam) => $"{typeof(HomeBoxTriggerSourceType)}.{triggerSourceType}.{matchParam}";
     }
 
-    public class DeviceDto
+    public class HomeBoxDeviceDto : HomeBoxDevice
     {
-        public string Identifier { get; set; }
         public string Name { get; set; }
-        public DeviceTypeDto Type { get; set; }
-        public string Location { get; set; }
         public bool Online { get; set; }
         public JsonElement Params { get; set; }
     }
 
-    public enum DeviceTypeDto
+    public class UpdateHomeBoxDeviceDto : HomeBoxDeviceUpdatedEvent
     {
-        Unknown,
-        RgbLight,
-        RgbwLight,
-        Switch,
+        public JsonElement Params { get; set; }
     }
 
     public class AddHomeBoxTriggerDto : HomeBoxTriggerAddedEvent

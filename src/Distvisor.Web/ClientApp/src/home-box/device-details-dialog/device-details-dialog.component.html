@@ -2,16 +2,20 @@
     (onHide)="onCancelClicked()">
     <ng-template pTemplate="content">
         <div class="p-field">
-            <label for="name">Name</label>
-            <input pInputText type="text" inputId="name" [(ngModel)]="name" autofocus/>
+            <label for="header">Header</label>
+            <input pInputText type="text" inputId="header" [(ngModel)]="header" autofocus/>
         </div>
         <div class="p-field">
             <label for="location">Location</label>
             <input pInputText type="text" inputId="location" [(ngModel)]="location"/>
         </div>
         <div class="p-field">
-            <label for="identifier">Identifier</label>
-            <input pInputText type="text" inputId="identifier" [value]="device.identifier" disabled/>
+            <label for="name">Name</label>
+            <input pInputText type="text" inputId="name" [value]="device.name" disabled/>
+        </div>
+        <div class="p-field">
+            <label for="id">Id</label>
+            <input pInputText type="text" inputId="id" [value]="device.id" disabled/>
         </div>
         <div class="p-field">
             <label for="type">Type</label>

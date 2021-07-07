@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { EventLogService } from 'src/api/services';
+import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { DeviceDto, DeviceTypeDto } from 'src/api/models';
+import { HomeBoxDeviceDto } from 'src/api/models';
 
 
 @Component({
@@ -14,10 +13,10 @@ export class HomeBoxComponent implements OnDestroy {
 
   isDeviceDetailsDialogVisible: boolean = false;
   isTriggerAddDialogVisible: boolean = false;
-  selectedDevice: DeviceDto = { };
-  devices: DeviceDto[] = [];
+  selectedDevice: HomeBoxDeviceDto = { };
+  devices: HomeBoxDeviceDto[] = [];
  
-  showDeviceDetailsDialog(selectedDevice: DeviceDto){
+  showDeviceDetailsDialog(selectedDevice: HomeBoxDeviceDto){
     this.selectedDevice = selectedDevice;
     this.isDeviceDetailsDialogVisible = true;
   }
@@ -34,7 +33,7 @@ export class HomeBoxComponent implements OnDestroy {
     this.isTriggerAddDialogVisible = false;
   }
 
-  deviceListLoaded(devices: DeviceDto[]){
+  deviceListLoaded(devices: HomeBoxDeviceDto[]){
     this.devices = devices;
   }
 

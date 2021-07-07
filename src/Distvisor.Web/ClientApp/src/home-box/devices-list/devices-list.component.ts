@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { DeviceDto } from 'src/api/models/device-dto';
+import { HomeBoxDeviceDto } from 'src/api/models';
 import { HomeBoxService } from 'src/api/services';
 
 
@@ -10,10 +10,10 @@ import { HomeBoxService } from 'src/api/services';
 })
 export class DevicesListComponent implements OnInit, OnDestroy {
 
-  @Output() onDeviceDetailsOpen: EventEmitter<DeviceDto> = new EventEmitter();
-  @Output() onDeviceListLoaded: EventEmitter<DeviceDto[]> = new EventEmitter();
+  @Output() onDeviceDetailsOpen: EventEmitter<HomeBoxDeviceDto> = new EventEmitter();
+  @Output() onDeviceListLoaded: EventEmitter<HomeBoxDeviceDto[]> = new EventEmitter();
   private subscriptions: Subscription[] = [];
-  devices: DeviceDto[] = [];
+  devices: HomeBoxDeviceDto[] = [];
 
   constructor(private homeBoxService: HomeBoxService) {
   }
@@ -30,11 +30,11 @@ export class DevicesListComponent implements OnInit, OnDestroy {
         }));
   }
 
-  onDeviceToggleClicked(device: DeviceDto) {
+  onDeviceToggleClicked(device: HomeBoxDeviceDto) {
     if (device.params?.switch === "on") {
       this.subscriptions.push(
         this.homeBoxService.apiSecHomeBoxDevicesIdentifierTurnOffPost({
-          identifier: device.identifier ?? ''
+          identifier: device.id ?? ''
         }).subscribe(_ => device.params.switch = "off")
       );
     }
@@ -42,17 +42,17 @@ export class DevicesListComponent implements OnInit, OnDestroy {
     if (device.params?.switch === "off") {
       this.subscriptions.push(
         this.homeBoxService.apiSecHomeBoxDevicesIdentifierTurnOnPost({
-          identifier: device.identifier ?? ''
+          identifier: device.id ?? ''
         }).subscribe(_ => device.params.switch = "on")
       );
     }
   }
 
-  onDeviceShowDetailsClicked(device: DeviceDto) {
+  onDeviceShowDetailsClicked(device: HomeBoxDeviceDto) {
     this.onDeviceDetailsOpen.emit(device);
   }
 
-  deviceListLoaded(devices: DeviceDto[]) {
+  deviceListLoaded(devices: HomeBoxDeviceDto[]) {
     this.devices = devices;
     this.onDeviceListLoaded.emit(devices);
   }

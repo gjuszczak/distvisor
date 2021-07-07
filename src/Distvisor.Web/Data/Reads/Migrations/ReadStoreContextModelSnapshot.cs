@@ -92,6 +92,25 @@ namespace Distvisor.Web.Data.Reads.Migrations
                     b.ToTable("FinancialAccountTransactions");
                 });
 
+            modelBuilder.Entity("Distvisor.Web.Data.Reads.Entities.HomeBoxDeviceEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Header")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HomeboxDevices");
+                });
+
             modelBuilder.Entity("Distvisor.Web.Data.Reads.Entities.HomeBoxTriggerActionEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -99,9 +118,6 @@ namespace Distvisor.Web.Data.Reads.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<bool?>("IsDeviceOn")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool?>("IsDeviceOnline")
                         .HasColumnType("boolean");
 
                     b.Property<int?>("LastExecutedActionMaxDelayMs")

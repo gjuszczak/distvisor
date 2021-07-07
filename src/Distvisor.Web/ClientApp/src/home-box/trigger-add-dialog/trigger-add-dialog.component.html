@@ -72,15 +72,10 @@
                         <label for="payload">Payload</label>
                         <textarea pInputTextarea inputId="payload" [rows]="6" [(ngModel)]="action.payload"></textarea>
                     </div>
-                    <div class="p-field p-col-6">
+                    <div class="p-field p-col-12">
                         <label for="targetonoff">Any target On/Off</label>
                         <p-dropdown inputIdid="targetonoff" [(ngModel)]="action.isDeviceOn"
                             [options]="actionOnOffOptions" optionLabel="name" optionValue="value"></p-dropdown>
-                    </div>
-                    <div class="p-field p-col-6">
-                        <label for="targetonlineoffline">Any target Online/Offline</label>
-                        <p-dropdown inputIdid="targetonlineoffline" [(ngModel)]="action.isDeviceOnline"
-                            [options]="actionOnlineOfflineOptions" optionLabel="name" optionValue="value"></p-dropdown>
                     </div>
                     <div class="p-field p-col-12">
                         <label for="prevactionno">Previously executed action number</label>

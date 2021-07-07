@@ -28,6 +28,7 @@ import { TriggersListComponent } from './triggers-list/triggers-list.component';
 import { DevicesListComponent } from './devices-list/devices-list.component';
 import { DeviceDetailsDialogComponent } from './device-details-dialog/device-details-dialog.component';
 import { TriggerAddDialogComponent } from './trigger-add-dialog/trigger-add-dialog.component';
+import { UtilsModule } from 'src/utils/utils.module';
 
 @NgModule({
   imports: [
@@ -58,6 +59,7 @@ import { TriggerAddDialogComponent } from './trigger-add-dialog/trigger-add-dial
 
     // internal
     ApiModule,
+    UtilsModule,
   ],
   declarations: [
     HomeBoxComponent,

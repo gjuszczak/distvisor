@@ -75,6 +75,7 @@ namespace Distvisor.Web.Data.Reads.Core
         public DbSet<RedirectionEntity> Redirections { get; set; }
         public DbSet<FinancialAccountEntity> FinancialAccounts { get; set; }
         public DbSet<FinancialAccountTransactionEntity> FinancialAccountTransactions { get; set; }
+        public DbSet<HomeBoxDeviceEntity> HomeboxDevices { get; set; }
         public DbSet<HomeBoxTriggerEntity> HomeboxTriggers { get; set; }
         public DbSet<HomeBoxTriggerSourceEntity> HomeboxTriggerSources { get; set; }
         public DbSet<HomeBoxTriggerTargetEntity> HomeboxTriggerTargets { get; set; }

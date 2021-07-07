@@ -44,6 +44,9 @@ namespace Distvisor.Web.Services
                 new EventPayloadMapper<FinancialDataImportedEvent>()
                     .ConfigurePayloadTypeDisplayName("Financial Data Imported"),
 
+                new EventPayloadMapper<HomeBoxDeviceUpdatedEvent>()
+                    .ConfigurePayloadTypeDisplayName("HomeBox Device Updated"),
+
                 new EventPayloadMapper<HomeBoxTriggerAddedEvent>()
                     .ConfigurePayloadTypeDisplayName("HomeBox Trigger Added"),
 

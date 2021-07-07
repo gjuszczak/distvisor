@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Output, EventEmitter, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { ConfirmationService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { DeviceDto, HomeBoxTriggerDto, HomeBoxTriggerSourceType } from 'src/api/models';
+import { HomeBoxDeviceDto, HomeBoxTriggerDto, HomeBoxTriggerSourceType } from 'src/api/models';
 import { HomeBoxService } from 'src/api/services';
 
 interface VisualTrigger {
@@ -16,7 +16,7 @@ interface VisualTrigger {
   templateUrl: './triggers-list.component.html',
 })
 export class TriggersListComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() devices: DeviceDto[] = [];
+  @Input() devices: HomeBoxDeviceDto[] = [];
   @Output() onAdd: EventEmitter<any> = new EventEmitter();
 
   private subscriptions: Subscription[] = [];
@@ -50,9 +50,9 @@ export class TriggersListComponent implements OnInit, OnChanges, OnDestroy {
       id: t.id,
       sources: t.sources?.map(s => `${this.sourceTypeToString(s.type)} [matchParam: ${s.matchParam}]`) || [],
       targets: t.targets?.map(t => {
-        let deviceMatch = this.devices.find(d => d.identifier === t.deviceIdentifier);
+        let deviceMatch = this.devices.find(d => d.id === t.deviceIdentifier);
         if (deviceMatch) {
-          return `${deviceMatch.name} [${deviceMatch.identifier}]`;
+          return `${deviceMatch.name} [${deviceMatch.id}]`;
         }
         return t.deviceIdentifier || "";
       }),

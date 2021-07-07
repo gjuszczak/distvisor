@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { DeviceDto, HomeBoxTriggerAction, HomeBoxTriggerDto, HomeBoxTriggerSource, HomeBoxTriggerSourceType, HomeBoxTriggerTarget } from 'src/api/models';
+import { HomeBoxDeviceDto, HomeBoxTriggerAction, HomeBoxTriggerDto, HomeBoxTriggerSource, HomeBoxTriggerSourceType, HomeBoxTriggerTarget } from 'src/api/models';
 import { HomeBoxService } from 'src/api/services';
 
 interface NameValue<T> {
@@ -14,7 +14,7 @@ interface NameValue<T> {
 })
 export class TriggerAddDialogComponent implements OnChanges, OnDestroy {
   @Input() isVisible: boolean = false;
-  @Input() availableDevices: DeviceDto[] = [];
+  @Input() availableDevices: HomeBoxDeviceDto[] = [];
   @Output() onHide: EventEmitter<any> = new EventEmitter();
 
   private subscriptions: Subscription[] = [];
@@ -26,11 +26,6 @@ export class TriggerAddDialogComponent implements OnChanges, OnDestroy {
     { name: "Don't care", value: null },
     { name: "On", value: true },
     { name: "Off", value: false }
-  ]
-  actionOnlineOfflineOptions: NameValue<boolean | null>[] = [
-    { name: "Don't care", value: null },
-    { name: "Online", value: true },
-    { name: "Offline", value: false }
   ]
   selectedSourceType: NameValue<HomeBoxTriggerSourceType>;
   selectedSourceMatchParam: string = "";
@@ -52,7 +47,7 @@ export class TriggerAddDialogComponent implements OnChanges, OnDestroy {
     }
     if (changes['availableDevices']) {
       this.targetOptions = this.availableDevices
-        .map(d => <NameValue<string>>{ name: `${d.name} [${d.identifier}]`, value: d.identifier });
+        .map(d => <NameValue<string>>{ name: `${d.name} [${d.id}]`, value: d.id });
       this.selectedTarget = this.targetOptions.length ? this.targetOptions[0] : null;
     }
   }
@@ -129,7 +124,6 @@ export class TriggerAddDialogComponent implements OnChanges, OnDestroy {
   emptyAction(): HomeBoxTriggerAction {
     return {
       isDeviceOn: null,
-      isDeviceOnline: true,
       lastExecutedActionNumber: null,
       lastExecutedActionMinDelayMs: null,
       lastExecutedActionMaxDelayMs: null,

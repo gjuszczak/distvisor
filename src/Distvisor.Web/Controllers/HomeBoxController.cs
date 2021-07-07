@@ -19,9 +19,16 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpGet("devices")]
-        public async Task<DeviceDto[]> GetDevices()
+        public async Task<HomeBoxDeviceDto[]> GetDevices()
         {
             return await _homeBoxService.GetDevicesAsync();
+        }
+
+        [HttpPost("devices/{identifier}/updateDetails")]
+        public async Task UpdateDeviceDetails(string identifier, UpdateHomeBoxDeviceDto dto)
+        {
+            dto.Id = identifier;
+            await _homeBoxService.UpdateDeviceDetailsAsync(dto);
         }
 
         [HttpPost("devices/{identifier}/turnOn")]

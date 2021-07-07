@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export enum DeviceTypeDto {
+export enum HomeBoxDeviceType {
   Unknown = 'Unknown',
   RgbLight = 'RgbLight',
   RgbwLight = 'RgbwLight',

@@ -4,10 +4,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Distvisor.Web.Data.Reads.Migrations
 {
-    public partial class AddHomeboxTables : Migration
+    public partial class AddHomeBoxTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "HomeboxDevices",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Header = table.Column<string>(type: "text", nullable: true),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Location = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HomeboxDevices", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "HomeboxTriggers",
                 columns: table => new
@@ -29,7 +43,6 @@ namespace Distvisor.Web.Data.Reads.Migrations
                     LastExecutedActionNumber = table.Column<int>(type: "integer", nullable: true),
                     LastExecutedActionMinDelayMs = table.Column<int>(type: "integer", nullable: true),
                     LastExecutedActionMaxDelayMs = table.Column<int>(type: "integer", nullable: true),
-                    IsDeviceOnline = table.Column<bool>(type: "boolean", nullable: true),
                     IsDeviceOn = table.Column<bool>(type: "boolean", nullable: true),
                     Payload = table.Column<JsonElement>(type: "jsonb", nullable: false)
                 },
@@ -101,6 +114,9 @@ namespace Distvisor.Web.Data.Reads.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "HomeboxDevices");
+
             migrationBuilder.DropTable(
                 name: "HomeboxTriggerActions");
 

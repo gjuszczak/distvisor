@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 
 namespace Distvisor.Web.Data.Events
 {
+    public class HomeBoxDeviceUpdatedEvent : HomeBoxDevice
+    {
+    }
+
     public class HomeBoxTriggerAddedEvent : HomeBoxTrigger
     {
         public HomeBoxTriggerSource[] Sources { get; set; }
@@ -22,6 +26,7 @@ namespace Distvisor.Web.Data.Events
     }
 
     public class HomeBoxEventHandlers :
+       IEventHandler<HomeBoxDeviceUpdatedEvent>,
        IEventHandler<HomeBoxTriggerAddedEvent>,
        IEventHandler<HomeBoxTriggerDeletedEvent>
     {
@@ -29,6 +34,21 @@ namespace Distvisor.Web.Data.Events
         public HomeBoxEventHandlers(ReadStoreContext context)
         {
             _context = context;
+        }
+
+        public async Task Handle(HomeBoxDeviceUpdatedEvent payload)
+        {
+            var entity = await _context.HomeboxDevices.FirstOrDefaultAsync(d => d.Id == payload.Id);
+            if (entity == null)
+            {
+                entity = PropMapper<HomeBoxDeviceUpdatedEvent, HomeBoxDeviceEntity>.From(payload);
+                _context.HomeboxDevices.Add(entity);
+            }
+            else
+            {
+                PropMapper<HomeBoxDeviceUpdatedEvent, HomeBoxDeviceEntity>.CopyTo(payload, entity);
+            }
+            await _context.SaveChangesAsync();
         }
 
         public async Task Handle(HomeBoxTriggerAddedEvent payload)

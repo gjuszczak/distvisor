@@ -10,8 +10,9 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { AddHomeBoxTriggerDto } from '../models/add-home-box-trigger-dto';
-import { DeviceDto } from '../models/device-dto';
+import { HomeBoxDeviceDto } from '../models/home-box-device-dto';
 import { HomeBoxTriggerDto } from '../models/home-box-trigger-dto';
+import { UpdateHomeBoxDeviceDto } from '../models/update-home-box-device-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +37,7 @@ export class HomeBoxService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecHomeBoxDevicesGet$Plain$Response(params?: {
-  }): Observable<StrictHttpResponse<Array<DeviceDto>>> {
+  }): Observable<StrictHttpResponse<Array<HomeBoxDeviceDto>>> {
 
     const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiSecHomeBoxDevicesGetPath, 'get');
     if (params) {
@@ -48,7 +49,7 @@ export class HomeBoxService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<DeviceDto>>;
+        return r as StrictHttpResponse<Array<HomeBoxDeviceDto>>;
       })
     );
   }
@@ -60,10 +61,10 @@ export class HomeBoxService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecHomeBoxDevicesGet$Plain(params?: {
-  }): Observable<Array<DeviceDto>> {
+  }): Observable<Array<HomeBoxDeviceDto>> {
 
     return this.apiSecHomeBoxDevicesGet$Plain$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<DeviceDto>>) => r.body as Array<DeviceDto>)
+      map((r: StrictHttpResponse<Array<HomeBoxDeviceDto>>) => r.body as Array<HomeBoxDeviceDto>)
     );
   }
 
@@ -74,7 +75,7 @@ export class HomeBoxService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecHomeBoxDevicesGet$Json$Response(params?: {
-  }): Observable<StrictHttpResponse<Array<DeviceDto>>> {
+  }): Observable<StrictHttpResponse<Array<HomeBoxDeviceDto>>> {
 
     const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiSecHomeBoxDevicesGetPath, 'get');
     if (params) {
@@ -86,7 +87,7 @@ export class HomeBoxService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<DeviceDto>>;
+        return r as StrictHttpResponse<Array<HomeBoxDeviceDto>>;
       })
     );
   }
@@ -98,10 +99,59 @@ export class HomeBoxService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecHomeBoxDevicesGet$Json(params?: {
-  }): Observable<Array<DeviceDto>> {
+  }): Observable<Array<HomeBoxDeviceDto>> {
 
     return this.apiSecHomeBoxDevicesGet$Json$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<DeviceDto>>) => r.body as Array<DeviceDto>)
+      map((r: StrictHttpResponse<Array<HomeBoxDeviceDto>>) => r.body as Array<HomeBoxDeviceDto>)
+    );
+  }
+
+  /**
+   * Path part for operation apiSecHomeBoxDevicesIdentifierUpdateDetailsPost
+   */
+  static readonly ApiSecHomeBoxDevicesIdentifierUpdateDetailsPostPath = '/api/sec/home-box/devices/{identifier}/updateDetails';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiSecHomeBoxDevicesIdentifierUpdateDetailsPost()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiSecHomeBoxDevicesIdentifierUpdateDetailsPost$Response(params: {
+    identifier: string;
+    body?: UpdateHomeBoxDeviceDto
+  }): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiSecHomeBoxDevicesIdentifierUpdateDetailsPostPath, 'post');
+    if (params) {
+      rb.path('identifier', params.identifier, {});
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiSecHomeBoxDevicesIdentifierUpdateDetailsPost$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiSecHomeBoxDevicesIdentifierUpdateDetailsPost(params: {
+    identifier: string;
+    body?: UpdateHomeBoxDeviceDto
+  }): Observable<void> {
+
+    return this.apiSecHomeBoxDevicesIdentifierUpdateDetailsPost$Response(params).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 

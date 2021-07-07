@@ -1,7 +1,7 @@
 import { Directive, ElementRef, Input } from "@angular/core";
 
 @Directive({
-  selector: "[autofocus]"
+  selector: "[app-autofocus]"
 })
 export class AutofocusDirective {
   private focus = true;
