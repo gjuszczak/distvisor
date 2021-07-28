@@ -11,6 +11,7 @@ namespace Distvisor.Web.Services
         Task PushErrorAsync(string message, Exception exception = null);
         Task PushFakeApiUsedAsync(string api, object requestParams);
         Task PushSuccessAsync(string message);
+        Task PushRfCodeAsync(string rfCode);
     }
 
     public class NotificationService : INotificationService
@@ -51,6 +52,12 @@ namespace Distvisor.Web.Services
                 RequestParams = requestParams,
             };
             await PushAsync(notification);
+        }
+
+        public async Task PushRfCodeAsync(string rfCode)
+        {
+            await _notificationsHub.Clients.All
+                .PushRfCode(rfCode);
         }
 
         private async Task PushAsync(Notification notification)

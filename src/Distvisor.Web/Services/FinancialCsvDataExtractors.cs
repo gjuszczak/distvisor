@@ -150,8 +150,8 @@ namespace Distvisor.Web.Services
         {
             public CsvIVariantAccountRecordMap()
             {
-                Map(m => m.Name).Index(0).Validate(v => !string.IsNullOrWhiteSpace(v));
-                Map(m => m.Number).Index(2).Validate(v => v != null && Regex.IsMatch(v, @"^\d{2}( \d{4}){6}$"));
+                Map(m => m.Name).Index(0).Validate(v => !string.IsNullOrWhiteSpace(v.Field));
+                Map(m => m.Number).Index(2).Validate(v => v.Field != null && Regex.IsMatch(v.Field, @"^\d{2}( \d{4}){6}$"));
             }
         }
 

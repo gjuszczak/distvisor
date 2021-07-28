@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NotificationsService, SuccessNotification, ErrorNotification, FakeApiUsedNotification } from './notifications.service';
+import { RfCodeService } from './rfcode.service';
 
 import * as signalR from '@microsoft/signalr';
 
@@ -8,7 +9,7 @@ export class SignalrService {
 
   private connection: signalR.HubConnection | null;
 
-  constructor(private notificationsService: NotificationsService) {
+  constructor(private notificationsService: NotificationsService, private rfCodeService: RfCodeService) {
     this.connection = null;
   }
 
@@ -42,7 +43,13 @@ export class SignalrService {
         this.notificationsService.show(Object.assign(new FakeApiUsedNotification(), notification));
       }
     });
+
+    this.connection.on("PushRfCode", (code: string) => {
+      this.rfCodeService.rfCodeSubject$.next(code);
+    });
   }
+
+
 
   disconnect() {
     if (this.connection) {

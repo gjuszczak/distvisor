@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy
 import { Subscription } from 'rxjs';
 import { HomeBoxDeviceDto, HomeBoxTriggerAction, HomeBoxTriggerDto, HomeBoxTriggerSource, HomeBoxTriggerSourceType, HomeBoxTriggerTarget } from 'src/api/models';
 import { HomeBoxService } from 'src/api/services';
+import { RfCodeService } from 'src/notifications/rfcode.service';
 
 interface NameValue<T> {
   name: string;
@@ -18,6 +19,7 @@ export class TriggerAddDialogComponent implements OnChanges, OnDestroy {
   @Output() onHide: EventEmitter<any> = new EventEmitter();
 
   private subscriptions: Subscription[] = [];
+  private syncMatchParamSubscription: Subscription | null = null;
 
   sourceTypes: NameValue<HomeBoxTriggerSourceType>[] = [
     { name: "RF 433 Receiver", value: HomeBoxTriggerSourceType.Rf433Receiver }
@@ -35,8 +37,9 @@ export class TriggerAddDialogComponent implements OnChanges, OnDestroy {
   triggerSources: NameValue<HomeBoxTriggerSource>[] = [];
   triggerTargets: NameValue<HomeBoxTriggerTarget>[] = [];
   triggerActions: HomeBoxTriggerAction[] = [];
+  isSyncMatchParamInProgress: boolean = false;
 
-  constructor(private homeBoxService: HomeBoxService, private cdref: ChangeDetectorRef) {
+  constructor(private homeBoxService: HomeBoxService, private rfCodeService: RfCodeService, private cdref: ChangeDetectorRef) {
     this.selectedSourceType = this.sourceTypes[0];
     this.triggerActions.push(this.emptyAction());
   }
@@ -131,6 +134,23 @@ export class TriggerAddDialogComponent implements OnChanges, OnDestroy {
     }
   }
 
+  onSyncMatchParam() {
+    if (this.isSyncMatchParamInProgress) {
+      this.syncMatchParamSubscription?.unsubscribe();
+      this.syncMatchParamSubscription = null;
+      this.isSyncMatchParamInProgress = false;
+    }
+    else {
+      this.selectedSourceMatchParam = '';
+      this.isSyncMatchParamInProgress = true;
+      this.syncMatchParamSubscription = this.rfCodeService.rfCodeSubject$.subscribe(code => {
+        this.selectedSourceMatchParam = code;
+        this.isSyncMatchParamInProgress = false;
+        this.syncMatchParamSubscription?.unsubscribe();
+      })
+    }
+  }
+
   onSaveClicked() {
     let trigger: HomeBoxTriggerDto = {};
     trigger.enabled = true;
@@ -143,7 +163,7 @@ export class TriggerAddDialogComponent implements OnChanges, OnDestroy {
     });
     this.homeBoxService.apiSecHomeBoxTriggersAddPost({
       body: trigger
-    }).subscribe(_ => this.onHide.emit());    
+    }).subscribe(_ => this.onHide.emit());
   }
 
   onCancelClicked() {

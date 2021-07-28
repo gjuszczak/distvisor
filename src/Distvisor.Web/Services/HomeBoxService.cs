@@ -101,6 +101,7 @@ namespace Distvisor.Web.Services
 
         public async Task RfCodeReceivedAsync(string code)
         {
+            await _notifications.PushRfCodeAsync(code);
             var cacheKey = TriggerSourceCacheKey(HomeBoxTriggerSourceType.Rf433Receiver, code);
             if (!_memoryCache.TryGetValue(cacheKey, out Guid[] triggerIds))
             {

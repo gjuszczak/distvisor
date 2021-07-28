@@ -20,9 +20,11 @@
             <div class="p-field p-col">
                 <label for="matchParam">Match param</label>
                 <div class="p-inputgroup">
-                    <input pInputText type="text" inputId="matchParam" [(ngModel)]="selectedSourceMatchParam">
-                    <button pButton pRipple icon="pi pi-download"
-                        class="p-button-outlined button-input-attached"></button>
+                    <input pInputText type="text" inputId="matchParam" [attr.readonly]="isSyncMatchParamInProgress ? true : null"
+                        [placeholder]="isSyncMatchParamInProgress ? 'Listening...' : ''"
+                        [(ngModel)]="selectedSourceMatchParam">
+                    <button pButton pRipple [icon]="isSyncMatchParamInProgress ? 'pi pi-times' : 'pi pi-download'"
+                        class="p-button-outlined button-input-attached" (click)="onSyncMatchParam()"></button>
                 </div>
             </div>
             <div class="p-field p-col-fixed p-d-flex">
@@ -80,7 +82,8 @@
                     <div class="p-field p-col-12">
                         <label for="prevactionno">Previously executed action number</label>
                         <p-inputNumber inputId="prevactionno" placeholder="Don't care" [min]="0"
-                            [max]="triggerActions.length - 1" [(ngModel)]="action.lastExecutedActionNumber"></p-inputNumber>
+                            [max]="triggerActions.length - 1" [(ngModel)]="action.lastExecutedActionNumber">
+                        </p-inputNumber>
                     </div>
                     <div class="p-field p-col-6">
                         <label for="delayminms">Delay min [ms]</label>

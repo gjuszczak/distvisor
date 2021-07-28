@@ -10,6 +10,7 @@ import { ToastModule } from 'primeng/toast';
 import { NotificationsOverlayComponent } from './notifications-overlay/notifications-overlay.component';
 import { NotificationsService } from './notifications.service';
 import { SignalrService } from './signalr.service';
+import { RfCodeService } from './rfcode.service';
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import { SignalrService } from './signalr.service';
   providers: [
     MessageService,
     SignalrService,
-    NotificationsService
+    NotificationsService,
+    RfCodeService,
   ],
   exports: [NotificationsOverlayComponent]
 })
