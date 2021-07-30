@@ -24,6 +24,7 @@ namespace Distvisor.Web.Services
         Task<HomeBoxTriggerDto[]> ListTriggersAsync();
         Task ExecuteTriggerAsync(Guid triggerId);
         Task UpdateDeviceDetailsAsync(UpdateHomeBoxDeviceDto dto);
+        Task ApiLoginAsync(HomeBoxApiLoginDto dto);
     }
 
     public class HomeBoxService : IHomeBoxService
@@ -55,9 +56,14 @@ namespace Distvisor.Web.Services
             };
         }
 
+        public async Task ApiLoginAsync(HomeBoxApiLoginDto dto)
+        {
+            await _ewelinkClient.LoginAsync(dto.User, dto.Password);
+        }
+
         public async Task<HomeBoxDeviceDto[]> GetDevicesAsync()
         {
-            var devices = await _ewelinkClient.GetDevices();
+            var devices = await _ewelinkClient.GetDevicesAsync();
             var deviceEntities = await _readStore.HomeboxDevices.ToListAsync();
 
             var result = devices.devicelist.Select(d => new HomeBoxDeviceDto
@@ -96,7 +102,7 @@ namespace Distvisor.Web.Services
 
         public async Task SetDeviceParamsAsync(string deviceId, object deviceParams)
         {
-            await _ewelinkClient.SetDeviceParams(deviceId, deviceParams);
+            await _ewelinkClient.SetDeviceParamsAsync(deviceId, deviceParams);
         }
 
         public async Task RfCodeReceivedAsync(string code)
@@ -288,5 +294,11 @@ namespace Distvisor.Web.Services
         public HomeBoxTriggerTarget[] Targets { get; set; }
         public HomeBoxTriggerAction[] Actions { get; set; }
         public HomeBoxTriggerExecutionMemory ExecutionMemory { get; set; }
+    }
+
+    public class HomeBoxApiLoginDto
+    {
+        public string User { get; set; }
+        public string Password { get; set; }
     }
 }

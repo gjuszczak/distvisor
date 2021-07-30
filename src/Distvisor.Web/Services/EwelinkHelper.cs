@@ -39,15 +39,16 @@ namespace Distvisor.Web.Services
 
         public static class Constants
         {
-            public const string VERSION = "6";
+            public const string VERSION = "8";
             public const string OS = "android";
             public const string USER_AGENT = "app";
-            public const string APP_ID = "oeVkj2lYFGnJu5XUtWisfW4utiN4u9Mq";
-            public const string APP_SECRET = "6Nz4n0xA8s8qdxQf2GqurZj2Fs55FUvM";
             public const string MODEL = "";
             public const string ROM_VERSION = "";
             public const string APP_VERSION = "3.14.1";
             public const string APK_VERSION = "1.8";
+            public const string GRANT_TYPE_REFRESH = "refresh";
+            public const string LANG_EN = "en";
+            public const string GET_TAGS_OFF = "0";
         }
     }
 }

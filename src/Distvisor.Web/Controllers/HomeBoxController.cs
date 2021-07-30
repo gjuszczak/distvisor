@@ -18,6 +18,12 @@ namespace Distvisor.Web.Controllers
             _homeBoxService = homeBoxService;
         }
 
+        [HttpPost("api-login")]
+        public async Task ApiLogin(HomeBoxApiLoginDto dto)
+        {
+            await _homeBoxService.ApiLoginAsync(dto);
+        }
+
         [HttpGet("devices")]
         public async Task<HomeBoxDeviceDto[]> GetDevices()
         {

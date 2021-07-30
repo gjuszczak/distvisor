@@ -44,7 +44,7 @@ namespace Distvisor.Web
             services.AddSingleton<IFinancialCsvDataExtractor, CsvSVariantDataExtractor>();
             services.AddSingleton<IFinancialCsvDataExtractor, CsvIVariantDataExtractor>();
             services.AddSingleton<IEwelinkClientWebSocketFactory, EwelinkClientWebSocketFactory>();
-            services.AddSingleton<ITokenCacheManager, TokenCacheManager>();
+            services.AddSingleton<IAuthTokenCacheFactory, AuthTokenCacheFactory>();
             services.AddScoped<IHomeBoxService, HomeBoxService>();
             services.AddScoped<IDeploymentService, DeploymentService>();
             services.AddScoped<IBackupService, BackupService>();

@@ -35,7 +35,7 @@ namespace Distvisor.Web.Services
                 action = "userOnline",
                 at = accessToken,
                 apikey = apiKey,
-                appid = EwelinkHelper.Constants.APP_ID,
+                appid = _config.AppId,
                 nonce = EwelinkHelper.GenerateNonce(),
                 ts = seq.timestamp,
                 userAgent = EwelinkHelper.Constants.USER_AGENT,

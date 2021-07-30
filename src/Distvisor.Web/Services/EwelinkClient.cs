@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -11,52 +12,85 @@ using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
 {
-    public interface IEwelinkClient
+    public interface IEwelinkClient : IAuthTokenProvider
     {
-        Task<EwelinkDtoDeviceList> GetDevices();
-        Task SetDeviceParams(string deviceId, object parameters);
+        Task LoginAsync(string email, string password);
+        Task<EwelinkDtoDeviceList> GetDevicesAsync();
+        Task SetDeviceParamsAsync(string deviceId, object parameters);
     }
 
-    public class EwelinkClient : IEwelinkClient, ITokenProvider
+    public class EwelinkClient : IEwelinkClient
     {
         private readonly HttpClient _httpClient;
         private readonly EwelinkConfiguration _config;
         private readonly ICryptoService _cryptoService;
-        private readonly ITokenCacheManager _tokenCacheManager;
+        private readonly IAuthTokenCacheManager _tokenCacheManager;
 
         public EwelinkClient(HttpClient client,
             IOptions<EwelinkConfiguration> config,
             ICryptoService cryptoService,
-            ITokenCacheManager tokenCacheManager)
+            IAuthTokenCacheFactory tokenCacheFactory)
         {
             _httpClient = client;
             _config = config.Value;
             _cryptoService = cryptoService;
-            _tokenCacheManager = tokenCacheManager;
+            _tokenCacheManager = tokenCacheFactory.Create(this, typeof(EwelinkClient).FullName);
         }
 
-        public async Task<EwelinkDtoDeviceList> GetDevices()
+        public async Task LoginAsync(string email, string password)
         {
-            return await _tokenCacheManager.RetryWithToken(this, async (accessToken, _) =>
+            var urlBuilder = new UriBuilder(_httpClient.BaseAddress)
+            {
+                Path = $"api/user/login"
+            };
+
+            var body = JsonSerializer.Serialize(new
+            {
+                email,
+                password,
+                appid = _config.AppId,
+                nonce = EwelinkHelper.GenerateNonce(),
+                ts = EwelinkHelper.GenerateTimestamp(),
+                version = EwelinkHelper.Constants.VERSION,
+            });
+
+            var url = urlBuilder.ToString();
+
+            var signature = _cryptoService.HmacSha256Base64(body, _config.AppSecret);
+
+            var request = new HttpRequestMessage(HttpMethod.Post, url);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Sign", signature);
+            request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<EwelinkDtoLoginResult>(responseContent);
+            var token = new AuthToken(result.at, result.rt, ("apiKey", result.apikey));
+            _tokenCacheManager.SetAuthToken(token);
+        }
+
+        public async Task<EwelinkDtoDeviceList> GetDevicesAsync()
+        {
+            return await _tokenCacheManager.RetryWithTokenAsync(async (accessToken, _) =>
             {
                 var urlBuilder = new UriBuilder(_httpClient.BaseAddress)
                 {
                     Path = $"api/user/device"
                 };
 
-                var url = QueryHelpers.AddQueryString(urlBuilder.ToString(), new Dictionary<string, string>
+                var queryParams = new Dictionary<string, string>
                 {
-                    ["lang"] = "en",
-                    ["getTags"] = "1",
-                    ["version"] = EwelinkHelper.Constants.APP_VERSION,
+                    ["lang"] = EwelinkHelper.Constants.LANG_EN,
+                    ["appid"] = _config.AppId,
+                    ["nonce"] = EwelinkHelper.GenerateNonce(),
                     ["ts"] = EwelinkHelper.GenerateTimestamp(),
-                    ["appid"] = EwelinkHelper.Constants.APP_ID,
-                    ["imei"] = EwelinkHelper.GenerateFakeImei(),
-                    ["os"] = EwelinkHelper.Constants.OS,
-                    ["model"] = EwelinkHelper.Constants.MODEL,
-                    ["romVersion"] = EwelinkHelper.Constants.ROM_VERSION,
-                    ["appVersion"] = EwelinkHelper.Constants.APP_VERSION,
-                });
+                    ["version"] = EwelinkHelper.Constants.VERSION,
+                    ["getTags"] = EwelinkHelper.Constants.GET_TAGS_OFF,
+                };
+
+                var url = QueryHelpers.AddQueryString(urlBuilder.ToString(), queryParams);
 
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
@@ -68,9 +102,9 @@ namespace Distvisor.Web.Services
             });
         }
 
-        public async Task SetDeviceParams(string deviceId, object parameters)
+        public async Task SetDeviceParamsAsync(string deviceId, object parameters)
         {
-            await _tokenCacheManager.RetryWithToken(this, async (accessToken, _) =>
+            await _tokenCacheManager.RetryWithTokenAsync(async (accessToken, _) =>
             {
                 var urlBuilder = new UriBuilder(_httpClient.BaseAddress)
                 {
@@ -81,13 +115,15 @@ namespace Distvisor.Web.Services
                 {
                     deviceid = deviceId,
                     @params = parameters,
-                    appid = EwelinkHelper.Constants.APP_ID,
+                    appid = _config.AppId,
                     nonce = EwelinkHelper.GenerateNonce(),
                     ts = EwelinkHelper.GenerateTimestamp(),
                     version = EwelinkHelper.Constants.VERSION
                 });
 
-                var request = new HttpRequestMessage(HttpMethod.Post, urlBuilder.ToString());
+                var url = urlBuilder.ToString();
+
+                var request = new HttpRequestMessage(HttpMethod.Post, url);
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
                 request.Content = new StringContent(body, Encoding.UTF8, "application/json");
                 var response = await _httpClient.SendAsync(request);
@@ -96,45 +132,37 @@ namespace Distvisor.Web.Services
             });
         }
 
-        async Task<Token> ITokenProvider.GetTokenAsync()
+        async Task<AuthToken> IAuthTokenProvider.RefreshAuthTokenAsync(string refreshToken)
         {
             var urlBuilder = new UriBuilder(_httpClient.BaseAddress)
             {
-                Path = $"api/user/login"
+                Path = $"api/user/refresh"
             };
 
-            var body = JsonSerializer.Serialize(new
+            var queryParams = new Dictionary<string, string>
             {
-                email = _config.Email,
-                password = _config.Password,
-                version = EwelinkHelper.Constants.VERSION,
-                ts = EwelinkHelper.GenerateTimestamp(),
-                nonce = EwelinkHelper.GenerateNonce(),
-                os = EwelinkHelper.Constants.OS,
-                appid = EwelinkHelper.Constants.APP_ID,
-                imei = EwelinkHelper.GenerateFakeImei(),
-                model = EwelinkHelper.Constants.MODEL,
-                romVersion = EwelinkHelper.Constants.ROM_VERSION,
-                appVersion = EwelinkHelper.Constants.APP_VERSION,
-            });
+                ["rt"] = refreshToken,
+                ["grantType"] = EwelinkHelper.Constants.GRANT_TYPE_REFRESH,
+                ["appid"] = _config.AppId,
+                ["nonce"] = EwelinkHelper.GenerateNonce(),
+                ["ts"] = EwelinkHelper.GenerateTimestamp(),
+                ["version"] = EwelinkHelper.Constants.VERSION,
+            };
 
-            var signature = _cryptoService.HmacSha256Base64(body, EwelinkHelper.Constants.APP_SECRET);
+            var url = QueryHelpers.AddQueryString(urlBuilder.ToString(), queryParams);
 
-            var request = new HttpRequestMessage(HttpMethod.Post, urlBuilder.ToString());
+            var signatureBase = string.Join('&', queryParams.OrderBy(x => x.Key).Select(x => $"{x.Key}={x.Value}"));
+            var signature = _cryptoService.HmacSha256Base64(signatureBase, _config.AppSecret);
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Authorization = new AuthenticationHeaderValue("Sign", signature);
-            request.Content = new StringContent(body, Encoding.UTF8, "application/json");
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var responseContent = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<EwelinkDtoLoginResult>(responseContent);
-            return new Token(result.at, result.rt, ("apiKey", result.apikey));
-        }
-
-        Task<Token> ITokenProvider.RefreshTokenAsync(string refreshToken)
-        {
-            return Task.FromResult<Token>(null);
+            return new AuthToken(result.at, result.rt, ("apiKey", result.apikey));
         }
     }
 
