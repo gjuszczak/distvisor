@@ -58,33 +58,49 @@ namespace Distvisor.Web.Services
 
         public async Task ApiLoginAsync(HomeBoxApiLoginDto dto)
         {
-            await _ewelinkClient.LoginAsync(dto.User, dto.Password);
+            try
+            {
+                await _ewelinkClient.LoginAsync(dto.User, dto.Password);
+                await _notifications.PushSuccessAsync("Succesfully logged into Home Box api.");
+            }
+            catch (Exception exc)
+            {
+                await _notifications.PushErrorAsync($"Unable to Home Box api login", exc);
+            }
         }
 
         public async Task<HomeBoxDeviceDto[]> GetDevicesAsync()
         {
-            var devices = await _ewelinkClient.GetDevicesAsync();
-            var deviceEntities = await _readStore.HomeboxDevices.ToListAsync();
-
-            var result = devices.devicelist.Select(d => new HomeBoxDeviceDto
+            try
             {
-                Name = d.name,
-                Id = d.deviceid,
-                Type = _deviceTypes.GetValueOrDefault(d.uiid, HomeBoxDeviceType.Unknown),
-                Online = d.online,
-                Params = d.@params
-            }).ToList();
+                var devices = await _ewelinkClient.GetDevicesAsync();
+                var deviceEntities = await _readStore.HomeboxDevices.ToListAsync();
 
-            result.ForEach(d =>
-            {
-                var matchEntity = deviceEntities.FirstOrDefault(dd => d.Id == dd.Id);
-                if (matchEntity != null)
+                var result = devices.devicelist.Select(d => new HomeBoxDeviceDto
                 {
-                    PropMapper<HomeBoxDeviceEntity, HomeBoxDeviceDto>.CopyTo(matchEntity, d);
-                }
-            });
+                    Name = d.name,
+                    Id = d.deviceid,
+                    Type = _deviceTypes.GetValueOrDefault(d.uiid, HomeBoxDeviceType.Unknown),
+                    Online = d.online,
+                    Params = d.@params
+                }).ToList();
 
-            return result.ToArray();
+                result.ForEach(d =>
+                {
+                    var matchEntity = deviceEntities.FirstOrDefault(dd => d.Id == dd.Id);
+                    if (matchEntity != null)
+                    {
+                        PropMapper<HomeBoxDeviceEntity, HomeBoxDeviceDto>.CopyTo(matchEntity, d);
+                    }
+                });
+
+                return result.ToArray();
+            }
+            catch (Exception exc)
+            {
+                await _notifications.PushErrorAsync($"Unable to get Home Box devices.", exc);
+                throw;
+            }
         }
 
         public async Task UpdateDeviceDetailsAsync(UpdateHomeBoxDeviceDto dto)

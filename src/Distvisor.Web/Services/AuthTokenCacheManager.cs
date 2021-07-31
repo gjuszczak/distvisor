@@ -83,7 +83,8 @@ namespace Distvisor.Web.Services
                     }
                     else
                     {
-                        throw;
+                        SetAuthToken(null);
+                        throw new Exception($"Unable to acquire auth token for {_provider.GetType().Name}.");
                     }
                 }
             }
@@ -104,7 +105,7 @@ namespace Distvisor.Web.Services
             return null;
         }
 
-        private async Task<AuthToken> RefreshAuthTokenAsync( string refreshToken)
+        private async Task<AuthToken> RefreshAuthTokenAsync(string refreshToken)
         {
             if (refreshToken == null)
             {

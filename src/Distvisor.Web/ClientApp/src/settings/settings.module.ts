@@ -11,6 +11,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { MenuModule } from 'primeng/menu';
 import { PanelModule } from 'primeng/panel';
+import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { ApiModule } from '../api/api.module';
@@ -20,6 +21,7 @@ import { SecretsVaultComponent } from './secrets-vault/secrets-vault.component';
 import { RedirectionsComponent } from './redirections/redirections.component';
 import { DatabasesComponent } from './databases/databases.component';
 import { UtilsModule } from 'src/utils/utils.module';
+import { HomeBoxSettingsComponent } from './home-box-settings/home-box-settings.component';
 
 
 @NgModule({
@@ -39,6 +41,7 @@ import { UtilsModule } from 'src/utils/utils.module';
     InputTextModule,
     MenuModule,
     PanelModule,
+    PasswordModule,
     RippleModule,
     SplitButtonModule,
 
@@ -52,6 +55,7 @@ import { UtilsModule } from 'src/utils/utils.module';
     DatabasesComponent,
     SecretsVaultComponent,
     RedirectionsComponent,
+    HomeBoxSettingsComponent,
   ]
 })
 export class SettingsModule { }

@@ -16,6 +16,7 @@ export { FinancialAccountType } from './models/financial-account-type';
 export { FinancialSummaryDataSetDto } from './models/financial-summary-data-set-dto';
 export { FinancialSummaryDto } from './models/financial-summary-dto';
 export { FinancialSummaryLineChartDto } from './models/financial-summary-line-chart-dto';
+export { HomeBoxApiLoginDto } from './models/home-box-api-login-dto';
 export { HomeBoxDeviceDto } from './models/home-box-device-dto';
 export { HomeBoxDeviceType } from './models/home-box-device-type';
 export { HomeBoxTriggerAction } from './models/home-box-trigger-action';
