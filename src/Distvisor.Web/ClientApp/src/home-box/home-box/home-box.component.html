@@ -1,7 +1,7 @@
 <div class="container">
    <app-devices-list (onDeviceListLoaded)="deviceListLoaded($event)" (onDeviceDetailsOpen)="showDeviceDetailsDialog($event)"></app-devices-list>
-   <app-triggers-list (onAdd)="showTriggerAddDialog()" [devices]="devices"></app-triggers-list>
+   <app-triggers-list></app-triggers-list>
    <app-device-details-dialog [isVisible]="isDeviceDetailsDialogVisible" [device]="selectedDevice" (onHide)="hideDeviceDetailsDialog()"></app-device-details-dialog>
-   <app-trigger-add-dialog [isVisible]="isTriggerAddDialogVisible" [availableDevices]="devices" (onHide)="hideTriggerAddDialog()"></app-trigger-add-dialog>
+   <app-trigger-add-dialog *ngIf="isTriggerAddDialogOpened$ | async"></app-trigger-add-dialog>
    <p-confirmPopup></p-confirmPopup>
 </div>

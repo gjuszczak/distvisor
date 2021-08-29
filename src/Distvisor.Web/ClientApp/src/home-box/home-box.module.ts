@@ -30,6 +30,7 @@ import { DeviceDetailsDialogComponent } from './device-details-dialog/device-det
 import { TriggerAddDialogComponent } from './trigger-add-dialog/trigger-add-dialog.component';
 import { UtilsModule } from 'src/utils/utils.module';
 import { NotificationsModule } from 'src/notifications/notifications.module';
+import { HomeBoxStore } from './home-box.store';
 
 @NgModule({
   imports: [
@@ -70,6 +71,6 @@ import { NotificationsModule } from 'src/notifications/notifications.module';
     TriggerAddDialogComponent,
     DeviceDetailsDialogComponent,
   ],
-  providers: [ConfirmationService]
+  providers: [ConfirmationService, HomeBoxStore]
 })
 export class HomeBoxModule { }

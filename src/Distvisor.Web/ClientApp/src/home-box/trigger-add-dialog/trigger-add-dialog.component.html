@@ -1,8 +1,9 @@
-<p-dialog [(visible)]="isVisible" header="Add trigger" [modal]="true" [resizable]="false" styleClass="p-fluid"
-    (onHide)="onCancelClicked()">
+<p-dialog [(visible)]="isVisible" header="Add trigger" [modal]="true" [resizable]="false"
+    styleClass="p-fluid" (onHide)="onHide()">
     <ng-template pTemplate="content">
         <h4 class="p-mt-1 p-mb-3">Trigger sources</h4>
-        <p class="p-mt-1 p-mb-3 p-ml-2 p-text-light" *ngIf="!triggerSources.length">No trigger source defined yet.</p>
+        <p class="p-mt-1 p-mb-3 p-ml-2 p-text-light" *ngIf="!triggerSources.length">No trigger source defined yet.
+        </p>
         <div class="p-grid p-mb-3 p-shadow-3 p-ai-center" *ngFor="let src of triggerSources;">
             <div class="p-col p-pl-3">{{src.name}}</div>
             <div class="p-col p-pl-3">{{src.value.matchParam}}</div>
@@ -20,7 +21,8 @@
             <div class="p-field p-col">
                 <label for="matchParam">Match param</label>
                 <div class="p-inputgroup">
-                    <input pInputText type="text" inputId="matchParam" [attr.readonly]="isSyncMatchParamInProgress ? true : null"
+                    <input pInputText type="text" inputId="matchParam"
+                        [attr.readonly]="isSyncMatchParamInProgress ? true : null"
                         [placeholder]="isSyncMatchParamInProgress ? 'Listening...' : ''"
                         [(ngModel)]="selectedSourceMatchParam">
                     <button pButton pRipple [icon]="isSyncMatchParamInProgress ? 'pi pi-times' : 'pi pi-download'"
@@ -34,7 +36,8 @@
         </div>
         <hr class="p-mb-3" />
         <h4 class="p-mt-1 p-mb-3">Trigger targets</h4>
-        <p class="p-mt-1 p-mb-3 p-ml-2 p-text-light" *ngIf="!triggerTargets.length">No trigger targets defined yet.</p>
+        <p class="p-mt-1 p-mb-3 p-ml-2 p-text-light" *ngIf="!triggerTargets.length">No trigger targets defined yet.
+        </p>
         <div class="p-grid p-mb-3 p-shadow-3 p-ai-center" *ngFor="let targ of triggerTargets;">
             <div class="p-col p-pl-3">{{targ.name}}</div>
             <div class="p-col-fixed">
@@ -101,8 +104,8 @@
     </ng-template>
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text p-button-info"
-            (click)="onCancelClicked()"></button>
+            (click)="onCancel()"></button>
         <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text p-button-info"
-            (click)="onSaveClicked()"></button>
+            (click)="onSave()"></button>
     </ng-template>
 </p-dialog>

@@ -3,105 +3,68 @@ import { ConfirmationService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { HomeBoxDeviceDto, HomeBoxTriggerDto, HomeBoxTriggerSourceType } from 'src/api/models';
 import { HomeBoxService } from 'src/api/services';
-
-interface VisualTrigger {
-  id: string,
-  sources: string[],
-  targets: string[],
-  actions: string[]
-}
+import { HomeBoxStore, TriggerVm } from '../home-box.store';
 
 @Component({
   selector: 'app-triggers-list',
   templateUrl: './triggers-list.component.html',
 })
-export class TriggersListComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() devices: HomeBoxDeviceDto[] = [];
-  @Output() onAdd: EventEmitter<any> = new EventEmitter();
+export class TriggersListComponent {
+  readonly triggers$ = this.store.triggers$
+  readonly devices$ = this.store.devices$;
+  readonly triggersVm$ = this.store.triggersVm$;
 
-  private subscriptions: Subscription[] = [];
-  triggers: HomeBoxTriggerDto[] = [];
-  visualTriggers: VisualTrigger[] = [];
-
-  constructor(private homeBoxService: HomeBoxService, private confirmationService: ConfirmationService) {
-  }
-
-  ngOnInit() {
-    this.reloadList();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['devices']) {
-      this.reloadVisualTriggers();
-    }
-  }
-
-  reloadList() {
-    this.subscriptions.push(
-      this.homeBoxService.apiSecHomeBoxTriggersListGet$Json()
-        .subscribe(triggers => {
-          this.triggers = triggers;
-          this.reloadVisualTriggers();
-        }));
+  constructor(
+    private store: HomeBoxStore,
+    private confirmationService: ConfirmationService) {
   }
 
   reloadVisualTriggers() {
-    this.visualTriggers = this.triggers.map(t => <VisualTrigger>{
-      id: t.id,
-      sources: t.sources?.map(s => `${this.sourceTypeToString(s.type)} [matchParam: ${s.matchParam}]`) || [],
-      targets: t.targets?.map(t => {
-        let deviceMatch = this.devices.find(d => d.id === t.deviceIdentifier);
-        if (deviceMatch) {
-          return `${deviceMatch.name} [${deviceMatch.id}]`;
-        }
-        return t.deviceIdentifier || "";
-      }),
-      actions: t.actions?.map(a => JSON.stringify(a, null, 2)) || [],
-    })
-  }
-
-  sourceTypeToString(type?: HomeBoxTriggerSourceType) {
-    if (type === HomeBoxTriggerSourceType.Rf433Receiver) {
-      return "RF 433 Receiver";
-    }
-    return type;
+    // this.visualTriggers = this.triggers.map(t => <VisualTrigger>{
+    //   id: t.id,
+    //   sources: t.sources?.map(s => `${this.sourceTypeToString(s.type)} [matchParam: ${s.matchParam}]`) || [],
+    //   targets: t.targets?.map(t => {
+    //     let deviceMatch = this.devices.find(d => d.id === t.deviceIdentifier);
+    //     if (deviceMatch) {
+    //       return `${deviceMatch.name} [${deviceMatch.id}]`;
+    //     }
+    //     return t.deviceIdentifier || "";
+    //   }),
+    //   actions: t.actions?.map(a => JSON.stringify(a, null, 2)) || [],
+    // })
   }
 
   onAddClicked(): void {
-    this.onAdd.emit();
+    this.store.openTriggerAddDialog();
   }
 
-  onExecuteClicked(trigger: VisualTrigger): void {
-    this.subscriptions.push(this.homeBoxService
-      .apiSecHomeBoxTriggersIdExecutePost({ id: trigger.id })
-      .subscribe(_ => {
-        // do nothing
-      })
-    );
+  onExecuteClicked(trigger: TriggerVm): void {
+    // this.subscriptions.push(this.homeBoxService
+    //   .apiSecHomeBoxTriggersIdExecutePost({ id: trigger.id })
+    //   .subscribe(_ => {
+    //     // do nothing
+    //   })
+    // );
   }
 
-  onDeleteClicked(event: Event, trigger: VisualTrigger) {
-    this.confirmationService.confirm({
-      target: event.target || undefined,
-      message: 'Are you sure that you want to delete selected trigger?',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.subscriptions.push(this.homeBoxService
-          .apiSecHomeBoxTriggersIdDeleteDelete({ id: trigger.id })
-          .subscribe(_ => {
-            this.visualTriggers.splice(this.visualTriggers.indexOf(trigger), 1);
-            this.triggers.splice(this.visualTriggers.findIndex(t => t.id === trigger.id));
-          })
-        );
-      },
-      reject: () => {
-          //do nothing
-      }
-  });
+  onDeleteClicked(event: Event, trigger: TriggerVm) {
+    // this.confirmationService.confirm({
+    //   target: event.target || undefined,
+    //   message: 'Are you sure that you want to delete selected trigger?',
+    //   icon: 'pi pi-exclamation-triangle',
+    //   accept: () => {
+    //     this.subscriptions.push(this.homeBoxService
+    //       .apiSecHomeBoxTriggersIdDeleteDelete({ id: trigger.id })
+    //       .subscribe(_ => {
+    //         this.visualTriggers.splice(this.visualTriggers.indexOf(trigger), 1);
+    //         this.triggers.splice(this.visualTriggers.findIndex(t => t.id === trigger.id));
+    //       })
+    //     );
+    //   },
+    //   reject: () => {
+    //     //do nothing
+    //   }
+    // });
 
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(x => x.unsubscribe());
   }
 }

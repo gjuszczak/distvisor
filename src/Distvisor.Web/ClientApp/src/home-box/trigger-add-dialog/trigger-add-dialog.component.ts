@@ -1,26 +1,19 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { HomeBoxDeviceDto, HomeBoxTriggerAction, HomeBoxTriggerDto, HomeBoxTriggerSource, HomeBoxTriggerSourceType, HomeBoxTriggerTarget } from 'src/api/models';
+import { HomeBoxTriggerAction, HomeBoxTriggerDto, HomeBoxTriggerSource, HomeBoxTriggerSourceType, HomeBoxTriggerTarget } from 'src/api/models';
 import { HomeBoxService } from 'src/api/services';
 import { RfCodeService } from 'src/notifications/rfcode.service';
-
-interface NameValue<T> {
-  name: string;
-  value: T;
-}
+import { HomeBoxStore, NameValue } from '../home-box.store';
 
 @Component({
   selector: 'app-trigger-add-dialog',
   templateUrl: './trigger-add-dialog.component.html'
 })
-export class TriggerAddDialogComponent implements OnChanges, OnDestroy {
-  @Input() isVisible: boolean = false;
-  @Input() availableDevices: HomeBoxDeviceDto[] = [];
-  @Output() onHide: EventEmitter<any> = new EventEmitter();
-
+export class TriggerAddDialogComponent implements OnDestroy {  
   private subscriptions: Subscription[] = [];
   private syncMatchParamSubscription: Subscription | null = null;
 
+  isVisible: boolean = true;
   sourceTypes: NameValue<HomeBoxTriggerSourceType>[] = [
     { name: "RF 433 Receiver", value: HomeBoxTriggerSourceType.Rf433Receiver }
   ]
@@ -39,20 +32,19 @@ export class TriggerAddDialogComponent implements OnChanges, OnDestroy {
   triggerActions: HomeBoxTriggerAction[] = [];
   isSyncMatchParamInProgress: boolean = false;
 
-  constructor(private homeBoxService: HomeBoxService, private rfCodeService: RfCodeService, private cdref: ChangeDetectorRef) {
-    this.selectedSourceType = this.sourceTypes[0];
-    this.triggerActions.push(this.emptyAction());
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['isVisible']) {
+  constructor(
+    private homeBoxService: HomeBoxService,
+    private rfCodeService: RfCodeService,
+    private cdref: ChangeDetectorRef,
+    private store: HomeBoxStore) {
       this.selectedSourceType = this.sourceTypes[0];
-    }
-    if (changes['availableDevices']) {
-      this.targetOptions = this.availableDevices
-        .map(d => <NameValue<string>>{ name: `${d.name} [${d.id}]`, value: d.id });
-      this.selectedTarget = this.targetOptions.length ? this.targetOptions[0] : null;
-    }
+      this.triggerActions.push(this.emptyAction());
+      this.subscriptions.push(
+        this.store.devicesShortVm$.subscribe(devices=>{
+          this.targetOptions = devices;
+          this.selectedTarget = this.targetOptions.length ? this.targetOptions[0] : null;
+        })
+      )
   }
 
   ngOnDestroy() {
@@ -96,7 +88,6 @@ export class TriggerAddDialogComponent implements OnChanges, OnDestroy {
         deviceIdentifier: this.selectedTarget.value
       }
     });
-
   }
 
   onDeleteTriggerTarget(triggerTarget: NameValue<HomeBoxTriggerTarget>) {
@@ -151,7 +142,7 @@ export class TriggerAddDialogComponent implements OnChanges, OnDestroy {
     }
   }
 
-  onSaveClicked() {
+  onSave() {
     let trigger: HomeBoxTriggerDto = {};
     trigger.enabled = true;
     trigger.sources = this.triggerSources.map(source => source.value);
@@ -161,12 +152,14 @@ export class TriggerAddDialogComponent implements OnChanges, OnDestroy {
       result.payload = JSON.parse(result.payload);
       return result;
     });
-    this.homeBoxService.apiSecHomeBoxTriggersAddPost({
-      body: trigger
-    }).subscribe(_ => this.onHide.emit());
+    this.store.storeTrigger(trigger);
   }
 
-  onCancelClicked() {
-    this.onHide.emit();
+  onCancel() {
+    this.isVisible = false;
+  }
+
+  onHide() {
+    this.store.closeTriggerAddDialog();
   }
 }

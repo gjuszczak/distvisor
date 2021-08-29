@@ -1,39 +1,47 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { HomeBoxDeviceDto } from 'src/api/models';
-
+import { HomeBoxStore } from '../home-box.store';
 
 @Component({
   selector: 'app-home-box',
   templateUrl: './home-box.component.html',
 })
-export class HomeBoxComponent implements OnDestroy {
-
+export class HomeBoxComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
+  
+  readonly isTriggerAddDialogOpened$ = this.store.isTriggerAddDialogOpened$;
 
   isDeviceDetailsDialogVisible: boolean = false;
   isTriggerAddDialogVisible: boolean = false;
-  selectedDevice: HomeBoxDeviceDto = { };
+  selectedDevice: HomeBoxDeviceDto = {};
   devices: HomeBoxDeviceDto[] = [];
- 
-  showDeviceDetailsDialog(selectedDevice: HomeBoxDeviceDto){
+
+  constructor(private readonly store: HomeBoxStore) {}
+
+  ngOnInit(): void {
+    this.store.reloadDevices();
+    this.store.reloadTriggers();
+  }
+
+  showDeviceDetailsDialog(selectedDevice: HomeBoxDeviceDto) {
     this.selectedDevice = selectedDevice;
     this.isDeviceDetailsDialogVisible = true;
   }
 
-  hideDeviceDetailsDialog(){
+  hideDeviceDetailsDialog() {
     this.isDeviceDetailsDialogVisible = false;
   }
 
-  showTriggerAddDialog(){
+  showTriggerAddDialog() {
     this.isTriggerAddDialogVisible = true;
   }
 
-  hideTriggerAddDialog(){
+  hideTriggerAddDialog() {
     this.isTriggerAddDialogVisible = false;
   }
 
-  deviceListLoaded(devices: HomeBoxDeviceDto[]){
+  deviceListLoaded(devices: HomeBoxDeviceDto[]) {
     this.devices = devices;
   }
 
