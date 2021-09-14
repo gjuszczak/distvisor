@@ -16,15 +16,17 @@ namespace Distvisor.Web.Services
 {
     public interface IHomeBoxService
     {
-        Task AddTriggerAsync(AddHomeBoxTriggerDto trigger);
+        Task ApiLoginAsync(HomeBoxApiLoginDto dto);
         Task<HomeBoxDeviceDto[]> GetDevicesAsync();
         Task RfCodeReceivedAsync(string code);
         Task SetDeviceParamsAsync(string deviceId, object deviceParams);
-        Task DeleteTriggerAsync(Guid id);
-        Task<HomeBoxTriggerDto[]> ListTriggersAsync();
-        Task ExecuteTriggerAsync(Guid triggerId);
         Task UpdateDeviceDetailsAsync(UpdateHomeBoxDeviceDto dto);
-        Task ApiLoginAsync(HomeBoxApiLoginDto dto);
+        Task<HomeBoxTriggerDto[]> ListTriggersAsync();
+        Task CreateTriggerAsync(HomeBoxTriggerDto trigger);
+        Task UpdateTriggerAsync(HomeBoxTriggerDto trigger);
+        Task DeleteTriggerAsync(Guid triggerId);
+        Task ExecuteTriggerAsync(Guid triggerId);
+        Task ToggleTriggerAsync(Guid triggerId, bool enable);
     }
 
     public class HomeBoxService : IHomeBoxService
@@ -152,32 +154,6 @@ namespace Distvisor.Web.Services
             }
         }
 
-        public async Task AddTriggerAsync(AddHomeBoxTriggerDto trigger)
-        {
-            trigger.Id = trigger.Id.GenerateIfEmpty();
-            foreach (var source in trigger.Sources)
-            {
-                source.Id = source.Id.GenerateIfEmpty();
-                source.TriggerId = trigger.Id;
-            }
-            foreach (var target in trigger.Targets)
-            {
-                target.Id = target.Id.GenerateIfEmpty();
-                target.TriggerId = trigger.Id;
-            }
-            foreach (var action in trigger.Actions)
-            {
-                action.Id = action.Id.GenerateIfEmpty();
-                action.TriggerId = trigger.Id;
-            }
-
-            await _eventStore.Publish<HomeBoxTriggerAddedEvent>(trigger);
-
-            _memoryCache.Remove(TriggerListCacheKey());
-
-            await _notifications.PushSuccessAsync("Trigger added successfully.");
-        }
-
         public async Task DeleteTriggerAsync(Guid id)
         {
             await _eventStore.Publish(new HomeBoxTriggerDeletedEvent
@@ -218,6 +194,37 @@ namespace Distvisor.Web.Services
             }
 
             return triggers;
+        }
+
+        public async Task CreateTriggerAsync(HomeBoxTriggerDto trigger)
+        {
+            trigger.Id = trigger.Id.GenerateIfEmpty();
+            foreach (var source in trigger.Sources)
+            {
+                source.Id = source.Id.GenerateIfEmpty();
+                source.TriggerId = trigger.Id;
+            }
+            foreach (var target in trigger.Targets)
+            {
+                target.Id = target.Id.GenerateIfEmpty();
+                target.TriggerId = trigger.Id;
+            }
+            foreach (var action in trigger.Actions)
+            {
+                action.Id = action.Id.GenerateIfEmpty();
+                action.TriggerId = trigger.Id;
+            }
+            
+            await UpsertTriggerAsync(trigger);
+
+            await _notifications.PushSuccessAsync("Trigger created successfully.");
+        }
+
+        public async Task UpdateTriggerAsync(HomeBoxTriggerDto trigger)
+        {
+            await UpsertTriggerAsync(trigger);
+
+            await _notifications.PushSuccessAsync("Trigger updated successfully.");
         }
 
         public async Task ExecuteTriggerAsync(Guid triggerId)
@@ -269,6 +276,24 @@ namespace Distvisor.Web.Services
             StoreTriggerExecutionMemory(triggerId, trigger.ExecutionMemory);
         }
 
+        public async Task ToggleTriggerAsync(Guid triggerId, bool enable)
+        {
+            await _eventStore.Publish(new HomeBoxTriggerToggledEvent
+            {
+                Id = triggerId,
+                Enabled = enable
+            });
+
+            await _notifications.PushSuccessAsync("Trigger toggled successfully.");
+        }
+
+        private async Task UpsertTriggerAsync(HomeBoxTriggerDto trigger)
+        {
+            await _eventStore.Publish<HomeBoxTriggerUpsertedEvent>(trigger);
+
+            _memoryCache.Remove(TriggerListCacheKey());
+        }
+
         private HomeBoxTriggerExecutionMemory LoadTriggerExecutionMemory(Guid triggerId)
         {
             var cacheKey = TriggerExecutionMemoryCacheKey(triggerId);
@@ -300,15 +325,9 @@ namespace Distvisor.Web.Services
         public JsonElement Params { get; set; }
     }
 
-    public class AddHomeBoxTriggerDto : HomeBoxTriggerAddedEvent
-    {
-    }
 
-    public class HomeBoxTriggerDto : HomeBoxTrigger
+    public class HomeBoxTriggerDto : HomeBoxTriggerUpsertedEvent
     {
-        public HomeBoxTriggerSource[] Sources { get; set; }
-        public HomeBoxTriggerTarget[] Targets { get; set; }
-        public HomeBoxTriggerAction[] Actions { get; set; }
         public HomeBoxTriggerExecutionMemory ExecutionMemory { get; set; }
     }
 

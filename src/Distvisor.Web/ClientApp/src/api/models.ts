@@ -1,6 +1,5 @@
 export { AddFinancialAccountDto } from './models/add-financial-account-dto';
 export { AddFinancialAccountTransactionDto } from './models/add-financial-account-transaction-dto';
-export { AddHomeBoxTriggerDto } from './models/add-home-box-trigger-dto';
 export { AuthMsalConfiguration } from './models/auth-msal-configuration';
 export { BackendDetails } from './models/backend-details';
 export { BackupFileInfoDto } from './models/backup-file-info-dto';

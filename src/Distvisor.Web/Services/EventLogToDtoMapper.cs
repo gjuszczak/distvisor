@@ -47,11 +47,14 @@ namespace Distvisor.Web.Services
                 new EventPayloadMapper<HomeBoxDeviceUpdatedEvent>()
                     .ConfigurePayloadTypeDisplayName("HomeBox Device Updated"),
 
-                new EventPayloadMapper<HomeBoxTriggerAddedEvent>()
-                    .ConfigurePayloadTypeDisplayName("HomeBox Trigger Added"),
+                new EventPayloadMapper<HomeBoxTriggerUpsertedEvent>()
+                    .ConfigurePayloadTypeDisplayName("HomeBox Trigger Upserted"),
 
                 new EventPayloadMapper<HomeBoxTriggerDeletedEvent>()
                     .ConfigurePayloadTypeDisplayName("HomeBox Trigger Deleted"),
+
+                new EventPayloadMapper<HomeBoxTriggerToggledEvent>()
+                    .ConfigurePayloadTypeDisplayName("HomeBox Trigger Toggled"),
             };
 
             _mappers = configs.ToDictionary(x => x.GetPayloadType());

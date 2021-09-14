@@ -5,6 +5,8 @@
             <div class="p-d-flex">
                 <button pButton pRipple type="button" icon="pi pi-plus" (click)="onAddClicked()"
                     class="p-button-rounded p-button-text p-button-info p-mr-1"></button>
+                <button pButton pRipple type="button" icon="pi pi-refresh" (click)="onRefreshClicked()"
+                    class="p-button-rounded p-button-text p-button-info p-mr-1"></button>
             </div>
         </div>
     </p-header>
@@ -33,7 +35,7 @@
                         <div *ngFor="let target of trigger.targets">{{ target }}</div>
                     </td>
                     <td>
-                        <p-inputSwitch></p-inputSwitch>
+                        <p-inputSwitch [ngModel]="trigger.enabled" (onChange)="onTriggerToggled(trigger, $event)"></p-inputSwitch>
                         <button pButton pRipple type="button" icon="pi pi-play" (click)="onExecuteClicked(trigger)"
                             class="p-button-rounded p-button-text p-button-info p-mr-1"></button>
                         <button pButton pRipple type="button" icon="pi pi-times"

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ComponentStore } from '@ngrx/component-store';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { EMPTY, Observable } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { HomeBoxDeviceDto, HomeBoxTriggerDto, HomeBoxTriggerSourceType } from 'src/api/models';
 import { HomeBoxService } from 'src/api/services';
 
@@ -13,6 +13,7 @@ export interface HomeBoxState {
 
 export interface TriggerVm {
     id: string;
+    enabled: boolean;
     sources: string[];
     targets: string[];
     actions: string[];
@@ -34,7 +35,7 @@ export class HomeBoxStore extends ComponentStore<HomeBoxState> {
     }
 
     reloadTriggers() {
-        let triggers$ = this.apiClient.apiSecHomeBoxTriggersListGet$Json();
+        let triggers$ = this.apiClient.apiSecHomeBoxTriggersGet$Json();
         this.loadTriggers(triggers$);
     }
 
@@ -43,14 +44,46 @@ export class HomeBoxStore extends ComponentStore<HomeBoxState> {
         this.loadDevices(devices$);
     }
 
-    storeTrigger(trigger: HomeBoxTriggerDto) {
-        let triggerToAdd$ = this.apiClient.apiSecHomeBoxTriggersAddPost({
+    addTrigger(trigger: HomeBoxTriggerDto, successCallback?: () => void) {
+        const triggerToAdd$ = this.apiClient.apiSecHomeBoxTriggersPost({
             body: trigger
         }).pipe(
-            map(_ => trigger)
+            map(_ => trigger),
+            tap(_ => successCallback && successCallback())
         );
-        this.addTrigger(triggerToAdd$);
+        this.addTriggerLocal(triggerToAdd$);
     };
+
+    deleteTrigger(triggerId: string, successCallback?: () => void) {
+        const triggerToDelete$ = this.apiClient.apiSecHomeBoxTriggersIdDelete({
+            id: triggerId
+        }).pipe(
+            map(_ => triggerId),
+            tap(_ => successCallback && successCallback())
+        );
+        this.deleteTriggerLocal(triggerToDelete$);
+    }
+
+    toggleTrigger(triggerId: string, enable: boolean, successCallback?: () => void) {
+        const triggerToToggle$ = this.apiClient.apiSecHomeBoxTriggersIdTogglePost({
+            id: triggerId,
+            enable: enable,
+        }).pipe(
+            map(_ => ({ triggerId, enable })),
+            tap(_ => successCallback && successCallback())
+        );
+        this.toggleTriggerLocal(triggerToToggle$);
+    }
+
+    readonly executeTrigger = this.effect((triggerId$: Observable<string>) => {
+        return triggerId$.pipe(
+            switchMap((triggerId) => this.apiClient.apiSecHomeBoxTriggersIdExecutePost({
+                id: triggerId
+            }).pipe(
+                catchError(() => EMPTY)
+            )),
+        );
+    });
 
     readonly loadTriggers = this.updater((state, triggers: HomeBoxTriggerDto[]) => ({
         ...state,
@@ -72,9 +105,19 @@ export class HomeBoxStore extends ComponentStore<HomeBoxState> {
         isTriggerAddDialogOpened: false
     }));
 
-    readonly addTrigger = this.updater((state, trigger: HomeBoxTriggerDto) => ({
+    readonly addTriggerLocal = this.updater((state, trigger: HomeBoxTriggerDto) => ({
         ...state,
         triggers: [...state.triggers, trigger],
+    }));
+
+    readonly deleteTriggerLocal = this.updater((state, triggerId: string) => ({
+        ...state,
+        triggers: state.triggers.filter(x => x.id !== triggerId),
+    }));
+
+    readonly toggleTriggerLocal = this.updater((state, value: { triggerId: string, enable: boolean }) => ({
+        ...state,
+        triggers: state.triggers.map(x => x.id === value.triggerId ? { ...x, enabled: value.enable } : x),
     }));
 
     readonly devices$ = this.select(state => state.devices);
@@ -94,6 +137,7 @@ export class HomeBoxStore extends ComponentStore<HomeBoxState> {
         this.triggers$,
         (devices, triggers) => triggers.map(t => <TriggerVm>{
             id: t.id,
+            enabled: t.enabled,
             sources: t.sources?.map(s => `${this.sourceTypeToString(s.type)} [matchParam: ${s.matchParam}]`) || [],
             targets: t.targets?.map(t => {
                 let deviceMatch = devices.find(d => d.id === t.deviceIdentifier);

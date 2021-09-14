@@ -13,7 +13,7 @@ namespace Distvisor.Web.Data.Events
     {
     }
 
-    public class HomeBoxTriggerAddedEvent : HomeBoxTrigger
+    public class HomeBoxTriggerUpsertedEvent : HomeBoxTrigger
     {
         public HomeBoxTriggerSource[] Sources { get; set; }
         public HomeBoxTriggerTarget[] Targets { get; set; }
@@ -25,10 +25,17 @@ namespace Distvisor.Web.Data.Events
         public Guid Id { get; set; }
     }
 
+    public class HomeBoxTriggerToggledEvent
+    {
+        public Guid Id { get; set; }
+        public bool Enabled { get; set; }
+    }
+
     public class HomeBoxEventHandlers :
        IEventHandler<HomeBoxDeviceUpdatedEvent>,
-       IEventHandler<HomeBoxTriggerAddedEvent>,
-       IEventHandler<HomeBoxTriggerDeletedEvent>
+       IEventHandler<HomeBoxTriggerUpsertedEvent>,
+       IEventHandler<HomeBoxTriggerDeletedEvent>,
+       IEventHandler<HomeBoxTriggerToggledEvent>
     {
         private readonly ReadStoreContext _context;
         public HomeBoxEventHandlers(ReadStoreContext context)
@@ -51,12 +58,19 @@ namespace Distvisor.Web.Data.Events
             await _context.SaveChangesAsync();
         }
 
-        public async Task Handle(HomeBoxTriggerAddedEvent payload)
+        public async Task Handle(HomeBoxTriggerUpsertedEvent payload)
         {
-            var entity = PropMapper<HomeBoxTriggerAddedEvent, HomeBoxTriggerEntity>.From(payload);
+            var entity = PropMapper<HomeBoxTriggerUpsertedEvent, HomeBoxTriggerEntity>.From(payload);
             entity.Sources = payload.Sources.Select(p => PropMapper<HomeBoxTriggerSource, HomeBoxTriggerSourceEntity>.From(p)).ToList();
             entity.Targets = payload.Targets.Select(t => PropMapper<HomeBoxTriggerTarget, HomeBoxTriggerTargetEntity>.From(t)).ToList();
             entity.Actions = payload.Actions.Select(a => PropMapper<HomeBoxTriggerAction, HomeBoxTriggerActionEntity>.From(a)).ToList();
+
+            var storedEntity = await _context.HomeboxTriggers.FindAsync(payload.Id);
+            if (storedEntity != null)
+            {
+                _context.HomeboxTriggers.Remove(storedEntity);
+                await _context.SaveChangesAsync();
+            }
 
             _context.HomeboxTriggers.Add(entity);
             await _context.SaveChangesAsync();
@@ -67,6 +81,18 @@ namespace Distvisor.Web.Data.Events
             var entity = PropMapper<HomeBoxTriggerDeletedEvent, HomeBoxTriggerEntity>.From(payload);
 
             _context.Entry(entity).State = EntityState.Deleted;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task Handle(HomeBoxTriggerToggledEvent payload)
+        {
+            var storedEntity = await _context.HomeboxTriggers.FindAsync(payload.Id);
+            if(storedEntity == null)
+            {
+                throw new Exception($"Unable to toggle trigger {payload.Id}. Entity not found.");
+            }
+
+            storedEntity.Enabled = payload.Enabled;
             await _context.SaveChangesAsync();
         }
     }

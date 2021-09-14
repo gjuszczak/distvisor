@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { HomeBoxTriggerAction, HomeBoxTriggerDto, HomeBoxTriggerSource, HomeBoxTriggerSourceType, HomeBoxTriggerTarget } from 'src/api/models';
-import { HomeBoxService } from 'src/api/services';
 import { RfCodeService } from 'src/notifications/rfcode.service';
 import { HomeBoxStore, NameValue } from '../home-box.store';
 
@@ -9,7 +8,7 @@ import { HomeBoxStore, NameValue } from '../home-box.store';
   selector: 'app-trigger-add-dialog',
   templateUrl: './trigger-add-dialog.component.html'
 })
-export class TriggerAddDialogComponent implements OnDestroy {  
+export class TriggerAddDialogComponent implements OnDestroy {
   private subscriptions: Subscription[] = [];
   private syncMatchParamSubscription: Subscription | null = null;
 
@@ -33,18 +32,17 @@ export class TriggerAddDialogComponent implements OnDestroy {
   isSyncMatchParamInProgress: boolean = false;
 
   constructor(
-    private homeBoxService: HomeBoxService,
     private rfCodeService: RfCodeService,
     private cdref: ChangeDetectorRef,
     private store: HomeBoxStore) {
-      this.selectedSourceType = this.sourceTypes[0];
-      this.triggerActions.push(this.emptyAction());
-      this.subscriptions.push(
-        this.store.devicesShortVm$.subscribe(devices=>{
-          this.targetOptions = devices;
-          this.selectedTarget = this.targetOptions.length ? this.targetOptions[0] : null;
-        })
-      )
+    this.selectedSourceType = this.sourceTypes[0];
+    this.triggerActions.push(this.emptyAction());
+    this.subscriptions.push(
+      this.store.devicesShortVm$.subscribe(devices => {
+        this.targetOptions = devices;
+        this.selectedTarget = this.targetOptions.length ? this.targetOptions[0] : null;
+      })
+    )
   }
 
   ngOnDestroy() {
@@ -152,7 +150,7 @@ export class TriggerAddDialogComponent implements OnDestroy {
       result.payload = JSON.parse(result.payload);
       return result;
     });
-    this.store.storeTrigger(trigger);
+    this.store.addTrigger(trigger, () => this.isVisible = false);
   }
 
   onCancel() {

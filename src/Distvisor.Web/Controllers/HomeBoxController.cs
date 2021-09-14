@@ -1,4 +1,5 @@
-﻿using Distvisor.Web.Services;
+﻿using Distvisor.Web.Data;
+using Distvisor.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -49,19 +50,26 @@ namespace Distvisor.Web.Controllers
             await _homeBoxService.SetDeviceParamsAsync(identifier, new { @switch = "off" });
         }
 
-        [HttpGet("triggers/list")]
+        [HttpGet("triggers")]
         public async Task<HomeBoxTriggerDto[]> ListTriggers()
         {
             return await _homeBoxService.ListTriggersAsync();
         }
 
-        [HttpPost("triggers/add")]
-        public async Task AddTrigger(AddHomeBoxTriggerDto dto)
+        [HttpPost("triggers")]
+        public async Task CreateTrigger(HomeBoxTriggerDto dto)
         {
-            await _homeBoxService.AddTriggerAsync(dto);
+            await _homeBoxService.CreateTriggerAsync(dto);
         }
 
-        [HttpDelete("triggers/{id}/delete")]
+        [HttpPut("triggers/{id}")]
+        public async Task UpdateTrigger(Guid id, HomeBoxTriggerDto dto)
+        {
+            dto.Id = id;
+            await _homeBoxService.UpdateTriggerAsync(dto);
+        }
+
+        [HttpDelete("triggers/{id}")]
         public async Task DeleteTrigger(Guid id)
         {
             await _homeBoxService.DeleteTriggerAsync(id);
@@ -71,6 +79,12 @@ namespace Distvisor.Web.Controllers
         public async Task ExecuteTrigger(Guid id)
         {
             await _homeBoxService.ExecuteTriggerAsync(id);
+        }
+
+        [HttpPost("triggers/{id}/toggle")]
+        public async Task ToggleTrigger(Guid id, bool enable)
+        {
+            await _homeBoxService.ToggleTriggerAsync(id, enable);
         }
     }
 }
