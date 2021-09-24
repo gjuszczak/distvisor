@@ -22,6 +22,10 @@ import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
 
+import { devicesReducer } from './state/devices.reducer';
+import { triggersReducer } from './state/triggers.reducer';
+import { dialogsReducer } from './state/dialogs.reducer';
+
 import { ApiModule } from '../api/api.module';
 import { HomeBoxComponent } from './home-box/home-box.component';
 import { TriggersListComponent } from './triggers-list/triggers-list.component';
@@ -29,8 +33,11 @@ import { DevicesListComponent } from './devices-list/devices-list.component';
 import { DeviceDetailsDialogComponent } from './device-details-dialog/device-details-dialog.component';
 import { TriggerAddDialogComponent } from './trigger-add-dialog/trigger-add-dialog.component';
 import { UtilsModule } from 'src/utils/utils.module';
-import { NotificationsModule } from 'src/notifications/notifications.module';
+import { SignalrModule } from 'src/signalr/signalr.module';
 import { HomeBoxStore } from './home-box.store';
+import { StoreModule } from '@ngrx/store';
+import { TriggersEffects } from './state/triggers.effects';
+import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   imports: [
@@ -40,6 +47,16 @@ import { HomeBoxStore } from './home-box.store';
     HttpClientModule,
     RouterModule.forRoot([
       { path: 'home-box', component: HomeBoxComponent, pathMatch: 'full', canActivate: [MsalGuard] },
+    ]),
+
+    // NgRx
+    StoreModule.forFeature('homeBox', {
+      devices: devicesReducer,
+      triggers: triggersReducer,
+      dialogs: dialogsReducer,
+    }),
+    EffectsModule.forFeature([
+      TriggersEffects,
     ]),
 
     // PrimeNg
@@ -62,7 +79,7 @@ import { HomeBoxStore } from './home-box.store';
     // internal
     ApiModule,
     UtilsModule,
-    NotificationsModule
+    SignalrModule
   ],
   declarations: [
     HomeBoxComponent,

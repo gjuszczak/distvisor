@@ -6,6 +6,9 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+
 import { MsalModule, MsalInterceptor, MsalService, MsalGuard, MsalBroadcastService, MsalRedirectComponent, MSAL_INSTANCE, MSAL_GUARD_CONFIG, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
 import { MsalGuardConfigFactory, MsalInstanceFactory, MsalInterceptorConfigFactory } from './msal-integration';
 
@@ -23,13 +26,15 @@ import { FinancesModule } from '../finances/finances.module';
 import { HomeBoxModule } from '../home-box/home-box.module';
 import { EventLogModule } from '../event-log/event-log.module';
 import { ApiModule } from '../api/api.module';
-import { NotificationsModule } from '../notifications/notifications.module';
+import { SignalrModule } from '../signalr/signalr.module';
 import { FooterComponent } from './footer/footer.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { NavigationService } from './navigation.service';
 import { AuthService } from './auth.service';
 import { LogoutComponent } from './logout/logout.component';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @NgModule({
   declarations: [
@@ -53,6 +58,10 @@ import { LogoutComponent } from './logout/logout.component';
     ]),
     NgcCookieConsentModule.forRoot({ cookie: { domain: '' }, enabled: false }),
 
+    //NgRx
+    StoreModule.forRoot({ }),
+    EffectsModule.forRoot(),
+
     // Msal
     MsalModule,
 
@@ -60,12 +69,13 @@ import { LogoutComponent } from './logout/logout.component';
     MenuModule,
     ButtonModule,
     RippleModule,
+    ToastModule,
 
     // internal
     SettingsModule,
     FinancesModule,
     HomeBoxModule,
-    NotificationsModule,
+    SignalrModule,
     EventLogModule,
     ApiModule
   ],
@@ -79,6 +89,7 @@ import { LogoutComponent } from './logout/logout.component';
     MsalBroadcastService,
     NavigationService,
     AuthService,
+    MessageService,
   ],
   bootstrap: [AppComponent, MsalRedirectComponent]
 })

@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { HomeBoxTriggerAction, HomeBoxTriggerDto, HomeBoxTriggerSource, HomeBoxTriggerSourceType, HomeBoxTriggerTarget } from 'src/api/models';
-import { RfCodeService } from 'src/notifications/rfcode.service';
+import { RfCodeService } from 'src/signalr/rfcode.service';
 import { HomeBoxStore, NameValue } from '../home-box.store';
 
 @Component({
@@ -33,6 +34,7 @@ export class TriggerAddDialogComponent implements OnDestroy {
 
   constructor(
     private rfCodeService: RfCodeService,
+    private messageService: MessageService,
     private cdref: ChangeDetectorRef,
     private store: HomeBoxStore) {
     this.selectedSourceType = this.sourceTypes[0];
@@ -150,6 +152,34 @@ export class TriggerAddDialogComponent implements OnDestroy {
       result.payload = JSON.parse(result.payload);
       return result;
     });
+
+    if(trigger.sources?.length < 1) {
+      this.messageService.add({
+        severity: 'error',
+        summary: "Validation failed",
+        detail: "Please provide at least one trigger source",
+      });
+      return;
+    }
+
+    if(trigger.targets?.length < 1) {
+      this.messageService.add({
+        severity: 'error',
+        summary: "Validation failed",
+        detail: "Please provide at least one trigger target",
+      });
+      return;
+    }
+
+    if(trigger.actions?.length < 1) {
+      this.messageService.add({
+        severity: 'error',
+        summary: "Validation failed",
+        detail: "Please provide at least one trigger action",
+      });
+      return;
+    }
+
     this.store.addTrigger(trigger, () => this.isVisible = false);
   }
 

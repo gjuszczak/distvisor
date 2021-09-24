@@ -36,11 +36,17 @@ export class HomeBoxStore extends ComponentStore<HomeBoxState> {
 
     reloadTriggers() {
         let triggers$ = this.apiClient.apiSecHomeBoxTriggersGet$Json();
+        triggers$.pipe(
+            catchError(() => EMPTY)
+        );
         this.loadTriggers(triggers$);
     }
 
     reloadDevices() {
         let devices$ = this.apiClient.apiSecHomeBoxDevicesGet$Json();
+        devices$.pipe(
+            catchError(() => EMPTY)
+        );
         this.loadDevices(devices$);
     }
 
@@ -49,7 +55,8 @@ export class HomeBoxStore extends ComponentStore<HomeBoxState> {
             body: trigger
         }).pipe(
             map(_ => trigger),
-            tap(_ => successCallback && successCallback())
+            tap(_ => successCallback && successCallback()),
+            catchError(() => EMPTY)
         );
         this.addTriggerLocal(triggerToAdd$);
     };
@@ -59,7 +66,8 @@ export class HomeBoxStore extends ComponentStore<HomeBoxState> {
             id: triggerId
         }).pipe(
             map(_ => triggerId),
-            tap(_ => successCallback && successCallback())
+            tap(_ => successCallback && successCallback()),
+            catchError(() => EMPTY)
         );
         this.deleteTriggerLocal(triggerToDelete$);
     }
@@ -70,7 +78,8 @@ export class HomeBoxStore extends ComponentStore<HomeBoxState> {
             enable: enable,
         }).pipe(
             map(_ => ({ triggerId, enable })),
-            tap(_ => successCallback && successCallback())
+            tap(_ => successCallback && successCallback()),
+            catchError(() => EMPTY)
         );
         this.toggleTriggerLocal(triggerToToggle$);
     }

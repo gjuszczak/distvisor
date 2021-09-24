@@ -1,7 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { HomeBoxDeviceDto } from 'src/api/models';
 import { HomeBoxStore } from '../home-box.store';
+import { HomeBoxState } from '../state/home-box.state';
+import * as TriggerActions from '../state/triggers.actions';
+
 
 @Component({
   selector: 'app-home-box',
@@ -17,11 +21,12 @@ export class HomeBoxComponent implements OnInit, OnDestroy {
   selectedDevice: HomeBoxDeviceDto = {};
   devices: HomeBoxDeviceDto[] = [];
 
-  constructor(private readonly store: HomeBoxStore) {}
+  constructor(private readonly store: HomeBoxStore, private readonly store2: Store<HomeBoxState>) {}
 
   ngOnInit(): void {
-    this.store.reloadDevices();
-    this.store.reloadTriggers();
+    this.store2.dispatch(TriggerActions.loadTriggers());
+    //this.store.reloadDevices();
+    //this.store.reloadTriggers();
   }
 
   showDeviceDetailsDialog(selectedDevice: HomeBoxDeviceDto) {

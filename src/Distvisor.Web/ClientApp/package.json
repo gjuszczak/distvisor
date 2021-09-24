@@ -28,6 +28,8 @@
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@microsoft/signalr": "^5.0.6",
     "@ngrx/component-store": "^11.1.1",
+    "@ngrx/effects": "^11.1.1",
+    "@ngrx/store": "^11.1.1",
     "aspnet-prerendering": "^3.0.1",
     "chart.js": "^2.9.4",
     "cookieconsent": "^3.1.1",

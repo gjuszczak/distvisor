@@ -19,7 +19,7 @@ export class DevicesListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.reloadList();
+    //this.reloadList();
   }
 
   reloadList() {
