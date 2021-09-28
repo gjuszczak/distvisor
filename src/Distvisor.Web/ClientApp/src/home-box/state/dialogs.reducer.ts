@@ -1,4 +1,5 @@
-import { createReducer } from '@ngrx/store';
+import { createReducer, on } from '@ngrx/store';
+import * as DialogActions from './dialogs.actions';
 import { DialogsState } from './home-box.state';
 
 export const initialState: DialogsState = {
@@ -6,5 +7,9 @@ export const initialState: DialogsState = {
 };
 
 export const dialogsReducer = createReducer(
-  initialState
+  initialState,
+  on(DialogActions.openTriggerAddDialog, (state) => 
+    ({...state, isTriggerAddDialogOpened: true})),
+  on(DialogActions.closeTriggerAddDialog, (state) => 
+    ({...state, isTriggerAddDialogOpened: false})),
 );

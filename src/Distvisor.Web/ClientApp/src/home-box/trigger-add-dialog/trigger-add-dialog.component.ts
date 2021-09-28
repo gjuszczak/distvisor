@@ -1,9 +1,12 @@
 import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { HomeBoxTriggerAction, HomeBoxTriggerDto, HomeBoxTriggerSource, HomeBoxTriggerSourceType, HomeBoxTriggerTarget } from 'src/api/models';
 import { RfCodeService } from 'src/signalr/rfcode.service';
-import { HomeBoxStore, NameValue } from '../home-box.store';
+import { HomeBoxState, NameValue } from '../state/home-box.state';
+import * as DialogActions from '../state/dialogs.actions';
+import * as TriggerActions from '../state/triggers.actions';
 
 @Component({
   selector: 'app-trigger-add-dialog',
@@ -36,14 +39,14 @@ export class TriggerAddDialogComponent implements OnDestroy {
     private rfCodeService: RfCodeService,
     private messageService: MessageService,
     private cdref: ChangeDetectorRef,
-    private store: HomeBoxStore) {
+    private store: Store<HomeBoxState>) {
     this.selectedSourceType = this.sourceTypes[0];
     this.triggerActions.push(this.emptyAction());
     this.subscriptions.push(
-      this.store.devicesShortVm$.subscribe(devices => {
-        this.targetOptions = devices;
-        this.selectedTarget = this.targetOptions.length ? this.targetOptions[0] : null;
-      })
+      // this.store.devicesShortVm$.subscribe(devices => {
+      //   this.targetOptions = devices;
+      //   this.selectedTarget = this.targetOptions.length ? this.targetOptions[0] : null;
+      // })
     )
   }
 
@@ -153,7 +156,7 @@ export class TriggerAddDialogComponent implements OnDestroy {
       return result;
     });
 
-    if(trigger.sources?.length < 1) {
+    if (trigger.sources?.length < 1) {
       this.messageService.add({
         severity: 'error',
         summary: "Validation failed",
@@ -162,7 +165,7 @@ export class TriggerAddDialogComponent implements OnDestroy {
       return;
     }
 
-    if(trigger.targets?.length < 1) {
+    if (trigger.targets?.length < 1) {
       this.messageService.add({
         severity: 'error',
         summary: "Validation failed",
@@ -171,7 +174,7 @@ export class TriggerAddDialogComponent implements OnDestroy {
       return;
     }
 
-    if(trigger.actions?.length < 1) {
+    if (trigger.actions?.length < 1) {
       this.messageService.add({
         severity: 'error',
         summary: "Validation failed",
@@ -180,7 +183,7 @@ export class TriggerAddDialogComponent implements OnDestroy {
       return;
     }
 
-    this.store.addTrigger(trigger, () => this.isVisible = false);
+    this.store.dispatch(TriggerActions.addTrigger({ trigger }));
   }
 
   onCancel() {
@@ -188,6 +191,6 @@ export class TriggerAddDialogComponent implements OnDestroy {
   }
 
   onHide() {
-    this.store.closeTriggerAddDialog();
+    this.store.dispatch(DialogActions.closeTriggerAddDialog());
   }
 }

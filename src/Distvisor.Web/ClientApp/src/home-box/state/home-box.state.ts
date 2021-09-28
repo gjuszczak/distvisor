@@ -12,6 +12,14 @@ export interface DialogsState {
     isTriggerAddDialogOpened: boolean;
 }
 
+export interface DeviceVm {
+    id: string;
+    name: string;
+    type: string;
+    location: string;
+    online: string;
+}
+
 export interface TriggerVm {
     id: string;
     enabled: boolean;

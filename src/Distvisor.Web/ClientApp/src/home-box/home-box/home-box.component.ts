@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { HomeBoxDeviceDto } from 'src/api/models';
-import { HomeBoxStore } from '../home-box.store';
+import { selectIsTriggerAddDialogOpened } from '../state/dialogs.selectors';
 import { HomeBoxState } from '../state/home-box.state';
 import * as TriggerActions from '../state/triggers.actions';
+import * as DevicesActions from '../state/devices.actions';
 
 
 @Component({
@@ -14,19 +15,18 @@ import * as TriggerActions from '../state/triggers.actions';
 export class HomeBoxComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   
-  readonly isTriggerAddDialogOpened$ = this.store.isTriggerAddDialogOpened$;
+  readonly isTriggerAddDialogOpened$ = this.store.pipe(select(selectIsTriggerAddDialogOpened));
 
   isDeviceDetailsDialogVisible: boolean = false;
   isTriggerAddDialogVisible: boolean = false;
   selectedDevice: HomeBoxDeviceDto = {};
   devices: HomeBoxDeviceDto[] = [];
 
-  constructor(private readonly store: HomeBoxStore, private readonly store2: Store<HomeBoxState>) {}
+  constructor(private readonly store: Store<HomeBoxState>) {}
 
   ngOnInit(): void {
-    this.store2.dispatch(TriggerActions.loadTriggers());
-    //this.store.reloadDevices();
-    //this.store.reloadTriggers();
+    this.store.dispatch(TriggerActions.loadTriggers());
+    this.store.dispatch(DevicesActions.loadDevices());
   }
 
   showDeviceDetailsDialog(selectedDevice: HomeBoxDeviceDto) {

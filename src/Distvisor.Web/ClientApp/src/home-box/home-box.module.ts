@@ -22,6 +22,11 @@ import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
 
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { HomeBoxStore } from './home-box.store';
+import { TriggersEffects } from './state/triggers.effects';
+import { DevicesEffects } from './state/devices.effects';
 import { devicesReducer } from './state/devices.reducer';
 import { triggersReducer } from './state/triggers.reducer';
 import { dialogsReducer } from './state/dialogs.reducer';
@@ -34,10 +39,6 @@ import { DeviceDetailsDialogComponent } from './device-details-dialog/device-det
 import { TriggerAddDialogComponent } from './trigger-add-dialog/trigger-add-dialog.component';
 import { UtilsModule } from 'src/utils/utils.module';
 import { SignalrModule } from 'src/signalr/signalr.module';
-import { HomeBoxStore } from './home-box.store';
-import { StoreModule } from '@ngrx/store';
-import { TriggersEffects } from './state/triggers.effects';
-import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   imports: [
@@ -57,6 +58,7 @@ import { EffectsModule } from '@ngrx/effects';
     }),
     EffectsModule.forFeature([
       TriggersEffects,
+      DevicesEffects,
     ]),
 
     // PrimeNg

@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { ConfirmationService } from 'primeng/api';
 import { HomeBoxState, TriggerVm } from '../state/home-box.state';
+import * as DialogActions from '../state/dialogs.actions';
+import * as TriggerActions from '../state/triggers.actions';
 import { selectDevices } from '../state/devices.selectors';
 import { selectTriggers, selectTriggersVm } from '../state/triggers.selectors';
 
@@ -20,19 +22,19 @@ export class TriggersListComponent {
   }
 
   onAddClicked(): void {
-    //this.store.openTriggerAddDialog();
+    this.store.dispatch(DialogActions.openTriggerAddDialog());
   }
 
   onRefreshClicked(): void {
-    //this.store.reloadTriggers();
+    this.store.dispatch(TriggerActions.loadTriggers());
   }
 
   onExecuteClicked(trigger: TriggerVm): void {
-    //this.store.executeTrigger(trigger.id);
+    this.store.dispatch(TriggerActions.executeTrigger({ triggerId: trigger.id }));
   }
 
   onTriggerToggled(trigger: TriggerVm, event: any): void {
-    //this.store.toggleTrigger(trigger.id, event.checked);
+    this.store.dispatch(TriggerActions.toggleTrigger({ triggerId: trigger.id, enable: event.checked }));
   }
 
   onDeleteClicked(event: Event, trigger: TriggerVm) {
@@ -41,7 +43,7 @@ export class TriggersListComponent {
       message: 'Are you sure that you want to delete selected trigger?',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        //this.store.deleteTrigger(trigger.id);
+        this.store.dispatch(TriggerActions.deleteTrigger({ triggerId: trigger.id }));       
       },
       reject: () => {
         //do nothing
