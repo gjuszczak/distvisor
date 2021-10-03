@@ -24,7 +24,6 @@ import { TabViewModule } from 'primeng/tabview';
 
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { HomeBoxStore } from './home-box.store';
 import { TriggersEffects } from './state/triggers.effects';
 import { DevicesEffects } from './state/devices.effects';
 import { devicesReducer } from './state/devices.reducer';
@@ -90,6 +89,6 @@ import { SignalrModule } from 'src/signalr/signalr.module';
     TriggerAddDialogComponent,
     DeviceDetailsDialogComponent,
   ],
-  providers: [ConfirmationService, HomeBoxStore]
+  providers: [ConfirmationService]
 })
 export class HomeBoxModule { }

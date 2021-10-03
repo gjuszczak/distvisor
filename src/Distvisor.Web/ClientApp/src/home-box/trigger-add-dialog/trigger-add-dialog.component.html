@@ -48,7 +48,8 @@
         <div class="p-fluid p-formgrid p-grid">
             <div class="p-field p-col">
                 <label for="targetDevice">Targets</label>
-                <p-dropdown inputIdid="targetDevice" [(ngModel)]="selectedTarget" [options]="targetOptions"
+                
+                <p-dropdown inputIdid="targetDevice" [(ngModel)]="selectedTarget" [options]="(targetOptions$ | async) || []"
                     optionLabel="name"></p-dropdown>
             </div>
             <div class="p-field p-col-fixed p-d-flex">
@@ -103,9 +104,9 @@
         </p-tabView>
     </ng-template>
     <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text p-button-info"
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text p-button-info p-mt-1"
             (click)="onCancel()"></button>
-        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text p-button-info"
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text p-button-info p-mt-1"
             (click)="onSave()"></button>
     </ng-template>
 </p-dialog>

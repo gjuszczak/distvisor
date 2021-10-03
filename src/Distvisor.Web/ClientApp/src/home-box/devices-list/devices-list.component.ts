@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import * as DevicesActions from '../state/devices.actions';
 import { HomeBoxDeviceDto } from 'src/api/models';
 import { selectDevicesVm } from '../state/devices.selectors';
 import { HomeBoxState } from '../state/home-box.state';
+import { loadDevices } from '../state/devices.actions';
+import { openDeviceDetailsDialog } from '../state/dialogs.actions';
 
 
 @Component({
@@ -24,7 +25,7 @@ export class DevicesListComponent implements OnDestroy {
     private store: Store<HomeBoxState>) { }
 
   onRefreshClicked() {
-    this.store.dispatch(DevicesActions.loadDevices());
+    this.store.dispatch(loadDevices());
   }
 
   onDeviceToggleClicked(device: HomeBoxDeviceDto) {
@@ -45,7 +46,8 @@ export class DevicesListComponent implements OnDestroy {
     // }
   }
 
-  onDeviceShowDetailsClicked(device: HomeBoxDeviceDto) {
+  onDeviceShowDetailsClicked(deviceId: string) {
+    this.store.dispatch(openDeviceDetailsDialog({ deviceId }));
     // this.onDeviceDetailsOpen.emit(device);
   }
 

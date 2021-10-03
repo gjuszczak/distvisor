@@ -6,6 +6,8 @@ export const initialState: ReadonlyArray<HomeBoxDeviceDto> = [];
 
 export const devicesReducer = createReducer(
   initialState,
-  on(DevicesActions.devicesLoadedSuccess, (_, { devices }) => 
+  on(DevicesActions.devicesLoadedSuccess, (_, { devices }) =>
     [...devices]),
+  on(DevicesActions.deviceUpdatedSuccess, (state, { device }) =>
+    [...state.filter(d => d.id !== device.id), device]),
 );

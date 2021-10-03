@@ -20,7 +20,7 @@ namespace Distvisor.Web.Services
         Task<HomeBoxDeviceDto[]> GetDevicesAsync();
         Task RfCodeReceivedAsync(string code);
         Task SetDeviceParamsAsync(string deviceId, object deviceParams);
-        Task UpdateDeviceDetailsAsync(UpdateHomeBoxDeviceDto dto);
+        Task<HomeBoxDeviceDto> UpdateDeviceDetailsAsync(UpdateHomeBoxDeviceDto dto);
         Task<HomeBoxTriggerDto[]> ListTriggersAsync();
         Task CreateTriggerAsync(HomeBoxTriggerDto trigger);
         Task UpdateTriggerAsync(HomeBoxTriggerDto trigger);
@@ -105,7 +105,7 @@ namespace Distvisor.Web.Services
             }
         }
 
-        public async Task UpdateDeviceDetailsAsync(UpdateHomeBoxDeviceDto dto)
+        public async Task<HomeBoxDeviceDto> UpdateDeviceDetailsAsync(UpdateHomeBoxDeviceDto dto)
         {
             var entity = _readStore.HomeboxDevices.FirstOrDefault(d => d.Id == dto.Id);
             if (entity == null || entity.Header != dto.Header || entity.Location != dto.Location || entity.Type != dto.Type)
@@ -116,6 +116,10 @@ namespace Distvisor.Web.Services
             {
                 await SetDeviceParamsAsync(dto.Id, dto.Params);
             }
+            await _notifications.PushSuccessAsync($"Device updated successfully.");
+            await Task.Delay(500);
+            var updatedDevice = (await GetDevicesAsync()).FirstOrDefault(x => x.Id == dto.Id);
+            return updatedDevice;
         }
 
         public async Task SetDeviceParamsAsync(string deviceId, object deviceParams)

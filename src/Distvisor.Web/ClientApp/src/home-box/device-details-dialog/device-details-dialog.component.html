@@ -1,39 +1,39 @@
 <p-dialog [(visible)]="isVisible" header="Device details" [modal]="true" [resizable]="false" styleClass="p-fluid"
-    (onHide)="onCancelClicked()">
+    (onHide)="onHide()" *ngIf="(deviceDetailsVm$ | async) as deviceDetailsVm">
     <ng-template pTemplate="content">
         <div class="p-field">
             <label for="header">Header</label>
-            <input pInputText type="text" inputId="header" [(ngModel)]="header" autofocus/>
+            <input pInputText type="text" inputId="header" [(ngModel)]="deviceDetailsVm.header" autofocus />
         </div>
         <div class="p-field">
             <label for="location">Location</label>
-            <input pInputText type="text" inputId="location" [(ngModel)]="location"/>
+            <input pInputText type="text" inputId="location" [(ngModel)]="deviceDetailsVm.location" />
         </div>
         <div class="p-field">
             <label for="name">Name</label>
-            <input pInputText type="text" inputId="name" [value]="device.name" disabled/>
+            <input pInputText type="text" inputId="name" [value]="deviceDetailsVm.name" disabled />
         </div>
         <div class="p-field">
             <label for="id">Id</label>
-            <input pInputText type="text" inputId="id" [value]="device.id" disabled/>
+            <input pInputText type="text" inputId="id" [value]="deviceDetailsVm.id" disabled />
         </div>
         <div class="p-field">
             <label for="type">Type</label>
-            <input pInputText type="text" inputId="type" [value]="device.type" disabled/>
+            <input pInputText type="text" inputId="type" [value]="deviceDetailsVm.type" disabled />
         </div>
         <div class="p-field">
             <label for="status">Status</label>
-            <input pInputText type="text" inputId="status" [value]="device.online ? 'Online' : 'Offline'" disabled/>
+            <input pInputText type="text" inputId="status" [value]="deviceDetailsVm.online" disabled />
         </div>
         <div class="p-field">
             <label for="params">Params</label>
-            <textarea pInputTextarea inputId="params" [rows]="6" [(ngModel)]="params"></textarea>
-        </div>        
+            <textarea pInputTextarea inputId="params" [rows]="6" [(ngModel)]="deviceDetailsVm.params"></textarea>
+        </div>
     </ng-template>
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text p-button-info"
-            (click)="onCancelClicked()"></button>
+            (click)="onCancel()"></button>
         <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text p-button-info"
-            (click)="onSaveClicked()"></button>
+            (click)="onSave(deviceDetailsVm)"></button>
     </ng-template>
 </p-dialog>

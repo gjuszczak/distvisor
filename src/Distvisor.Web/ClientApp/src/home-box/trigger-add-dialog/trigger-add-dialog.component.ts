@@ -1,57 +1,56 @@
-import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { ChangeDetectorRef, Component } from '@angular/core';
+import { select, Store } from '@ngrx/store';
 import { MessageService } from 'primeng/api';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { HomeBoxTriggerAction, HomeBoxTriggerDto, HomeBoxTriggerSource, HomeBoxTriggerSourceType, HomeBoxTriggerTarget } from 'src/api/models';
 import { RfCodeService } from 'src/signalr/rfcode.service';
 import { HomeBoxState, NameValue } from '../state/home-box.state';
 import * as DialogActions from '../state/dialogs.actions';
 import * as TriggerActions from '../state/triggers.actions';
+import { selectDevicesShortVm } from '../state/devices.selectors';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-trigger-add-dialog',
   templateUrl: './trigger-add-dialog.component.html'
 })
-export class TriggerAddDialogComponent implements OnDestroy {
-  private subscriptions: Subscription[] = [];
+export class TriggerAddDialogComponent {
   private syncMatchParamSubscription: Subscription | null = null;
 
-  isVisible: boolean = true;
-  sourceTypes: NameValue<HomeBoxTriggerSourceType>[] = [
+  readonly sourceTypes: NameValue<HomeBoxTriggerSourceType>[] = [
     { name: "RF 433 Receiver", value: HomeBoxTriggerSourceType.Rf433Receiver }
   ]
-  actionOnOffOptions: NameValue<boolean | null>[] = [
+  readonly actionOnOffOptions: NameValue<boolean | null>[] = [
     { name: "Don't care", value: null },
     { name: "On", value: true },
     { name: "Off", value: false }
   ]
-  selectedSourceType: NameValue<HomeBoxTriggerSourceType>;
+  readonly targetOptions$: Observable<NameValue<string>[]> = this.store.pipe(
+    select(selectDevicesShortVm),
+    tap(t => {
+      if (!t || t.length === 0) {
+        this.selectedTarget = null;
+      }
+      else if (!this.selectedTarget) {
+        this.selectedTarget = t[0];
+      }
+    }));
+
+  selectedSourceType: NameValue<HomeBoxTriggerSourceType> = this.sourceTypes[0];
   selectedSourceMatchParam: string = "";
   selectedTriggerAction: number = 0;
-  targetOptions: NameValue<string>[] = [];
   selectedTarget: NameValue<string> | null = null;
   triggerSources: NameValue<HomeBoxTriggerSource>[] = [];
   triggerTargets: NameValue<HomeBoxTriggerTarget>[] = [];
-  triggerActions: HomeBoxTriggerAction[] = [];
+  triggerActions: HomeBoxTriggerAction[] = [this.emptyAction()];
   isSyncMatchParamInProgress: boolean = false;
+  isVisible: boolean = true;
 
   constructor(
     private rfCodeService: RfCodeService,
     private messageService: MessageService,
     private cdref: ChangeDetectorRef,
     private store: Store<HomeBoxState>) {
-    this.selectedSourceType = this.sourceTypes[0];
-    this.triggerActions.push(this.emptyAction());
-    this.subscriptions.push(
-      // this.store.devicesShortVm$.subscribe(devices => {
-      //   this.targetOptions = devices;
-      //   this.selectedTarget = this.targetOptions.length ? this.targetOptions[0] : null;
-      // })
-    )
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.forEach(x => x.unsubscribe());
   }
 
   onAddTriggerSource() {

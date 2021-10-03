@@ -32,10 +32,10 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpPost("devices/{identifier}/updateDetails")]
-        public async Task UpdateDeviceDetails(string identifier, UpdateHomeBoxDeviceDto dto)
+        public async Task<HomeBoxDeviceDto> UpdateDeviceDetails(string identifier, UpdateHomeBoxDeviceDto dto)
         {
             dto.Id = identifier;
-            await _homeBoxService.UpdateDeviceDetailsAsync(dto);
+            return await _homeBoxService.UpdateDeviceDetailsAsync(dto);
         }
 
         [HttpPost("devices/{identifier}/turnOn")]

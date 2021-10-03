@@ -1,61 +1,62 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { HomeBoxDeviceDto, UpdateHomeBoxDeviceDto } from 'src/api/models';
+import { select, Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
+import { HomeBoxDeviceDto } from 'src/api/models';
 import { HomeBoxService } from 'src/api/services';
 import { UtilsService } from 'src/utils/utils.service';
+import { updateDevice } from '../state/devices.actions';
+import { selectDeviceDetailsVmById } from '../state/devices.selectors';
+import { closeDeviceDetailsDialog } from '../state/dialogs.actions';
+import { selectDeviceDetailsDialogParam } from '../state/dialogs.selectors';
+import { DeviceDetailsVm, HomeBoxState } from '../state/home-box.state';
 
 @Component({
   selector: 'app-device-details-dialog',
   templateUrl: './device-details-dialog.component.html'
 })
-export class DeviceDetailsDialogComponent implements OnChanges, OnDestroy {
-  @Input() isVisible: boolean = false;
-  @Input() device: HomeBoxDeviceDto = {};
-  @Output() onHide: EventEmitter<any> = new EventEmitter();
+export class DeviceDetailsDialogComponent {
 
-  private subscriptions: Subscription[] = [];
+  private originalParams: string = '{}';
+  readonly deviceDetailsVm$: Observable<DeviceDetailsVm | undefined> =
+    this.store.select(selectDeviceDetailsDialogParam).pipe(
+      switchMap(param => this.store.select(selectDeviceDetailsVmById(param.deviceId))),
+      tap(x => this.originalParams = x?.params ?? '{}'),
+    );
+  isVisible: boolean = true;
 
-  header: string = '';
-  location: string = '';
-  params: string = '';
-
-  constructor(private homeBoxService: HomeBoxService, private utils: UtilsService) {
+  constructor(
+    private homeBoxService: HomeBoxService,
+    private utils: UtilsService,
+    private store: Store<HomeBoxState>) {
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['device']) {
-      this.header = this.device.header ?? '';
-      this.location = this.device.location ?? '';
-      this.params = JSON.stringify(this.device.params ?? {}, null, 2);
+  onSave(deviceDetailsVm: DeviceDetailsVm | undefined) {
+    if (!deviceDetailsVm) {
+      //TODO: show error
+      return;
     }
-  }
 
-  ngOnDestroy() {
-    this.subscriptions.forEach(x => x.unsubscribe());
-  }
+    let objOriginalParams = JSON.parse(this.originalParams);
+    let objModifiedParams = JSON.parse(deviceDetailsVm.params);
+    let diffParams = this.utils.diff(objOriginalParams, objModifiedParams);
 
-  onSaveClicked() {
-    let objParams = JSON.parse(this.params);
-    let diffParams = this.utils.diff(this.device.params, objParams);
-
-    this.homeBoxService.apiSecHomeBoxDevicesIdentifierUpdateDetailsPost({
-      identifier: this.device.id || '',
-      body: {
-        header: this.header,
-        location: this.location,
-        type: this.device.type,
+    this.store.dispatch(updateDevice({
+      device: {
+        id: deviceDetailsVm.id,
+        header: deviceDetailsVm.header,
+        location: deviceDetailsVm.location,
+        type: deviceDetailsVm.type,
         params: diffParams
       }
-    }).subscribe(_ => {
-      this.device.header = this.header;
-      this.device.location = this.location;
-      this.device.params = objParams;
-    });
-
-    this.onHide.emit();
+    }));
   }
 
-  onCancelClicked() {
-    this.onHide.emit();
+  onCancel() {
+    this.isVisible = false;
+  }
+
+  onHide() {
+    this.store.dispatch(closeDeviceDetailsDialog());
   }
 }
