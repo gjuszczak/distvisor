@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Distvisor.Web", "src\Distvisor.Web\Distvisor.Web.csproj", "{A1003EF4-7F28-4D0E-88C1-A676BB4E2926}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AngularTemplate", "src\AngularTemplate\AngularTemplate.csproj", "{13CBDCB4-847C-4A20-B15E-F003DDBB26E4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Distvisor.App", "src\Distvisor.App\Distvisor.App.csproj", "{FAB3C8CD-8194-4451-8515-8AD344D9E9FE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7A877D89-C207-4FF5-A35C-E2212B45200D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5389A851-09EC-424D-B935-8F017EB0E043}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Distvisor.App.Tests", "tests\Distvisor.App.Tests\Distvisor.App.Tests.csproj", "{65622F11-823D-4AB8-8C89-1C8E39920205}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Distvisor.Infrastructure", "src\Distvisor.Infrastructure\Distvisor.Infrastructure.csproj", "{000785FA-B927-4DBE-9295-FE016DBFFACE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1003EF4-7F28-4D0E-88C1-A676BB4E2926}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1003EF4-7F28-4D0E-88C1-A676BB4E2926}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1003EF4-7F28-4D0E-88C1-A676BB4E2926}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1003EF4-7F28-4D0E-88C1-A676BB4E2926}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13CBDCB4-847C-4A20-B15E-F003DDBB26E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13CBDCB4-847C-4A20-B15E-F003DDBB26E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13CBDCB4-847C-4A20-B15E-F003DDBB26E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13CBDCB4-847C-4A20-B15E-F003DDBB26E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAB3C8CD-8194-4451-8515-8AD344D9E9FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAB3C8CD-8194-4451-8515-8AD344D9E9FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAB3C8CD-8194-4451-8515-8AD344D9E9FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAB3C8CD-8194-4451-8515-8AD344D9E9FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65622F11-823D-4AB8-8C89-1C8E39920205}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65622F11-823D-4AB8-8C89-1C8E39920205}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65622F11-823D-4AB8-8C89-1C8E39920205}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65622F11-823D-4AB8-8C89-1C8E39920205}.Release|Any CPU.Build.0 = Release|Any CPU
+		{000785FA-B927-4DBE-9295-FE016DBFFACE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{000785FA-B927-4DBE-9295-FE016DBFFACE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{000785FA-B927-4DBE-9295-FE016DBFFACE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{000785FA-B927-4DBE-9295-FE016DBFFACE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A1003EF4-7F28-4D0E-88C1-A676BB4E2926} = {7A877D89-C207-4FF5-A35C-E2212B45200D}
+		{13CBDCB4-847C-4A20-B15E-F003DDBB26E4} = {7A877D89-C207-4FF5-A35C-E2212B45200D}
+		{FAB3C8CD-8194-4451-8515-8AD344D9E9FE} = {7A877D89-C207-4FF5-A35C-E2212B45200D}
+		{65622F11-823D-4AB8-8C89-1C8E39920205} = {5389A851-09EC-424D-B935-8F017EB0E043}
+		{000785FA-B927-4DBE-9295-FE016DBFFACE} = {7A877D89-C207-4FF5-A35C-E2212B45200D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D2914F3E-7ECC-457F-AAAE-4D65DF3F3CC4}
+	EndGlobalSection
+EndGlobal

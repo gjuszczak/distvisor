@@ -1,3 +1,7 @@
+using Distvisor.App;
+using Distvisor.App.HomeBox.Services.Gateway;
+using Distvisor.Infrastructure;
+using Distvisor.Infrastructure.Services.HomeBox;
 using Distvisor.Web.Configuration;
 using Distvisor.Web.Data;
 using Distvisor.Web.Hubs;
@@ -7,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -115,6 +120,23 @@ namespace Distvisor.Web
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddDistvisorApp();
+            services.AddDistvisorInfrastructure(Config);
+            services.Configure<GatewayConfiguration>(Config.GetSection("Ewelink"));
+            services.AddHttpClient<IGatewayAuthenticationClient, GatewayAuthenticationClient>()
+                .ConfigureHttpClient(c =>
+                {
+                    c.BaseAddress = new Uri(Config.GetValue<string>("Ewelink:ApiUrl"));
+                    c.DefaultRequestHeaders.Add("Accept", "application/json");
+                });
+
+            services.AddHttpClient<IGatewayClient, GatewayClient>()
+                .ConfigureHttpClient(c =>
+                {
+                    c.BaseAddress = new Uri(Config.GetValue<string>("Ewelink:ApiUrl"));
+                    c.DefaultRequestHeaders.Add("Accept", "application/json");
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
