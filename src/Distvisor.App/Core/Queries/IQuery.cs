@@ -1,8 +1,6 @@
-﻿using MediatR;
-
-namespace Distvisor.App.Core.Queries
+﻿namespace Distvisor.App.Core.Queries
 {
-    public interface IQuery<out TResult> : IRequest<TResult>
+    public interface IQuery<out TResult>
     {
     }
 }

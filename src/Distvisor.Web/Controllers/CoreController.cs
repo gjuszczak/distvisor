@@ -1,5 +1,7 @@
 ﻿using Distvisor.App.Core.Commands;
+using Distvisor.App.Core.Queries;
 using Distvisor.App.HomeBox.Commands.LoginToGateway;
+using Distvisor.App.HomeBox.Queries.GetDevices;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -9,17 +11,19 @@ namespace Distvisor.Web.Controllers
     [Route("api/core")]
     public class CoreController : ControllerBase
     {
-        private readonly ICommandBus _commandBus;
+        private readonly ICommandDispatcher _commandDispatcher;
+        private readonly IQueryDispatcher _queryDispatcher;
 
-        public CoreController(ICommandBus commandBus)
+        public CoreController(ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher)
         {
-            _commandBus = commandBus;
+            _commandDispatcher = commandDispatcher;
+            _queryDispatcher = queryDispatcher;
         }
 
         [HttpPost("api-login")]
         public async Task ApiLogin(string username, string password)
         {
-            await _commandBus.ExecuteAsync(new LoginToGateway
+            await _commandDispatcher.DispatchAsync(new LoginToGateway
             {
                 User = username,
                 Password = password,
@@ -29,7 +33,7 @@ namespace Distvisor.Web.Controllers
         [HttpGet("devices")]
         public async Task GetDevices()
         {
-            await _commandBus.ExecuteAsync(new SyncDevicesWithGateway());
+            await _queryDispatcher.DispatchAsync(new GetDevices());
         }
     }
 }

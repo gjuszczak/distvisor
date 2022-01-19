@@ -1,9 +1,8 @@
-﻿using MediatR;
-using System;
+﻿using System;
 
 namespace Distvisor.App.Core.Events
 {
-    public interface IEvent : INotification
+    public interface IEvent
 	{
 		Guid EventId { get; set; }
 		Guid AggregateId { get; set; }

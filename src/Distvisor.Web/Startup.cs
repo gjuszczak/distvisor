@@ -1,4 +1,7 @@
 using Distvisor.App;
+using Distvisor.App.Core.Commands;
+using Distvisor.App.Core.Events;
+using Distvisor.App.Core.Queries;
 using Distvisor.App.HomeBox.Services.Gateway;
 using Distvisor.Infrastructure;
 using Distvisor.Infrastructure.Services.HomeBox;
@@ -121,6 +124,7 @@ namespace Distvisor.Web
                 configuration.RootPath = "ClientApp/dist";
             });
 
+            // cqrs services registration
             services.AddDistvisorApp();
             services.AddDistvisorInfrastructure(Config);
             services.Configure<GatewayConfiguration>(Config.GetSection("Ewelink"));
@@ -137,6 +141,37 @@ namespace Distvisor.Web
                     c.BaseAddress = new Uri(Config.GetValue<string>("Ewelink:ApiUrl"));
                     c.DefaultRequestHeaders.Add("Accept", "application/json");
                 });
+
+            services.Scan(selector =>
+            {
+                selector.FromAssemblyOf<ICommandDispatcher>()
+                    .AddClasses(filter =>
+                    {
+                        filter.AssignableTo(typeof(ICommandHandler<>));
+                    })
+                    .AsImplementedInterfaces()
+                    .WithScopedLifetime();
+            });
+            services.Scan(selector =>
+            {
+                selector.FromAssemblyOf<IQueryDispatcher>()
+                    .AddClasses(filter =>
+                    {
+                        filter.AssignableTo(typeof(IQueryHandler<,>));
+                    })
+                    .AsImplementedInterfaces()
+                    .WithScopedLifetime();
+            });
+            services.Scan(selector =>
+            {
+                selector.FromAssemblyOf<IEventPublisher>()
+                    .AddClasses(filter =>
+                    {
+                        filter.AssignableTo(typeof(IEventHandler<>));
+                    })
+                    .AsImplementedInterfaces()
+                    .WithScopedLifetime();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

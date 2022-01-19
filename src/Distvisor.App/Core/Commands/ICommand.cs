@@ -1,9 +1,8 @@
-﻿using MediatR;
-using System;
+﻿using System;
 
 namespace Distvisor.App.Core.Commands
 {
-    public interface ICommand : IRequest<Guid>
+    public interface ICommand
 	{
 		Guid Id { get; }
 		Guid CorrelationId { get; }

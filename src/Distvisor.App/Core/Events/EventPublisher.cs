@@ -1,26 +1,59 @@
-﻿using MediatR;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Distvisor.App.Core.Events
 {
     public class EventPublisher : IEventPublisher
     {
-        private readonly IMediator _mediator;
-        public EventPublisher(IMediator mediator)
+        private readonly IServiceProvider _serviceProvider;
+        private static readonly ConcurrentDictionary<Type, IEventPublishHelper> _eventPublishHelpers = new();
+
+
+        public EventPublisher(IServiceProvider serviceProvider)
         {
-            _mediator = mediator;
+            _serviceProvider = serviceProvider;
         }
 
         public void Publish(IEvent @event)
         {
-            _mediator.Publish(@event).GetAwaiter().GetResult();
+            var eventType = @event.GetType();
+            var eventPublishHelper = _eventPublishHelpers.GetOrAdd(eventType, CreateEventPublishHelper);
+            eventPublishHelper.Publish(_serviceProvider, @event, default(CancellationToken)).GetAwaiter().GetResult();
         }
 
         public void Publish(IEnumerable<IEvent> events)
         {
-            foreach(var @event in events)
+            foreach (var @event in events)
             {
                 Publish(@event);
+            }
+        }
+
+        private static IEventPublishHelper CreateEventPublishHelper(Type eventType)
+        {
+            var dispatchHelperType = typeof(EventPublisHelper<>).MakeGenericType(eventType);
+            return (IEventPublishHelper)Activator.CreateInstance(dispatchHelperType);
+        }
+
+        private interface IEventPublishHelper
+        {
+            Task Publish(IServiceProvider serviceProvider, IEvent @event, CancellationToken cancellationToken);
+        }
+
+        private class EventPublisHelper<TEvent> : IEventPublishHelper
+            where TEvent : IEvent
+        {
+            public async Task Publish(IServiceProvider serviceProvider, IEvent @event, CancellationToken cancellationToken)
+            {
+                var handlers = serviceProvider.GetServices<IEventHandler<TEvent>>();
+                foreach (var handler in handlers)
+                {
+                    await handler.Handle((TEvent)@event, cancellationToken);
+                }
             }
         }
     }

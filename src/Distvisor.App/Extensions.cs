@@ -4,7 +4,6 @@ using Distvisor.App.Core.Events;
 using Distvisor.App.Core.Queries;
 using Distvisor.App.Core.Services;
 using Distvisor.App.HomeBox.Services.Gateway;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -14,7 +13,7 @@ namespace Distvisor.App
     {
         public static void AddDistvisorApp(this IServiceCollection services)
         {
-            services.AddMediatR(Assembly.GetAssembly(typeof(ICommand)));
+            //services.AddMediatR(Assembly.GetAssembly(typeof(ICommand)));
             services.AddScoped<IAggregateContext, AggregateContext>();
             services.AddScoped<IAggregateRepository, AggregateRepository>();
             services.AddScoped<IAggregateProvider, AggreagateProvider>();
@@ -22,8 +21,8 @@ namespace Distvisor.App
             services.AddScoped<IEventStore, EventStore>();
             services.AddScoped<IEventStorage, InMemoryEventStorage>();
             services.AddScoped<IEventPublisher, EventPublisher>();
-            services.AddScoped<ICommandBus, CommandBus>();
-            services.AddScoped<IQueryBus, QueryBus>();
+            services.AddScoped<ICommandDispatcher, CommandDispatcher>();
+            services.AddScoped<IQueryDispatcher, QueryDispatcher>();
             services.AddScoped<ICorrelationIdProvider, CorrelationIdProvider>();
 
             services.AddScoped<IGatewaySessionManager, GatewaySessionManager>();

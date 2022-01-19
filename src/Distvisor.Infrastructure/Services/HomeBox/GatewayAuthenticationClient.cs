@@ -23,6 +23,11 @@ namespace Distvisor.Infrastructure.Services.HomeBox
 
         public async Task<GatewayAuthenticationResponse> LoginAsync(string username, string password)
         {
+            return new GatewayAuthenticationResponse
+            {
+                Token = new GatewayToken("at", "rt", DateTimeOffset.Now)
+            };
+
             var urlBuilder = new UriBuilder(_httpClient.BaseAddress)
             {
                 Path = $"api/user/login"

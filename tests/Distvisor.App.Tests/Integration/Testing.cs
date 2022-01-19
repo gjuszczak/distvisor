@@ -6,7 +6,6 @@ using Distvisor.App.Core.Queries;
 using Distvisor.App.Core.Services;
 using Distvisor.Infrastructure;
 using Distvisor.Infrastructure.Persistence;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -25,7 +24,7 @@ namespace Distvisor.App.Tests.Integration
         public void RunBeforeAnyTests()
         {
             var services = new ServiceCollection();
-            services.AddMediatR(Assembly.GetAssembly(typeof(ICommand)));
+            //services.AddMediatR(Assembly.GetAssembly(typeof(ICommand)));
             services.AddScoped<IAggregateContext, AggregateContext>();
             services.AddScoped<IAggregateRepository, AggregateRepository>();
             services.AddScoped<IAggregateProvider, AggreagateProvider>();
@@ -33,8 +32,8 @@ namespace Distvisor.App.Tests.Integration
             services.AddScoped<IEventStore, EventStore>();
             services.AddScoped<IEventStorage, SqlEventStorage>();
             services.AddScoped<IEventPublisher, EventPublisher>();
-            services.AddScoped<ICommandBus, CommandBus>();
-            services.AddScoped<IQueryBus, QueryBus>();
+            services.AddScoped<ICommandDispatcher, CommandDispatcher>();
+            services.AddScoped<IQueryDispatcher, QueryDispatcher>();
             services.AddScoped<ICorrelationIdProvider, CorrelationIdProvider>();
 
             services.AddDbContext<AppDbContext>(options =>
@@ -50,18 +49,19 @@ namespace Distvisor.App.Tests.Integration
         {
             using var scope = _scopeFactory.CreateScope();
 
-            var commandBus = scope.ServiceProvider.GetService<ICommandBus>();
+            var commandBus = scope.ServiceProvider.GetService<ICommandDispatcher>();
 
-            return await commandBus.ExecuteAsync(command);
+            return await commandBus.DispatchAsync(command);
         }
 
-        public static async Task<TResult> Execute<TResult>(IQuery<TResult> query)
+        public static async Task<TResult> Execute<TQuery, TResult>(TQuery query)
+            where TQuery : IQuery<TResult>
         {
             using var scope = _scopeFactory.CreateScope();
 
-            var queryBus = scope.ServiceProvider.GetService<IQueryBus>();
+            var queryBus = scope.ServiceProvider.GetService<IQueryDispatcher>();
 
-            return await queryBus.ExecuteAsync(query);
+            return await queryBus.DispatchAsync(query);
         }
 
         [OneTimeTearDown]

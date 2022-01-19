@@ -1,10 +1,11 @@
-﻿using MediatR;
-using System;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Distvisor.App.Core.Commands
 {
-    public interface ICommandHandler<in TRequest> : IRequestHandler<TRequest, Guid> 
-        where TRequest : ICommand
+    public interface ICommandHandler<in TCommand> where TCommand : ICommand
     {
+        Task<Guid> Handle(TCommand command, CancellationToken cancellationToken);
     }
 }
