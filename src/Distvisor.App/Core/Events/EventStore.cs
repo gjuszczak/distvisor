@@ -22,11 +22,7 @@ namespace Distvisor.App.Core.Events
 
 		public virtual void Save(Type aggregateRootType, IEvent @event)
 		{
-			EventEntity eventEntity = _eventEntityBuilder.ToEventEntity(@event);
-			eventEntity.AggregateId = @event.AggregateId;
-			eventEntity.AggregateType = aggregateRootType.FullName;
-			eventEntity.Version = @event.Version;
-			eventEntity.CorrelationId = @event.CorrelationId;
+			var eventEntity = _eventEntityBuilder.ToEventEntity(@event, aggregateRootType);
 			_eventStorage.Save(eventEntity);
 		}
 

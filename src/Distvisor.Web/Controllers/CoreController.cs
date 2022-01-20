@@ -3,6 +3,7 @@ using Distvisor.App.Core.Queries;
 using Distvisor.App.HomeBox.Commands.LoginToGateway;
 using Distvisor.App.HomeBox.Queries.GetDevices;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
@@ -27,6 +28,15 @@ namespace Distvisor.Web.Controllers
             {
                 User = username,
                 Password = password,
+            });
+        }
+
+        [HttpPost("api-refresh")]
+        public async Task ApiRefresh(Guid sessionId)
+        {
+            await _commandDispatcher.DispatchAsync(new RefreshGatewaySession
+            {
+                SessionId = sessionId
             });
         }
 

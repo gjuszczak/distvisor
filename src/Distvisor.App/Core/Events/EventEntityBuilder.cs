@@ -1,35 +1,50 @@
 ﻿using System;
 using System.Buffers;
+using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Distvisor.App.Core.Events
 {
 	public class EventEntityBuilder : IEventEntityBuilder
 	{
-		public virtual EventEntity ToEventEntity(IEvent @event)
+		public virtual EventEntity ToEventEntity(IEvent @event, Type aggregateRootType)
 		{
 			return new EventEntity
 			{
-				EventId = Guid.NewGuid(),
-				EventType = @event.GetType().AssemblyQualifiedName,
+				EventId = @event.EventId,
+				EventType = @event.GetType().FullName,
+				AggregateId = @event.AggregateId,
+				AggregateType = aggregateRootType.FullName,
+				Version = @event.Version,
+				CorrelationId = @event.CorrelationId,
+				TimeStamp = @event.TimeStamp,
 				Data = SerializeEventData(@event)
 			};
 		}
 
 		public virtual IEvent FromEventEntity(EventEntity eventEntity)
 		{
-			var bufferWriter = new ArrayBufferWriter<byte>();
-			using var writer = new Utf8JsonWriter(bufferWriter);
+			using var stream = new MemoryStream();
+			using var writer = new Utf8JsonWriter(stream);
+			using var reader = new StreamReader(stream);
 			eventEntity.Data.WriteTo(writer);
-
-			return (IEvent)JsonSerializer.Deserialize(bufferWriter.WrittenSpan, Type.GetType(eventEntity.EventType));
+			writer.Flush();
+			stream.Position = 0;
+			var @event = (IEvent)JsonSerializer.Deserialize(reader.ReadToEnd(), Type.GetType(eventEntity.EventType));
+			@event.EventId = eventEntity.EventId;
+			@event.AggregateId = eventEntity.AggregateId;
+			@event.Version = eventEntity.Version;
+			@event.CorrelationId = eventEntity.CorrelationId;
+			@event.TimeStamp = eventEntity.TimeStamp;
+			return @event;
 		}
 
-		protected virtual JsonElement SerializeEventData(IEvent @event)
+		protected virtual JsonDocument SerializeEventData(IEvent @event)
         {
-			var jsonString = JsonSerializer.Serialize(@event);
+			var jsonString = JsonSerializer.Serialize(@event, @event.GetType());
 			var jsonDocument = JsonDocument.Parse(jsonString);
-			return jsonDocument.RootElement;
+			return jsonDocument;
         }
-	}
+    }
 }

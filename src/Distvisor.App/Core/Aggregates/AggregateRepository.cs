@@ -48,6 +48,21 @@ namespace Distvisor.App.Core.Aggregates
             int version = aggregate.Version;
             foreach (IEvent @event in uncommittedChanges)
             {
+                if (@event.EventId == Guid.Empty)
+                {
+                    @event.EventId = Guid.NewGuid();
+                }
+
+                if (@event.AggregateId == Guid.Empty)
+                {
+                    if (aggregate.AggregateId == Guid.Empty)
+                    {
+                        throw new AggregateMissingIdException(aggregate.GetType(), @event.GetType());
+                    }
+
+                    @event.AggregateId = aggregate.AggregateId;
+                }
+
                 @event.Version = ++version;
                 @event.TimeStamp = DateTimeOffset.UtcNow;
                 @event.CorrelationId = _correlationIdProvider.GetCorrelationId();
@@ -68,7 +83,7 @@ namespace Distvisor.App.Core.Aggregates
             IList<IEvent> theseEvents = events ?? _eventStore.Get<TAggregateRoot>(aggregateId).ToList();
             if (!theseEvents.Any())
             {
-                throw new AggregateNotFoundException<TAggregateRoot>(aggregateId);
+                throw new AggregateNotFoundException(aggregateId, typeof(TAggregateRoot));
             }
 
             var duplicatedEvents =
@@ -91,7 +106,7 @@ namespace Distvisor.App.Core.Aggregates
             IList<IEvent> theseEvents = events ?? _eventStore.GetToVersion<TAggregateRoot>(aggregateId, version).ToList();
             if (!theseEvents.Any())
             {
-                throw new AggregateNotFoundException<TAggregateRoot>(aggregateId);
+                throw new AggregateNotFoundException(aggregateId, typeof(TAggregateRoot));
 
             }
 
@@ -115,7 +130,7 @@ namespace Distvisor.App.Core.Aggregates
             IList<IEvent> theseEvents = events ?? _eventStore.GetToDate<TAggregateRoot>(aggregateId, versionedDate).ToList();
             if (!theseEvents.Any())
             {
-                throw new AggregateNotFoundException<TAggregateRoot>(aggregateId);
+                throw new AggregateNotFoundException(aggregateId, typeof(TAggregateRoot));
             }
 
             var duplicatedEvents =
