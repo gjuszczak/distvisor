@@ -15,6 +15,8 @@ namespace Distvisor.App.HomeBox.Aggregates
         public GatewaySessionStatus Status { get; private set; }
         public DateTimeOffset RefreshingReservationTimeout { get; private set; }
 
+        public GatewaySession() { }
+
         public GatewaySession(Guid aggregateId, string username, GatewayToken token)
         {
             AggregateId = aggregateId;
@@ -34,7 +36,7 @@ namespace Distvisor.App.HomeBox.Aggregates
                 throw new GatewaySessionRefreshingReservedException(RefreshingReservationTimeout);
             };
 
-            if (Status == GatewaySessionStatus.Open && (Token?.GeneratedAt ?? DateTimeOffset.MinValue) < now.AddMinutes(5))
+            if (Status == GatewaySessionStatus.Open && (Token?.GeneratedAt ?? DateTimeOffset.MinValue) > now.AddMinutes(-5))
             {
                 throw new GatewaySessionTokenIsFreshException();
             }
@@ -94,6 +96,7 @@ namespace Distvisor.App.HomeBox.Aggregates
 
         private void Apply(GatewaySessionOpened @event)
         {
+            Username = @event.Username;
             Token = @event.Token;
             Status = GatewaySessionStatus.Open;
             RefreshingReservationTimeout = DateTimeOffset.MinValue;
@@ -101,7 +104,7 @@ namespace Distvisor.App.HomeBox.Aggregates
 
         private void Apply(GatewaySessionRefreshStarted @event)
         {
-            Token = null;
+            Token = new GatewayToken(null, Token.RefreshToken, Token.GeneratedAt);
             Status = GatewaySessionStatus.Refreshing;
             RefreshingReservationTimeout = @event.Timeout;
         }

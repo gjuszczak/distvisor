@@ -11,23 +11,20 @@ namespace Distvisor.App.Core.Aggregates
     {
         private readonly IEventStore _eventStore;
         private readonly IEventPublisher _publisher;
-        private readonly IAggregateProvider _aggregateFactory;
         private readonly ICorrelationIdProvider _correlationIdProvider;
 
         public AggregateRepository(
-            IAggregateProvider aggregateFactory,
             IEventStore eventStore,
             IEventPublisher publisher,
             ICorrelationIdProvider correlationIdProvider)
         {
             _eventStore = eventStore;
             _publisher = publisher;
-            _aggregateFactory = aggregateFactory;
             _correlationIdProvider = correlationIdProvider;
         }
 
         public virtual void Save<TAggregateRoot>(TAggregateRoot aggregate, int? expectedVersion = null)
-            where TAggregateRoot : IAggregateRoot
+            where TAggregateRoot : IAggregateRoot, new()
         {
             IList<IEvent> uncommittedChanges = aggregate.GetUncommittedChanges().ToList();
             if (!uncommittedChanges.Any())
@@ -78,72 +75,69 @@ namespace Distvisor.App.Core.Aggregates
         }
 
         public virtual TAggregateRoot Get<TAggregateRoot>(Guid aggregateId, IList<IEvent> events = null)
-            where TAggregateRoot : IAggregateRoot
+            where TAggregateRoot : IAggregateRoot, new()
         {
-            IList<IEvent> theseEvents = events ?? _eventStore.Get<TAggregateRoot>(aggregateId).ToList();
-            if (!theseEvents.Any())
+            var aggregateEvents = events ?? _eventStore.Get<TAggregateRoot>(aggregateId).ToList();
+            if (!aggregateEvents.Any())
             {
                 throw new AggregateNotFoundException(aggregateId, typeof(TAggregateRoot));
             }
 
-            var duplicatedEvents =
-                theseEvents.GroupBy(x => x.Version)
-                    .Select(x => new { Version = x.Key, Total = x.Count() })
-                    .FirstOrDefault(x => x.Total > 1);
+            var duplicatedEvents = aggregateEvents.GroupBy(x => x.Version)
+                .Select(x => new { Version = x.Key, Total = x.Count() })
+                .FirstOrDefault(x => x.Total > 1);
             if (duplicatedEvents != null)
             {
                 throw new DuplicateEventException<TAggregateRoot>(aggregateId, duplicatedEvents.Version);
             }
 
-            var aggregate = _aggregateFactory.Create<TAggregateRoot>();
-            aggregate.LoadFromHistory(theseEvents);
+            var aggregate = new TAggregateRoot();
+            aggregate.LoadFromHistory(aggregateEvents);
             return aggregate;
         }
 
         public virtual TAggregateRoot GetToVersion<TAggregateRoot>(Guid aggregateId, int version, IList<IEvent> events = null)
-            where TAggregateRoot : IAggregateRoot
+            where TAggregateRoot : IAggregateRoot, new()
         {
-            IList<IEvent> theseEvents = events ?? _eventStore.GetToVersion<TAggregateRoot>(aggregateId, version).ToList();
-            if (!theseEvents.Any())
+            var aggregateEvents = events ?? _eventStore.GetToVersion<TAggregateRoot>(aggregateId, version).ToList();
+            if (!aggregateEvents.Any())
             {
                 throw new AggregateNotFoundException(aggregateId, typeof(TAggregateRoot));
 
             }
 
-            var duplicatedEvents =
-                theseEvents.GroupBy(x => x.Version)
-                    .Select(x => new { Version = x.Key, Total = x.Count() })
-                    .FirstOrDefault(x => x.Total > 1);
+            var duplicatedEvents = aggregateEvents.GroupBy(x => x.Version)
+                .Select(x => new { Version = x.Key, Total = x.Count() })
+                .FirstOrDefault(x => x.Total > 1);
             if (duplicatedEvents != null)
             {
                 throw new DuplicateEventException<TAggregateRoot>(aggregateId, duplicatedEvents.Version);
             }
 
-            var aggregate = _aggregateFactory.Create<TAggregateRoot>();
-            aggregate.LoadFromHistory(theseEvents);
+            var aggregate = new TAggregateRoot();
+            aggregate.LoadFromHistory(aggregateEvents);
             return aggregate;
         }
 
         public virtual TAggregateRoot GetToDate<TAggregateRoot>(Guid aggregateId, DateTime versionedDate, IList<IEvent> events = null)
-            where TAggregateRoot : IAggregateRoot
+            where TAggregateRoot : IAggregateRoot, new()
         {
-            IList<IEvent> theseEvents = events ?? _eventStore.GetToDate<TAggregateRoot>(aggregateId, versionedDate).ToList();
-            if (!theseEvents.Any())
+            var aggregateEvents = events ?? _eventStore.GetToDate<TAggregateRoot>(aggregateId, versionedDate).ToList();
+            if (!aggregateEvents.Any())
             {
                 throw new AggregateNotFoundException(aggregateId, typeof(TAggregateRoot));
             }
 
-            var duplicatedEvents =
-                theseEvents.GroupBy(x => x.Version)
-                    .Select(x => new { Version = x.Key, Total = x.Count() })
-                    .FirstOrDefault(x => x.Total > 1);
+            var duplicatedEvents = aggregateEvents.GroupBy(x => x.Version)
+                .Select(x => new { Version = x.Key, Total = x.Count() })
+                .FirstOrDefault(x => x.Total > 1);
             if (duplicatedEvents != null)
             {
                 throw new DuplicateEventException<TAggregateRoot>(aggregateId, duplicatedEvents.Version);
             }
 
-            var aggregate = _aggregateFactory.Create<TAggregateRoot>();
-            aggregate.LoadFromHistory(theseEvents);
+            var aggregate = new TAggregateRoot();
+            aggregate.LoadFromHistory(aggregateEvents);
             return aggregate;
         }
     }

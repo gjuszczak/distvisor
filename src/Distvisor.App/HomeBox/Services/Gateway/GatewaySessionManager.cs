@@ -43,6 +43,7 @@ namespace Distvisor.App.HomeBox.Services.Gateway
             {
                 session.RefreshFailed();
             }
+            _aggregateContext.Commit();
         }
 
         private async Task<GatewaySession> GetSessionAggregateAsync()
@@ -66,7 +67,7 @@ namespace Distvisor.App.HomeBox.Services.Gateway
                     var session = _aggregateContext.Get<GatewaySession>(sessionId);
                     session.BeginRefresh();
                     _aggregateContext.Commit();
-                    return session;
+                    return _aggregateContext.Get<GatewaySession>(sessionId);
                 }
                 catch (GatewaySessionRefreshingReservedException exc)
                 {

@@ -9,16 +9,10 @@ namespace Distvisor.App.Core.Aggregates
 {
     public abstract class AggregateRoot : IAggregateRoot
     {
-        private ICollection<IEvent> _events;
+        private ICollection<IEvent> _events = new ReadOnlyCollection<IEvent>(new List<IEvent>());
 
-        public Guid AggregateId { get; protected set; }
-        public int Version { get; protected set; }
-
-        protected AggregateRoot()
-        {
-            _events = new ReadOnlyCollection<IEvent>(new List<IEvent>());
-            AggregateId = Guid.NewGuid();
-        }
+        public Guid AggregateId { get; protected set; } = Guid.Empty;
+        public int Version { get; protected set; } = 0;
 
         public IEnumerable<IEvent> GetUncommittedChanges()
         {
@@ -33,7 +27,6 @@ namespace Distvisor.App.Core.Aggregates
 
         public virtual void LoadFromHistory(IEnumerable<IEvent> history)
         {
-            var aggregateType = GetType();
             var aggregateId = history.FirstOrDefault()?.AggregateId;
             if (aggregateId.HasValue && AggregateId != aggregateId)
             {
@@ -43,50 +36,17 @@ namespace Distvisor.App.Core.Aggregates
             {
                 if (@event.Version != Version + 1)
                 {
-                    throw new EventsOutOfOrderException(@event.AggregateId, aggregateType, Version + 1, @event.Version);
+                    throw new EventsOutOfOrderException(@event.AggregateId, this.GetType(), Version + 1, @event.Version);
                 }
-                ApplyChange(@event, true);
+                Apply(@event);
+                Version++;
             }
         }
 
         protected virtual void ApplyChange(IEvent @event)
         {
-            ApplyChange(@event, false);
-        }
-
-        private void ApplyChange(IEvent @event, bool isEventReplay)
-        {
-            ApplyChanges(new[] { @event }, isEventReplay);
-        }
-
-        protected virtual void ApplyChanges(IEnumerable<IEvent> events)
-        {
-            ApplyChanges(events, false);
-        }
-
-        private void ApplyChanges(IEnumerable<IEvent> events, bool isEventReplay)
-        {
-            IList<IEvent> changes = new List<IEvent>();
-            try
-            {
-                foreach (IEvent @event in events)
-                {
-                    Apply(@event);
-                    if (!isEventReplay)
-                    {
-                        changes.Add(@event);
-                    }
-                    else
-                    {
-                        AggregateId = @event.AggregateId;
-                        Version++;
-                    }
-                }
-            }
-            finally
-            {
-                _events = new ReadOnlyCollection<IEvent>(_events.Concat(changes).ToList());
-            }
+            Apply(@event);
+            _events = new ReadOnlyCollection<IEvent>(_events.Concat(new[] { @event }).ToList());
         }
 
         protected abstract void Apply(IEvent @event);

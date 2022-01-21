@@ -27,7 +27,6 @@ namespace Distvisor.App.Tests.Integration
             //services.AddMediatR(Assembly.GetAssembly(typeof(ICommand)));
             services.AddScoped<IAggregateContext, AggregateContext>();
             services.AddScoped<IAggregateRepository, AggregateRepository>();
-            services.AddScoped<IAggregateProvider, AggreagateProvider>();
             services.AddScoped<IEventEntityBuilder, EventEntityBuilder>();
             services.AddScoped<IEventStore, EventStore>();
             services.AddScoped<IEventStorage, SqlEventStorage>();

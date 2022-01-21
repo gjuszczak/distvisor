@@ -1,6 +1,4 @@
-﻿using Distvisor.App.Core.Aggregates;
-using Distvisor.App.Core.Commands;
-using Distvisor.App.HomeBox.Aggregates;
+﻿using Distvisor.App.Core.Commands;
 using Distvisor.App.HomeBox.Services.Gateway;
 using System;
 using System.Threading;
@@ -15,30 +13,16 @@ namespace Distvisor.App.HomeBox.Commands.LoginToGateway
 
     public class RefreshGatewaySessionHandler : ICommandHandler<RefreshGatewaySession>
     {
-        private readonly IAggregateContext _context;
-        private readonly IGatewayAuthenticationClient _gateway;
+        private readonly IGatewaySessionManager _sessionManager;
 
-        public RefreshGatewaySessionHandler(IAggregateContext context, IGatewayAuthenticationClient gateway)
+        public RefreshGatewaySessionHandler(IGatewaySessionManager sessionManager)
         {
-            _context = context;
-            _gateway = gateway;
+            _sessionManager = sessionManager;
         }
 
         public async Task<Guid> Handle(RefreshGatewaySession request, CancellationToken cancellationToken)
         {
-            var session = _context.Get<GatewaySession>(request.SessionId);
-            session.BeginRefresh();
-            _context.Commit();
-            try
-            {
-                var refreshResult = await _gateway.RefreshSessionAsync(session.Token.RefreshToken);
-                session.RefreshSucceed(refreshResult.Token);
-            }
-            catch
-            {
-                session.RefreshFailed();
-            }
-            _context.Commit();
+            await _sessionManager.RefreshSessionAsync(request.SessionId);
             return request.Id;
         }
     }

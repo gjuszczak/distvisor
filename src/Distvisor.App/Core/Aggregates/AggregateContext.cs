@@ -7,22 +7,22 @@ namespace Distvisor.App.Core.Aggregates
 	public class AggregateContext : IAggregateContext
     {
 		private readonly IAggregateRepository _repository;
-		private readonly Dictionary<Guid, TrackedAggregate> _trackedAggregates;
+		private readonly Dictionary<Guid, IAggregateTracker> _aggregateTrackers;
 
 		public AggregateContext(IAggregateRepository repository)
 		{
 			_repository = repository;
-			_trackedAggregates = new Dictionary<Guid, TrackedAggregate>();
+			_aggregateTrackers = new Dictionary<Guid, IAggregateTracker>();
 		}
 
 		public virtual void Add<TAggregateRoot>(TAggregateRoot aggregate)
-			where TAggregateRoot : IAggregateRoot
+			where TAggregateRoot : IAggregateRoot, new()
 		{
-			if (!_trackedAggregates.ContainsKey(aggregate.AggregateId))
+			if (!_aggregateTrackers.ContainsKey(aggregate.AggregateId))
 			{
-				_trackedAggregates.Add(aggregate.AggregateId, new TrackedAggregate(aggregate));
+				_aggregateTrackers.Add(aggregate.AggregateId, new AggregateTracker<TAggregateRoot>(aggregate));
 			}
-			else if (_trackedAggregates[aggregate.AggregateId] != (IAggregateRoot)aggregate)
+			else if (_aggregateTrackers[aggregate.AggregateId] != (IAggregateRoot)aggregate)
 			{
 				throw new ConcurrencyException(aggregate.AggregateId);
 			}
@@ -30,18 +30,18 @@ namespace Distvisor.App.Core.Aggregates
 
 		public virtual void Deatach(Guid id)
         {
-			if (_trackedAggregates.ContainsKey(id))
+			if (_aggregateTrackers.ContainsKey(id))
             {
-				_trackedAggregates.Remove(id);
+				_aggregateTrackers.Remove(id);
             }
 		}
 
 		public virtual TAggregateRoot Get<TAggregateRoot>(Guid id, int? expectedVersion = null)
-			where TAggregateRoot : IAggregateRoot
+			where TAggregateRoot : IAggregateRoot, new()
 		{
-			if (_trackedAggregates.ContainsKey(id))
+			if (_aggregateTrackers.ContainsKey(id))
 			{
-				var trackedAggregate = (TAggregateRoot)_trackedAggregates[id].Aggregate;
+				var trackedAggregate = (TAggregateRoot)_aggregateTrackers[id].Aggregate;
 				if (expectedVersion.HasValue && trackedAggregate.Version != expectedVersion.Value)
 				{
 					throw new ConcurrencyException(trackedAggregate.AggregateId);
@@ -60,14 +60,14 @@ namespace Distvisor.App.Core.Aggregates
 		}
 
 		public virtual TAggregateRoot GetToVersion<TAggregateRoot>(Guid id, int version)
-			where TAggregateRoot : IAggregateRoot
+			where TAggregateRoot : IAggregateRoot, new()
 		{
 			var aggregate = _repository.GetToVersion<TAggregateRoot>(id, version);
 			return aggregate;
 		}
 
 		public virtual TAggregateRoot GetToDate<TAggregateRoot>(Guid id, DateTime versionedDate)
-			where TAggregateRoot : IAggregateRoot
+			where TAggregateRoot : IAggregateRoot, new()
 		{
 			var aggregate = _repository.GetToDate<TAggregateRoot>(id, versionedDate);
 			return aggregate;
@@ -75,23 +75,35 @@ namespace Distvisor.App.Core.Aggregates
 
 		public virtual void Commit()
 		{
-			foreach (var tracker in _trackedAggregates.Values)
+			foreach (var tracker in _aggregateTrackers.Values)
 			{
-				_repository.Save(tracker.Aggregate, tracker.OriginalVersion);
+				tracker.Save(_repository);
 			}
-			_trackedAggregates.Clear();
+			_aggregateTrackers.Clear();
 		}
 
-		private class TrackedAggregate
+		private interface IAggregateTracker
         {
+			IAggregateRoot Aggregate { get; }
+			void Save(IAggregateRepository repository);
+        }
+
+		private class AggregateTracker<TAggregateRoot> : IAggregateTracker
+			where TAggregateRoot : IAggregateRoot, new()
+		{
 			public IAggregateRoot Aggregate { get; init; }
 			public int OriginalVersion { get; init; }
 
-            public TrackedAggregate(IAggregateRoot aggregate)
+            public AggregateTracker(IAggregateRoot aggregate)
             {
 				Aggregate = aggregate;
 				OriginalVersion = aggregate.Version;
             }
+
+            public void Save(IAggregateRepository repository)
+            {
+				repository.Save((TAggregateRoot)Aggregate, OriginalVersion);
+			}
         }
 	}
 }
