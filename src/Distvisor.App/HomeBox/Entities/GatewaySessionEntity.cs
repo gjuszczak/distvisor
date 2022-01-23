@@ -7,6 +7,5 @@ namespace Distvisor.App.HomeBox.Entities
     {
         public Guid Id { get; set; }
         public string Username { get; set; }
-        public Guid AggregateId { get; set; }
     }
 }

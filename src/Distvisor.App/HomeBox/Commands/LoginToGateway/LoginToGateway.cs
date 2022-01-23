@@ -1,6 +1,4 @@
-﻿using Distvisor.App.Core.Aggregates;
-using Distvisor.App.Core.Commands;
-using Distvisor.App.HomeBox.Aggregates;
+﻿using Distvisor.App.Core.Commands;
 using Distvisor.App.HomeBox.Services.Gateway;
 using System;
 using System.Threading;
@@ -16,22 +14,16 @@ namespace Distvisor.App.HomeBox.Commands.LoginToGateway
 
     public class LoginToGatewayHandler : ICommandHandler<LoginToGateway>
     {
-        private readonly IAggregateContext _context;
-        private readonly IGatewayAuthenticationClient _gateway;
+        private readonly IGatewaySessionManager _sessionManager;
 
-        public LoginToGatewayHandler(IAggregateContext context, IGatewayAuthenticationClient gateway)
+        public LoginToGatewayHandler(IGatewaySessionManager sessionManager)
         {
-            _context = context;
-            _gateway = gateway;
+            _sessionManager = sessionManager;
         }
 
         public async Task<Guid> Handle(LoginToGateway request, CancellationToken cancellationToken)
         {
-            var authResult = await _gateway.LoginAsync(request.User, request.Password);
-            var gatewaySession = new GatewaySession(request.Id, request.User, authResult.Token);
-            _context.Add(gatewaySession);
-            _context.Commit();
-
+            await _sessionManager.OpenGatewaySession(request.Id, request.User, request.Password);
             return request.Id;
         }
     }

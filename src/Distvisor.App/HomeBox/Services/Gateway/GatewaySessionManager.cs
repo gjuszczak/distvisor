@@ -22,6 +22,14 @@ namespace Distvisor.App.HomeBox.Services.Gateway
             _gatewayClient = gatewayClient;
         }
 
+        public async Task OpenGatewaySession(Guid sessionId, string username, string password)
+        {
+            var authResult = await _gatewayClient.LoginAsync(username, password);
+            var gatewaySession = new GatewaySession(sessionId, username, authResult.Token);
+            _aggregateContext.Add(gatewaySession);
+            _aggregateContext.Commit();            
+        }
+
         public async Task<GatewayActiveSession> GetActiveSessionAsync()
         {
             var session = await GetSessionAggregateAsync();
@@ -54,7 +62,7 @@ namespace Distvisor.App.HomeBox.Services.Gateway
                 return null;
             }
 
-            return _aggregateContext.Get<GatewaySession>(session.AggregateId);
+            return _aggregateContext.Get<GatewaySession>(session.Id);
         }
 
         private async Task<GatewaySession> BeginRefreshAsync(Guid sessionId)

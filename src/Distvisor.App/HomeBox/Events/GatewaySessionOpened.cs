@@ -44,9 +44,8 @@ namespace Distvisor.App.HomeBox.Events
 
             _appDbContext.HomeboxGatewaySessions.Add(new GatewaySessionEntity
             {
-                Id = Guid.NewGuid(),
-                Username = @event.Username,
-                AggregateId = @event.AggregateId
+                Id = @event.AggregateId,
+                Username = @event.Username
             });
             await _appDbContext.SaveChangesAsync(cancellationToken);
         }

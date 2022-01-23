@@ -35,7 +35,7 @@ namespace Distvisor.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("CorrelationId")
                         .HasColumnType("uuid");
 
-                    b.Property<JsonElement>("Data")
+                    b.Property<JsonDocument>("Data")
                         .HasColumnType("jsonb");
 
                     b.Property<string>("EventType")
@@ -100,9 +100,6 @@ namespace Distvisor.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("AggregateId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("Created")

@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using System;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Distvisor.App.Tests.Integration
@@ -24,7 +23,6 @@ namespace Distvisor.App.Tests.Integration
         public void RunBeforeAnyTests()
         {
             var services = new ServiceCollection();
-            //services.AddMediatR(Assembly.GetAssembly(typeof(ICommand)));
             services.AddScoped<IAggregateContext, AggregateContext>();
             services.AddScoped<IAggregateRepository, AggregateRepository>();
             services.AddScoped<IEventEntityBuilder, EventEntityBuilder>();
@@ -48,9 +46,9 @@ namespace Distvisor.App.Tests.Integration
         {
             using var scope = _scopeFactory.CreateScope();
 
-            var commandBus = scope.ServiceProvider.GetService<ICommandDispatcher>();
+            var commands = scope.ServiceProvider.GetService<ICommandDispatcher>();
 
-            return await commandBus.DispatchAsync(command);
+            return await commands.DispatchAsync(command);
         }
 
         public static async Task<TResult> Execute<TQuery, TResult>(TQuery query)
@@ -58,9 +56,9 @@ namespace Distvisor.App.Tests.Integration
         {
             using var scope = _scopeFactory.CreateScope();
 
-            var queryBus = scope.ServiceProvider.GetService<IQueryDispatcher>();
+            var queries = scope.ServiceProvider.GetService<IQueryDispatcher>();
 
-            return await queryBus.DispatchAsync(query);
+            return await queries.DispatchAsync(query);
         }
 
         [OneTimeTearDown]

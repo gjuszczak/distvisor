@@ -5,7 +5,8 @@ namespace Distvisor.App.HomeBox.Services.Gateway
 {
     public interface IGatewaySessionManager
     {
-        public Task<GatewayActiveSession> GetActiveSessionAsync();
-        public Task RefreshSessionAsync(Guid sessionId);
+        Task<GatewayActiveSession> GetActiveSessionAsync();
+        Task OpenGatewaySession(Guid sessionId, string username, string password);
+        Task RefreshSessionAsync(Guid sessionId);
     }
 }

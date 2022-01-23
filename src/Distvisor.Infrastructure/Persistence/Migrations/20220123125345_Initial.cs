@@ -13,12 +13,12 @@ namespace Distvisor.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     EventId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Data = table.Column<JsonElement>(type: "jsonb", nullable: false),
+                    TimeStamp = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     EventType = table.Column<string>(type: "text", nullable: true),
+                    Data = table.Column<JsonDocument>(type: "jsonb", nullable: true),
                     AggregateId = table.Column<Guid>(type: "uuid", nullable: false),
                     AggregateType = table.Column<string>(type: "text", nullable: true),
                     Version = table.Column<int>(type: "integer", nullable: false),
-                    TimeStamp = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     CorrelationId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
@@ -54,7 +54,6 @@ namespace Distvisor.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Username = table.Column<string>(type: "text", nullable: true),
-                    AggregateId = table.Column<Guid>(type: "uuid", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: true),
                     LastModified = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),

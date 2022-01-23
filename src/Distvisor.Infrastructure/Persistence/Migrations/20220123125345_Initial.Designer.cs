@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Distvisor.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220118172958_Initial")]
+    [Migration("20220123125345_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,7 +37,7 @@ namespace Distvisor.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("CorrelationId")
                         .HasColumnType("uuid");
 
-                    b.Property<JsonElement>("Data")
+                    b.Property<JsonDocument>("Data")
                         .HasColumnType("jsonb");
 
                     b.Property<string>("EventType")
@@ -102,9 +102,6 @@ namespace Distvisor.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("AggregateId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset>("Created")
