@@ -2,5 +2,6 @@
 {
     public class GetDevicesResponse
     {
+        public GatewayDeviceDetails[] Devices { get; set; }
     }
 }

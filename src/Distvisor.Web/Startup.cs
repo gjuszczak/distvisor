@@ -1,14 +1,10 @@
-using Distvisor.App;
-using Distvisor.App.Core.Commands;
-using Distvisor.App.Core.Events;
-using Distvisor.App.Core.Queries;
-using Distvisor.App.HomeBox.Services.Gateway;
 using Distvisor.Infrastructure;
-using Distvisor.Infrastructure.Services.HomeBox;
 using Distvisor.Web.Configuration;
 using Distvisor.Web.Data;
+using Distvisor.Web.Filters;
 using Distvisor.Web.Hubs;
 using Distvisor.Web.Services;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -112,11 +108,18 @@ namespace Distvisor.Web
 
             services.AddDistvisorAuth(Config);
 
-            services.AddMvc()
-                .AddJsonOptions(opts =>
-                {
-                    opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                });
+            services.AddMvc(opts =>
+            {
+                opts.Filters.Add<ApiExceptionFilterAttribute>();
+            })
+            .AddJsonOptions(opts =>
+            {
+                opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            })
+            .AddFluentValidation(opts =>
+            {
+                opts.AutomaticValidationEnabled = false;
+            });
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -124,54 +127,8 @@ namespace Distvisor.Web
                 configuration.RootPath = "ClientApp/dist";
             });
 
-            // cqrs services registration
-            services.AddDistvisorApp();
-            services.AddDistvisorInfrastructure(Config);
-            services.Configure<GatewayConfiguration>(Config.GetSection("Ewelink"));
-            services.AddHttpClient<IGatewayAuthenticationClient, GatewayAuthenticationClient>()
-                .ConfigureHttpClient(c =>
-                {
-                    c.BaseAddress = new Uri(Config.GetValue<string>("Ewelink:ApiUrl"));
-                    c.DefaultRequestHeaders.Add("Accept", "application/json");
-                });
-
-            services.AddHttpClient<IGatewayClient, GatewayClient>()
-                .ConfigureHttpClient(c =>
-                {
-                    c.BaseAddress = new Uri(Config.GetValue<string>("Ewelink:ApiUrl"));
-                    c.DefaultRequestHeaders.Add("Accept", "application/json");
-                });
-
-            services.Scan(selector =>
-            {
-                selector.FromAssemblyOf<ICommandDispatcher>()
-                    .AddClasses(filter =>
-                    {
-                        filter.AssignableTo(typeof(ICommandHandler<>));
-                    })
-                    .AsImplementedInterfaces()
-                    .WithScopedLifetime();
-            });
-            services.Scan(selector =>
-            {
-                selector.FromAssemblyOf<IQueryDispatcher>()
-                    .AddClasses(filter =>
-                    {
-                        filter.AssignableTo(typeof(IQueryHandler<,>));
-                    })
-                    .AsImplementedInterfaces()
-                    .WithScopedLifetime();
-            });
-            services.Scan(selector =>
-            {
-                selector.FromAssemblyOf<IEventPublisher>()
-                    .AddClasses(filter =>
-                    {
-                        filter.AssignableTo(typeof(IEventHandler<>));
-                    })
-                    .AsImplementedInterfaces()
-                    .WithScopedLifetime();
-            });
+            // Configure new, cqrs based, Distvisor services
+            services.AddDistvisor(Config);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

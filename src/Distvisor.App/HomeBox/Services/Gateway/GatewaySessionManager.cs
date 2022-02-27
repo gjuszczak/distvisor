@@ -22,7 +22,7 @@ namespace Distvisor.App.HomeBox.Services.Gateway
             _gatewayClient = gatewayClient;
         }
 
-        public async Task OpenGatewaySession(Guid sessionId, string username, string password)
+        public async Task OpenGatewaySessionAsync(Guid sessionId, string username, string password)
         {
             var authResult = await _gatewayClient.LoginAsync(username, password);
             var gatewaySession = new GatewaySession(sessionId, username, authResult.Token);

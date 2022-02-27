@@ -1,5 +1,4 @@
-﻿using Distvisor.App.Core.Commands;
-using Distvisor.App.Core.Queries;
+﻿using Distvisor.App.Core.Dispatchers;
 using Distvisor.App.HomeBox.Commands.LoginToGateway;
 using Distvisor.App.HomeBox.Queries.GetDevices;
 using Microsoft.AspNetCore.Mvc;
@@ -12,19 +11,17 @@ namespace Distvisor.Web.Controllers
     [Route("api/core")]
     public class CoreController : ControllerBase
     {
-        private readonly ICommandDispatcher _commandDispatcher;
-        private readonly IQueryDispatcher _queryDispatcher;
+        private readonly IDispatcher _dispatcher;
 
-        public CoreController(ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher)
+        public CoreController(IDispatcher dispatcher)
         {
-            _commandDispatcher = commandDispatcher;
-            _queryDispatcher = queryDispatcher;
+            _dispatcher = dispatcher;
         }
 
         [HttpPost("api-login")]
         public async Task ApiLogin(string username, string password)
         {
-            await _commandDispatcher.DispatchAsync(new LoginToGateway
+            await _dispatcher.DispatchAsync(new LoginToGateway
             {
                 User = username,
                 Password = password,
@@ -34,7 +31,7 @@ namespace Distvisor.Web.Controllers
         [HttpPost("api-refresh")]
         public async Task ApiRefresh(Guid sessionId)
         {
-            await _commandDispatcher.DispatchAsync(new RefreshGatewaySession
+            await _dispatcher.DispatchAsync(new RefreshGatewaySession
             {
                 SessionId = sessionId
             });
@@ -43,7 +40,7 @@ namespace Distvisor.Web.Controllers
         [HttpGet("devices")]
         public async Task GetDevices()
         {
-            await _queryDispatcher.DispatchAsync(new GetDevices());
+            await _dispatcher.DispatchAsync(new GetDevices());
         }
     }
 }

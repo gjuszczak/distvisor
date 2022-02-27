@@ -2,9 +2,9 @@
 
 namespace Distvisor.App.HomeBox.Commands.LoginToGateway
 {
-    public class LoginToGatewayValidatior : AbstractValidator<LoginToGateway>
+    public class LoginToGatewayValidator : AbstractValidator<LoginToGateway>
     {
-        public LoginToGatewayValidatior()
+        public LoginToGatewayValidator()
         {
             RuleFor(v => v.User)
                 .MaximumLength(50)

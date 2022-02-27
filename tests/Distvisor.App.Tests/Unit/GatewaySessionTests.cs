@@ -6,7 +6,6 @@ using Distvisor.App.HomeBox.ValueObjects;
 using NUnit.Framework;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Distvisor.App.Tests.Unit
 {
@@ -19,7 +18,7 @@ namespace Distvisor.App.Tests.Unit
         private readonly DateTimeOffset generatedAt = DateTimeOffset.Now;
 
         [Test]
-        public async Task CanOpenGatewaySession()
+        public void CanOpenGatewaySession()
         {
             var token = new GatewayToken(accessToken, refreshToken, generatedAt);
             var session = new GatewaySession(sessionId, username, token);
@@ -39,7 +38,7 @@ namespace Distvisor.App.Tests.Unit
         }
 
         [Test]
-        public async Task CanBeginRefreshGatewaySession()
+        public void CanBeginRefreshGatewaySession()
         {
             var token = new GatewayToken(accessToken, refreshToken, generatedAt);
             var session = new GatewaySession(sessionId, username, token);
@@ -63,7 +62,7 @@ namespace Distvisor.App.Tests.Unit
         }
 
         [Test]
-        public async Task CanCompleteRefreshGatewaySession()
+        public void CanCompleteRefreshGatewaySession()
         {
             var originalToken = new GatewayToken(accessToken, refreshToken, generatedAt);
             var session = new GatewaySession(sessionId, username, originalToken);
@@ -88,7 +87,7 @@ namespace Distvisor.App.Tests.Unit
         }
 
         [Test]
-        public async Task CanFailRefreshGatewaySession()
+        public void CanFailRefreshGatewaySession()
         {
             var token = new GatewayToken(accessToken, refreshToken, generatedAt);
             var session = new GatewaySession(sessionId, username, token);
@@ -111,7 +110,7 @@ namespace Distvisor.App.Tests.Unit
         }
 
         [Test]
-        public async Task CanNotBeginRefreshGatewaySessionWhenTokenIsFresh()
+        public void CanNotBeginRefreshGatewaySessionWhenTokenIsFresh()
         {            
             var token = new GatewayToken(accessToken, refreshToken, generatedAt);
             var session = new GatewaySession(sessionId, username, token);
@@ -121,7 +120,7 @@ namespace Distvisor.App.Tests.Unit
         }
 
         [Test]
-        public async Task CanNotBeginRefreshGatewaySessionWhenRefreshIsAlreadyReserved()
+        public void CanNotBeginRefreshGatewaySessionWhenRefreshIsAlreadyReserved()
         {
             var token = new GatewayToken(accessToken, refreshToken, generatedAt);
             var session = new GatewaySession(sessionId, username, token);
@@ -131,6 +130,25 @@ namespace Distvisor.App.Tests.Unit
 
             var nextNow = DateTimeOffset.Now.AddMinutes(5.2);
             Assert.Throws<GatewaySessionRefreshingReservedException>(() => session.BeginRefresh(nextNow));
+        }
+
+        [Test]
+        public void CanNotUseRefreshGatewaySessionWhenClosed()
+        {
+            var token = new GatewayToken(accessToken, refreshToken, generatedAt);
+            var session = new GatewaySession(sessionId, username, token);
+
+            var firstNow = DateTimeOffset.Now.AddMinutes(5.1);
+            session.BeginRefresh(firstNow);
+
+            session.RefreshFailed();
+
+            var nextNow = DateTimeOffset.Now.AddMinutes(5.2);
+            var refreshedToken = new GatewayToken($"{accessToken}_fresh", $"{refreshToken}_fresh", nextNow);
+
+            Assert.Throws<GatewaySessionClosedException>(() => session.BeginRefresh(nextNow));
+            Assert.Throws<GatewaySessionClosedException>(() => session.RefreshSucceed(refreshedToken));
+            Assert.Throws<GatewaySessionClosedException>(() => session.RefreshFailed());
         }
     }
 }

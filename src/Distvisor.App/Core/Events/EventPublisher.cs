@@ -12,7 +12,6 @@ namespace Distvisor.App.Core.Events
         private readonly IServiceProvider _serviceProvider;
         private static readonly ConcurrentDictionary<Type, IEventPublishHelper> _eventPublishHelpers = new();
 
-
         public EventPublisher(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
@@ -35,7 +34,7 @@ namespace Distvisor.App.Core.Events
 
         private static IEventPublishHelper CreateEventPublishHelper(Type eventType)
         {
-            var dispatchHelperType = typeof(EventPublisHelper<>).MakeGenericType(eventType);
+            var dispatchHelperType = typeof(EventPublishHelper<>).MakeGenericType(eventType);
             return (IEventPublishHelper)Activator.CreateInstance(dispatchHelperType);
         }
 
@@ -44,7 +43,7 @@ namespace Distvisor.App.Core.Events
             Task Publish(IServiceProvider serviceProvider, IEvent @event, CancellationToken cancellationToken);
         }
 
-        private class EventPublisHelper<TEvent> : IEventPublishHelper
+        private class EventPublishHelper<TEvent> : IEventPublishHelper
             where TEvent : IEvent
         {
             public async Task Publish(IServiceProvider serviceProvider, IEvent @event, CancellationToken cancellationToken)

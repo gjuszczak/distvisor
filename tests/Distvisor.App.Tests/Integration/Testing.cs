@@ -1,6 +1,7 @@
 ﻿using Distvisor.App.Common;
 using Distvisor.App.Core.Aggregates;
 using Distvisor.App.Core.Commands;
+using Distvisor.App.Core.Dispatchers;
 using Distvisor.App.Core.Events;
 using Distvisor.App.Core.Queries;
 using Distvisor.App.Core.Services;
@@ -29,8 +30,7 @@ namespace Distvisor.App.Tests.Integration
             services.AddScoped<IEventStore, EventStore>();
             services.AddScoped<IEventStorage, SqlEventStorage>();
             services.AddScoped<IEventPublisher, EventPublisher>();
-            services.AddScoped<ICommandDispatcher, CommandDispatcher>();
-            services.AddScoped<IQueryDispatcher, QueryDispatcher>();
+            services.AddScoped<IDispatcher, Dispatcher>();
             services.AddScoped<ICorrelationIdProvider, CorrelationIdProvider>();
 
             services.AddDbContext<AppDbContext>(options =>
@@ -46,7 +46,7 @@ namespace Distvisor.App.Tests.Integration
         {
             using var scope = _scopeFactory.CreateScope();
 
-            var commands = scope.ServiceProvider.GetService<ICommandDispatcher>();
+            var commands = scope.ServiceProvider.GetService<IDispatcher>();
 
             return await commands.DispatchAsync(command);
         }
@@ -56,7 +56,7 @@ namespace Distvisor.App.Tests.Integration
         {
             using var scope = _scopeFactory.CreateScope();
 
-            var queries = scope.ServiceProvider.GetService<IQueryDispatcher>();
+            var queries = scope.ServiceProvider.GetService<IDispatcher>();
 
             return await queries.DispatchAsync(query);
         }

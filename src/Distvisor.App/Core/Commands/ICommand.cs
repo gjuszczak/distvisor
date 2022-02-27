@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Distvisor.App.Core.Dispatchers;
+using System;
 
 namespace Distvisor.App.Core.Commands
 {
-    public interface ICommand
+    public interface ICommand : IRequest<Guid>
 	{
 		Guid Id { get; }
 		Guid CorrelationId { get; }

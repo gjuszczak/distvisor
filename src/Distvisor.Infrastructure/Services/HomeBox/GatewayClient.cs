@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Distvisor.Infrastructure.Services.HomeBox
@@ -48,8 +50,18 @@ namespace Distvisor.Infrastructure.Services.HomeBox
                 var response = await _httpClient.SendAsync(request);
                 response.EnsureSuccessStatusCode();
                 var responseContent = await response.Content.ReadAsStringAsync();
-                //var result = JsonSerializer.Deserialize<EwelinkDtoDeviceList>(responseContent);
-                return new GetDevicesResponse { };
+                var result = JsonSerializer.Deserialize<GatewayDeviceListDto>(responseContent);
+                return new GetDevicesResponse
+                {
+                    Devices = result.devicelist.Select(d => new GatewayDeviceDetails
+                    {
+                        Deviceid = d.deviceid,
+                        DeviceType = d.uiid,
+                        Name = d.name,
+                        IsOnline = d.online,
+                        Params = d.@params
+                    }).ToArray()
+                };
             });
         }
 
@@ -57,5 +69,21 @@ namespace Distvisor.Infrastructure.Services.HomeBox
         {
             throw new System.NotImplementedException();
         }
+    }
+
+    public class GatewayDeviceListDto
+    {
+        public int error { get; set; }
+        public GatewayDeviceDto[] devicelist { get; set; }
+    }
+
+    public class GatewayDeviceDto
+    {
+        public string apikey { get; set; }
+        public string name { get; set; }
+        public string deviceid { get; set; }
+        public int uiid { get; set; }
+        public bool online { get; set; }
+        public JsonElement @params { get; set; }
     }
 }

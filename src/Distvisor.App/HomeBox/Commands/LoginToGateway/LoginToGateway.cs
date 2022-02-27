@@ -23,7 +23,7 @@ namespace Distvisor.App.HomeBox.Commands.LoginToGateway
 
         public async Task<Guid> Handle(LoginToGateway request, CancellationToken cancellationToken)
         {
-            await _sessionManager.OpenGatewaySession(request.Id, request.User, request.Password);
+            await _sessionManager.OpenGatewaySessionAsync(request.Id, request.User, request.Password);
             return request.Id;
         }
     }
