@@ -1,4 +1,5 @@
 ﻿using Distvisor.App.HomeBox.Services.Gateway;
+using Distvisor.App.HomeBox.ValueObjects;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using System;
@@ -54,13 +55,13 @@ namespace Distvisor.Infrastructure.Services.HomeBox
                 return new GetDevicesResponse
                 {
                     Devices = result.devicelist.Select(d => new GatewayDeviceDetails
-                    {
-                        Deviceid = d.deviceid,
-                        DeviceType = d.uiid,
-                        Name = d.name,
-                        IsOnline = d.online,
-                        Params = d.@params
-                    }).ToArray()
+                    (
+                        d.name,
+                        d.deviceid,
+                        d.uiid,
+                        d.online,
+                        d.@params
+                    )).ToArray()
                 };
             });
         }

@@ -1,7 +1,4 @@
-﻿using Distvisor.App.Core.Aggregates;
-using Distvisor.App.Core.Commands;
-using Distvisor.App.Core.Exceptions;
-using Distvisor.App.HomeBox.Aggregates;
+﻿using Distvisor.App.Core.Commands;
 using Distvisor.App.HomeBox.Services.Gateway;
 using System;
 using System.Threading;
@@ -15,20 +12,16 @@ namespace Distvisor.App.HomeBox.Commands.LoginToGateway
 
     public class SyncDevicesWithGatewayHandler : ICommandHandler<SyncDevicesWithGateway>
     {
-        private readonly IAggregateContext _context;
-        private readonly IGatewayClient _gateway;
+        private readonly IGatewayDevicesSyncService _devicesSyncService;
 
-        public SyncDevicesWithGatewayHandler(IAggregateContext context, IGatewayClient gateway)
+        public SyncDevicesWithGatewayHandler(IGatewayDevicesSyncService deviceSyncService)
         {
-            _context = context;
-            _gateway = gateway;
+            _devicesSyncService = deviceSyncService;
         }
 
         public async Task<Guid> Handle(SyncDevicesWithGateway request, CancellationToken cancellationToken)
         {
-            var gatewayDevices = await _gateway.GetDevicesAsync();
-            
-
+            await _devicesSyncService.SyncDevicesAsync();
             return request.Id;
         }
     }

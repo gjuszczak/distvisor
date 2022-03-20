@@ -1,6 +1,7 @@
 ﻿using Distvisor.App.Core.Aggregates;
 using Distvisor.App.Core.Events;
 using Distvisor.App.HomeBox.Enums;
+using Distvisor.App.HomeBox.ValueObjects;
 using System;
 using System.Text.Json;
 
@@ -15,6 +16,18 @@ namespace Distvisor.App.HomeBox.Aggregates
         public JsonElement Params { get; set; }
         public DeviceType Type { get; set; }
         public string Location { get; set; }
+
+        public Device() { }
+
+        public Device(Guid aggregateId)
+        {
+            AggregateId = aggregateId;
+        }
+
+        public void SyncWithGateway(GatewayDeviceDetails gatewayDevice)
+        {
+            throw new NotImplementedException();
+        }
 
         protected override void Apply(IEvent @event)
         {

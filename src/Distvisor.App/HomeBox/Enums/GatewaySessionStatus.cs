@@ -8,9 +8,6 @@ namespace Distvisor.App.HomeBox.Enums
         public static GatewaySessionStatus Refreshing = new(2, nameof(Refreshing));
         public static GatewaySessionStatus Closed = new(3, nameof(Closed));
 
-        public GatewaySessionStatus(int id, string name)
-            : base(id, name)
-        {
-        }
+        private GatewaySessionStatus(int id, string name) : base(id, name) { }
     }
 }
