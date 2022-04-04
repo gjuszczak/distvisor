@@ -6,6 +6,6 @@ namespace Distvisor.App.HomeBox.Queries.GetDevices
     {
         public string Name { get; set; }
         public bool Online { get; set; }
-        public JsonElement Params { get; set; }
+        public JsonDocument Params { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using Distvisor.App.Core.Entities;
 using Distvisor.App.Core.Events;
 using Distvisor.App.Core.Services;
 using Distvisor.App.HomeBox.Entities;
+using Distvisor.App.HomeBox.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Reflection;
@@ -27,7 +28,9 @@ namespace Distvisor.Infrastructure
         public DbSet<EventEntity> Events { get; set; }
 
         public DbSet<DeviceEntity> HomeboxDevices { get; set; }
+        public DbSet<DeviceType> HomeboxDeviceTypes { get; set; }
         public DbSet<GatewaySessionEntity> HomeboxGatewaySessions { get; set; }
+        public DbSet<GatewaySessionStatus> HomeboxGatewaySessionStatuses { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

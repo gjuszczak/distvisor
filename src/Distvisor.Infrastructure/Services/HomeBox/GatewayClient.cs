@@ -1,4 +1,5 @@
-﻿using Distvisor.App.HomeBox.Services.Gateway;
+﻿using Distvisor.App.HomeBox.Enums;
+using Distvisor.App.HomeBox.Services.Gateway;
 using Distvisor.App.HomeBox.ValueObjects;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
@@ -58,7 +59,7 @@ namespace Distvisor.Infrastructure.Services.HomeBox
                     (
                         d.name,
                         d.deviceid,
-                        d.uiid,
+                        DeviceType.FromGatewayDeviceType(d.uiid),
                         d.online,
                         d.@params
                     )).ToArray()
@@ -85,6 +86,6 @@ namespace Distvisor.Infrastructure.Services.HomeBox
         public string deviceid { get; set; }
         public int uiid { get; set; }
         public bool online { get; set; }
-        public JsonElement @params { get; set; }
+        public JsonDocument @params { get; set; }
     }
 }

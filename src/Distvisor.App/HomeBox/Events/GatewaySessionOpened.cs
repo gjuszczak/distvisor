@@ -1,10 +1,8 @@
 ﻿using Distvisor.App.Common;
 using Distvisor.App.Core.Events;
 using Distvisor.App.HomeBox.Entities;
+using Distvisor.App.HomeBox.Enums;
 using Distvisor.App.HomeBox.ValueObjects;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,20 +30,12 @@ namespace Distvisor.App.HomeBox.Events
 
         public async Task Handle(GatewaySessionOpened @event, CancellationToken cancellationToken)
         {
-            var existingSessionForUser = await _appDbContext.HomeboxGatewaySessions
-                .Where(x => x.Username == @event.Username)
-                .ToListAsync(cancellationToken);
-
-            if (existingSessionForUser.Any())
-            {
-                _appDbContext.HomeboxGatewaySessions.RemoveRange(existingSessionForUser);
-                await _appDbContext.SaveChangesAsync(cancellationToken);
-            }
-
             _appDbContext.HomeboxGatewaySessions.Add(new GatewaySessionEntity
             {
                 Id = @event.AggregateId,
-                Username = @event.Username
+                Username = @event.Username,
+                Token = @event.Token,
+                Status = GatewaySessionStatus.Open
             });
             await _appDbContext.SaveChangesAsync(cancellationToken);
         }

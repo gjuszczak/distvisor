@@ -37,6 +37,12 @@ namespace Distvisor.Web.Controllers
             });
         }
 
+        [HttpPost("sync-devices")]
+        public async Task SyncDevices()
+        {
+            await _dispatcher.DispatchAsync(new SyncDevicesWithGateway());
+        }
+
         [HttpGet("devices")]
         public async Task GetDevices()
         {

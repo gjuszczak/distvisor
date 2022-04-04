@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Distvisor.Infrastructure.Services.HomeBox
@@ -23,11 +24,6 @@ namespace Distvisor.Infrastructure.Services.HomeBox
 
         public async Task<GatewayAuthenticationResponse> LoginAsync(string username, string password)
         {
-            return new GatewayAuthenticationResponse
-            {
-                Token = new GatewayToken("at", "rt", DateTimeOffset.Now)
-            };
-
             var urlBuilder = new UriBuilder(_httpClient.BaseAddress)
             {
                 Path = $"api/user/login"
@@ -58,7 +54,7 @@ namespace Distvisor.Infrastructure.Services.HomeBox
             var result = JsonSerializer.Deserialize<GatewayLoginResultDto>(responseContent);
             return new GatewayAuthenticationResponse
             {
-                Token = new GatewayToken(result.at, result.rt, DateTimeOffset.Now)
+                Token = new GatewayToken(result.AccessToken, result.RefreshToken, DateTimeOffset.Now)
             };
         }
 
@@ -70,7 +66,10 @@ namespace Distvisor.Infrastructure.Services.HomeBox
 
     public class GatewayLoginResultDto
     {
-        public string at;
-        public string rt;
+        [JsonPropertyName("at")]
+        public string AccessToken { get; init; }
+
+        [JsonPropertyName("rt")]
+        public string RefreshToken { get; init; }
     }
 }

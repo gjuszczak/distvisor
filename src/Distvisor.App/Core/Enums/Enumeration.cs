@@ -49,9 +49,21 @@ namespace Distvisor.App.Core.Enums
             return matchingItem;
         }
 
+        public static T FromValueOrDefault<T>(int value, T @default) where T : Enumeration
+        {
+            var matchingItem = ParseOrDefault(item => item.Id == value, @default);
+            return matchingItem;
+        }
+
         public static T FromDisplayName<T>(string displayName) where T : Enumeration
         {
             var matchingItem = Parse<T, string>(displayName, "display name", item => item.Name == displayName);
+            return matchingItem;
+        }
+
+        public static T FromDisplayNameOrDefault<T>(string displayName, T @default) where T : Enumeration
+        {
+            var matchingItem = ParseOrDefault(item => item.Name == displayName, @default);
             return matchingItem;
         }
 
@@ -61,6 +73,16 @@ namespace Distvisor.App.Core.Enums
 
             if (matchingItem == null)
                 throw new InvalidOperationException($"'{value}' is not a valid {description} in {typeof(T)}");
+
+            return matchingItem;
+        }
+
+        private static T ParseOrDefault<T>(Func<T, bool> predicate, T @default) where T : Enumeration
+        {
+            var matchingItem = GetAll<T>().FirstOrDefault(predicate);
+
+            if (matchingItem == null)
+                return @default;
 
             return matchingItem;
         }

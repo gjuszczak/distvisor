@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Distvisor.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220123125345_Initial")]
+    [Migration("20220404145905_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,11 +66,14 @@ namespace Distvisor.Infrastructure.Persistence.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
 
-                    b.Property<string>("GatewayId")
+                    b.Property<string>("GatewayDeviceId")
                         .HasColumnType("text");
 
                     b.Property<string>("Header")
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsOnline")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset?>("LastModified")
                         .HasColumnType("timestamp with time zone");
@@ -84,16 +87,15 @@ namespace Distvisor.Infrastructure.Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<bool>("Online")
-                        .HasColumnType("boolean");
-
-                    b.Property<JsonElement>("Params")
+                    b.Property<JsonDocument>("Params")
                         .HasColumnType("jsonb");
 
-                    b.Property<int>("Type")
+                    b.Property<int?>("TypeId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TypeId");
 
                     b.ToTable("HomeboxDevices");
                 });
@@ -116,12 +118,92 @@ namespace Distvisor.Infrastructure.Persistence.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
 
+                    b.Property<int?>("StatusId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Username")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("StatusId");
+
                     b.ToTable("HomeboxGatewaySessions");
+                });
+
+            modelBuilder.Entity("Distvisor.App.HomeBox.Enums.DeviceType", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HomeboxDeviceTypes");
+                });
+
+            modelBuilder.Entity("Distvisor.App.HomeBox.Enums.GatewaySessionStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("HomeboxGatewaySessionStatuses");
+                });
+
+            modelBuilder.Entity("Distvisor.App.HomeBox.Entities.DeviceEntity", b =>
+                {
+                    b.HasOne("Distvisor.App.HomeBox.Enums.DeviceType", "Type")
+                        .WithMany()
+                        .HasForeignKey("TypeId");
+
+                    b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("Distvisor.App.HomeBox.Entities.GatewaySessionEntity", b =>
+                {
+                    b.HasOne("Distvisor.App.HomeBox.Enums.GatewaySessionStatus", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId");
+
+                    b.OwnsOne("Distvisor.App.HomeBox.ValueObjects.GatewayToken", "Token", b1 =>
+                        {
+                            b1.Property<Guid>("GatewaySessionEntityId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("AccessToken")
+                                .HasColumnType("text")
+                                .HasColumnName("AccessToken");
+
+                            b1.Property<DateTimeOffset>("GeneratedAt")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("TokenGeneratedAt");
+
+                            b1.Property<string>("RefreshToken")
+                                .HasColumnType("text")
+                                .HasColumnName("RefreshToken");
+
+                            b1.HasKey("GatewaySessionEntityId");
+
+                            b1.ToTable("HomeboxGatewaySessions");
+
+                            b1.WithOwner()
+                                .HasForeignKey("GatewaySessionEntityId");
+                        });
+
+                    b.Navigation("Status");
+
+                    b.Navigation("Token");
                 });
 #pragma warning restore 612, 618
         }

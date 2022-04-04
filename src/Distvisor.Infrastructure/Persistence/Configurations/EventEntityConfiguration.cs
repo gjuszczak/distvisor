@@ -6,9 +6,9 @@ namespace Distvisor.Infrastructure.Persistence.Configurations
 {
     public class EventEntityConfiguration : IEntityTypeConfiguration<EventEntity>
     {
-        public void Configure(EntityTypeBuilder<EventEntity> builder)
+        public void Configure(EntityTypeBuilder<EventEntity> entityType)
         {
-            builder.HasKey(x => x.EventId);
+            entityType.HasKey(x => x.EventId);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Distvisor.App.Core.Aggregates;
 using Distvisor.App.Core.Exceptions;
 using Distvisor.App.HomeBox.Aggregates;
+using Distvisor.App.HomeBox.Enums;
 using Distvisor.App.HomeBox.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -27,15 +28,16 @@ namespace Distvisor.App.HomeBox.Services.Gateway
             var authResult = await _gatewayClient.LoginAsync(username, password);
             var gatewaySession = new GatewaySession(sessionId, username, authResult.Token);
             _aggregateContext.Add(gatewaySession);
-            _aggregateContext.Commit();            
+            _aggregateContext.Commit();
         }
 
         public async Task<GatewayActiveSession> GetActiveSessionAsync()
         {
-            var session = await GetSessionAggregateAsync();
+            var session = await _appDbContext.HomeboxGatewaySessions
+                .FirstOrDefaultAsync(x => x.Status == GatewaySessionStatus.Open);
 
-            return session?.Token != null
-                ? new GatewayActiveSession { SessionId = session.AggregateId, AccessToken = session.Token.AccessToken }
+            return session != null
+                ? new GatewayActiveSession { SessionId = session.Id, AccessToken = session.Token.AccessToken }
                 : null;
         }
 
@@ -52,17 +54,6 @@ namespace Distvisor.App.HomeBox.Services.Gateway
                 session.RefreshFailed();
             }
             _aggregateContext.Commit();
-        }
-
-        private async Task<GatewaySession> GetSessionAggregateAsync()
-        {
-            var session = await _appDbContext.HomeboxGatewaySessions.FirstOrDefaultAsync();
-            if (session == null)
-            {
-                return null;
-            }
-
-            return _aggregateContext.Get<GatewaySession>(session.Id);
         }
 
         private async Task<GatewaySession> BeginRefreshAsync(Guid sessionId)

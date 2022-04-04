@@ -33,6 +33,7 @@ namespace Distvisor.Infrastructure
 
             services.AddScoped<IGatewaySessionManager, GatewaySessionManager>();
             services.AddScoped<IGatewayAuthenticationPolicy, GatewayAuthenticationPolicy>();
+            services.AddScoped<IGatewayDevicesSyncService, GatewayDevicesSyncService>();
 
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(config.GetConnectionString("Distvisor")));
