@@ -26,7 +26,7 @@ namespace Distvisor.App.Core.Dispatchers
             _correlationIdProvider.SetCorrelationId(command.CorrelationId);
             var commandType = command.GetType();
             var commandDispatchWrapper = (IDispatchWrapper<Guid>)_dispatchWrappers.GetOrAdd(commandType,
-                commandType => CreateDispatchHelper<Guid>(
+                commandType => CreateDispatchWrapper<Guid>(
                     commandType,
                     typeof(ICommandHandler<>).MakeGenericType(commandType),
                     _serviceProvider));
@@ -37,14 +37,14 @@ namespace Distvisor.App.Core.Dispatchers
         {
             var queryType = query.GetType();
             var queryDispatchWrapper = (IDispatchWrapper<TResult>)_dispatchWrappers.GetOrAdd(queryType,
-                commandType => CreateDispatchHelper<Guid>(
+                commandType => CreateDispatchWrapper<Guid>(
                     commandType,
                     typeof(IQueryHandler<,>).MakeGenericType(commandType, typeof(TResult)),
                     _serviceProvider));
             return await queryDispatchWrapper.Dispatch(_serviceProvider, query, cancellationToken);
         }
 
-        private static IDispatchWrapper<TResult> CreateDispatchHelper<TResult>(Type requestType, Type handlerType, IServiceProvider serviceProvider)
+        private static IDispatchWrapper<TResult> CreateDispatchWrapper<TResult>(Type requestType, Type handlerType, IServiceProvider serviceProvider)
         {
             var dispatchHelperType = typeof(DispatchWrapper<,,>).MakeGenericType(requestType, typeof(TResult), handlerType);
             var pipelineProvider = serviceProvider.GetRequiredService<IPipelineProvider>();

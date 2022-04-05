@@ -1,32 +1,31 @@
 ﻿using Distvisor.App.Common;
 using Distvisor.App.Core.Queries;
-using Distvisor.App.HomeBox.Services.Gateway;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Distvisor.App.HomeBox.Queries.GetDevices
 {
-    public class GetDevices : IQuery<DeviceDto[]>
+    public class GetDevices : IQuery<IEnumerable<DeviceDto>>
     {
     }
 
-    public class GetDevicesHandler : IQueryHandler<GetDevices, DeviceDto[]>
+    public class GetDevicesHandler : IQueryHandler<GetDevices, IEnumerable<DeviceDto>>
     {
         private readonly IAppDbContext _context;
-        private readonly IGatewayClient _gateway;
 
-        public GetDevicesHandler(IAppDbContext context, IGatewayClient gateway)
+        public GetDevicesHandler(IAppDbContext context)
         {
             _context = context;
-            _gateway = gateway;
         }
 
-        public async Task<DeviceDto[]> Handle(GetDevices request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<DeviceDto>> Handle(GetDevices request, CancellationToken cancellationToken)
         {
-            var gatewayDevices = await _gateway.GetDevicesAsync();
-            var storedDevices = await _context.HomeboxDevices.ToListAsync();
-            return new DeviceDto[0];
+            var devices = await _context.HomeboxDevices.ToListAsync(cancellationToken);
+            var deviceDtos = devices.Select(DeviceDto.FromEntity).ToArray();
+            return deviceDtos;
         }
     }
 }

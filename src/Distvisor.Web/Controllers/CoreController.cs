@@ -1,5 +1,5 @@
 ﻿using Distvisor.App.Core.Dispatchers;
-using Distvisor.App.HomeBox.Commands.LoginToGateway;
+using Distvisor.App.HomeBox.Commands;
 using Distvisor.App.HomeBox.Queries.GetDevices;
 using Microsoft.AspNetCore.Mvc;
 using System;

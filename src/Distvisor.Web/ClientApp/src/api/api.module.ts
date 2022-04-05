@@ -7,6 +7,7 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 import { AccountService } from './services/account.service';
 import { AdminService } from './services/admin.service';
 import { ClientConfigService } from './services/client-config.service';
+import { CoreService } from './services/core.service';
 import { EventLogService } from './services/event-log.service';
 import { FinancesService } from './services/finances.service';
 import { HomeBoxService } from './services/home-box.service';
@@ -26,6 +27,7 @@ import { SecretsVaultService } from './services/secrets-vault.service';
     AccountService,
     AdminService,
     ClientConfigService,
+    CoreService,
     EventLogService,
     FinancesService,
     HomeBoxService,

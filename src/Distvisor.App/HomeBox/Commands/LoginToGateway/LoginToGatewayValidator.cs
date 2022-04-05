@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Distvisor.App.HomeBox.Commands.LoginToGateway
+namespace Distvisor.App.HomeBox.Commands
 {
     public class LoginToGatewayValidator : AbstractValidator<LoginToGateway>
     {

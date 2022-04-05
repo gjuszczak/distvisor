@@ -1,0 +1,7 @@
+<div class="container p-mb-3">
+   <app-devices-list></app-devices-list>
+   <app-triggers-list></app-triggers-list>
+   <app-device-details-dialog *ngIf="isDeviceDetailsDialogOpened$ | async"></app-device-details-dialog>
+   <app-trigger-add-dialog *ngIf="isTriggerAddDialogOpened$ | async"></app-trigger-add-dialog>
+   <p-confirmPopup></p-confirmPopup>
+</div>

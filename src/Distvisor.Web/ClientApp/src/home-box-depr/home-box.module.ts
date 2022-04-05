@@ -24,13 +24,18 @@ import { TabViewModule } from 'primeng/tabview';
 
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { TriggersEffects } from './state/triggers.effects';
 import { DevicesEffects } from './state/devices.effects';
 import { devicesReducer } from './state/devices.reducer';
+import { triggersReducer } from './state/triggers.reducer';
 import { dialogsReducer } from './state/dialogs.reducer';
 
 import { ApiModule } from '../api/api.module';
 import { HomeBoxComponent } from './home-box/home-box.component';
+import { TriggersListComponent } from './triggers-list/triggers-list.component';
 import { DevicesListComponent } from './devices-list/devices-list.component';
+import { DeviceDetailsDialogComponent } from './device-details-dialog/device-details-dialog.component';
+import { TriggerAddDialogComponent } from './trigger-add-dialog/trigger-add-dialog.component';
 import { UtilsModule } from 'src/utils/utils.module';
 import { SignalrModule } from 'src/signalr/signalr.module';
 
@@ -47,9 +52,11 @@ import { SignalrModule } from 'src/signalr/signalr.module';
     // NgRx
     StoreModule.forFeature('homeBox', {
       devices: devicesReducer,
+      triggers: triggersReducer,
       dialogs: dialogsReducer,
     }),
     EffectsModule.forFeature([
+      TriggersEffects,
       DevicesEffects,
     ]),
 
@@ -77,7 +84,10 @@ import { SignalrModule } from 'src/signalr/signalr.module';
   ],
   declarations: [
     HomeBoxComponent,
-    DevicesListComponent
+    DevicesListComponent,
+    TriggersListComponent,
+    TriggerAddDialogComponent,
+    DeviceDetailsDialogComponent,
   ],
   providers: [ConfirmationService]
 })

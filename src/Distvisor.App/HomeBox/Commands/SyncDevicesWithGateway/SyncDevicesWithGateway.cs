@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Distvisor.App.HomeBox.Commands.LoginToGateway
+namespace Distvisor.App.HomeBox.Commands
 {
     public class SyncDevicesWithGateway : Command
     {

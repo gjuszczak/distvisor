@@ -15,7 +15,7 @@ export class HomeBoxSettingsComponent implements OnDestroy {
   constructor(private homeBoxService: HomeBoxService) { }
 
   onSave() {
-    this.subscriptions.push(this.homeBoxService.apiSecHomeBoxApiLoginPost({
+    this.subscriptions.push(this.homeBoxService.apiSHomeBoxLoginToGatewayPost({
       body:{
         user: this.inputHomeBoxUser,
         password: this.inputHomeBoxPassword

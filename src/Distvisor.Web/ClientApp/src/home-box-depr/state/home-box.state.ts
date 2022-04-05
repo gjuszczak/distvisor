@@ -1,8 +1,9 @@
-import { DeviceDto, DeviceType } from "src/api/models";
+import { HomeBoxDeviceDto, HomeBoxDeviceType, HomeBoxTriggerDto } from "src/api/models";
 
 export interface HomeBoxState {
     homeBox: {
-        devices: ReadonlyArray<DeviceDto>;
+        devices: ReadonlyArray<HomeBoxDeviceDto>;
+        triggers: ReadonlyArray<HomeBoxTriggerDto>;
         dialogs: DialogsState;
     }
 }
@@ -19,9 +20,9 @@ export interface DeviceVm {
     id: string;
     header: string;
     name: string;
-    type: DeviceType;
+    type: HomeBoxDeviceType;
     location: string;
-    isOnline: string;
+    online: string;
 }
 
 export interface DeviceDetailsVm extends DeviceVm {
