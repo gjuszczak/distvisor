@@ -3,6 +3,7 @@ using Distvisor.App.Core.Aggregates;
 using Distvisor.App.HomeBox.Aggregates;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Distvisor.App.HomeBox.Services.Gateway
@@ -20,20 +21,20 @@ namespace Distvisor.App.HomeBox.Services.Gateway
             _gatewayClient = gatewayClient;
         }
 
-        public async Task SyncDevicesAsync()
+        public async Task SyncDevicesAsync(CancellationToken cancellationToken = default)
         {
-            var gatewayDevices = await _gatewayClient.GetDevicesAsync();
+            var gatewayDevices = await _gatewayClient.GetDevicesAsync(cancellationToken);
             foreach (var gatewayDevice in gatewayDevices.Devices)
             {
-                var deviceEntity = await _appDbContext.HomeboxDevices.SingleOrDefaultAsync(x => x.GatewayDeviceId == gatewayDevice.DeviceId);
+                var deviceEntity = await _appDbContext.HomeboxDevices.SingleOrDefaultAsync(x => x.GatewayDeviceId == gatewayDevice.DeviceId, cancellationToken);
                 var deviceAggregate = deviceEntity?.Id != null
-                    ? _aggregateContext.Get<Device>(deviceEntity.Id)
+                    ? await _aggregateContext.GetAsync<Device>(deviceEntity.Id, cancellationToken: cancellationToken)
                     : CreateDeviceAggregate();
 
                 deviceAggregate.SyncWithGateway(gatewayDevice);
             }
 
-            _aggregateContext.Commit();
+            await _aggregateContext.CommitAsync(cancellationToken);
         }
 
         private Device CreateDeviceAggregate()

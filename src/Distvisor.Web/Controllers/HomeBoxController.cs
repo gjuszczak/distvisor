@@ -1,6 +1,7 @@
 ﻿using Distvisor.App.Core.Dispatchers;
 using Distvisor.App.HomeBox.Commands;
 using Distvisor.App.HomeBox.Queries.GetDevices;
+using Distvisor.App.HomeBox.Queries.GetGatewaySessions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -39,8 +40,14 @@ namespace Distvisor.Web.Controllers
             await _dispatcher.DispatchAsync(command, cancellationToken);
         }
 
+        [HttpGet("gateway-sessions")]
+        public async Task<IEnumerable<GatewaySessionDto>> GetGatewaySessions([FromQuery] GetGatewaySessions query, CancellationToken cancellationToken)
+        {
+            return await _dispatcher.DispatchAsync(query, cancellationToken);
+        }
+
         [HttpGet("devices")]
-        public async Task<IEnumerable<DeviceDto>> GetDevices(GetDevices query, CancellationToken cancellationToken)
+        public async Task<IEnumerable<DeviceDto>> GetDevices([FromQuery] GetDevices query, CancellationToken cancellationToken)
         {
             return await _dispatcher.DispatchAsync(query, cancellationToken);
         }

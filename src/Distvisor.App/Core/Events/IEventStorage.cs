@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Distvisor.App.Core.Events
 {
     public interface IEventStorage
     {
-        void Save(EventEntity eventData);
+        Task SaveAsync(EventEntity eventData, CancellationToken cancellationToken);
 
-        IEnumerable<EventEntity> Get(Type aggregateRootType, Guid aggregateId, bool useLastEventOnly, int fromVersion);
+        Task<IEnumerable<EventEntity>> GetAsync(Type aggregateRootType, Guid aggregateId, bool useLastEventOnly, int fromVersion, CancellationToken cancellationToken);
 
-        IEnumerable<EventEntity> GetToVersion(Type aggregateRootType, Guid aggregateId, int version);
+        Task<IEnumerable<EventEntity>> GetToVersionAsync(Type aggregateRootType, Guid aggregateId, int version, CancellationToken cancellationToken);
 
-        IEnumerable<EventEntity> GetToDate(Type aggregateRootType, Guid aggregateId, DateTime versionedDate);
+        Task<IEnumerable<EventEntity>> GetToDateAsync(Type aggregateRootType, Guid aggregateId, DateTime versionedDate, CancellationToken cancellationToken);
 
-        IEnumerable<EventEntity> GetBetweenDates(Type aggregateRootType, Guid aggregateId, DateTime fromVersionedDate, DateTime toVersionedDate);
+        Task<IEnumerable<EventEntity>> GetBetweenDatesAsync(Type aggregateRootType, Guid aggregateId, DateTime fromVersionedDate, DateTime toVersionedDate, CancellationToken cancellationToken);
     }
 }

@@ -22,6 +22,9 @@ import { RedirectionsComponent } from './redirections/redirections.component';
 import { DatabasesComponent } from './databases/databases.component';
 import { UtilsModule } from 'src/utils/utils.module';
 import { HomeBoxSettingsComponent } from './home-box-settings/home-box-settings.component';
+import { TableModule } from 'primeng/table';
+import { StoreModule } from '@ngrx/store';
+import { homeBoxReducer } from './state/home-box.reducer';
 
 
 @NgModule({
@@ -32,6 +35,11 @@ import { HomeBoxSettingsComponent } from './home-box-settings/home-box-settings.
     RouterModule.forRoot([
       { path: 'settings', component: SettingsComponent, pathMatch: 'full', canActivate: [MsalGuard] },
     ]),
+
+    // NgRx
+    StoreModule.forFeature('settings', {
+      homeBox: homeBoxReducer,
+    }),
 
     // PrimeNg
     ButtonModule,
@@ -44,6 +52,7 @@ import { HomeBoxSettingsComponent } from './home-box-settings/home-box-settings.
     PasswordModule,
     RippleModule,
     SplitButtonModule,
+    TableModule,
 
     // internal
     ApiModule,

@@ -21,7 +21,7 @@ namespace Distvisor.App.HomeBox.Commands
 
         public async Task<Guid> Handle(SyncDevicesWithGateway request, CancellationToken cancellationToken)
         {
-            await _devicesSyncService.SyncDevicesAsync();
+            await _devicesSyncService.SyncDevicesAsync(cancellationToken);
             return request.Id;
         }
     }

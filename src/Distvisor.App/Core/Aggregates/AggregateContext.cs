@@ -1,6 +1,8 @@
 ﻿using Distvisor.App.Core.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Distvisor.App.Core.Aggregates
 {
@@ -36,7 +38,7 @@ namespace Distvisor.App.Core.Aggregates
             }
 		}
 
-		public virtual TAggregateRoot Get<TAggregateRoot>(Guid id, int? expectedVersion = null)
+		public virtual async Task<TAggregateRoot> GetAsync<TAggregateRoot>(Guid id, int? expectedVersion = null, CancellationToken cancellationToken = default)
 			where TAggregateRoot : IAggregateRoot, new()
 		{
 			if (_aggregateTrackers.ContainsKey(id))
@@ -49,7 +51,7 @@ namespace Distvisor.App.Core.Aggregates
 				return trackedAggregate;
 			}
 
-			var aggregate = _repository.Get<TAggregateRoot>(id);
+			var aggregate = await _repository.GetAsync<TAggregateRoot>(id, cancellationToken: cancellationToken);
 			if (expectedVersion != null && aggregate.Version != expectedVersion)
 			{
 				throw new ConcurrencyException(id);
@@ -59,25 +61,25 @@ namespace Distvisor.App.Core.Aggregates
 			return aggregate;
 		}
 
-		public virtual TAggregateRoot GetToVersion<TAggregateRoot>(Guid id, int version)
+		public virtual async Task<TAggregateRoot> GetToVersionAsync<TAggregateRoot>(Guid id, int version, CancellationToken cancellationToken = default)
 			where TAggregateRoot : IAggregateRoot, new()
 		{
-			var aggregate = _repository.GetToVersion<TAggregateRoot>(id, version);
+			var aggregate = await _repository.GetToVersionAsync<TAggregateRoot>(id, version, cancellationToken: cancellationToken);
 			return aggregate;
 		}
 
-		public virtual TAggregateRoot GetToDate<TAggregateRoot>(Guid id, DateTime versionedDate)
+		public virtual async Task<TAggregateRoot> GetToDateAsync<TAggregateRoot>(Guid id, DateTime versionedDate, CancellationToken cancellationToken = default)
 			where TAggregateRoot : IAggregateRoot, new()
 		{
-			var aggregate = _repository.GetToDate<TAggregateRoot>(id, versionedDate);
+			var aggregate = await _repository.GetToDateAsync<TAggregateRoot>(id, versionedDate, cancellationToken: cancellationToken);
 			return aggregate;
 		}
 
-		public virtual void Commit()
+		public virtual async Task CommitAsync(CancellationToken cancellationToken = default)
 		{
 			foreach (var tracker in _aggregateTrackers.Values)
 			{
-				tracker.Save(_repository);
+				await tracker.SaveAsync(_repository, cancellationToken);
 			}
 			_aggregateTrackers.Clear();
 		}
@@ -85,7 +87,7 @@ namespace Distvisor.App.Core.Aggregates
 		private interface IAggregateTracker
         {
 			IAggregateRoot Aggregate { get; }
-			void Save(IAggregateRepository repository);
+			Task SaveAsync(IAggregateRepository repository, CancellationToken cancellationToken = default);
         }
 
 		private class AggregateTracker<TAggregateRoot> : IAggregateTracker
@@ -100,9 +102,9 @@ namespace Distvisor.App.Core.Aggregates
 				OriginalVersion = aggregate.Version;
             }
 
-            public void Save(IAggregateRepository repository)
+            public async Task SaveAsync(IAggregateRepository repository, CancellationToken cancellationToken = default)
             {
-				repository.Save((TAggregateRoot)Aggregate, OriginalVersion);
+				await repository.SaveAsync((TAggregateRoot)Aggregate, OriginalVersion, cancellationToken);
 			}
         }
 	}

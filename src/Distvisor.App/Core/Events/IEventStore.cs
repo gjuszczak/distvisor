@@ -1,28 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Distvisor.App.Core.Events
 {
     public interface IEventStore
 	{
-		void Save<T>(IEvent @event);
+		Task SaveAsync<T>(IEvent @event, CancellationToken cancellationToken = default);
 
-		void Save(Type aggregateRootType, IEvent @event);
+		Task SaveAsync(Type aggregateRootType, IEvent @event, CancellationToken cancellationToken = default);
 
-		IEnumerable<IEvent> Get<T>(Guid aggregateId, bool useLastEventOnly = false, int fromVersion = -1);
+		Task<IEnumerable<IEvent>> GetAsync<T>(Guid aggregateId, bool useLastEventOnly = false, int fromVersion = -1, CancellationToken cancellationToken = default);
 
-		IEnumerable<IEvent> Get(Type aggregateRootType, Guid aggregateId, bool useLastEventOnly = false, int fromVersion = -1);
+		Task<IEnumerable<IEvent>> GetAsync(Type aggregateRootType, Guid aggregateId, bool useLastEventOnly = false, int fromVersion = -1, CancellationToken cancellationToken = default);
 
-		IEnumerable<IEvent> GetToVersion<T>(Guid aggregateId, int version);
+		Task<IEnumerable<IEvent>> GetToVersionAsync<T>(Guid aggregateId, int version, CancellationToken cancellationToken = default);
 
-		IEnumerable<IEvent> GetToVersion(Type aggregateRootType, Guid aggregateId, int version);
+		Task<IEnumerable<IEvent>> GetToVersionAsync(Type aggregateRootType, Guid aggregateId, int version, CancellationToken cancellationToken = default);
 
-		IEnumerable<IEvent> GetToDate<T>(Guid aggregateId, DateTime versionedDate);
+		Task<IEnumerable<IEvent>> GetToDateAsync<T>(Guid aggregateId, DateTime versionedDate, CancellationToken cancellationToken = default);
 
-		IEnumerable<IEvent> GetToDate(Type aggregateRootType, Guid aggregateId, DateTime versionedDate);
+		Task<IEnumerable<IEvent>> GetToDateAsync(Type aggregateRootType, Guid aggregateId, DateTime versionedDate, CancellationToken cancellationToken = default);
 
-		IEnumerable<IEvent> GetBetweenDates<T>(Guid aggregateId, DateTime fromVersionedDate, DateTime toVersionedDate);
+		Task<IEnumerable<IEvent>> GetBetweenDatesAsync<T>(Guid aggregateId, DateTime fromVersionedDate, DateTime toVersionedDate, CancellationToken cancellationToken = default);
 
-		IEnumerable<IEvent> GetBetweenDates(Type aggregateRootType, Guid aggregateId, DateTime fromVersionedDate, DateTime toVersionedDate);
+		Task<IEnumerable<IEvent>> GetBetweenDatesAsync(Type aggregateRootType, Guid aggregateId, DateTime fromVersionedDate, DateTime toVersionedDate, CancellationToken cancellationToken = default);
 	}
 }

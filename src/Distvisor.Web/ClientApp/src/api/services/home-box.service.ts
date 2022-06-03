@@ -10,7 +10,9 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { DeviceDto } from '../models/device-dto';
+import { GatewaySessionDto } from '../models/gateway-session-dto';
 import { GetDevices } from '../models/get-devices';
+import { GetGatewaySessions } from '../models/get-gateway-sessions';
 import { LoginToGateway } from '../models/login-to-gateway';
 import { RefreshGatewaySession } from '../models/refresh-gateway-session';
 import { SyncDevicesWithGateway } from '../models/sync-devices-with-gateway';
@@ -161,6 +163,93 @@ export class HomeBoxService extends BaseService {
 
     return this.apiSHomeBoxSyncDevicesWithGatewayPost$Response(params).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
+    );
+  }
+
+  /**
+   * Path part for operation apiSHomeBoxGatewaySessionsGet
+   */
+  static readonly ApiSHomeBoxGatewaySessionsGetPath = '/api/s/home-box/gateway-sessions';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiSHomeBoxGatewaySessionsGet$Plain()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiSHomeBoxGatewaySessionsGet$Plain$Response(params?: {
+    body?: GetGatewaySessions
+  }): Observable<StrictHttpResponse<Array<GatewaySessionDto>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiSHomeBoxGatewaySessionsGetPath, 'get');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: 'text/plain'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<GatewaySessionDto>>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiSHomeBoxGatewaySessionsGet$Plain$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiSHomeBoxGatewaySessionsGet$Plain(params?: {
+    body?: GetGatewaySessions
+  }): Observable<Array<GatewaySessionDto>> {
+
+    return this.apiSHomeBoxGatewaySessionsGet$Plain$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<GatewaySessionDto>>) => r.body as Array<GatewaySessionDto>)
+    );
+  }
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiSHomeBoxGatewaySessionsGet$Json()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiSHomeBoxGatewaySessionsGet$Json$Response(params?: {
+    body?: GetGatewaySessions
+  }): Observable<StrictHttpResponse<Array<GatewaySessionDto>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiSHomeBoxGatewaySessionsGetPath, 'get');
+    if (params) {
+      rb.body(params.body, 'application/*+json');
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'text/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<GatewaySessionDto>>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `apiSHomeBoxGatewaySessionsGet$Json$Response()` instead.
+   *
+   * This method sends `application/*+json` and handles request body of type `application/*+json`.
+   */
+  apiSHomeBoxGatewaySessionsGet$Json(params?: {
+    body?: GetGatewaySessions
+  }): Observable<Array<GatewaySessionDto>> {
+
+    return this.apiSHomeBoxGatewaySessionsGet$Json$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<GatewaySessionDto>>) => r.body as Array<GatewaySessionDto>)
     );
   }
 

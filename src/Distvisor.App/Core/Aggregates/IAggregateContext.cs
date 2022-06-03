@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Distvisor.App.Core.Aggregates
 {
@@ -9,15 +11,15 @@ namespace Distvisor.App.Core.Aggregates
 
 		void Deatach(Guid id);
 
-		TAggregateRoot Get<TAggregateRoot>(Guid id, int? expectedVersion = null)
+		Task<TAggregateRoot> GetAsync<TAggregateRoot>(Guid id, int? expectedVersion = null, CancellationToken cancellationToken = default)
 			where TAggregateRoot : IAggregateRoot, new();
 
-		TAggregateRoot GetToVersion<TAggregateRoot>(Guid id, int version)
+		Task<TAggregateRoot> GetToVersionAsync<TAggregateRoot>(Guid id, int version, CancellationToken cancellationToken = default)
 			where TAggregateRoot : IAggregateRoot, new();
 
-		TAggregateRoot GetToDate<TAggregateRoot>(Guid id, DateTime versionedDate)
+		Task<TAggregateRoot> GetToDateAsync<TAggregateRoot>(Guid id, DateTime versionedDate, CancellationToken cancellationToken = default)
 			where TAggregateRoot : IAggregateRoot, new();
 
-		void Commit();
+		Task CommitAsync(CancellationToken cancellationToken = default);
 	}
 }

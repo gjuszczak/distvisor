@@ -37,9 +37,9 @@ namespace Distvisor.App.Core.Dispatchers
         {
             var queryType = query.GetType();
             var queryDispatchWrapper = (IDispatchWrapper<TResult>)_dispatchWrappers.GetOrAdd(queryType,
-                commandType => CreateDispatchWrapper<Guid>(
-                    commandType,
-                    typeof(IQueryHandler<,>).MakeGenericType(commandType, typeof(TResult)),
+                queryType => CreateDispatchWrapper<TResult>(
+                    queryType,
+                    typeof(IQueryHandler<,>).MakeGenericType(queryType, typeof(TResult)),
                     _serviceProvider));
             return await queryDispatchWrapper.Dispatch(_serviceProvider, query, cancellationToken);
         }

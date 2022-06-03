@@ -18,7 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Persistence\Migrations\" />
+    <Folder Include="Persistence\App\Migrations\" />
+    <Folder Include="Persistence\Events\Migrations\" />
   </ItemGroup>
 
 </Project>

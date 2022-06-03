@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Distvisor.Infrastructure.Persistence.Configurations
+namespace Distvisor.Infrastructure.Persistence.Events.Configurations
 {
     public class EventEntityConfiguration : IEntityTypeConfiguration<EventEntity>
     {

@@ -1,10 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Distvisor.App.HomeBox.Services.Gateway
 {
     public interface IGatewayClient
     {
-        Task<GetDevicesResponse> GetDevicesAsync();
-        Task SetDeviceParamsAsync(string deviceId, object parameters);
+        Task<GetDevicesResponse> GetDevicesAsync(CancellationToken cancellationToken = default);
+        Task SetDeviceParamsAsync(string deviceId, object parameters, CancellationToken cancellationToken = default);
     }
 }

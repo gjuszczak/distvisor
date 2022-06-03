@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Distvisor.Infrastructure.Services.HomeBox
@@ -26,7 +27,7 @@ namespace Distvisor.Infrastructure.Services.HomeBox
             _authPolicy = authPolicy;
         }
 
-        public async Task<GetDevicesResponse> GetDevicesAsync()
+        public async Task<GetDevicesResponse> GetDevicesAsync(CancellationToken token = default)
         {
             return await _authPolicy.ExecuteWithTokenAsync(async (accessToken) =>
             {
@@ -49,9 +50,9 @@ namespace Distvisor.Infrastructure.Services.HomeBox
 
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-                var response = await _httpClient.SendAsync(request);
+                var response = await _httpClient.SendAsync(request, token);
                 response.EnsureSuccessStatusCode();
-                var responseContent = await response.Content.ReadAsStringAsync();
+                var responseContent = await response.Content.ReadAsStringAsync(token);
                 var result = JsonSerializer.Deserialize<GatewayDeviceListDto>(responseContent);
                 return new GetDevicesResponse
                 {
@@ -67,7 +68,7 @@ namespace Distvisor.Infrastructure.Services.HomeBox
             });
         }
 
-        public Task SetDeviceParamsAsync(string deviceId, object parameters)
+        public Task SetDeviceParamsAsync(string deviceId, object parameters, CancellationToken token = default)
         {
             throw new System.NotImplementedException();
         }

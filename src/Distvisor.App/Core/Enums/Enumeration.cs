@@ -55,15 +55,15 @@ namespace Distvisor.App.Core.Enums
             return matchingItem;
         }
 
-        public static T FromDisplayName<T>(string displayName) where T : Enumeration
+        public static T FromName<T>(string name) where T : Enumeration
         {
-            var matchingItem = Parse<T, string>(displayName, "display name", item => item.Name == displayName);
+            var matchingItem = Parse<T, string>(name, "name", item => item.Name == name);
             return matchingItem;
         }
 
-        public static T FromDisplayNameOrDefault<T>(string displayName, T @default) where T : Enumeration
+        public static T FromNameOrDefault<T>(string name, T @default) where T : Enumeration
         {
-            var matchingItem = ParseOrDefault(item => item.Name == displayName, @default);
+            var matchingItem = ParseOrDefault(item => item.Name == name, @default);
             return matchingItem;
         }
 

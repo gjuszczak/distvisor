@@ -1,8 +1,10 @@
-﻿using Distvisor.App.HomeBox.Entities;
+﻿using Distvisor.App.Core.Enums;
+using Distvisor.App.HomeBox.Entities;
+using Distvisor.App.HomeBox.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Distvisor.Infrastructure.Persistence.Configurations
+namespace Distvisor.Infrastructure.Persistence.App.Configurations
 {
     public class GatewaySessionEntityConfiguration : IEntityTypeConfiguration<GatewaySessionEntity>
     {
@@ -19,6 +21,11 @@ namespace Distvisor.Infrastructure.Persistence.Configurations
                 navigationBuilder.Property(t => t.GeneratedAt)
                     .HasColumnName("TokenGeneratedAt");
             });
+
+            entityType.Property(e => e.Status)
+                .HasConversion(
+                    v => v.Name,
+                    v => Enumeration.FromName<GatewaySessionStatus>(v));
         }
     }
 }

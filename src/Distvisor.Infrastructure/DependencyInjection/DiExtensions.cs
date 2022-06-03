@@ -7,6 +7,8 @@ using Distvisor.App.Core.Queries;
 using Distvisor.App.Core.Services;
 using Distvisor.App.HomeBox.Services.Gateway;
 using Distvisor.Infrastructure.Persistence;
+using Distvisor.Infrastructure.Persistence.App;
+using Distvisor.Infrastructure.Persistence.Events;
 using Distvisor.Infrastructure.Services.HomeBox;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +27,6 @@ namespace Distvisor.Infrastructure
             services.AddScoped<IAggregateRepository, AggregateRepository>();
             services.AddScoped<IEventEntityBuilder, EventEntityBuilder>();
             services.AddScoped<IEventStore, EventStore>();
-            services.AddScoped<IEventStorage, InMemoryEventStorage>();
             services.AddScoped<IEventPublisher, EventPublisher>();
             services.AddScoped<IDispatcher, Dispatcher>();
             services.AddScoped<IPipelineProvider, PipelineProvider>();
@@ -35,9 +36,16 @@ namespace Distvisor.Infrastructure
             services.AddScoped<IGatewayAuthenticationPolicy, GatewayAuthenticationPolicy>();
             services.AddScoped<IGatewayDevicesSyncService, GatewayDevicesSyncService>();
 
+            services.AddDbContext<EventsDbContext>(options =>
+                options.UseNpgsql(
+                    config.GetConnectionString("Distvisor"),
+                    x => x.MigrationsHistoryTable("__EFMigrationsHistory", "events")));
             services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(config.GetConnectionString("Distvisor")));
+                options.UseNpgsql(
+                    config.GetConnectionString("Distvisor"),
+                    x => x.MigrationsHistoryTable("__EFMigrationsHistory", "app")));
 
+            services.AddScoped<IAuditDataEnricher, AuditDataEnricher>();
             services.AddScoped<IEventStorage, SqlEventStorage>();
             services.AddScoped<IAppDbContext>(provider => provider.GetService<AppDbContext>());
 

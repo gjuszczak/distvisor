@@ -6,6 +6,7 @@ using Distvisor.App.HomeBox.Enums;
 using Distvisor.App.HomeBox.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Distvisor.App.HomeBox.Services.Gateway
@@ -23,27 +24,27 @@ namespace Distvisor.App.HomeBox.Services.Gateway
             _gatewayClient = gatewayClient;
         }
 
-        public async Task OpenGatewaySessionAsync(Guid sessionId, string username, string password)
+        public async Task OpenGatewaySessionAsync(Guid sessionId, string username, string password, CancellationToken cancellationToken = default)
         {
             var authResult = await _gatewayClient.LoginAsync(username, password);
             var gatewaySession = new GatewaySession(sessionId, username, authResult.Token);
             _aggregateContext.Add(gatewaySession);
-            _aggregateContext.Commit();
+            await _aggregateContext.CommitAsync(cancellationToken);
         }
 
-        public async Task<GatewayActiveSession> GetActiveSessionAsync()
+        public async Task<GatewayActiveSession> GetActiveSessionAsync(CancellationToken cancellationToken = default)
         {
             var session = await _appDbContext.HomeboxGatewaySessions
-                .FirstOrDefaultAsync(x => x.Status == GatewaySessionStatus.Open);
+                .FirstOrDefaultAsync(x => x.Status == GatewaySessionStatus.Open, cancellationToken);
 
             return session != null
                 ? new GatewayActiveSession { SessionId = session.Id, AccessToken = session.Token.AccessToken }
                 : null;
         }
 
-        public async Task RefreshSessionAsync(Guid sessionId)
+        public async Task RefreshSessionAsync(Guid sessionId, CancellationToken cancellationToken = default)
         {
-            var session = await BeginRefreshAsync(sessionId);
+            var session = await BeginRefreshAsync(sessionId, cancellationToken);
             try
             {
                 var authResult = await _gatewayClient.RefreshSessionAsync(session.Token.RefreshToken);
@@ -53,28 +54,28 @@ namespace Distvisor.App.HomeBox.Services.Gateway
             {
                 session.RefreshFailed();
             }
-            _aggregateContext.Commit();
+            await _aggregateContext.CommitAsync(cancellationToken);
         }
 
-        private async Task<GatewaySession> BeginRefreshAsync(Guid sessionId)
+        private async Task<GatewaySession> BeginRefreshAsync(Guid sessionId, CancellationToken cancellationToken)
         {
             for (int retryCount = 0; retryCount < 3; retryCount++)
             {
                 try
                 {
                     _aggregateContext.Deatach(sessionId);
-                    var session = _aggregateContext.Get<GatewaySession>(sessionId);
+                    var session = await _aggregateContext.GetAsync<GatewaySession>(sessionId, cancellationToken: cancellationToken);
                     session.BeginRefresh();
-                    _aggregateContext.Commit();
-                    return _aggregateContext.Get<GatewaySession>(sessionId);
+                    await _aggregateContext.CommitAsync(cancellationToken);
+                    return await _aggregateContext.GetAsync<GatewaySession>(sessionId, cancellationToken: cancellationToken);
                 }
                 catch (GatewaySessionRefreshingReservedException exc)
                 {
-                    await Task.Delay(exc.ReservationTimeout - DateTimeOffset.Now);
+                    await Task.Delay(exc.ReservationTimeout - DateTimeOffset.Now, cancellationToken);
                 }
                 catch (ConcurrencyException)
                 {
-                    await Task.Delay(TimeSpan.FromMilliseconds(500));
+                    await Task.Delay(TimeSpan.FromMilliseconds(500), cancellationToken);
                 }
             }
 
