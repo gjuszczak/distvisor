@@ -6,23 +6,23 @@ using System.Threading.Tasks;
 
 namespace Distvisor.App.HomeBox.Commands
 {
-    public class RefreshGatewaySession : Command
+    public class DeleteGatewaySession : Command
     {
         public Guid SessionId { get; set; }
     }
 
-    public class RefreshGatewaySessionHandler : ICommandHandler<RefreshGatewaySession>
+    public class DeleteGatewaySessionHandler : ICommandHandler<DeleteGatewaySession>
     {
         private readonly IGatewaySessionManager _sessionManager;
 
-        public RefreshGatewaySessionHandler(IGatewaySessionManager sessionManager)
+        public DeleteGatewaySessionHandler(IGatewaySessionManager sessionManager)
         {
             _sessionManager = sessionManager;
         }
 
-        public async Task<Guid> Handle(RefreshGatewaySession request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(DeleteGatewaySession request, CancellationToken cancellationToken)
         {
-            await _sessionManager.RefreshSessionAsync(request.SessionId, cancellationToken);
+            await _sessionManager.DeleteSessionAsync(request.SessionId, cancellationToken);
             return request.Id;
         }
     }

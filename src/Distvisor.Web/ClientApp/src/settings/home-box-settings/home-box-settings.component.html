@@ -1,6 +1,9 @@
 <p-card header="Home Box" styleClass="p-mt-3">
-    <p-table dataKey="id" [value]="gatewaySessions" [rows]="10" [rowsPerPageOptions]="[10,25,50]"
-        [paginator]="true" [showCurrentPageReport]="true">
+    <h3>Gateway sessions:</h3>
+    <p-table *ngIf="(gatewaySessions$ | async) as gs"
+        dataKey="id" [value]="gs.items" [lazy]="true" [rows]="gs.pageSize" [rowsPerPageOptions]="gs.pageSizeOptions"
+        [totalRecords]="gs.totalCount" [loading]="gs.loading" [paginator]="true" [showCurrentPageReport]="true"
+        (onLazyLoad)="lazyLoadGatewaySessions($event)">
         <ng-template pTemplate="header">
             <tr>
                 <th>Generated at</th>
@@ -16,7 +19,7 @@
                     <button pButton pRipple class="p-button-info p-button-text" icon="pi pi-refresh" label="Refresh"
                         (click)="onRefreshSession(item)"></button>
                     <button pButton pRipple class="p-button-info p-button-text" icon="pi pi-trash" label="Delete"
-                        (click)="onRefreshSession(item)"></button>
+                        (click)="onDeleteSession(item)"></button>
                 </td>
             </tr>
         </ng-template>

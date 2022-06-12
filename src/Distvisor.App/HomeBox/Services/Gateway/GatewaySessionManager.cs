@@ -1,4 +1,4 @@
-﻿using Distvisor.App.Common;
+﻿using Distvisor.App.Common.Interfaces;
 using Distvisor.App.Core.Aggregates;
 using Distvisor.App.Core.Exceptions;
 using Distvisor.App.HomeBox.Aggregates;
@@ -54,6 +54,13 @@ namespace Distvisor.App.HomeBox.Services.Gateway
             {
                 session.RefreshFailed();
             }
+            await _aggregateContext.CommitAsync(cancellationToken);
+        }
+
+        public async Task DeleteSessionAsync(Guid sessionId, CancellationToken cancellationToken = default)
+        {
+            var session = await _aggregateContext.GetAsync<GatewaySession>(sessionId, cancellationToken: cancellationToken);
+            session.Delete();
             await _aggregateContext.CommitAsync(cancellationToken);
         }
 

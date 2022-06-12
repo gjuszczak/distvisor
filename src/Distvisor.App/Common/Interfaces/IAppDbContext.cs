@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Distvisor.App.Common
+namespace Distvisor.App.Common.Interfaces
 {
     public interface IAppDbContext
     {

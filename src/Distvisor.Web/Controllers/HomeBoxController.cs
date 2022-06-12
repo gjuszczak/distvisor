@@ -1,4 +1,5 @@
-﻿using Distvisor.App.Core.Dispatchers;
+﻿using Distvisor.App.Common.Models;
+using Distvisor.App.Core.Dispatchers;
 using Distvisor.App.HomeBox.Commands;
 using Distvisor.App.HomeBox.Queries.GetDevices;
 using Distvisor.App.HomeBox.Queries.GetGatewaySessions;
@@ -22,6 +23,12 @@ namespace Distvisor.Web.Controllers
             _dispatcher = dispatcher;
         }
 
+        [HttpGet("gateway-sessions")]
+        public async Task<PaginatedList<GatewaySessionDto>> GetGatewaySessions([FromQuery] GetGatewaySessions query, CancellationToken cancellationToken)
+        {
+            return await _dispatcher.DispatchAsync(query, cancellationToken);
+        }
+
         [HttpPost("login-to-gateway")]
         public async Task LoginToGateway(LoginToGateway command, CancellationToken cancellationToken)
         {
@@ -34,16 +41,16 @@ namespace Distvisor.Web.Controllers
             await _dispatcher.DispatchAsync(command, cancellationToken);
         }
 
-        [HttpPost("sync-devices-with-gateway")]
-        public async Task SyncDevices(SyncDevicesWithGateway command, CancellationToken cancellationToken)
+        [HttpPost("delete-gateway-session")]
+        public async Task DeleteGatewaySession(DeleteGatewaySession command, CancellationToken cancellationToken)
         {
             await _dispatcher.DispatchAsync(command, cancellationToken);
         }
 
-        [HttpGet("gateway-sessions")]
-        public async Task<IEnumerable<GatewaySessionDto>> GetGatewaySessions([FromQuery] GetGatewaySessions query, CancellationToken cancellationToken)
+        [HttpPost("sync-devices-with-gateway")]
+        public async Task SyncDevices(SyncDevicesWithGateway command, CancellationToken cancellationToken)
         {
-            return await _dispatcher.DispatchAsync(query, cancellationToken);
+            await _dispatcher.DispatchAsync(command, cancellationToken);
         }
 
         [HttpGet("devices")]

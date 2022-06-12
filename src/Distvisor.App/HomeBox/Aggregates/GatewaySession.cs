@@ -29,9 +29,13 @@ namespace Distvisor.App.HomeBox.Aggregates
             {
                 throw new GatewaySessionClosedException();
             }
+            if (Status == GatewaySessionStatus.Deleted)
+            {
+                throw new GatewaySessionDeletedException();
+            }
 
-            var now = optionalNow ?? DateTime.Now;
-            if (Status == GatewaySessionStatus.Refreshing && now < RefreshingReservationTimeout)
+            var now = optionalNow ?? DateTimeOffset.Now;
+            if (IsReservedForRefreshing(now))
             {
                 throw new GatewaySessionRefreshingReservedException(RefreshingReservationTimeout);
             };
@@ -50,6 +54,10 @@ namespace Distvisor.App.HomeBox.Aggregates
             {
                 throw new GatewaySessionClosedException();
             }
+            if (Status == GatewaySessionStatus.Deleted)
+            {
+                throw new GatewaySessionDeletedException();
+            }
             if (Status != GatewaySessionStatus.Refreshing)
             {
                 throw new GatewaySessionIsNotRefreshingException();
@@ -64,12 +72,35 @@ namespace Distvisor.App.HomeBox.Aggregates
             {
                 throw new GatewaySessionClosedException();
             }
+            if (Status == GatewaySessionStatus.Deleted)
+            {
+                throw new GatewaySessionDeletedException();
+            }
             if (Status != GatewaySessionStatus.Refreshing)
             {
                 throw new GatewaySessionIsNotRefreshingException();
             };
 
             ApplyChange(new GatewaySessionRefreshSucceeded(token));
+        }
+
+        public void Delete()
+        {
+            if (Status == GatewaySessionStatus.Deleted)
+            {
+                return;
+            }
+            if (IsReservedForRefreshing(DateTimeOffset.UtcNow))
+            {
+                throw new GatewaySessionRefreshingReservedException(RefreshingReservationTimeout);
+            };
+
+            ApplyChange(new GatewaySessionDeleted());
+        }
+
+        private bool IsReservedForRefreshing(DateTimeOffset now)
+        {
+            return Status == GatewaySessionStatus.Refreshing && now < RefreshingReservationTimeout;
         }
 
         protected override void Apply(IEvent @event)
@@ -90,6 +121,10 @@ namespace Distvisor.App.HomeBox.Aggregates
 
                 case GatewaySessionRefreshSucceeded refreshSucceeded:
                     Apply(refreshSucceeded);
+                    break;
+                
+                case GatewaySessionDeleted sessionDeleted:
+                    Apply(sessionDeleted);
                     break;
             }
         }
@@ -121,6 +156,12 @@ namespace Distvisor.App.HomeBox.Aggregates
             Token = @event.Token;
             Status = GatewaySessionStatus.Open;
             RefreshingReservationTimeout = DateTimeOffset.MinValue;
+        }
+
+        private void Apply(GatewaySessionDeleted @event)
+        {
+            Token = null;
+            Status = GatewaySessionStatus.Deleted;
         }
     }
 }

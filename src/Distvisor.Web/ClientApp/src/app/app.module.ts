@@ -8,15 +8,18 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { MsalModule, MsalInterceptor, MsalService, MsalGuard, MsalBroadcastService, MsalRedirectComponent, MSAL_INSTANCE, MSAL_GUARD_CONFIG, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
 import { MsalGuardConfigFactory, MsalInstanceFactory, MsalInterceptorConfigFactory } from './msal-integration';
 
 import { NgcCookieConsentModule } from 'ngx-cookieconsent';
 
+import { MessageService } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
+import { ToastModule } from 'primeng/toast';
 
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
@@ -33,8 +36,7 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { NavigationService } from './navigation.service';
 import { AuthService } from './auth.service';
 import { LogoutComponent } from './logout/logout.component';
-import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
+import { metaReducers, reducers } from './state';
 
 @NgModule({
   declarations: [
@@ -61,6 +63,10 @@ import { ToastModule } from 'primeng/toast';
     //NgRx
     StoreModule.forRoot({ }),
     EffectsModule.forRoot(),
+
+    //NgRx dev tools
+    StoreModule.forRoot(reducers, { metaReducers }),
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
 
     // Msal
     MsalModule,

@@ -1,4 +1,4 @@
-﻿using Distvisor.App.Common;
+﻿using Distvisor.App.Common.Interfaces;
 using Distvisor.App.HomeBox.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;

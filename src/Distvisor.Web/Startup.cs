@@ -102,6 +102,7 @@ namespace Distvisor.Web
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Distvisor API", Version = "v1" });
+                c.DescribeAllParametersInCamelCase();
             });
 
             services.AddSignalR();

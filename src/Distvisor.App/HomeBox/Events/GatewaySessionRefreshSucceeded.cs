@@ -1,4 +1,4 @@
-﻿using Distvisor.App.Common;
+﻿using Distvisor.App.Common.Interfaces;
 using Distvisor.App.Core.Events;
 using Distvisor.App.HomeBox.Enums;
 using Distvisor.App.HomeBox.ValueObjects;

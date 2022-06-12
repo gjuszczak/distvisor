@@ -5,6 +5,7 @@ export { BackendDetails } from './models/backend-details';
 export { BackupFileInfoDto } from './models/backup-file-info-dto';
 export { CacheMsalConfiguration } from './models/cache-msal-configuration';
 export { ClientConfiguration } from './models/client-configuration';
+export { DeleteGatewaySession } from './models/delete-gateway-session';
 export { DeploymentParamsResponseDto } from './models/deployment-params-response-dto';
 export { DeployRequestDto } from './models/deploy-request-dto';
 export { DeviceDto } from './models/device-dto';
@@ -18,8 +19,8 @@ export { FinancialSummaryDataSetDto } from './models/financial-summary-data-set-
 export { FinancialSummaryDto } from './models/financial-summary-dto';
 export { FinancialSummaryLineChartDto } from './models/financial-summary-line-chart-dto';
 export { GatewaySessionDto } from './models/gateway-session-dto';
+export { GatewaySessionDtoPaginatedList } from './models/gateway-session-dto-paginated-list';
 export { GetDevices } from './models/get-devices';
-export { GetGatewaySessions } from './models/get-gateway-sessions';
 export { LoginToGateway } from './models/login-to-gateway';
 export { MsalConfiguration } from './models/msal-configuration';
 export { MsalGuardConfiguration } from './models/msal-guard-configuration';

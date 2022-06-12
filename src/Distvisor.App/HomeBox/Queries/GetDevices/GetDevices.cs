@@ -1,4 +1,4 @@
-﻿using Distvisor.App.Common;
+﻿using Distvisor.App.Common.Interfaces;
 using Distvisor.App.Core.Queries;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;

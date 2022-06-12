@@ -25,7 +25,8 @@ import { HomeBoxSettingsComponent } from './home-box-settings/home-box-settings.
 import { TableModule } from 'primeng/table';
 import { StoreModule } from '@ngrx/store';
 import { homeBoxReducer } from './state/home-box.reducer';
-
+import { EffectsModule } from '@ngrx/effects';
+import { HomeBoxEffects } from './state/home-box.effects';
 
 @NgModule({
   imports: [
@@ -40,7 +41,10 @@ import { homeBoxReducer } from './state/home-box.reducer';
     StoreModule.forFeature('settings', {
       homeBox: homeBoxReducer,
     }),
-
+    EffectsModule.forFeature([
+      HomeBoxEffects,
+    ]),
+    
     // PrimeNg
     ButtonModule,
     CardModule,
