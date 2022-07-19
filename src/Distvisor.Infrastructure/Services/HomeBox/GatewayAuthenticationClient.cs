@@ -22,11 +22,11 @@ namespace Distvisor.Infrastructure.Services.HomeBox
             _config = config.Value;
         }
 
-        public async Task<GatewayAuthenticationResponse> LoginAsync(string username, string password)
+        public async Task<GatewayAuthenticationResult> LoginAsync(string username, string password)
         {
             var urlBuilder = new UriBuilder(_httpClient.BaseAddress)
             {
-                Path = $"api/user/login"
+                Path = $"/v2/user/login"
             };
 
             var body = JsonSerializer.Serialize(new
@@ -34,9 +34,7 @@ namespace Distvisor.Infrastructure.Services.HomeBox
                 email = username,
                 password = password,
                 appid = _config.AppId,
-                nonce = GatewayHelper.GenerateNonce(),
-                ts = GatewayHelper.GenerateTimestamp(),
-                version = GatewayHelper.Constants.VERSION,
+                countryCode = _config.CountryCode,
             });
 
             var url = urlBuilder.ToString();
@@ -45,26 +43,66 @@ namespace Distvisor.Infrastructure.Services.HomeBox
 
             var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Authorization = new AuthenticationHeaderValue("Sign", signature);
+            request.Headers.Add("X-CK-Appid", _config.AppId);
             request.Content = new StringContent(body, Encoding.UTF8, "application/json");
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var responseContent = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<GatewayLoginResultDto>(responseContent);
-            return new GatewayAuthenticationResponse
+            var result = JsonSerializer.Deserialize<GatewayResponseDto<GatewayLoginResponseData>>(responseContent);
+            return new GatewayAuthenticationResult
             {
-                Token = new GatewayToken(result.AccessToken, result.RefreshToken, DateTimeOffset.Now)
+                Token = new GatewayToken(result.Data.AccessToken, result.Data.RefreshToken, DateTimeOffset.Now)
             };
         }
 
-        public Task<GatewayAuthenticationResponse> RefreshSessionAsync(string refreshToken)
+        public async Task<GatewayAuthenticationResult> RefreshSessionAsync(string refreshToken)
         {
-            throw new NotImplementedException();
+            var urlBuilder = new UriBuilder(_httpClient.BaseAddress)
+            {
+                Path = $"/v2/user/refresh"
+            };
+
+            var body = JsonSerializer.Serialize(new
+            {
+                rt = refreshToken,
+            });
+
+            var url = urlBuilder.ToString();
+
+            var signature = GatewayHelper.HmacSha256Base64(body, _config.AppSecret);
+
+            var request = new HttpRequestMessage(HttpMethod.Post, url);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Sign", signature);
+            request.Headers.Add("X-CK-Appid", _config.AppId);
+            request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<GatewayResponseDto<GatewayLoginResponseData>>(responseContent);
+            return new GatewayAuthenticationResult
+            {
+                Token = new GatewayToken(result.Data.AccessToken, result.Data.RefreshToken, DateTimeOffset.Now)
+            };
         }
     }
 
-    public class GatewayLoginResultDto
+    public class GatewayResponseDto<T>
+    {
+        [JsonPropertyName("error")]
+        public int Error { get; set; }
+
+        [JsonPropertyName("msg")]
+        public string Message { get; set; }
+
+        [JsonPropertyName("data")]
+        public T Data { get; set; }
+    }
+
+    public class GatewayLoginResponseData
     {
         [JsonPropertyName("at")]
         public string AccessToken { get; init; }

@@ -4,7 +4,7 @@ namespace Distvisor.App.HomeBox.Services.Gateway
 {
     public interface IGatewayAuthenticationClient
     {
-        Task<GatewayAuthenticationResponse> LoginAsync(string username, string password);
-        Task<GatewayAuthenticationResponse> RefreshSessionAsync(string refreshToken);
+        Task<GatewayAuthenticationResult> LoginAsync(string username, string password);
+        Task<GatewayAuthenticationResult> RefreshSessionAsync(string refreshToken);
     }
 }

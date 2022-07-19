@@ -2,7 +2,7 @@
 
 namespace Distvisor.App.HomeBox.Services.Gateway
 {
-    public class GatewayAuthenticationResponse
+    public class GatewayAuthenticationResult
     {
         public GatewayToken Token { get; set; }
     }

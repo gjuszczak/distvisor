@@ -66,18 +66,18 @@ namespace Distvisor.Infrastructure
 
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-            services.Configure<GatewayConfiguration>(config.GetSection("Ewelink"));
+            services.Configure<GatewayConfiguration>(config.GetSection("HomeBox:Gateway"));
             services.AddHttpClient<IGatewayAuthenticationClient, GatewayAuthenticationClient>()
                 .ConfigureHttpClient(c =>
                 {
-                    c.BaseAddress = new Uri(config.GetValue<string>("Ewelink:ApiUrl"));
+                    c.BaseAddress = new Uri(config.GetValue<string>("HomeBox:Gateway:ApiUrl"));
                     c.DefaultRequestHeaders.Add("Accept", "application/json");
                 });
 
             services.AddHttpClient<IGatewayClient, GatewayClient>()
                 .ConfigureHttpClient(c =>
                 {
-                    c.BaseAddress = new Uri(config.GetValue<string>("Ewelink:ApiUrl"));
+                    c.BaseAddress = new Uri(config.GetValue<string>("HomeBox:Gateway:ApiUrl"));
                     c.DefaultRequestHeaders.Add("Accept", "application/json");
                 });
         }
