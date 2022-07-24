@@ -1,4 +1,5 @@
-﻿using Distvisor.App.Core.Events;
+﻿using Distvisor.App.Common.Interfaces;
+using Distvisor.App.Core.Events;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using System.Threading;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 namespace Distvisor.Infrastructure.Persistence.Events
 {
     // Add-Migration Initial -c EventsDbContext -o Persistence/Events/Migrations
-    public class EventsDbContext : DbContext
+    public class EventsDbContext : DbContext, IEventsDbContext
     {
         private readonly IAuditDataEnricher _auditDataEnricher;
 

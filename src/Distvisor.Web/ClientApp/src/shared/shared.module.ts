@@ -9,4 +9,4 @@ import { UtilsService } from './utils.service';
   exports: [FileSizePipe, AutofocusDirective],
   providers: [UtilsService]
 })
-export class UtilsModule { }
+export class SharedModule { }

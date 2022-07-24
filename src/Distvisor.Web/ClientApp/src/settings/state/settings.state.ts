@@ -1,4 +1,5 @@
 import { GatewaySessionDto } from "src/api/models";
+import { PaginatedList } from "src/shared/paginated-list.model";
 
 export interface SettingsState {
     settings: {
@@ -8,13 +9,4 @@ export interface SettingsState {
 
 export interface HomeBoxSettingsState {
     gatewaySessions: PaginatedList<GatewaySessionDto>;
-}
-
-export interface PaginatedList<T> {
-    items: T[],
-    firstOffset: number,
-    pageSize: number,
-    pageSizeOptions: number[]
-    totalCount: number,
-    loading: boolean
 }

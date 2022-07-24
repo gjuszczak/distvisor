@@ -20,7 +20,7 @@ import { DeploymentComponent } from './deployment/deployment.component';
 import { SecretsVaultComponent } from './secrets-vault/secrets-vault.component';
 import { RedirectionsComponent } from './redirections/redirections.component';
 import { DatabasesComponent } from './databases/databases.component';
-import { UtilsModule } from 'src/utils/utils.module';
+import { SharedModule } from 'src/shared';
 import { HomeBoxSettingsComponent } from './home-box-settings/home-box-settings.component';
 import { TableModule } from 'primeng/table';
 import { StoreModule } from '@ngrx/store';
@@ -60,7 +60,7 @@ import { HomeBoxEffects } from './state/home-box.effects';
 
     // internal
     ApiModule,
-    UtilsModule,
+    SharedModule,
   ],
   declarations: [
     SettingsComponent,

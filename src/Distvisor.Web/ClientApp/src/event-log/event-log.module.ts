@@ -5,6 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
 
+import { StoreModule } from '@ngrx/store';
+import { eventsReducer } from './state/events.reducer';
+
 import { CardModule } from 'primeng/card';
 import { CodeHighlighterModule } from 'primeng/codehighlighter';
 import { TableModule } from 'primeng/table';
@@ -20,6 +23,11 @@ import { ApiModule } from '../api/api.module';
     RouterModule.forRoot([
       { path: 'event-log', component: EventLogComponent, pathMatch: 'full', canActivate: [MsalGuard] },
     ]),
+
+    // NgRx
+    StoreModule.forFeature('eventLog', {
+      events: eventsReducer,
+    }),
 
     // PrimeNg
     CardModule,

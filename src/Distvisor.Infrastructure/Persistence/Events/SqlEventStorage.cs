@@ -1,5 +1,5 @@
-﻿using Distvisor.App.Core.Events;
-using Distvisor.Infrastructure.Persistence.Events;
+﻿using Distvisor.App.Common.Interfaces;
+using Distvisor.App.Core.Events;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,8 +11,8 @@ namespace Distvisor.Infrastructure.Persistence
 {
     public class SqlEventStorage : IEventStorage
     {
-        private readonly EventsDbContext _context;
-        public SqlEventStorage(EventsDbContext context)
+        private readonly IEventsDbContext _context;
+        public SqlEventStorage(IEventsDbContext context)
         {
             _context = context;
         }

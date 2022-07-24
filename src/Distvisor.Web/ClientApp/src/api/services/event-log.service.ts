@@ -9,7 +9,7 @@ import { RequestBuilder } from '../request-builder';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
-import { EventLogDto } from '../models/event-log-dto';
+import { EventsLogEntryDtoPaginatedList } from '../models/events-log-entry-dto-paginated-list';
 
 @Injectable({
   providedIn: 'root',
@@ -23,21 +23,25 @@ export class EventLogService extends BaseService {
   }
 
   /**
-   * Path part for operation apiSecEventLogListGet
+   * Path part for operation apiSEventLogGet
    */
-  static readonly ApiSecEventLogListGetPath = '/api/sec/EventLog/list';
+  static readonly ApiSEventLogGetPath = '/api/s/EventLog';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSecEventLogListGet$Plain()` instead.
+   * To access only the response body, use `apiSEventLogGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecEventLogListGet$Plain$Response(params?: {
-  }): Observable<StrictHttpResponse<Array<EventLogDto>>> {
+  apiSEventLogGet$Plain$Response(params?: {
+    firstOffset?: number;
+    pageSize?: number;
+  }): Observable<StrictHttpResponse<EventsLogEntryDtoPaginatedList>> {
 
-    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiSecEventLogListGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiSEventLogGetPath, 'get');
     if (params) {
+      rb.query('firstOffset', params.firstOffset, {});
+      rb.query('pageSize', params.pageSize, {});
     }
 
     return this.http.request(rb.build({
@@ -46,36 +50,42 @@ export class EventLogService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<EventLogDto>>;
+        return r as StrictHttpResponse<EventsLogEntryDtoPaginatedList>;
       })
     );
   }
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiSecEventLogListGet$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiSEventLogGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecEventLogListGet$Plain(params?: {
-  }): Observable<Array<EventLogDto>> {
+  apiSEventLogGet$Plain(params?: {
+    firstOffset?: number;
+    pageSize?: number;
+  }): Observable<EventsLogEntryDtoPaginatedList> {
 
-    return this.apiSecEventLogListGet$Plain$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<EventLogDto>>) => r.body as Array<EventLogDto>)
+    return this.apiSEventLogGet$Plain$Response(params).pipe(
+      map((r: StrictHttpResponse<EventsLogEntryDtoPaginatedList>) => r.body as EventsLogEntryDtoPaginatedList)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSecEventLogListGet$Json()` instead.
+   * To access only the response body, use `apiSEventLogGet$Json()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecEventLogListGet$Json$Response(params?: {
-  }): Observable<StrictHttpResponse<Array<EventLogDto>>> {
+  apiSEventLogGet$Json$Response(params?: {
+    firstOffset?: number;
+    pageSize?: number;
+  }): Observable<StrictHttpResponse<EventsLogEntryDtoPaginatedList>> {
 
-    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiSecEventLogListGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiSEventLogGetPath, 'get');
     if (params) {
+      rb.query('firstOffset', params.firstOffset, {});
+      rb.query('pageSize', params.pageSize, {});
     }
 
     return this.http.request(rb.build({
@@ -84,22 +94,24 @@ export class EventLogService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<EventLogDto>>;
+        return r as StrictHttpResponse<EventsLogEntryDtoPaginatedList>;
       })
     );
   }
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `apiSecEventLogListGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiSEventLogGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSecEventLogListGet$Json(params?: {
-  }): Observable<Array<EventLogDto>> {
+  apiSEventLogGet$Json(params?: {
+    firstOffset?: number;
+    pageSize?: number;
+  }): Observable<EventsLogEntryDtoPaginatedList> {
 
-    return this.apiSecEventLogListGet$Json$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<EventLogDto>>) => r.body as Array<EventLogDto>)
+    return this.apiSEventLogGet$Json$Response(params).pipe(
+      map((r: StrictHttpResponse<EventsLogEntryDtoPaginatedList>) => r.body as EventsLogEntryDtoPaginatedList)
     );
   }
 

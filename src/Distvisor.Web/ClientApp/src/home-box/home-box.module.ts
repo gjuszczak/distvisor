@@ -31,7 +31,7 @@ import { dialogsReducer } from './state/dialogs.reducer';
 import { ApiModule } from '../api/api.module';
 import { HomeBoxComponent } from './home-box/home-box.component';
 import { DevicesListComponent } from './devices-list/devices-list.component';
-import { UtilsModule } from 'src/utils/utils.module';
+import { SharedModule } from 'src/shared';
 import { SignalrModule } from 'src/signalr/signalr.module';
 
 @NgModule({
@@ -72,7 +72,7 @@ import { SignalrModule } from 'src/signalr/signalr.module';
 
     // internal
     ApiModule,
-    UtilsModule,
+    SharedModule,
     SignalrModule
   ],
   declarations: [

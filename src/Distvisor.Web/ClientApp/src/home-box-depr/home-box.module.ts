@@ -36,7 +36,7 @@ import { TriggersListComponent } from './triggers-list/triggers-list.component';
 import { DevicesListComponent } from './devices-list/devices-list.component';
 import { DeviceDetailsDialogComponent } from './device-details-dialog/device-details-dialog.component';
 import { TriggerAddDialogComponent } from './trigger-add-dialog/trigger-add-dialog.component';
-import { UtilsModule } from 'src/utils/utils.module';
+import { SharedModule } from 'src/shared';
 import { SignalrModule } from 'src/signalr/signalr.module';
 
 @NgModule({
@@ -79,7 +79,7 @@ import { SignalrModule } from 'src/signalr/signalr.module';
 
     // internal
     ApiModule,
-    UtilsModule,
+    SharedModule,
     SignalrModule
   ],
   declarations: [

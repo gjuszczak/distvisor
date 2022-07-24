@@ -48,6 +48,7 @@ namespace Distvisor.Infrastructure
             services.AddScoped<IAuditDataEnricher, AuditDataEnricher>();
             services.AddScoped<IEventStorage, SqlEventStorage>();
             services.AddScoped<IAppDbContext>(provider => provider.GetService<AppDbContext>());
+            services.AddScoped<IEventsDbContext>(provider => provider.GetService<EventsDbContext>());
 
             services.Scan(selector =>
             {

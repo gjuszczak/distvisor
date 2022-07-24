@@ -2,9 +2,8 @@ import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleCha
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
-import { HomeBoxDeviceDto } from 'src/api/models';
 import { HomeBoxService } from 'src/api/services';
-import { UtilsService } from 'src/utils/utils.service';
+import { UtilsService } from 'src/shared';
 import { updateDevice } from '../state/devices.actions';
 import { selectDeviceDetailsVmById } from '../state/devices.selectors';
 import { closeDeviceDetailsDialog } from '../state/dialogs.actions';

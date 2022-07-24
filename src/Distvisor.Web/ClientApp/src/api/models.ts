@@ -11,6 +11,8 @@ export { DeployRequestDto } from './models/deploy-request-dto';
 export { DeviceDto } from './models/device-dto';
 export { DeviceType } from './models/device-type';
 export { EventLogDto } from './models/event-log-dto';
+export { EventsLogEntryDto } from './models/events-log-entry-dto';
+export { EventsLogEntryDtoPaginatedList } from './models/events-log-entry-dto-paginated-list';
 export { FinancialAccountDto } from './models/financial-account-dto';
 export { FinancialAccountTransactionDto } from './models/financial-account-transaction-dto';
 export { FinancialAccountTransactionSource } from './models/financial-account-transaction-source';

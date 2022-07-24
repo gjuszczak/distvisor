@@ -35,8 +35,3 @@ export interface TriggerVm {
     targets: string[];
     actions: string[];
 }
-
-export interface NameValue<T> {
-    name: string;
-    value: T;
-}
