@@ -5,6 +5,7 @@ using Distvisor.App.Core.Dispatchers;
 using Distvisor.App.Core.Events;
 using Distvisor.App.Core.Queries;
 using Distvisor.App.Core.Services;
+using Distvisor.App.EventLog.Services.EventDetails;
 using Distvisor.App.HomeBox.Services.Gateway;
 using Distvisor.Infrastructure.Persistence;
 using Distvisor.Infrastructure.Persistence.App;
@@ -63,6 +64,14 @@ namespace Distvisor.Infrastructure
                     })
                     .AsImplementedInterfaces()
                     .WithScopedLifetime();
+            });
+
+            services.Scan(selector =>
+            {
+                selector.FromExecutingAssembly()
+                    .AddClasses(filter => filter.AssignableTo(typeof(IEventMaskingService<>)))
+                    .AsImplementedInterfaces()
+                    .WithSingletonLifetime();
             });
 
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());

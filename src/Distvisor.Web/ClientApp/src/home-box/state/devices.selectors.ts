@@ -1,6 +1,7 @@
 import { createSelector } from "@ngrx/store";
-import { DeviceDetailsVm, DeviceVm, HomeBoxState, NameValue } from "./home-box.state";
+import { DeviceDetailsVm, DeviceVm, HomeBoxState } from "./home-box.state";
 import { DeviceDto } from "src/api/models";
+import { NameValue } from "src/app-common";
 
 export const selectDevices = (state: HomeBoxState) => state.homeBox.devices;
 

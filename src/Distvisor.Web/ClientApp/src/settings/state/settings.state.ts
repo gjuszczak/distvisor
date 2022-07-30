@@ -1,5 +1,5 @@
 import { GatewaySessionDto } from "src/api/models";
-import { PaginatedList } from "src/shared/paginated-list.model";
+import { PaginatedList } from "src/app-common/paginated-list.model";
 
 export interface SettingsState {
     settings: {

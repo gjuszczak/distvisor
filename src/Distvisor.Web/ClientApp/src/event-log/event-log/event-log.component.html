@@ -1,21 +1,23 @@
 <div class="container">
     <p-card header="Events" styleClass="p-mt-3">
-        <p-table dataKey="id" [value]="events" [rowHover]="true" [rows]="10" [rowsPerPageOptions]="[10,25,50]"
-            [paginator]="true" [showCurrentPageReport]="true">
+        <p-table *ngIf="(eventLogEntries$ | async) as ele" dataKey="eventId" [value]="ele.items" [lazy]="true"
+            [rows]="ele.pageSize" [rowsPerPageOptions]="ele.pageSizeOptions" [totalRecords]="ele.totalCount"
+            [loading]="ele.loading" [rowHover]="true" [paginator]="true" [showCurrentPageReport]="true"
+            (onLazyLoad)="lazyLoadEventLogEntries($event)">
             <ng-template pTemplate="header">
                 <tr>
                     <th class="tiny-col"></th>
-                    <th>Date</th>
+                    <th>Timestamp</th>
                     <th>Event</th>
-                    <th>Status</th>
+                    <th>Aggregate</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-ev let-expanded="expanded">
                 <tr [pRowToggler]="ev">
                     <td><i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i></td>
-                    <td>{{ ev.publishDateUtc + 'Z' | date:'short' }}</td>
-                    <td>{{ ev.payloadTypeDisplayName }}</td>
-                    <td>{{ ev.status }}</td>
+                    <td>{{ ev.timeStamp | date:'short' }}</td>
+                    <td>{{ ev.eventTypeDisplayName }}</td>
+                    <td>{{ ev.aggregateTypeDisplayName }}</td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="rowexpansion" let-ev>

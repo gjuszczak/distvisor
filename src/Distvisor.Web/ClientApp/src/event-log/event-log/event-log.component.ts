@@ -1,7 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { EventLogService } from 'src/api/services';
-import { EventLogDto } from 'src/api/models';
-import { Subscription } from 'rxjs';
+import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { EventLogState } from '../state/event-log.state';
+import { selectEventLogEntries } from '../state/entries.selectors';
+import { loadEventLogEntries } from '../state/entries.actions';
+import { LazyLoadEvent } from 'primeng/api';
 
 import 'prismjs/components/prism-json.js';
 
@@ -9,27 +11,14 @@ import 'prismjs/components/prism-json.js';
   selector: 'app-event-log',
   templateUrl: './event-log.component.html',
 })
-export class EventLogComponent implements OnInit, OnDestroy {
+export class EventLogComponent {
 
-  private subscriptions: Subscription[] = [];
-  events: EventLogDto[] = [];
-
-  constructor(private eventLogService: EventLogService) {
+  readonly eventLogEntries$ = this.store.select(selectEventLogEntries);
+  
+  constructor(private readonly store: Store<EventLogState>) {
   }
-
-  ngOnInit() {
-    this.reloadList();
-  }
-
-  reloadList() {
-    this.subscriptions.push(
-      this.eventLogService.apiSecEventLogListGet$Json()
-        .subscribe(events => {
-          this.events = events;
-        }));
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(x => x.unsubscribe());
+  
+  lazyLoadEventLogEntries(event: LazyLoadEvent) {
+    this.store.dispatch(loadEventLogEntries({ firstOffset: event.first, pageSize: event.rows }));
   }
 }

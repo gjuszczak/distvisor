@@ -1,6 +1,6 @@
 ﻿using Distvisor.App.Common.Models;
 using Distvisor.App.Core.Dispatchers;
-using Distvisor.App.EventsLog.Qureies.GetEvents;
+using Distvisor.App.EventLog.Qureies.GetEvents;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
@@ -21,7 +21,7 @@ namespace Distvisor.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<PaginatedList<EventsLogEntryDto>> GetEvents([FromQuery] GetEvents query, CancellationToken cancellationToken)
+        public async Task<PaginatedList<EventDto>> GetEvents([FromQuery] GetEvents query, CancellationToken cancellationToken)
         {
             return await _dispatcher.DispatchAsync(query, cancellationToken);
         }

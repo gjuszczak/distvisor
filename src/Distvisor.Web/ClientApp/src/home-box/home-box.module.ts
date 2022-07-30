@@ -31,7 +31,7 @@ import { dialogsReducer } from './state/dialogs.reducer';
 import { ApiModule } from '../api/api.module';
 import { HomeBoxComponent } from './home-box/home-box.component';
 import { DevicesListComponent } from './devices-list/devices-list.component';
-import { SharedModule } from 'src/shared';
+import { SharedModule } from 'src/app-common';
 import { SignalrModule } from 'src/signalr/signalr.module';
 
 @NgModule({

@@ -5,13 +5,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Distvisor.App.EventsLog.Qureies.GetEvents
+namespace Distvisor.App.EventLog.Qureies.GetEvents
 {
-    public class GetEvents : PaginatedQuery, IQuery<PaginatedList<EventsLogEntryDto>>
+    public class GetEvents : PaginatedQuery, IQuery<PaginatedList<EventDto>>
     {
     }
 
-    public class GetEventsHandler : IQueryHandler<GetEvents, PaginatedList<EventsLogEntryDto>>
+    public class GetEventsHandler : IQueryHandler<GetEvents, PaginatedList<EventDto>>
     {
         private readonly IEventsDbContext _context;
 
@@ -20,7 +20,7 @@ namespace Distvisor.App.EventsLog.Qureies.GetEvents
             _context = context;
         }
 
-        public async Task<PaginatedList<EventsLogEntryDto>> Handle(GetEvents request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<EventDto>> Handle(GetEvents request, CancellationToken cancellationToken)
         {
             var eventsQuery = _context.Events.OrderByDescending(x => x.TimeStamp);
 
@@ -28,10 +28,10 @@ namespace Distvisor.App.EventsLog.Qureies.GetEvents
                 .ToPaginatedListAsync(request.FirstOffset, request.PageSize, cancellationToken);
 
             var dtos = eventEntities.Items
-                .Select(entity => EventsLogEntryDto.FromEntity(entity, null, null, null))
+                .Select(entity => EventDto.FromEntity(entity, null))
                 .ToList();
 
-            return new PaginatedList<EventsLogEntryDto>(
+            return new PaginatedList<EventDto>(
                 dtos, 
                 eventEntities.TotalCount, 
                 eventEntities.FirstOffset, 

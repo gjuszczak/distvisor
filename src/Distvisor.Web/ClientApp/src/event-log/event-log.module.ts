@@ -6,7 +6,9 @@ import { RouterModule } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
 
 import { StoreModule } from '@ngrx/store';
-import { eventsReducer } from './state/events.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { entriesReducer } from './state/entries.reducer';
+import { EntriesEffects } from './state/entries.effects';
 
 import { CardModule } from 'primeng/card';
 import { CodeHighlighterModule } from 'primeng/codehighlighter';
@@ -26,8 +28,11 @@ import { ApiModule } from '../api/api.module';
 
     // NgRx
     StoreModule.forFeature('eventLog', {
-      events: eventsReducer,
+      entries: entriesReducer,
     }),
+    EffectsModule.forFeature([
+      EntriesEffects,
+    ]),
 
     // PrimeNg
     CardModule,

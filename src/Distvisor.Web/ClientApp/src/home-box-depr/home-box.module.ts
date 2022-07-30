@@ -36,7 +36,7 @@ import { TriggersListComponent } from './triggers-list/triggers-list.component';
 import { DevicesListComponent } from './devices-list/devices-list.component';
 import { DeviceDetailsDialogComponent } from './device-details-dialog/device-details-dialog.component';
 import { TriggerAddDialogComponent } from './trigger-add-dialog/trigger-add-dialog.component';
-import { SharedModule } from 'src/shared';
+import { SharedModule } from 'src/app-common';
 import { SignalrModule } from 'src/signalr/signalr.module';
 
 @NgModule({

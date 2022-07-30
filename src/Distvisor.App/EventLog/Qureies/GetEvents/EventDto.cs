@@ -1,9 +1,10 @@
 ﻿using Distvisor.App.Core.Events;
+using Distvisor.App.EventLog.Services.EventLogDtoMapping;
 using System;
 
-namespace Distvisor.App.EventsLog.Qureies.GetEvents
+namespace Distvisor.App.EventLog.Qureies.GetEvents
 {
-    public class EventsLogEntryDto
+    public class EventDto
     {
         public Guid EventId { get; set; }
         public DateTimeOffset TimeStamp { get; set; }
@@ -16,18 +17,18 @@ namespace Distvisor.App.EventsLog.Qureies.GetEvents
         public int Version { get; set; }
         public Guid CorrelationId { get; set; }
 
-        public static EventsLogEntryDto FromEntity(EventEntity entity, string eventTypeDisplayName, string aggregateTypeDisplayName, object maskedPayload)
+        public static EventDto FromEntity(EventEntity entity, EventDetails details)
         {
-            return new EventsLogEntryDto
+            return new EventDto
             {
                 EventId = entity.EventId,
                 TimeStamp = entity.TimeStamp,
                 EventType = entity.EventType,
-                EventTypeDisplayName = eventTypeDisplayName,
-                MaskedPayload = maskedPayload,
+                EventTypeDisplayName = details?.EventTypeDisplayName,
+                MaskedPayload = details.MaskedPayload,
                 AggregateId = entity.AggregateId,
                 AggregateType = entity.AggregateType,
-                AggregateTypeDisplayName = aggregateTypeDisplayName,
+                AggregateTypeDisplayName = details?.AggregateTypeDisplayName,
                 Version = entity.Version,
                 CorrelationId = entity.CorrelationId
             };

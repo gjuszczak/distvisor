@@ -3,7 +3,7 @@ import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { HomeBoxService } from 'src/api/services';
-import { UtilsService } from 'src/shared';
+import { UtilsService } from 'src/app-common';
 import { updateDevice } from '../state/devices.actions';
 import { selectDeviceDetailsVmById } from '../state/devices.selectors';
 import { closeDeviceDetailsDialog } from '../state/dialogs.actions';
