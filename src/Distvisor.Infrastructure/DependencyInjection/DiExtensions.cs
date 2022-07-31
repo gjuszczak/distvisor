@@ -66,6 +66,7 @@ namespace Distvisor.Infrastructure
                     .WithScopedLifetime();
             });
 
+            services.AddSingleton<IEventDetailsProvider, EventDetailsProvider>();
             services.Scan(selector =>
             {
                 selector.FromExecutingAssembly()
