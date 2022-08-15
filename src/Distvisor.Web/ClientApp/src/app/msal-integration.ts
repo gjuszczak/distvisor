@@ -1,6 +1,6 @@
 import { MsalGuardConfiguration, MsalInterceptorConfiguration } from "@azure/msal-angular";
 import { Configuration, IPublicClientApplication, LogLevel, PublicClientApplication } from "@azure/msal-browser";
-import { ClientConfiguration } from "src/api/models";
+import { ClientConfiguration } from "src/app/api/models";
 import { environment } from "src/environments/environment";
 
 export function MsalInstanceFactory(clientConfig: ClientConfiguration): IPublicClientApplication {

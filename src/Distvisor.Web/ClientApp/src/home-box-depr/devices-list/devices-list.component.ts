@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { HomeBoxDeviceDto } from 'src/api/models';
+import { HomeBoxDeviceDto } from 'src/app/api/models';
 import { selectDevicesVm } from '../state/devices.selectors';
 import { HomeBoxState } from '../state/home-box.state';
 import { loadDevices } from '../state/devices.actions';

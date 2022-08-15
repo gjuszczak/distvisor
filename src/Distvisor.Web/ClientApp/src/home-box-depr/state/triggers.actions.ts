@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { HomeBoxTriggerDto } from 'src/api/models';
+import { HomeBoxTriggerDto } from 'src/app/api/models';
 
 export const loadTriggers = createAction(
     '[Home Box Triggers] Load Triggers'

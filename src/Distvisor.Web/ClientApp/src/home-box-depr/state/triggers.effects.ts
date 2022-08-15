@@ -4,7 +4,7 @@ import { EMPTY } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import * as DialogActions from './dialogs.actions';
 import * as TriggerActions from './triggers.actions';
-import { HomeBoxService } from 'src/api/services';
+import { HomeBoxService } from 'src/app/api/services';
 
 @Injectable()
 export class TriggersEffects {

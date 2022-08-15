@@ -6,10 +6,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-
 import { MsalModule, MsalInterceptor, MsalService, MsalGuard, MsalBroadcastService, MsalRedirectComponent, MSAL_INSTANCE, MSAL_GUARD_CONFIG, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
 import { MsalGuardConfigFactory, MsalInstanceFactory, MsalInterceptorConfigFactory } from './msal-integration';
 
@@ -22,21 +18,25 @@ import { RippleModule } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
 
 import { environment } from '../environments/environment';
+
+import { ApiModule } from './api/api.module';
+import { RootStoreModule } from './root-store';
+import { AppRoutingModule } from './app-routing.module';
+
+import { SettingsModule } from './modules/settings/settings.module';
+import { FinancesModule } from './modules/finances/finances.module';
+import { HomeBoxModule } from './modules/home-box/home-box.module';
+import { EventLogModule } from './modules/event-log/event-log.module';
+import { SignalrModule } from './modules/signalr/signalr.module';
+
 import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
-import { SettingsModule } from '../settings/settings.module';
-import { FinancesModule } from '../finances/finances.module';
-import { HomeBoxModule } from '../home-box/home-box.module';
-import { EventLogModule } from '../event-log/event-log.module';
-import { ApiModule } from '../api/api.module';
-import { SignalrModule } from '../signalr/signalr.module';
-import { FooterComponent } from './footer/footer.component';
-import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { NavigationService } from './navigation.service';
-import { AuthService } from './auth.service';
-import { LogoutComponent } from './logout/logout.component';
-import { metaReducers, reducers } from './state';
+import { HomeComponent } from './components/home/home.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
+import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
+import { LogoutComponent } from './components/logout/logout.component';
+import { NavigationService } from './services/navigation.service';
+import { AuthService } from './services/auth.service';
 
 @NgModule({
   declarations: [
@@ -52,21 +52,10 @@ import { metaReducers, reducers } from './state';
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     BrowserAnimationsModule,
     HttpClientModule,
-    FormsModule,
-    RouterModule.forRoot([
-      { path: 'logout', component: LogoutComponent, pathMatch: 'full' },
-      { path: 'privacy-policy', component: PrivacyPolicyComponent, pathMatch: 'full' },
-      { path: '**', component: HomeComponent, pathMatch: 'full' },
-    ]),
+    FormsModule,    
+
+    // Cookie consent
     NgcCookieConsentModule.forRoot({ cookie: { domain: '' }, enabled: false }),
-
-    //NgRx
-    StoreModule.forRoot({ }),
-    EffectsModule.forRoot(),
-
-    //NgRx dev tools
-    StoreModule.forRoot(reducers, { metaReducers }),
-    !environment.production ? StoreDevtoolsModule.instrument() : [],
 
     // Msal
     MsalModule,
@@ -78,12 +67,14 @@ import { metaReducers, reducers } from './state';
     ToastModule,
 
     // internal
+    ApiModule,
+    RootStoreModule,
+    AppRoutingModule,
     SettingsModule,
     FinancesModule,
     HomeBoxModule,
     SignalrModule,
-    EventLogModule,
-    ApiModule
+    EventLogModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: MsalInterceptor, multi: true },

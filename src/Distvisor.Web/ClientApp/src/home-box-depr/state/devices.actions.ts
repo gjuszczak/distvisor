@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { HomeBoxDeviceDto, UpdateHomeBoxDeviceDto } from 'src/api/models';
+import { HomeBoxDeviceDto, UpdateHomeBoxDeviceDto } from 'src/app/api/models';
 
 export const loadDevices = createAction(
   '[Home Box Devices] Load Devices'

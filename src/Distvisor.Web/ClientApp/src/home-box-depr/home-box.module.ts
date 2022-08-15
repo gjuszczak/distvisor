@@ -30,14 +30,14 @@ import { devicesReducer } from './state/devices.reducer';
 import { triggersReducer } from './state/triggers.reducer';
 import { dialogsReducer } from './state/dialogs.reducer';
 
-import { ApiModule } from '../api/api.module';
+import { ApiModule } from '../app/api/api.module';
 import { HomeBoxComponent } from './home-box/home-box.component';
 import { TriggersListComponent } from './triggers-list/triggers-list.component';
 import { DevicesListComponent } from './devices-list/devices-list.component';
 import { DeviceDetailsDialogComponent } from './device-details-dialog/device-details-dialog.component';
 import { TriggerAddDialogComponent } from './trigger-add-dialog/trigger-add-dialog.component';
 import { SharedModule } from 'src/app-common';
-import { SignalrModule } from 'src/signalr/signalr.module';
+import { SignalrModule } from 'src/app/modules/signalr/signalr.module';
 
 @NgModule({
   imports: [

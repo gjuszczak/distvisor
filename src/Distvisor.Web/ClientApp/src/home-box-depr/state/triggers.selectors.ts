@@ -1,7 +1,7 @@
 import { createSelector } from "@ngrx/store";
 import { HomeBoxState, TriggerVm } from "./home-box.state";
 import { selectDevices } from "./devices.selectors";
-import { HomeBoxTriggerSourceType } from "src/api/models";
+import { HomeBoxTriggerSourceType } from "src/app/api/models";
 
 export const selectTriggers = (state: HomeBoxState) => state.homeBox.triggers;
 

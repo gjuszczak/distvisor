@@ -1,6 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import * as DevicesActions from './devices.actions';
-import { HomeBoxDeviceDto } from 'src/api/models';
+import { HomeBoxDeviceDto } from 'src/app/api/models';
 
 export const initialState: ReadonlyArray<HomeBoxDeviceDto> = [];
 

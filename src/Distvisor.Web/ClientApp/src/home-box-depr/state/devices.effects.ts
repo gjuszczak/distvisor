@@ -4,7 +4,7 @@ import { EMPTY } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import * as DeviceActions from './devices.actions';
 import * as DialogActions from './dialogs.actions';
-import { HomeBoxService } from 'src/api/services';
+import { HomeBoxService } from 'src/app/api/services';
 
 
 @Injectable()

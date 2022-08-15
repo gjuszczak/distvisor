@@ -3,8 +3,8 @@ import { Subscription } from 'rxjs';
 import { NgcCookieConsentService } from 'ngx-cookieconsent';
 import { NavigationService } from './navigation.service';
 import { AuthService } from './auth.service';
-import { ApiConfiguration } from '../api/api-configuration';
-import { SignalrService } from '../signalr/signalr.service';
+import { ApiConfiguration } from './api/api-configuration';
+import { SignalrService } from './modules/signalr/signalr.service';
 import { PrimeNGConfig } from 'primeng/api';
 
 @Component({

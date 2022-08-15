@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { HomeBoxDeviceDto } from 'src/api/models';
+import { HomeBoxDeviceDto } from 'src/app/api/models';
 
 export const openTriggerAddDialog = createAction(
     '[Home Box Dialogs] Open Trigger Add dialog'

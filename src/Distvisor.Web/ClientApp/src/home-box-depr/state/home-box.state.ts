@@ -1,4 +1,4 @@
-import { HomeBoxDeviceDto, HomeBoxDeviceType, HomeBoxTriggerDto } from "src/api/models";
+import { HomeBoxDeviceDto, HomeBoxDeviceType, HomeBoxTriggerDto } from "src/app/api/models";
 
 export interface HomeBoxState {
     homeBox: {
