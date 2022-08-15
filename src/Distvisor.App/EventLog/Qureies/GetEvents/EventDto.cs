@@ -25,7 +25,7 @@ namespace Distvisor.App.EventLog.Qureies.GetEvents
                 TimeStamp = entity.TimeStamp,
                 EventType = entity.EventType,
                 EventTypeDisplayName = details?.EventTypeDisplayName,
-                MaskedPayload = details.MaskedPayload,
+                MaskedPayload = details?.MaskedPayload,
                 AggregateId = entity.AggregateId,
                 AggregateType = entity.AggregateType,
                 AggregateTypeDisplayName = details?.AggregateTypeDisplayName,

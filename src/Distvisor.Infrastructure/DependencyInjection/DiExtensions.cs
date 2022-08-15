@@ -66,16 +66,16 @@ namespace Distvisor.Infrastructure
                     .WithScopedLifetime();
             });
 
+            services.AddValidatorsFromAssemblyContaining<ICommand>();
+
             services.AddSingleton<IEventDetailsProvider, EventDetailsProvider>();
             services.Scan(selector =>
             {
-                selector.FromExecutingAssembly()
+                selector.FromAssemblies(Assembly.GetExecutingAssembly())
                     .AddClasses(filter => filter.AssignableTo(typeof(IEventMaskingService<>)))
                     .AsImplementedInterfaces()
                     .WithSingletonLifetime();
             });
-
-            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             services.Configure<GatewayConfiguration>(config.GetSection("HomeBox:Gateway"));
             services.AddHttpClient<IGatewayAuthenticationClient, GatewayAuthenticationClient>()

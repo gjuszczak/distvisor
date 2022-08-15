@@ -1,5 +1,5 @@
 ﻿using Distvisor.App.Core.Events;
-using Distvisor.App.Core.Extensions;
+using Distvisor.App.Core.Serialization;
 using System.Text.Json;
 
 namespace Distvisor.App.EventLog.Services.EventDetails
@@ -9,12 +9,14 @@ namespace Distvisor.App.EventLog.Services.EventDetails
     {
         public static readonly string MaskString = "*****";
 
-        public virtual object Mask(JsonDocument eventPayload)
+        public virtual JsonDocument Mask(JsonDocument eventPayload)
         {
-            var deserializedPayload = eventPayload.Deserialize<TEvent>();
-            return Mask(deserializedPayload);
+            var deserializedPayload = eventPayload.Deserialize<TEvent>(JsonDefaults.SerializerOptions);
+            var maskedObject = Mask(deserializedPayload);
+            var maskedPayload = maskedObject.SerializeToDocument(JsonDefaults.SerializerOptions);
+            return maskedPayload;
         }
 
-        protected abstract object Mask(TEvent @event);
+        protected abstract TEvent Mask(TEvent @event);
     }
 }

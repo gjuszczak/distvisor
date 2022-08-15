@@ -5,7 +5,7 @@ namespace Distvisor.App.EventLog.Services.EventDetails
 {
     public interface IEventMaskingService
     {
-        public object Mask(JsonDocument eventPayload);
+        public JsonDocument Mask(JsonDocument eventPayload);
     }
 
     public interface IEventMaskingService<TEvent> : IEventMaskingService 

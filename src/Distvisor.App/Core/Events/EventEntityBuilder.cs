@@ -1,4 +1,4 @@
-﻿using Distvisor.App.Core.Extensions;
+﻿using Distvisor.App.Core.Serialization;
 using System;
 using System.Text.Json;
 
@@ -23,7 +23,7 @@ namespace Distvisor.App.Core.Events
 
         public virtual IEvent FromEventEntity(EventEntity eventEntity)
         {
-            var @event = (IEvent)eventEntity.Data.Deserialize(Type.GetType(eventEntity.EventType));
+            var @event = (IEvent)eventEntity.Data.Deserialize(Type.GetType(eventEntity.EventType), JsonDefaults.SerializerOptions);
             @event.EventId = eventEntity.EventId;
             @event.AggregateId = eventEntity.AggregateId;
             @event.Version = eventEntity.Version;
@@ -34,8 +34,7 @@ namespace Distvisor.App.Core.Events
 
         protected virtual JsonDocument SerializeEventData(IEvent @event)
         {
-            var jsonString = JsonSerializer.Serialize(@event, @event.GetType());
-            var jsonDocument = JsonDocument.Parse(jsonString);
+            var jsonDocument = @event.SerializeToDocument(@event.GetType(), JsonDefaults.SerializerOptions);
             return jsonDocument;
         }
     }

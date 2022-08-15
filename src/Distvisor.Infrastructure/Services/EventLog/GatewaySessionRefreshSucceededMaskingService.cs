@@ -4,12 +4,12 @@ using Distvisor.App.HomeBox.ValueObjects;
 
 namespace Distvisor.Infrastructure.Services.EventLog
 {
-    public class GatewaySessionOpenedMaskingService : EventMaskingService<GatewaySessionOpened>
+    public class GatewaySessionRefreshSucceededMaskingService : EventMaskingService<GatewaySessionRefreshSucceeded>
     {
-        protected override GatewaySessionOpened Mask(GatewaySessionOpened @event)
+        protected override GatewaySessionRefreshSucceeded Mask(GatewaySessionRefreshSucceeded @event)
         {
             var maskedToken = new GatewayToken(MaskString, MaskString, @event.Token.GeneratedAt);
-            return new GatewaySessionOpened(@event.Username, maskedToken);
+            return new GatewaySessionRefreshSucceeded(maskedToken);
         }
     }
 }

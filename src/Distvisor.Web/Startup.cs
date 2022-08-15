@@ -1,3 +1,4 @@
+using Distvisor.App.Core.Serialization;
 using Distvisor.Infrastructure;
 using Distvisor.Web.Configuration;
 using Distvisor.Web.Data;
@@ -115,7 +116,7 @@ namespace Distvisor.Web
             })
             .AddJsonOptions(opts =>
             {
-                opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                JsonDefaults.Configure(opts.JsonSerializerOptions);
             })
             .AddFluentValidation(opts =>
             {
