@@ -2,11 +2,7 @@ import { Component, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { DeviceDto } from 'src/app/api/models';
-import { selectDevicesVm } from '../../../root-store/home-box-store/selectors';
-import { HomeBoxState } from '../../../root-store/home-box-store/state';
-import { loadDevices } from '../../../root-store/home-box-store/actions';
-import { openDeviceDetailsDialog } from '../../../root-store/home-box-store/dialogs.actions';
-
+import { HomeBoxStoreActions, HomeBoxStoreSelectors, RootStoreState } from 'src/app/root-store';
 
 @Component({
   selector: 'app-devices-list',
@@ -18,14 +14,12 @@ export class DevicesListComponent implements OnDestroy {
   @Output() onDeviceListLoaded: EventEmitter<DeviceDto[]> = new EventEmitter();
   private subscriptions: Subscription[] = [];
   devices: DeviceDto[] = [];
-  readonly devicesVm$ = this.store.pipe(select(selectDevicesVm));
+  readonly devicesVm$ = this.store.pipe(select(HomeBoxStoreSelectors.selectDevicesVm));
 
-
-  constructor(
-    private store: Store<HomeBoxState>) { }
+  constructor(private readonly store: Store<RootStoreState.State>) { }
 
   onRefreshClicked() {
-    this.store.dispatch(loadDevices());
+    this.store.dispatch(HomeBoxStoreActions.loadDevices());
   }
 
   onDeviceToggleClicked(device: DeviceDto) {
@@ -47,7 +41,7 @@ export class DevicesListComponent implements OnDestroy {
   }
 
   onDeviceShowDetailsClicked(deviceId: string) {
-    this.store.dispatch(openDeviceDetailsDialog({ deviceId }));
+    this.store.dispatch(HomeBoxStoreActions.openDeviceDetailsDialog({ deviceId }));
     // this.onDeviceDetailsOpen.emit(device);
   }
 

@@ -6,12 +6,12 @@ import { FinancesAccountComponent } from './finances-account/finances-account.co
 import { FinancesComponent } from './finances/finances.component';
 
 const routes: Routes = [
-  { path: 'finances', component: FinancesComponent, pathMatch: 'full', canActivate: [MsalGuard] },
-  { path: 'finances/account/:id', component: FinancesAccountComponent, pathMatch: 'full', canActivate: [MsalGuard] },
+  { path: 'finances', component: FinancesComponent, canActivate: [MsalGuard] },
+  { path: 'finances/account/:id', component: FinancesAccountComponent, canActivate: [MsalGuard] },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
 export class FinancesRoutingModule { }

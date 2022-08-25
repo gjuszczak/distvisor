@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { MenuItem } from 'primeng/api';
-import { NavigationService, INavMenuItems } from '../navigation.service';
-import { filter, map, first } from 'rxjs/operators';
+import { NavigationService } from '../services/navigation.service';
 
 @Component({
   selector: 'app-nav-menu',

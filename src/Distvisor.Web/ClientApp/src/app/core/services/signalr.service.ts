@@ -4,7 +4,9 @@ import { RfCodeService } from './rfcode.service';
 
 import * as signalR from '@microsoft/signalr';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class SignalrService {
 
   private connection: signalR.HubConnection | null;

@@ -1,9 +1,14 @@
-import { createSelector } from "@ngrx/store";
-import { DeviceDetailsVm, DeviceVm, HomeBoxState } from "./state";
+import { createFeatureSelector, createSelector } from "@ngrx/store";
+import { DeviceDetailsVm, DeviceVm, State } from "./state";
 import { DeviceDto } from "src/app/api/models";
 import { NameValue } from "src/app/shared";
 
-export const selectDevices = (state: HomeBoxState) => state.homeBox.devices;
+export const selectHomeBoxState =  createFeatureSelector<State>('homeBox');
+
+export const selectDevices = createSelector(
+  selectHomeBoxState,
+  homeBox => homeBox.devices
+);
 
 export const selectDevicesVm = createSelector(
     selectDevices,
@@ -41,7 +46,10 @@ export const selectDevicesShortVm = createSelector(
     })
 );
 
-export const selectDialogs = (state: HomeBoxState) => state.homeBox.dialogs;
+export const selectDialogs = createSelector(
+  selectHomeBoxState,
+  homeBox => homeBox.dialogs
+);
 
 export const selectIsTriggerAddDialogOpened = createSelector(
   selectDialogs,

@@ -1,10 +1,8 @@
 import { DeviceDto, DeviceType } from "src/app/api/models";
 
-export interface HomeBoxState {
-    homeBox: {
-        devices: ReadonlyArray<DeviceDto>;
-        dialogs: DialogsState;
-    }
+export interface State {
+    devices: ReadonlyArray<DeviceDto>;
+    dialogs: DialogsState;
 }
 
 export interface DialogsState {

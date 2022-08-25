@@ -23,7 +23,6 @@ import { TabViewModule } from 'primeng/tabview';
 import { ApiModule } from 'src/app/api/api.module';
 import { SharedModule } from 'src/app/shared';
 import { HomeBoxRoutingModule } from './home-box-routing.module';
-import { SignalrModule } from '../signalr/signalr.module';
 
 import { HomeBoxComponent } from './home-box/home-box.component';
 import { DevicesListComponent } from './devices-list/devices-list.component';
@@ -55,7 +54,6 @@ import { DevicesListComponent } from './devices-list/devices-list.component';
     ApiModule,
     SharedModule,
     HomeBoxRoutingModule,
-    SignalrModule
   ],
   declarations: [
     HomeBoxComponent,

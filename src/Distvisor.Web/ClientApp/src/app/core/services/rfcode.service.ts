@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class RfCodeService {
   rfCodeSubject$: Subject<string> = new Subject<string>();
 }

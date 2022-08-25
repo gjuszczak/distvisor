@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
 import { BackendDetails } from 'src/app/api/models';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-footer',

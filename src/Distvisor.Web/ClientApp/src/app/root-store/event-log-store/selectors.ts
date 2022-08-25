@@ -1,7 +1,7 @@
-import { createSelector } from '@ngrx/store';
-import { EventLogState } from './state';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { State } from './state';
 
-export const selectEventLog = (state: EventLogState) => state.eventLog;
+export const selectEventLog = createFeatureSelector<State>('eventLog');
 
 export const selectEventLogEntries = createSelector(
   selectEventLog,

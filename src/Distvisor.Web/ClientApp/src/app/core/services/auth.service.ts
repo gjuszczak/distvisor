@@ -5,7 +5,9 @@ import { AccountService } from 'src/app/api/services';
 import { map, catchError, filter, mergeMap } from 'rxjs/operators';
 import { AccountInfo, AuthenticationResult, EventMessage, EventType, InteractionStatus, RedirectRequest } from '@azure/msal-browser';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
   private isAuthenticatedSubject: DistinctBehaviorSubject<boolean>;
   private isInUserRoleSubject: DistinctBehaviorSubject<boolean>;

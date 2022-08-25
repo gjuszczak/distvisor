@@ -1,11 +1,11 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { NgcCookieConsentService } from 'ngx-cookieconsent';
-import { NavigationService } from './navigation.service';
-import { AuthService } from './auth.service';
-import { ApiConfiguration } from './api/api-configuration';
-import { SignalrService } from './modules/signalr/signalr.service';
 import { PrimeNGConfig } from 'primeng/api';
+import { ApiConfiguration } from './api/api-configuration';
+import { AuthService } from './core/services/auth.service';
+import { NavigationService } from './core/services/navigation.service';
+import { SignalrService } from './core/services/signalr.service';
 
 @Component({
   selector: 'app-root',

@@ -1,9 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { MsalModule, MsalInterceptor, MsalService, MsalGuard, MsalBroadcastService, MsalRedirectComponent, MSAL_INSTANCE, MSAL_GUARD_CONFIG, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
@@ -19,62 +17,50 @@ import { ToastModule } from 'primeng/toast';
 
 import { environment } from '../environments/environment';
 
-import { ApiModule } from './api/api.module';
-import { RootStoreModule } from './root-store';
 import { AppRoutingModule } from './app-routing.module';
+import { ApiModule } from './api/api.module';
+import { CoreModule } from './core/core.module';
+import { RootStoreModule } from './root-store';
 
 import { SettingsModule } from './modules/settings/settings.module';
 import { FinancesModule } from './modules/finances/finances.module';
 import { HomeBoxModule } from './modules/home-box/home-box.module';
 import { EventLogModule } from './modules/event-log/event-log.module';
-import { SignalrModule } from './modules/signalr/signalr.module';
 
 import { AppComponent } from './app.component';
-import { HomeComponent } from './components/home/home.component';
-import { FooterComponent } from './components/footer/footer.component';
-import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
-import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
-import { LogoutComponent } from './components/logout/logout.component';
-import { NavigationService } from './services/navigation.service';
-import { AuthService } from './services/auth.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
-    LogoutComponent,
-    NavMenuComponent,
-    FooterComponent,
-    PrivacyPolicyComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-    BrowserAnimationsModule,
-    HttpClientModule,
-    FormsModule,    
-
+    BrowserAnimationsModule, 
+    
     // Cookie consent
     NgcCookieConsentModule.forRoot({ cookie: { domain: '' }, enabled: false }),
-
+    
     // Msal
     MsalModule,
-
+    
     // PrimeNg
     MenuModule,
     ButtonModule,
     RippleModule,
     ToastModule,
-
+    
     // internal
     ApiModule,
+    CoreModule,
     RootStoreModule,
-    AppRoutingModule,
     SettingsModule,
     FinancesModule,
     HomeBoxModule,
-    SignalrModule,
-    EventLogModule
+    EventLogModule,
+
+    // top level routing
+    AppRoutingModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: MsalInterceptor, multi: true },
@@ -84,8 +70,6 @@ import { AuthService } from './services/auth.service';
     MsalService,
     MsalGuard,
     MsalBroadcastService,
-    NavigationService,
-    AuthService,
     MessageService,
   ],
   bootstrap: [AppComponent, MsalRedirectComponent]

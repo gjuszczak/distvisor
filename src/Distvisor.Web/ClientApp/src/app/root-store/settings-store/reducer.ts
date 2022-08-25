@@ -13,7 +13,7 @@ export const initialState: HomeBoxSettingsState = {
   }
 };
 
-export const homeBoxReducer = createReducer(
+export const homeBoxSettingsReducer = createReducer(
   initialState,
   on(HomeBoxActions.loadGatewaySessions, (state) => ({
     ...state,

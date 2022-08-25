@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { EMPTY } from 'rxjs';
 import { catchError, map, mergeMap, withLatestFrom } from 'rxjs/operators';
-import { SettingsState } from './state';
+import { State } from './state';
 import * as HomeBoxActions from './actions';
 import { selectGatewaySessions } from './selectors';
 import { HomeBoxService } from 'src/app/api/services';
@@ -13,7 +13,7 @@ export class SettingsEffects {
     constructor(
         private actions$: Actions,
         private homeBoxService: HomeBoxService,
-        private store: Store<SettingsState>
+        private store: Store<State>
     ) { }
 
     loadGatewaySessions$ = createEffect(() => this.actions$.pipe(

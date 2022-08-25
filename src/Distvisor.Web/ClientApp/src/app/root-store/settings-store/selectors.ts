@@ -1,10 +1,14 @@
-import { createSelector } from '@ngrx/store';
-import { SettingsState } from './state';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { State } from './state';
 
+export const selectSettingsState = createFeatureSelector<State>('settings');
 
-export const selectHomeBox = (state: SettingsState) => state.settings.homeBox;
+export const selectHomeBoxSettings = createSelector(
+  selectSettingsState,
+  state => state.homeBox
+);
 
 export const selectGatewaySessions = createSelector(
-  selectHomeBox,
-  homeBox => homeBox.gatewaySessions
+  selectHomeBoxSettings,
+  homeBoxSettings => homeBoxSettings.gatewaySessions
 );

@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { EMPTY } from 'rxjs';
 import { catchError, map, mergeMap, withLatestFrom } from 'rxjs/operators';
 import * as EventLogActions from './actions';
-import { EventLogState } from './state';
+import { State } from './state';
 import { selectEventLogEntries } from './selectors';
 import { EventLogService } from 'src/app/api/services';
 
@@ -13,7 +13,7 @@ export class EventLogEffects {
     constructor(
         private actions$: Actions,
         private eventLogService: EventLogService,
-        private store: Store<EventLogState>
+        private store: Store<State>
     ) { }
 
     loadEventLogEntries$ = createEffect(() => this.actions$.pipe(

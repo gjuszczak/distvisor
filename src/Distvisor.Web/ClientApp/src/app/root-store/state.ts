@@ -3,7 +3,7 @@ import { HomeBoxStoreState } from "./home-box-store";
 import { SettingsStoreState } from "./settings-store";
 
 export interface State {
-    settings: SettingsStoreState.SettingsState;
-    eventLog: EventLogStoreState.EventLogState;
-    homeBox: HomeBoxStoreState.HomeBoxState;
+    settings: SettingsStoreState.State;
+    eventLog: EventLogStoreState.State;
+    homeBox: HomeBoxStoreState.State;
 }

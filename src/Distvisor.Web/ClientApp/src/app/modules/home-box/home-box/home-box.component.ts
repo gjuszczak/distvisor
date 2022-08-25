@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { HomeBoxState } from '../../../root-store/home-box-store/state';
+import { State } from '../../../root-store/home-box-store/state';
 import { loadDevices } from '../../../root-store/home-box-store/actions';
 
 
@@ -9,7 +9,7 @@ import { loadDevices } from '../../../root-store/home-box-store/actions';
   templateUrl: './home-box.component.html',
 })
 export class HomeBoxComponent implements OnInit {  
-  constructor(private readonly store: Store<HomeBoxState>) {}
+  constructor(private readonly store: Store<State>) {}
 
   ngOnInit(): void {
     this.store.dispatch(loadDevices());
