@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+
+import { NgxsModule } from '@ngxs/store';
 
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -21,6 +22,9 @@ import { RootStoreModule } from 'src/app/root-store';
 import { SharedModule } from 'src/app/shared';
 import { SettingsRoutingModule } from './settings-routing.module';
 
+import { HomeBoxSettingsState } from './store/home-box-settings.state';
+import { GatewaySessionsState } from './store/gateway-sessions.state';
+
 import { SettingsComponent } from './settings/settings.component';
 import { DeploymentComponent } from './deployment/deployment.component';
 import { SecretsVaultComponent } from './secrets-vault/secrets-vault.component';
@@ -34,6 +38,9 @@ import { HomeBoxSettingsComponent } from './home-box-settings/home-box-settings.
     FormsModule,
     HttpClientModule,
     
+    // Ngxs
+    NgxsModule.forFeature([HomeBoxSettingsState, GatewaySessionsState]),
+
     // PrimeNg
     ButtonModule,
     CardModule,

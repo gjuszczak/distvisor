@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
+import { NgxsModule } from '@ngxs/store';
+
 import { CardModule } from 'primeng/card';
 import { CodeHighlighterModule } from 'primeng/codehighlighter';
 import { TableModule } from 'primeng/table';
@@ -10,6 +12,7 @@ import { TableModule } from 'primeng/table';
 import { ApiModule } from 'src/app/api/api.module';
 import { EventLogRoutingModule } from './event-log-routing.module';
 
+import { EventLogState } from './store/event-log.state';
 import { EventLogComponent } from './event-log/event-log.component';
 
 @NgModule({
@@ -17,6 +20,9 @@ import { EventLogComponent } from './event-log/event-log.component';
     CommonModule,
     FormsModule,
     HttpClientModule,
+
+    // Ngxs
+    NgxsModule.forFeature([EventLogState]),
 
     // PrimeNg
     CardModule,

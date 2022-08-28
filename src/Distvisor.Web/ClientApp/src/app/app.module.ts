@@ -4,6 +4,8 @@ import { NgModule } from '@angular/core';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
+import { NgxsModule } from '@ngxs/store';
+
 import { MsalModule, MsalInterceptor, MsalService, MsalGuard, MsalBroadcastService, MsalRedirectComponent, MSAL_INSTANCE, MSAL_GUARD_CONFIG, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
 import { MsalGuardConfigFactory, MsalInstanceFactory, MsalInterceptorConfigFactory } from './msal-integration';
 
@@ -27,6 +29,7 @@ import { FinancesModule } from './features/finances/finances.module';
 import { HomeBoxModule } from './features/home-box/home-box.module';
 import { EventLogModule } from './features/event-log/event-log.module';
 
+import { CoreState } from './core/state/core.state';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -36,20 +39,29 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-    BrowserAnimationsModule, 
-    
+    BrowserAnimationsModule,
+
     // Cookie consent
     NgcCookieConsentModule.forRoot({ cookie: { domain: '' }, enabled: false }),
-    
+
     // Msal
     MsalModule,
-    
+
+    // Ngxs
+    NgxsModule.forRoot([CoreState], {
+      developmentMode: !environment.production,
+      selectorOptions: {
+        suppressErrors: false,
+        injectContainerState: false
+      }
+    }),
+
     // PrimeNg
     MenuModule,
     ButtonModule,
     RippleModule,
     ToastModule,
-    
+
     // internal
     ApiModule,
     CoreModule,

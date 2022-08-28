@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Store, Select } from '@ngxs/store';
+import { Observable } from 'rxjs';
 import { LazyLoadEvent } from 'primeng/api';
 
 import 'prismjs/components/prism-json.js';
-import { EventLogStoreActions, EventLogStoreSelectors, RootStoreState } from 'src/app/root-store';
+
+import { EventLogState, EventLogStateModel } from '../store/event-log.state';
+import { LoadEventLog } from '../store/event-log.actions';
 
 @Component({
   selector: 'app-event-log',
@@ -11,12 +14,12 @@ import { EventLogStoreActions, EventLogStoreSelectors, RootStoreState } from 'sr
 })
 export class EventLogComponent {
 
-  readonly eventLogEntries$ = this.store.select(EventLogStoreSelectors.selectEventLogEntries);
+  @Select(EventLogState.getEventLog) readonly eventLog$!: Observable<EventLogStateModel>;
   
-  constructor(private readonly store: Store<RootStoreState.State>) {
+  constructor(private readonly store: Store) {
   }
   
-  lazyLoadEventLogEntries(event: LazyLoadEvent) {
-    this.store.dispatch(EventLogStoreActions.loadEventLogEntries({ firstOffset: event.first, pageSize: event.rows }));
+  lazyLoadEventLog({ first, rows }: LazyLoadEvent) {
+    this.store.dispatch(new LoadEventLog(first, rows));
   }
 }

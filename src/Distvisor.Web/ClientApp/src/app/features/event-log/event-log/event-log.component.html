@@ -1,9 +1,9 @@
 <div class="container">
     <p-card header="Events" styleClass="p-mt-3">
-        <p-table *ngIf="(eventLogEntries$ | async) as ele" dataKey="eventId" [value]="ele.items" [lazy]="true"
+        <p-table *ngIf="(eventLog$ | async) as ele" dataKey="eventId" [value]="ele.items" [lazy]="true"
             [rows]="ele.pageSize" [rowsPerPageOptions]="ele.pageSizeOptions" [totalRecords]="ele.totalCount"
             [loading]="ele.loading" [rowHover]="true" [paginator]="true" [showCurrentPageReport]="true"
-            (onLazyLoad)="lazyLoadEventLogEntries($event)">
+            (onLazyLoad)="lazyLoadEventLog($event)">
             <ng-template pTemplate="header">
                 <tr>
                     <th class="tiny-col"></th>
