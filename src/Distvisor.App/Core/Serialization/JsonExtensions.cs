@@ -2,9 +2,9 @@
 using System.Buffers;
 using System.Text.Json;
 
-namespace Distvisor.App.Core.Extensions
+namespace Distvisor.App.Core.Serialization
 {
-    public static partial class JsonExtensions
+    public static class JsonExtensions
     {
         public static TValue Deserialize<TValue>(this JsonDocument document, JsonSerializerOptions options = null)
         {
@@ -34,6 +34,18 @@ namespace Distvisor.App.Core.Extensions
             using (var writer = new Utf8JsonWriter(bufferWriter))
                 element.WriteTo(writer);
             return JsonSerializer.Deserialize(bufferWriter.WrittenSpan, returnType, options);
+        }
+
+        public static JsonDocument SerializeToDocument(this object value, Type inputType, JsonSerializerOptions options = default)
+        {
+            var bytes = JsonSerializer.SerializeToUtf8Bytes(value, inputType, options);
+            return JsonDocument.Parse(bytes);
+        }
+
+        public static JsonDocument SerializeToDocument<TValue>(this TValue value, JsonSerializerOptions options = default)
+        {
+            var bytes = JsonSerializer.SerializeToUtf8Bytes(value, options);
+            return JsonDocument.Parse(bytes);
         }
     }
 }
