@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -22,4 +22,10 @@ import { HomeBoxStoreModule } from './home-box-store';
   ],
   declarations: []
 })
-export class RootStoreModule {}
+export class RootStoreModule {
+  constructor(@Optional() @SkipSelf() parentModule?: RootStoreModule) {
+    if (parentModule) {
+      throw new Error(`RootStoreModule has already been loaded. Import Core modules in the AppModule only.`);
+    }
+  }
+}

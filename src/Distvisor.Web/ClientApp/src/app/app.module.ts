@@ -22,10 +22,10 @@ import { ApiModule } from './api/api.module';
 import { CoreModule } from './core/core.module';
 import { RootStoreModule } from './root-store';
 
-import { SettingsModule } from './modules/settings/settings.module';
-import { FinancesModule } from './modules/finances/finances.module';
-import { HomeBoxModule } from './modules/home-box/home-box.module';
-import { EventLogModule } from './modules/event-log/event-log.module';
+import { SettingsModule } from './features/settings/settings.module';
+import { FinancesModule } from './features/finances/finances.module';
+import { HomeBoxModule } from './features/home-box/home-box.module';
+import { EventLogModule } from './features/event-log/event-log.module';
 
 import { AppComponent } from './app.component';
 
