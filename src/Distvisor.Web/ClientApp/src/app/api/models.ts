@@ -1,5 +1,6 @@
 export { AddFinancialAccountDto } from './models/add-financial-account-dto';
 export { AddFinancialAccountTransactionDto } from './models/add-financial-account-transaction-dto';
+export { AggregateDto } from './models/aggregate-dto';
 export { AuthMsalConfiguration } from './models/auth-msal-configuration';
 export { BackendDetails } from './models/backend-details';
 export { BackupFileInfoDto } from './models/backup-file-info-dto';
@@ -10,9 +11,9 @@ export { DeploymentParamsResponseDto } from './models/deployment-params-response
 export { DeployRequestDto } from './models/deploy-request-dto';
 export { DeviceDto } from './models/device-dto';
 export { DeviceType } from './models/device-type';
+export { EventDto } from './models/event-dto';
 export { EventLogDto } from './models/event-log-dto';
-export { EventsLogEntryDto } from './models/events-log-entry-dto';
-export { EventsLogEntryDtoPaginatedList } from './models/events-log-entry-dto-paginated-list';
+export { EventsListDto } from './models/events-list-dto';
 export { FinancialAccountDto } from './models/financial-account-dto';
 export { FinancialAccountTransactionDto } from './models/financial-account-transaction-dto';
 export { FinancialAccountTransactionSource } from './models/financial-account-transaction-source';

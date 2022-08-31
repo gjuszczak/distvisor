@@ -1,9 +1,33 @@
 <div class="container">
-    <p-card header="Events" styleClass="p-mt-3">
-        <p-table *ngIf="(eventLog$ | async) as ele" dataKey="eventId" [value]="ele.items" [lazy]="true"
-            [rows]="ele.pageSize" [rowsPerPageOptions]="ele.pageSizeOptions" [totalRecords]="ele.totalCount"
-            [loading]="ele.loading" [rowHover]="true" [paginator]="true" [showCurrentPageReport]="true"
-            (onLazyLoad)="lazyLoadEventLog($event)">
+    <ng-container *ngIf="(aggregate$ | async) as aggregate">
+        <p-card *ngIf="aggregate.aggregateId" styleClass="p-mt-3">
+            <p-header>
+                <div class="p-d-flex p-jc-between p-pt-3 p-px-3">
+                    <div class="p-card-title">Aggregate</div>
+                    <div class="p-d-flex">
+                        <button pButton type="button" icon="pi pi-times" [routerLink]="['/event-log']"
+                            class="p-button-rounded p-button-text p-button-info p-mr-1"></button>
+                    </div>
+                </div>
+            </p-header>
+        </p-card>
+    </ng-container>
+    <p-card styleClass="p-mt-3">
+        <p-header>
+            <div class="p-d-flex p-jc-between p-pt-3 p-px-3">
+                <div class="p-card-title">Events</div>
+                <!-- <div class="p-d-flex">
+                    <span class="p-input-icon-left ml-auto">
+                        <i class="pi pi-search"></i>
+                        <input pInputText class="inupttext-search" type="text" placeholder="Search keyword" />
+                    </span>
+                </div> -->
+            </div>
+        </p-header>
+        <p-table *ngIf="(events$ | async) as events" dataKey="eventId" [value]="events.items" [lazy]="true"
+            [first]="events.first" [rows]="events.rows" [rowsPerPageOptions]="events.rowsPerPageOptions"
+            [totalRecords]="events.totalRecords" [loading]="events.loading" [rowHover]="true" [paginator]="true"
+            [showCurrentPageReport]="true" (onLazyLoad)="lazyLoadEvents($event)">
             <ng-template pTemplate="header">
                 <tr>
                     <th class="tiny-col"></th>
@@ -16,8 +40,21 @@
                 <tr [pRowToggler]="ev">
                     <td><i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i></td>
                     <td>{{ ev.timeStamp | date:'short' }}</td>
-                    <td>{{ ev.eventTypeDisplayName }}</td>
-                    <td>{{ ev.aggregateTypeDisplayName }}</td>
+                    <td>
+                        <div>{{ ev.eventTypeDisplayName }}</div>
+                        <small>{{ ev.eventId }}</small>
+                    </td>
+                    <td>
+                        <div>{{ ev.aggregateTypeDisplayName }}</div>
+                        <a *ngIf="!events.aggregateId; else withAggregate"
+                            [routerLink]="['/event-log', 'aggregates', ev.aggregateId]"
+                            [queryParams]="{first: 0, rows: events.rows}">
+                            <small>{{ ev.aggregateId }}</small>
+                        </a>
+                        <ng-template #withAggregate>
+                            <small>{{ ev.aggregateId }}</small>
+                        </ng-template>
+                    </td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="rowexpansion" let-ev>
@@ -29,7 +66,7 @@
             </ng-template>
             <ng-template pTemplate="emptymessage">
                 <tr>
-                    <td colspan="4">No events found.</td>
+                    <td colspan="4">{{ events.error !== '' ? events.error : 'No events found.' }}</td>
                 </tr>
             </ng-template>
         </p-table>

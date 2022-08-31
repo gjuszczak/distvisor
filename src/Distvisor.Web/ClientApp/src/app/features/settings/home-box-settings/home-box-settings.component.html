@@ -1,8 +1,8 @@
 <p-card header="Home Box" styleClass="p-mt-3">
     <h3>Gateway sessions:</h3>
     <p-table *ngIf="(gatewaySessions$ | async) as gs"
-        dataKey="id" [value]="gs.items" [lazy]="true" [rows]="gs.pageSize" [rowsPerPageOptions]="gs.pageSizeOptions"
-        [totalRecords]="gs.totalCount" [loading]="gs.loading" [paginator]="true" [showCurrentPageReport]="true"
+        dataKey="id" [value]="gs.items" [lazy]="true" [rows]="gs.rows" [rowsPerPageOptions]="gs.rowsPerPageOptions"
+        [totalRecords]="gs.totalRecords" [loading]="gs.loading" [paginator]="true" [showCurrentPageReport]="true"
         (onLazyLoad)="lazyLoadGatewaySessions($event)">
         <ng-template pTemplate="header">
             <tr>

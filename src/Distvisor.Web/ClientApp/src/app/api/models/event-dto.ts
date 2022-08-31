@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface EventsLogEntryDto {
+export interface EventDto {
   aggregateId?: string;
   aggregateType?: null | string;
   aggregateTypeDisplayName?: null | string;

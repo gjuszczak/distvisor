@@ -9,24 +9,28 @@ namespace Distvisor.App.Common.Models
     public class PaginatedList<T>
     {
         public List<T> Items { get; }
-        public int TotalCount { get; }
-        public int FirstOffset { get; }
-        public int PageSize { get; }
+        public int TotalRecords { get; }
+        public int First { get; }
+        public int Rows { get; }
 
-        public PaginatedList(List<T> items, int count, int firstOffset, int pageSize)
+        public PaginatedList(List<T> items, int totalRecords, int first, int rows)
         {
             Items = items;
-            TotalCount = count;
-            FirstOffset = firstOffset;
-            PageSize = pageSize;
+            TotalRecords = totalRecords;
+            First = first;
+            Rows = rows;
         }
 
-        public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int firstOffset, int pageSize, CancellationToken cancellationToken = default)
+        public static async Task<PaginatedList<T>> CreateAsync(
+            IQueryable<T> source,
+            int first,
+            int rows,
+            CancellationToken cancellationToken = default)
         {
-            var count = await source.CountAsync(cancellationToken);
-            var items = await source.Skip(firstOffset).Take(pageSize).ToListAsync(cancellationToken);
+            var totalRecords = await source.CountAsync(cancellationToken);
+            var items = await source.Skip(first).Take(rows).ToListAsync(cancellationToken);
 
-            return new PaginatedList<T>(items, count, firstOffset, pageSize);
+            return new PaginatedList<T>(items, totalRecords, first, rows);
         }
     }
 }

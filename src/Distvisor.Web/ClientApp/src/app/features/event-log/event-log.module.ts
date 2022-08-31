@@ -7,13 +7,18 @@ import { NgxsModule } from '@ngxs/store';
 
 import { CardModule } from 'primeng/card';
 import { CodeHighlighterModule } from 'primeng/codehighlighter';
+import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 
 import { ApiModule } from 'src/app/api/api.module';
 import { EventLogRoutingModule } from './event-log-routing.module';
 
 import { EventLogState } from './store/event-log.state';
+import { EventsState } from './store/events.state';
+
 import { EventLogComponent } from './event-log/event-log.component';
+import { ButtonModule } from 'primeng/button';
+import { AggregateState } from './store/aggregate.state';
 
 @NgModule({
   imports: [
@@ -22,11 +27,13 @@ import { EventLogComponent } from './event-log/event-log.component';
     HttpClientModule,
 
     // Ngxs
-    NgxsModule.forFeature([EventLogState]),
+    NgxsModule.forFeature([EventLogState, EventsState, AggregateState]),
 
     // PrimeNg
+    ButtonModule,
     CardModule,
     CodeHighlighterModule,
+    InputTextModule,
     TableModule,
 
     // internal

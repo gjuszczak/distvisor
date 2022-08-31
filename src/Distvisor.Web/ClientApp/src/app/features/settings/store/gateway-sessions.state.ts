@@ -14,11 +14,12 @@ export interface GatewaySessionsStateModel extends PaginatedList<GatewaySessionD
 
 export const gatewaySessionsStateDefaults: GatewaySessionsStateModel = {
     items: [],
-    firstOffset: 0,
-    pageSize: 5,
-    pageSizeOptions: [5, 10, 25, 50],
-    totalCount: 0,
-    loading: false
+    first: 0,
+    rows: 5,
+    rowsPerPageOptions: [5, 10, 25, 50],
+    totalRecords: 0,
+    loading: false,
+    error: ''
 };
 
 @State<GatewaySessionsStateModel>({
@@ -41,8 +42,8 @@ export class GatewaySessionsState {
         });
 
         return this.homeBoxService.apiSHomeBoxGatewaySessionsGet$Json({
-            firstOffset: action.firstOffset ?? gatewaySessionsStateDefaults.firstOffset,
-            pageSize: action.pageSize ?? gatewaySessionsStateDefaults.pageSize
+            first: action.firstOffset ?? gatewaySessionsStateDefaults.first,
+            rows: action.pageSize ?? gatewaySessionsStateDefaults.rows
         }).pipe(
             map(gatewaySessions => dispatch(new LoadGatewaySessionsSuccess(gatewaySessions))),
             catchError(() => EMPTY)
@@ -53,9 +54,9 @@ export class GatewaySessionsState {
     loadGatewaySessionsSuccess({ patchState }: StateContext<GatewaySessionsStateModel>, { gatewaySessions }: LoadGatewaySessionsSuccess) {
         patchState({
             items: gatewaySessions?.items ?? gatewaySessionsStateDefaults.items,
-            firstOffset: gatewaySessions?.firstOffset ?? gatewaySessionsStateDefaults.firstOffset,
-            pageSize: gatewaySessions?.pageSize ?? gatewaySessionsStateDefaults.pageSize,
-            totalCount: gatewaySessions?.totalCount ?? gatewaySessionsStateDefaults.totalCount,
+            first: gatewaySessions?.first ?? gatewaySessionsStateDefaults.first,
+            rows: gatewaySessions?.rows ?? gatewaySessionsStateDefaults.rows,
+            totalRecords: gatewaySessions?.totalRecords ?? gatewaySessionsStateDefaults.totalRecords,
             loading: false
         });
     }

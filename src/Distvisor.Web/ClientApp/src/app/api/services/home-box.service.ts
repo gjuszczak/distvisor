@@ -40,14 +40,14 @@ export class HomeBoxService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSHomeBoxGatewaySessionsGet$Plain$Response(params?: {
-    firstOffset?: number;
-    pageSize?: number;
+    first?: number;
+    rows?: number;
   }): Observable<StrictHttpResponse<GatewaySessionDtoPaginatedList>> {
 
     const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiSHomeBoxGatewaySessionsGetPath, 'get');
     if (params) {
-      rb.query('firstOffset', params.firstOffset, {});
-      rb.query('pageSize', params.pageSize, {});
+      rb.query('first', params.first, {});
+      rb.query('rows', params.rows, {});
     }
 
     return this.http.request(rb.build({
@@ -68,8 +68,8 @@ export class HomeBoxService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSHomeBoxGatewaySessionsGet$Plain(params?: {
-    firstOffset?: number;
-    pageSize?: number;
+    first?: number;
+    rows?: number;
   }): Observable<GatewaySessionDtoPaginatedList> {
 
     return this.apiSHomeBoxGatewaySessionsGet$Plain$Response(params).pipe(
@@ -84,14 +84,14 @@ export class HomeBoxService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSHomeBoxGatewaySessionsGet$Json$Response(params?: {
-    firstOffset?: number;
-    pageSize?: number;
+    first?: number;
+    rows?: number;
   }): Observable<StrictHttpResponse<GatewaySessionDtoPaginatedList>> {
 
     const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiSHomeBoxGatewaySessionsGetPath, 'get');
     if (params) {
-      rb.query('firstOffset', params.firstOffset, {});
-      rb.query('pageSize', params.pageSize, {});
+      rb.query('first', params.first, {});
+      rb.query('rows', params.rows, {});
     }
 
     return this.http.request(rb.build({
@@ -112,8 +112,8 @@ export class HomeBoxService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSHomeBoxGatewaySessionsGet$Json(params?: {
-    firstOffset?: number;
-    pageSize?: number;
+    first?: number;
+    rows?: number;
   }): Observable<GatewaySessionDtoPaginatedList> {
 
     return this.apiSHomeBoxGatewaySessionsGet$Json$Response(params).pipe(

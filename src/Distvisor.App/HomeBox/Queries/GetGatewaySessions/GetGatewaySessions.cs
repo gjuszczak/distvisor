@@ -24,7 +24,7 @@ namespace Distvisor.App.HomeBox.Queries.GetGatewaySessions
         {
             var gatewaySessions = await _context.HomeboxGatewaySessions
                 .Select(entity => GatewaySessionDto.FromEntity(entity))
-                .ToPaginatedListAsync(request.FirstOffset, request.PageSize, cancellationToken);
+                .ToPaginatedListAsync(request.First, request.Rows, cancellationToken);
             return gatewaySessions;
         }
     }

@@ -99,8 +99,18 @@ body {
     background-color: var(--surface-0) !important;
   }
 
+  .inupttext-search {
+    min-width: 20rem;
+  }
+
   .p-dialog {
     width: 450px;
+  }
+
+  .p-card {
+    .p-card-content {
+      padding: 0;
+    }
   }
 
   .databases {

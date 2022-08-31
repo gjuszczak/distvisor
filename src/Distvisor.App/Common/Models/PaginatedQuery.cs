@@ -2,7 +2,7 @@
 {
     public class PaginatedQuery
     {
-        public int FirstOffset { get; set; }
-        public int PageSize { get; set; }
+        public int First { get; set; }
+        public int Rows { get; set; }
     }
 }

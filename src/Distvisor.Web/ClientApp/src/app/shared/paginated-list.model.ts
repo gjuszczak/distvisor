@@ -1,8 +1,9 @@
 export interface PaginatedList<T> {
     items: T[],
-    firstOffset: number,
-    pageSize: number,
-    pageSizeOptions: number[]
-    totalCount: number,
-    loading: boolean
+    first: number,
+    rows: number,
+    rowsPerPageOptions: number[]
+    totalRecords: number,
+    loading: boolean,
+    error: string,
 }

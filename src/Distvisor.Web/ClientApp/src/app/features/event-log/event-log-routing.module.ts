@@ -6,6 +6,7 @@ import { EventLogComponent } from './event-log/event-log.component';
 
 const routes: Routes = [
   { path: 'event-log', component: EventLogComponent, pathMatch: 'full', canActivate: [MsalGuard] },
+  { path: 'event-log/aggregates/:aggregateId', component: EventLogComponent, pathMatch: 'full', canActivate: [MsalGuard] },
 ];
 
 @NgModule({

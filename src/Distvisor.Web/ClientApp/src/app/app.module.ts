@@ -5,6 +5,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { NgxsModule } from '@ngxs/store';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 
 import { MsalModule, MsalInterceptor, MsalService, MsalGuard, MsalBroadcastService, MsalRedirectComponent, MSAL_INSTANCE, MSAL_GUARD_CONFIG, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
 import { MsalGuardConfigFactory, MsalInstanceFactory, MsalInterceptorConfigFactory } from './msal-integration';
@@ -22,7 +23,6 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { ApiModule } from './api/api.module';
 import { CoreModule } from './core/core.module';
-import { RootStoreModule } from './root-store';
 
 import { SettingsModule } from './features/settings/settings.module';
 import { FinancesModule } from './features/finances/finances.module';
@@ -55,6 +55,7 @@ import { AppComponent } from './app.component';
         injectContainerState: false
       }
     }),
+    NgxsReduxDevtoolsPluginModule.forRoot(),
 
     // PrimeNg
     MenuModule,
@@ -65,7 +66,6 @@ import { AppComponent } from './app.component';
     // internal
     ApiModule,
     CoreModule,
-    RootStoreModule,
     SettingsModule,
     FinancesModule,
     HomeBoxModule,

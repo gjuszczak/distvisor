@@ -18,7 +18,6 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { TableModule } from 'primeng/table';
 
 import { ApiModule } from 'src/app/api/api.module';
-import { RootStoreModule } from 'src/app/root-store';
 import { SharedModule } from 'src/app/shared';
 import { SettingsRoutingModule } from './settings-routing.module';
 
@@ -56,7 +55,6 @@ import { HomeBoxSettingsComponent } from './home-box-settings/home-box-settings.
 
     // internal
     ApiModule,
-    RootStoreModule,
     SharedModule,
     SettingsRoutingModule,
   ],

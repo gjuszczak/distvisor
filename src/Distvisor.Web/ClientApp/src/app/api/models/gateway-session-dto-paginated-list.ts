@@ -2,8 +2,8 @@
 /* eslint-disable */
 import { GatewaySessionDto } from './gateway-session-dto';
 export interface GatewaySessionDtoPaginatedList {
-  firstOffset?: number;
+  first?: number;
   items?: null | Array<GatewaySessionDto>;
-  pageSize?: number;
-  totalCount?: number;
+  rows?: number;
+  totalRecords?: number;
 }
