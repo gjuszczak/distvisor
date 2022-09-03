@@ -56,6 +56,7 @@ export class AggregateState {
     loadAggregateSuccess({ patchState }: StateContext<AggregateStateModel>, { aggregate }: LoadAggregateSuccess) {
         patchState({
             aggregateId: aggregate?.aggregateId ?? undefined,
+            version: aggregate?.version ?? undefined,
             aggregateType: aggregate?.aggregateType ?? undefined,
             aggregateTypeDisplayName: aggregate?.aggregateTypeDisplayName ?? undefined,
             maskedPayload: aggregate?.maskedPayload ?? undefined,

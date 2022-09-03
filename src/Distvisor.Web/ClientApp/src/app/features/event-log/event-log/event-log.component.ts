@@ -10,7 +10,7 @@ import { LoadEvents } from '../store/events.actions';
 import { EventsState, EventsStateModel } from '../store/events.state';
 import { AggregateState, AggregateStateModel } from '../store/aggregate.state';
 import { ClearAggregate, LoadAggregate } from '../store/aggregate.actions';
-import { distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-event-log',

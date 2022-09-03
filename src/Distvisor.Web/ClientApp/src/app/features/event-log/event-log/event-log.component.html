@@ -10,28 +10,40 @@
                     </div>
                 </div>
             </p-header>
+            <div class="p-fluid p-grid p-px-2">
+                <div class="p-col-12 p-md-6">
+                    <h4 class="p-my-2">Id:</h4>
+                    <p class="p-my-0">{{aggregate.aggregateId}}</p>
+                </div>
+                <div class="p-col-12 p-md-6">
+                    <h4 class="p-my-2">Version:</h4>
+                    <p class="p-my-0">{{aggregate.version}}</p>
+                </div>
+                <div class="p-col-12 p-md-6">
+                    <h4 class="p-my-2">Type:</h4>
+                    <p class="p-my-0">{{aggregate.aggregateTypeDisplayName}}</p>
+                </div>
+                <div class="p-col-12 p-md-6">
+                    <h4 class="p-my-2">Internal type:</h4>
+                    <p class="p-my-0">{{aggregate.aggregateType}}</p>
+                </div>
+            </div>
+            <p-panel styleClass="aggregate-payload p-mt-3" header="Payload" [toggleable]="true" [collapsed]="true" 
+                toggler="header" iconPos="left" expandIcon="pi pi-chevron-right" collapseIcon="pi pi-chevron-down">
+                <pre class="p-m-0"><code class="language-json" pCode>{{ aggregate.maskedPayload | json }}</code></pre>
+            </p-panel>
         </p-card>
     </ng-container>
-    <p-card styleClass="p-mt-3">
-        <p-header>
-            <div class="p-d-flex p-jc-between p-pt-3 p-px-3">
-                <div class="p-card-title">Events</div>
-                <!-- <div class="p-d-flex">
-                    <span class="p-input-icon-left ml-auto">
-                        <i class="pi pi-search"></i>
-                        <input pInputText class="inupttext-search" type="text" placeholder="Search keyword" />
-                    </span>
-                </div> -->
-            </div>
-        </p-header>
+    <p-card styleClass="p-mt-3" header="Events">
         <p-table *ngIf="(events$ | async) as events" dataKey="eventId" [value]="events.items" [lazy]="true"
             [first]="events.first" [rows]="events.rows" [rowsPerPageOptions]="events.rowsPerPageOptions"
             [totalRecords]="events.totalRecords" [loading]="events.loading" [rowHover]="true" [paginator]="true"
-            [showCurrentPageReport]="true" (onLazyLoad)="lazyLoadEvents($event)">
+            [showCurrentPageReport]="true" [autoLayout]="true" (onLazyLoad)="lazyLoadEvents($event)">
             <ng-template pTemplate="header">
                 <tr>
                     <th class="tiny-col"></th>
                     <th>Timestamp</th>
+                    <th>Version</th>
                     <th>Event</th>
                     <th>Aggregate</th>
                 </tr>
@@ -40,6 +52,7 @@
                 <tr [pRowToggler]="ev">
                     <td><i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i></td>
                     <td>{{ ev.timeStamp | date:'short' }}</td>
+                    <td>{{ ev.version }}</td>
                     <td>
                         <div>{{ ev.eventTypeDisplayName }}</div>
                         <small>{{ ev.eventId }}</small>
@@ -59,14 +72,14 @@
             </ng-template>
             <ng-template pTemplate="rowexpansion" let-ev>
                 <tr>
-                    <td colspan="4" class="p-p-0">
+                    <td colspan="5" class="p-p-0">
                         <pre class="p-m-0"><code class="language-json" pCode>{{ ev.maskedPayload | json }}</code></pre>
                     </td>
                 </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
                 <tr>
-                    <td colspan="4">{{ events.error !== '' ? events.error : 'No events found.' }}</td>
+                    <td colspan="5">{{ events.error !== '' ? events.error : 'No events found.' }}</td>
                 </tr>
             </ng-template>
         </p-table>
