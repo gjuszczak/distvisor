@@ -2,7 +2,7 @@
 using Distvisor.App.Common.Models;
 using Distvisor.App.Core.Events;
 using Distvisor.App.Core.Queries;
-using Distvisor.App.EventLog.Services.EventDetails;
+using Distvisor.App.EventLog.Services.DetailsProviding;
 using System;
 using System.Linq;
 using System.Threading;
@@ -53,7 +53,7 @@ namespace Distvisor.App.EventLog.Qureies.GetEvents
 
         private EventDto EventEntityToDto(EventEntity entity)
         {
-            var details = _eventDetailsProvider.GetEventDetails(entity);
+            var details = _eventDetailsProvider.GetDetails(entity);
             return EventDto.FromEntity(entity, details);
         }
     }

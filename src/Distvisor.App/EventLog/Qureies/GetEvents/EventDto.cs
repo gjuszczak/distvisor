@@ -1,5 +1,5 @@
 ﻿using Distvisor.App.Core.Events;
-using Distvisor.App.EventLog.Services.EventDetails;
+using Distvisor.App.EventLog.Services.DetailsProviding;
 using System;
 
 namespace Distvisor.App.EventLog.Qureies.GetEvents

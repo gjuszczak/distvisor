@@ -1,10 +1,10 @@
-﻿using Distvisor.App.EventLog.Services.EventDetails;
+﻿using Distvisor.App.EventLog.Services.PayloadMasking;
 using Distvisor.App.HomeBox.Events;
 using Distvisor.App.HomeBox.ValueObjects;
 
 namespace Distvisor.Infrastructure.Services.EventLog
 {
-    public class GatewaySessionOpenedMaskingService : EventMaskingService<GatewaySessionOpened>
+    public class GatewaySessionOpenedMaskingService : PayloadMaskingService<GatewaySessionOpened>
     {
         protected override GatewaySessionOpened Mask(GatewaySessionOpened @event)
         {

@@ -1,4 +1,4 @@
-﻿namespace Distvisor.App.EventLog.Services.EventDetails
+﻿namespace Distvisor.App.EventLog.Services.DetailsProviding
 {
     public class EventDetails
     {

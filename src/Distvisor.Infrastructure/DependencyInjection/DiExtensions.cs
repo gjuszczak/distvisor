@@ -5,7 +5,8 @@ using Distvisor.App.Core.Dispatchers;
 using Distvisor.App.Core.Events;
 using Distvisor.App.Core.Queries;
 using Distvisor.App.Core.Services;
-using Distvisor.App.EventLog.Services.EventDetails;
+using Distvisor.App.EventLog.Services.DetailsProviding;
+using Distvisor.App.EventLog.Services.PayloadMasking;
 using Distvisor.App.HomeBox.Services.Gateway;
 using Distvisor.Infrastructure.Persistence;
 using Distvisor.Infrastructure.Persistence.App;
@@ -69,10 +70,11 @@ namespace Distvisor.Infrastructure
             services.AddValidatorsFromAssemblyContaining<ICommand>();
 
             services.AddSingleton<IEventDetailsProvider, EventDetailsProvider>();
+            services.AddSingleton<IAggregateDetailsProvider, AggregateDetailsProvider>();
             services.Scan(selector =>
             {
                 selector.FromAssemblies(Assembly.GetExecutingAssembly())
-                    .AddClasses(filter => filter.AssignableTo(typeof(IEventMaskingService<>)))
+                    .AddClasses(filter => filter.AssignableTo(typeof(IPayloadMaskingService<>)))
                     .AsImplementedInterfaces()
                     .WithSingletonLifetime();
             });

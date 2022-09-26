@@ -1,10 +1,10 @@
-﻿using Distvisor.App.EventLog.Services.EventDetails;
+﻿using Distvisor.App.EventLog.Services.PayloadMasking;
 using Distvisor.App.HomeBox.Events;
 using Distvisor.App.HomeBox.ValueObjects;
 
 namespace Distvisor.Infrastructure.Services.EventLog
 {
-    public class GatewaySessionRefreshSucceededMaskingService : EventMaskingService<GatewaySessionRefreshSucceeded>
+    public class GatewaySessionRefreshSucceededMaskingService : PayloadMaskingService<GatewaySessionRefreshSucceeded>
     {
         protected override GatewaySessionRefreshSucceeded Mask(GatewaySessionRefreshSucceeded @event)
         {
