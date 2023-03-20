@@ -1,11 +1,17 @@
 ﻿using Distvisor.App.Core.Events;
 using System;
+using System.Text.Json;
 
 namespace Distvisor.App.EventLog.Services.DetailsProviding
 {
     public class EventDetailsProvider : DetailsProvider<(Type eventType, Type aggregateType), EventEntity, EventDetails>, IEventDetailsProvider
     {
-        public EventDetailsProvider(IServiceProvider serviceProvider) : base(serviceProvider) { }
+        private readonly IEventEntityBuilder _eventEntityBuilder;
+
+        public EventDetailsProvider(IEventEntityBuilder eventEntityBuilder)
+        {
+            _eventEntityBuilder = eventEntityBuilder;
+        }
 
         protected override (Type eventType, Type aggregateType) GetDetailsFactoryKey(EventEntity @event)
         {
@@ -17,12 +23,12 @@ namespace Distvisor.App.EventLog.Services.DetailsProviding
             var (eventType, aggregateType) = factoryKey;
             var eventTypeDisplayName = GetDisplayName(eventType);
             var aggregateTypeDisplayName = GetDisplayName(aggregateType);
-            var maskingService = GetMaskingService(eventType);
+            var maskSensitiveDataSerializerOptions = GetMaskSensitiveDataSerializerOptions();
             return (@event) => new EventDetails
             {
                 EventTypeDisplayName = eventTypeDisplayName,
                 AggregateTypeDisplayName = aggregateTypeDisplayName,
-                MaskedPayload = maskingService?.Mask(@event.Data) ?? @event.Data
+                MaskedPayload = JsonSerializer.SerializeToDocument(_eventEntityBuilder.FromEventEntity(@event), eventType, maskSensitiveDataSerializerOptions)
             };
         }
     }

@@ -1,18 +1,18 @@
 <footer>
-    <div class="container p-pt-4 p-text-center">
+    <div class="container pt-4 text-center">
         <h3 class="text-uppercase">Stay in touch</h3>
         <div>
             <a href="/api/redirect-to/linkedin" class="fab fa-linkedin-in"></a>
             <a href="/api/redirect-to/facebook" class="fab fa-facebook-f"></a>
             <a href="/api/redirect-to/github" class="fab fa-github"></a>
         </div>
-        <div class="p-py-3">
+        <div class="py-3">
             <div>
                 <a class="hidden-link" (click)="login()">©</a> 2020 Copyright: <a href="/">Distvisor Grzegorz
                     Juszczak</a>
             </div>
             <div>
-                <span *ngIf="backendDetails.appVersion" class="p-pr-1">v{{backendDetails.appVersion}}</span>
+                <span *ngIf="backendDetails.appVersion" class="pr-1">v{{backendDetails.appVersion}}</span>
                 <span *ngIf="backendDetails.runtimeVersion">Powered by {{backendDetails.runtimeVersion}}</span>
             </div>
         </div>

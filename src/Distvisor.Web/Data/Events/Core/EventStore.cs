@@ -50,7 +50,8 @@ namespace Distvisor.Web.Data.Events.Core
             foreach (var e in collection)
             {
                 var payload = e.ToPayload();
-                await _handler.GetHandler(payload.GetType()).Handle(payload);
+                var handler = _handler.GetHandler(payload.GetType());
+                await handler.Handle(payload);
                 await _db.SaveChangesAsync();
             }
         }

@@ -1,4 +1,4 @@
-<p-card header="Home Box" styleClass="p-mt-3">
+<p-card header="Home Box" styleClass="mt-3">
     <h3>Gateway sessions:</h3>
     <p-table *ngIf="(gatewaySessions$ | async) as gs"
         dataKey="id" [value]="gs.items" [lazy]="true" [rows]="gs.rows" [rowsPerPageOptions]="gs.rowsPerPageOptions"
@@ -30,21 +30,23 @@
         </ng-template>
     </p-table>
     <form (ngSubmit)="onLogin()">
-        <h3 class="p-pt-3">Enable Home Box by login to gateway:</h3>
-        <div class="p-fluid p-formgrid p-grid">
-            <div class="p-field p-col-12 p-md-4">
-                <label for="inputHomeBoxUser">User:</label>
-                <input pInputText type="text" inputId="inputHomeBoxUser" name="inputHomeBoxUser"
-                    [(ngModel)]="inputHomeBoxUser" />
+        <h3 class="pt-3">Enable Home Box by login to gateway:</h3>
+        <div class="field grid">
+            <label for="inputHomeBoxUser" class="col-12 mb-2 md:col-1 md:mb-0">User:</label>
+            <div class="col-12 md:col-4">
+                <input pInputText class="w-full" type="text" inputId="inputHomeBoxUser" name="inputHomeBoxUser"
+                [(ngModel)]="inputHomeBoxUser" />
             </div>
-            <div class="p-col-8 p-d-none p-d-md-block"></div>
-            <div class="p-field p-col-12 p-md-4">
-                <label for="inputHomeBoxPassword">Password:</label>
-                <p-password inputId="inputHomeBoxPassword" name="inputHomeBoxPassword"
+        </div>
+        <div class="field grid">
+            <label for="inputHomeBoxPassword" class="col-12 mb-2 md:col-1 md:mb-0">Password:</label>
+            <div class="col-12 md:col-4">
+                <p-password styleClass="w-full" inputStyleClass="w-full"
+                    inputId="inputHomeBoxPassword" name="inputHomeBoxPassword"
                     [(ngModel)]="inputHomeBoxPassword" [feedback]="false" [toggleMask]="true"></p-password>
             </div>
         </div>
-        <div class="p-mt-2">
+        <div class="mt-2">
             <button pButton pRipple class="p-button-info p-button-outlined" icon="pi pi-check" label="Login"
                 type="submit"></button>
         </div>

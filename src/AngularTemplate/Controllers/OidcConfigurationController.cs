@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace AngularTemplate.Controllers
 {
@@ -8,7 +7,9 @@ namespace AngularTemplate.Controllers
     {
         private readonly ILogger<OidcConfigurationController> _logger;
 
-        public OidcConfigurationController(IClientRequestParametersProvider clientRequestParametersProvider, ILogger<OidcConfigurationController> logger)
+        public OidcConfigurationController(
+            IClientRequestParametersProvider clientRequestParametersProvider,
+            ILogger<OidcConfigurationController> logger)
         {
             ClientRequestParametersProvider = clientRequestParametersProvider;
             _logger = logger;

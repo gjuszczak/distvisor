@@ -1,8 +1,8 @@
 <header>
-  <nav class="container p-d-flex p-jc-between p-ai-center p-py-3">
-    <div class="p-d-flex p-ai-center">
-      <a [routerLink]="['/']" class="p-d-flex p-ai-center"><img src="assets/icons/icon-72x72.png" width="32" height="32"/></a>
-      <div *ngIf="navBrand" class="p-ml-3 brand-text">{{navBrand}}</div>
+  <nav class="container flex justify-content-between align-items-center py-3">
+    <div class="flex align-items-center">
+      <a [routerLink]="['/']" class="flex align-items-center"><img src="assets/icons/icon-72x72.png" width="32" height="32"/></a>
+      <div *ngIf="navBrand" class="ml-3 brand-text">{{navBrand}}</div>
     </div>
     <div *ngIf="isAnyMenuItem">
       <p-menu #menu [popup]="true" [model]="menuItems"></p-menu>

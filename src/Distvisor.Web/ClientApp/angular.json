@@ -20,12 +20,12 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "progress": false,
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": true,
             "assets": ["src/assets", "src/manifest.webmanifest"],
             "styles": [
               "node_modules/primeng/resources/themes/vela-purple/theme.css",
@@ -40,26 +40,12 @@
             ],
             "scripts": [
               "node_modules/prismjs/prism.js",
-              "node_modules/chart.js/dist/Chart.js",
+              "node_modules/chart.js/dist/chart.umd.js",
               "node_modules/cookieconsent/build/cookieconsent.min.js"
             ]
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -72,21 +58,41 @@
                   "maximumError": "10kb"
                 }
               ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all",
+              "serviceWorker": true,
+              "ngswConfigPath": "ngsw-config.json"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
               "serviceWorker": true,
               "ngswConfigPath": "ngsw-config.json"
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "distvisor-web:build"
-          },
           "configurations": {
             "production": {
               "browserTarget": "distvisor-web:build:production"
+            },
+            "development": {
+              "browserTarget": "distvisor-web:build:development",
+              "proxyConfig": "proxy.conf.js"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -106,22 +112,27 @@
             "scripts": []
           }
         },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
           "options": {
-            "tsConfig": ["tsconfig.app.json", "tsconfig.spec.json", "e2e/tsconfig.json"],
-            "exclude": ["**/node_modules/**"]
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "distvisor-web:serve"
+            "outputPath": "dist-server",
+            "main": "src/main.ts",
+            "tsConfig": "tsconfig.server.json"
           },
           "configurations": {
+            "dev": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true
+            },
             "production": {
-              "devServerTarget": "distvisor-web:serve:production"
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true
             }
           }
         }

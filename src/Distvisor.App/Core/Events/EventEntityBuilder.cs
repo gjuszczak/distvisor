@@ -34,7 +34,7 @@ namespace Distvisor.App.Core.Events
 
         protected virtual JsonDocument SerializeEventData(IEvent @event)
         {
-            var jsonDocument = @event.SerializeToDocument(@event.GetType(), JsonDefaults.SerializerOptions);
+            var jsonDocument = JsonSerializer.SerializeToDocument(@event, @event.GetType(), JsonDefaults.SerializerOptions);
             return jsonDocument;
         }
     }

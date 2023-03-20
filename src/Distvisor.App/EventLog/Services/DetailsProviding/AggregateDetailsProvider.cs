@@ -1,13 +1,11 @@
 ﻿using Distvisor.App.Core.Aggregates;
-using Distvisor.App.Core.Serialization;
 using System;
+using System.Text.Json;
 
 namespace Distvisor.App.EventLog.Services.DetailsProviding
 {
     public class AggregateDetailsProvider : DetailsProvider<Type, IAggregateRoot, AggregateDetails>, IAggregateDetailsProvider
     {
-        public AggregateDetailsProvider(IServiceProvider serviceProvider) : base(serviceProvider) { }
-
         protected override Type GetDetailsFactoryKey(IAggregateRoot aggregate)
         {
             return aggregate.GetType();
@@ -17,16 +15,12 @@ namespace Distvisor.App.EventLog.Services.DetailsProviding
         {
             var aggregateTypeString = aggregateType.ToString();
             var aggregateTypeDisplayName = GetDisplayName(aggregateType);
-            var maskingService = GetMaskingService(aggregateType);
-            return (aggregate) =>
+            var maskSensitiveDataSerializerOptions = GetMaskSensitiveDataSerializerOptions();
+            return (aggregate) => new AggregateDetails
             {
-                var jsonDoc = aggregate.SerializeToDocument(aggregateType, JsonDefaults.SerializerOptions);
-                return new AggregateDetails
-                {
-                    AggregateType = aggregateTypeString,
-                    AggregateTypeDisplayName = aggregateTypeDisplayName,
-                    MaskedPayload = maskingService?.Mask(jsonDoc) ?? jsonDoc
-                };
+                AggregateType = aggregateTypeString,
+                AggregateTypeDisplayName = aggregateTypeDisplayName,
+                MaskedPayload = JsonSerializer.SerializeToDocument(aggregate, aggregateType, maskSensitiveDataSerializerOptions)
             };
         }
     }

@@ -6,7 +6,6 @@ using Distvisor.App.Core.Events;
 using Distvisor.App.Core.Queries;
 using Distvisor.App.Core.Services;
 using Distvisor.App.EventLog.Services.DetailsProviding;
-using Distvisor.App.EventLog.Services.PayloadMasking;
 using Distvisor.App.HomeBox.Services.Gateway;
 using Distvisor.Infrastructure.Persistence;
 using Distvisor.Infrastructure.Persistence.App;
@@ -17,7 +16,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Reflection;
 
 namespace Distvisor.Infrastructure
 {
@@ -25,9 +23,9 @@ namespace Distvisor.Infrastructure
     {
         public static void AddDistvisor(this IServiceCollection services, IConfiguration config)
         {
+            services.AddSingleton<IEventEntityBuilder, EventEntityBuilder>();
             services.AddScoped<IAggregateContext, AggregateContext>();
             services.AddScoped<IAggregateRepository, AggregateRepository>();
-            services.AddScoped<IEventEntityBuilder, EventEntityBuilder>();
             services.AddScoped<IEventStore, EventStore>();
             services.AddScoped<IEventPublisher, EventPublisher>();
             services.AddScoped<IDispatcher, Dispatcher>();
@@ -71,13 +69,6 @@ namespace Distvisor.Infrastructure
 
             services.AddSingleton<IEventDetailsProvider, EventDetailsProvider>();
             services.AddSingleton<IAggregateDetailsProvider, AggregateDetailsProvider>();
-            services.Scan(selector =>
-            {
-                selector.FromAssemblies(Assembly.GetExecutingAssembly())
-                    .AddClasses(filter => filter.AssignableTo(typeof(IPayloadMaskingService<>)))
-                    .AsImplementedInterfaces()
-                    .WithSingletonLifetime();
-            });
 
             services.Configure<GatewayConfiguration>(config.GetSection("HomeBox:Gateway"));
             services.AddHttpClient<IGatewayAuthenticationClient, GatewayAuthenticationClient>()

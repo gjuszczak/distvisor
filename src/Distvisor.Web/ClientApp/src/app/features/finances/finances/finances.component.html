@@ -1,4 +1,4 @@
-<div class="container p-mb-3 finances">
+<div class="container mb-3 finances">
     <app-accounts [accounts]="accounts" (onAdd)="showAddAccountDialog()" (onUpload)="showImportFinancialFilesDialog()"></app-accounts>
     <app-accounts-summary [summary]="summary"></app-accounts-summary>
     <app-add-account-dialog [isVisible]="isAddAccountDialogVisible" (onHide)="hideAddAccountDialog()">

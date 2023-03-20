@@ -26,7 +26,7 @@ namespace Distvisor.App.Tests.Integration
             var services = new ServiceCollection();
             services.AddScoped<IAggregateContext, AggregateContext>();
             services.AddScoped<IAggregateRepository, AggregateRepository>();
-            services.AddScoped<IEventEntityBuilder, EventEntityBuilder>();
+            services.AddSingleton<IEventEntityBuilder, EventEntityBuilder>();
             services.AddScoped<IEventStore, EventStore>();
             services.AddScoped<IEventStorage, SqlEventStorage>();
             services.AddScoped<IEventPublisher, EventPublisher>();

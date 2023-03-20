@@ -1,18 +1,18 @@
-﻿using Distvisor.App.EventLog.Services.PayloadMasking;
+﻿using Distvisor.App.Core.Serialization;
+using Distvisor.App.HomeBox.ValueObjects;
 using System;
 using System.Collections.Concurrent;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Distvisor.App.EventLog.Services.DetailsProviding
 {
     public abstract class DetailsProvider<TKey, TValue, TDetails>
     {
-        private readonly IServiceProvider _serviceProvider;
         private readonly ConcurrentDictionary<TKey, Func<TValue, TDetails>> _detailsFactories;
 
-        protected DetailsProvider(IServiceProvider serviceProvider)
+        protected DetailsProvider()
         {
-            _serviceProvider = serviceProvider;
             _detailsFactories = new();
         }
 
@@ -26,11 +26,11 @@ namespace Distvisor.App.EventLog.Services.DetailsProviding
 
         protected abstract Func<TValue, TDetails> GetDetailsFactory(TKey factoryKey);
 
-        protected IPayloadMaskingService GetMaskingService(Type type)
+        protected JsonSerializerOptions GetMaskSensitiveDataSerializerOptions()
         {
-            var maskingServiceType = typeof(IPayloadMaskingService<>).MakeGenericType(type);
-            var maskingService = (IPayloadMaskingService)_serviceProvider.GetService(maskingServiceType);
-            return maskingService;
+            var serializerOptions = new JsonSerializerOptions(JsonDefaults.SerializerOptions);
+            serializerOptions.Converters.Add(new SensitiveDataMaskJsonConverter(typeof(GatewayToken), nameof(GatewayToken.AccessToken)));
+            return serializerOptions;
         }
 
         protected string GetDisplayName(Type type)
