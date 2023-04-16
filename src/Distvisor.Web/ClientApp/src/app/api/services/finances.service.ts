@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
@@ -38,8 +38,13 @@ export class FinancesService extends BaseService {
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
   apiSecFinancesImportFilesPost$Response(params?: {
-    body?: { 'files'?: Array<Blob> }
-  }): Observable<StrictHttpResponse<void>> {
+    body?: {
+'files'?: Array<Blob>;
+}
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesImportFilesPostPath, 'post');
     if (params) {
@@ -48,7 +53,8 @@ export class FinancesService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: '*/*'
+      accept: '*/*',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -58,16 +64,21 @@ export class FinancesService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecFinancesImportFilesPost$Response()` instead.
    *
    * This method sends `multipart/form-data` and handles request body of type `multipart/form-data`.
    */
   apiSecFinancesImportFilesPost(params?: {
-    body?: { 'files'?: Array<Blob> }
-  }): Observable<void> {
+    body?: {
+'files'?: Array<Blob>;
+}
+  },
+  context?: HttpContext
 
-    return this.apiSecFinancesImportFilesPost$Response(params).pipe(
+): Observable<void> {
+
+    return this.apiSecFinancesImportFilesPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
@@ -85,7 +96,10 @@ export class FinancesService extends BaseService {
    */
   apiSecFinancesAccountsAddPost$Response(params?: {
     body?: AddFinancialAccountDto
-  }): Observable<StrictHttpResponse<void>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesAccountsAddPostPath, 'post');
     if (params) {
@@ -94,7 +108,8 @@ export class FinancesService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: '*/*'
+      accept: '*/*',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -104,16 +119,19 @@ export class FinancesService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecFinancesAccountsAddPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiSecFinancesAccountsAddPost(params?: {
     body?: AddFinancialAccountDto
-  }): Observable<void> {
+  },
+  context?: HttpContext
 
-    return this.apiSecFinancesAccountsAddPost$Response(params).pipe(
+): Observable<void> {
+
+    return this.apiSecFinancesAccountsAddPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
@@ -130,7 +148,10 @@ export class FinancesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecFinancesAccountsListGet$Plain$Response(params?: {
-  }): Observable<StrictHttpResponse<Array<FinancialAccountDto>>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Array<FinancialAccountDto>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesAccountsListGetPath, 'get');
     if (params) {
@@ -138,7 +159,8 @@ export class FinancesService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: 'text/plain'
+      accept: 'text/plain',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -148,15 +170,18 @@ export class FinancesService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecFinancesAccountsListGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiSecFinancesAccountsListGet$Plain(params?: {
-  }): Observable<Array<FinancialAccountDto>> {
+  },
+  context?: HttpContext
 
-    return this.apiSecFinancesAccountsListGet$Plain$Response(params).pipe(
+): Observable<Array<FinancialAccountDto>> {
+
+    return this.apiSecFinancesAccountsListGet$Plain$Response(params,context).pipe(
       map((r: StrictHttpResponse<Array<FinancialAccountDto>>) => r.body as Array<FinancialAccountDto>)
     );
   }
@@ -168,7 +193,10 @@ export class FinancesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecFinancesAccountsListGet$Json$Response(params?: {
-  }): Observable<StrictHttpResponse<Array<FinancialAccountDto>>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Array<FinancialAccountDto>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesAccountsListGetPath, 'get');
     if (params) {
@@ -176,7 +204,8 @@ export class FinancesService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'json',
-      accept: 'text/json'
+      accept: 'text/json',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -186,15 +215,18 @@ export class FinancesService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecFinancesAccountsListGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiSecFinancesAccountsListGet$Json(params?: {
-  }): Observable<Array<FinancialAccountDto>> {
+  },
+  context?: HttpContext
 
-    return this.apiSecFinancesAccountsListGet$Json$Response(params).pipe(
+): Observable<Array<FinancialAccountDto>> {
+
+    return this.apiSecFinancesAccountsListGet$Json$Response(params,context).pipe(
       map((r: StrictHttpResponse<Array<FinancialAccountDto>>) => r.body as Array<FinancialAccountDto>)
     );
   }
@@ -212,7 +244,10 @@ export class FinancesService extends BaseService {
    */
   apiSecFinancesAccountsTransactionsAddPost$Response(params?: {
     body?: AddFinancialAccountTransactionDto
-  }): Observable<StrictHttpResponse<void>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesAccountsTransactionsAddPostPath, 'post');
     if (params) {
@@ -221,7 +256,8 @@ export class FinancesService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: '*/*'
+      accept: '*/*',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -231,16 +267,19 @@ export class FinancesService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecFinancesAccountsTransactionsAddPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiSecFinancesAccountsTransactionsAddPost(params?: {
     body?: AddFinancialAccountTransactionDto
-  }): Observable<void> {
+  },
+  context?: HttpContext
 
-    return this.apiSecFinancesAccountsTransactionsAddPost$Response(params).pipe(
+): Observable<void> {
+
+    return this.apiSecFinancesAccountsTransactionsAddPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
@@ -258,7 +297,10 @@ export class FinancesService extends BaseService {
    */
   apiSecFinancesAccountsTransactionsListGet$Plain$Response(params?: {
     accountId?: string;
-  }): Observable<StrictHttpResponse<Array<FinancialAccountTransactionDto>>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Array<FinancialAccountTransactionDto>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesAccountsTransactionsListGetPath, 'get');
     if (params) {
@@ -267,7 +309,8 @@ export class FinancesService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: 'text/plain'
+      accept: 'text/plain',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -277,16 +320,19 @@ export class FinancesService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecFinancesAccountsTransactionsListGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiSecFinancesAccountsTransactionsListGet$Plain(params?: {
     accountId?: string;
-  }): Observable<Array<FinancialAccountTransactionDto>> {
+  },
+  context?: HttpContext
 
-    return this.apiSecFinancesAccountsTransactionsListGet$Plain$Response(params).pipe(
+): Observable<Array<FinancialAccountTransactionDto>> {
+
+    return this.apiSecFinancesAccountsTransactionsListGet$Plain$Response(params,context).pipe(
       map((r: StrictHttpResponse<Array<FinancialAccountTransactionDto>>) => r.body as Array<FinancialAccountTransactionDto>)
     );
   }
@@ -299,7 +345,10 @@ export class FinancesService extends BaseService {
    */
   apiSecFinancesAccountsTransactionsListGet$Json$Response(params?: {
     accountId?: string;
-  }): Observable<StrictHttpResponse<Array<FinancialAccountTransactionDto>>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Array<FinancialAccountTransactionDto>>> {
 
     const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesAccountsTransactionsListGetPath, 'get');
     if (params) {
@@ -308,7 +357,8 @@ export class FinancesService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'json',
-      accept: 'text/json'
+      accept: 'text/json',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -318,16 +368,19 @@ export class FinancesService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecFinancesAccountsTransactionsListGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiSecFinancesAccountsTransactionsListGet$Json(params?: {
     accountId?: string;
-  }): Observable<Array<FinancialAccountTransactionDto>> {
+  },
+  context?: HttpContext
 
-    return this.apiSecFinancesAccountsTransactionsListGet$Json$Response(params).pipe(
+): Observable<Array<FinancialAccountTransactionDto>> {
+
+    return this.apiSecFinancesAccountsTransactionsListGet$Json$Response(params,context).pipe(
       map((r: StrictHttpResponse<Array<FinancialAccountTransactionDto>>) => r.body as Array<FinancialAccountTransactionDto>)
     );
   }
@@ -344,7 +397,10 @@ export class FinancesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecFinancesSummaryGet$Plain$Response(params?: {
-  }): Observable<StrictHttpResponse<FinancialSummaryDto>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<FinancialSummaryDto>> {
 
     const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesSummaryGetPath, 'get');
     if (params) {
@@ -352,7 +408,8 @@ export class FinancesService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: 'text/plain'
+      accept: 'text/plain',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -362,15 +419,18 @@ export class FinancesService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecFinancesSummaryGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiSecFinancesSummaryGet$Plain(params?: {
-  }): Observable<FinancialSummaryDto> {
+  },
+  context?: HttpContext
 
-    return this.apiSecFinancesSummaryGet$Plain$Response(params).pipe(
+): Observable<FinancialSummaryDto> {
+
+    return this.apiSecFinancesSummaryGet$Plain$Response(params,context).pipe(
       map((r: StrictHttpResponse<FinancialSummaryDto>) => r.body as FinancialSummaryDto)
     );
   }
@@ -382,7 +442,10 @@ export class FinancesService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecFinancesSummaryGet$Json$Response(params?: {
-  }): Observable<StrictHttpResponse<FinancialSummaryDto>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<FinancialSummaryDto>> {
 
     const rb = new RequestBuilder(this.rootUrl, FinancesService.ApiSecFinancesSummaryGetPath, 'get');
     if (params) {
@@ -390,7 +453,8 @@ export class FinancesService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'json',
-      accept: 'text/json'
+      accept: 'text/json',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -400,15 +464,18 @@ export class FinancesService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecFinancesSummaryGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiSecFinancesSummaryGet$Json(params?: {
-  }): Observable<FinancialSummaryDto> {
+  },
+  context?: HttpContext
 
-    return this.apiSecFinancesSummaryGet$Json$Response(params).pipe(
+): Observable<FinancialSummaryDto> {
+
+    return this.apiSecFinancesSummaryGet$Json$Response(params,context).pipe(
       map((r: StrictHttpResponse<FinancialSummaryDto>) => r.body as FinancialSummaryDto)
     );
   }

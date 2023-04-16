@@ -61,20 +61,6 @@ namespace Distvisor.App.Core.Aggregates
 			return aggregate;
 		}
 
-		public virtual async Task<TAggregateRoot> GetToVersionAsync<TAggregateRoot>(Guid id, int version, CancellationToken cancellationToken = default)
-			where TAggregateRoot : IAggregateRoot, new()
-		{
-			var aggregate = await _repository.GetToVersionAsync<TAggregateRoot>(id, version, cancellationToken: cancellationToken);
-			return aggregate;
-		}
-
-		public virtual async Task<TAggregateRoot> GetToDateAsync<TAggregateRoot>(Guid id, DateTime versionedDate, CancellationToken cancellationToken = default)
-			where TAggregateRoot : IAggregateRoot, new()
-		{
-			var aggregate = await _repository.GetToDateAsync<TAggregateRoot>(id, versionedDate, cancellationToken: cancellationToken);
-			return aggregate;
-		}
-
 		public virtual async Task CommitAsync(CancellationToken cancellationToken = default)
 		{
 			foreach (var tracker in _aggregateTrackers.Values)

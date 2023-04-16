@@ -8,6 +8,7 @@ import { NgxsModule } from '@ngxs/store';
 import { CardModule } from 'primeng/card';
 import { CodeHighlighterModule } from 'primeng/codehighlighter';
 import { InputTextModule } from 'primeng/inputtext';
+import { MenuModule } from 'primeng/menu';
 import { PanelModule } from 'primeng/panel';
 import { TableModule } from 'primeng/table';
 
@@ -35,6 +36,7 @@ import { AggregateState } from './store/aggregate.state';
     CardModule,
     CodeHighlighterModule,
     InputTextModule,
+    MenuModule,
     PanelModule,
     TableModule,
 

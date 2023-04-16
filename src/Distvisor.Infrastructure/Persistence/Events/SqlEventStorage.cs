@@ -1,5 +1,5 @@
-﻿using Distvisor.App.Common.Interfaces;
-using Distvisor.App.Core.Events;
+﻿using Distvisor.App.Core.Events;
+using Distvisor.Infrastructure.Persistence.Events;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,47 +11,68 @@ namespace Distvisor.Infrastructure.Persistence
 {
     public class SqlEventStorage : IEventStorage
     {
-        private readonly IEventsDbContext _context;
-        public SqlEventStorage(IEventsDbContext context)
+        private readonly EventsDbContext _context;
+        public SqlEventStorage(EventsDbContext context)
         {
             _context = context;
         }
 
-        public async Task SaveAsync(EventEntity eventData, CancellationToken token)
+        public async Task<long> SaveAsync(EventEntity eventData, CancellationToken token)
         {
             await _context.Events.AddAsync(eventData, token);
             await _context.SaveChangesAsync(token);
+            return eventData.EventId;
         }
 
-        public async Task<IEnumerable<EventEntity>> GetAsync(Type aggregateRootType, Guid aggregateId, bool useLastEventOnly, int fromVersion, CancellationToken token)
+        public async Task<IEnumerable<EventEntity>> GetAsync(Guid aggregateId, int fromVersion, CancellationToken token)
         {
-            var query = _context.Events
-                .Where(ev => ev.AggregateId == aggregateId && ev.Version > fromVersion);
+            var entities = await _context.Events
+                .Where(ev => ev.AggregateId == aggregateId && ev.Version > fromVersion)
+                .ToArrayAsync(token);
+            return entities;
+        }
 
-            if (useLastEventOnly)
+        public async Task<IEnumerable<EventEntity>> GetAsync(long offsetId, int batchSize, CancellationToken cancellationToken)
+        {
+            var entities = await _context.Events
+                .AsNoTracking()
+                .Where(ev => ev.EventId > offsetId)
+                .OrderBy(ev => ev.EventId)
+                .Take(batchSize)
+                .ToArrayAsync(cancellationToken);
+            return entities;
+        }
+
+        public async Task<IEnumerable<EventEntity>> GetAsync(Guid? aggregateId, int offset, int batchSize, CancellationToken cancellationToken)
+        {
+            var query = _context.Events.AsQueryable();
+
+            if (aggregateId.HasValue)
             {
-                var last = await query.LastOrDefaultAsync(token);
-                return last == null
-                    ? new[] { last }
-                    : Enumerable.Empty<EventEntity>();
+                query = query.Where(x => x.AggregateId == aggregateId.Value);
             }
 
-            return await query.ToArrayAsync(token);
+            return await query
+                .OrderByDescending(x => x.EventId)
+                .Skip(offset)
+                .Take(batchSize)
+                .ToArrayAsync(cancellationToken);
         }
 
-        public Task<IEnumerable<EventEntity>> GetBetweenDatesAsync(Type aggregateRootType, Guid aggregateId, DateTime fromVersionedDate, DateTime toVersionedDate, CancellationToken token)
+        public async Task<int> CountAsync(Guid? aggregateId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-        }
+            var query = _context.Events.AsQueryable();
 
-        public Task<IEnumerable<EventEntity>> GetToDateAsync(Type aggregateRootType, Guid aggregateId, DateTime versionedDate, CancellationToken token)
-        {
-            throw new NotImplementedException();
-        }
+            if (aggregateId.HasValue)
+            {
+                query = query.Where(x => x.AggregateId == aggregateId.Value);
+            }
 
-        public Task<IEnumerable<EventEntity>> GetToVersionAsync(Type aggregateRootType, Guid aggregateId, int version, CancellationToken token)
-        {
-            throw new NotImplementedException();
+            var count = await query.LongCountAsync(cancellationToken: cancellationToken);
+
+            return count > int.MaxValue
+                ? int.MaxValue
+                : (int)count;
         }
     }
 }

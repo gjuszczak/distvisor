@@ -15,7 +15,7 @@ namespace Distvisor.App.Tests.Unit
         private readonly string username = "user";
         private readonly string accessToken = "at";
         private readonly string refreshToken = "rt";
-        private readonly DateTimeOffset generatedAt = DateTimeOffset.Now;
+        private readonly DateTimeOffset generatedAt = DateTimeOffset.UtcNow;
 
         [Test]
         public void CanOpenGatewaySession()
@@ -43,7 +43,7 @@ namespace Distvisor.App.Tests.Unit
             var token = new GatewayToken(accessToken, refreshToken, generatedAt);
             var session = new GatewaySession(sessionId, username, token);
             
-            var now = DateTimeOffset.Now.AddMinutes(5.1);
+            var now = DateTimeOffset.UtcNow.AddMinutes(5.1);
             session.BeginRefresh(now);
 
             var events = session.GetUncommittedChanges();
@@ -67,7 +67,7 @@ namespace Distvisor.App.Tests.Unit
             var originalToken = new GatewayToken(accessToken, refreshToken, generatedAt);
             var session = new GatewaySession(sessionId, username, originalToken);
 
-            var now = DateTimeOffset.Now.AddMinutes(5.1);
+            var now = DateTimeOffset.UtcNow.AddMinutes(5.1);
             session.BeginRefresh(now);
 
             var refreshedToken = new GatewayToken($"{accessToken}_fresh", $"{refreshToken}_fresh", now);
@@ -92,7 +92,7 @@ namespace Distvisor.App.Tests.Unit
             var token = new GatewayToken(accessToken, refreshToken, generatedAt);
             var session = new GatewaySession(sessionId, username, token);
 
-            var now = DateTimeOffset.Now.AddMinutes(5.1);
+            var now = DateTimeOffset.UtcNow.AddMinutes(5.1);
             session.BeginRefresh(now);
 
             session.RefreshFailed();
@@ -132,7 +132,7 @@ namespace Distvisor.App.Tests.Unit
             var token = new GatewayToken(accessToken, refreshToken, generatedAt);
             var session = new GatewaySession(sessionId, username, token);
 
-            var now = DateTimeOffset.Now.AddMinutes(4.9);
+            var now = DateTimeOffset.UtcNow.AddMinutes(4.9);
             Assert.Throws<GatewaySessionTokenIsFreshException>(() => session.BeginRefresh(now));
         }
 
@@ -142,10 +142,10 @@ namespace Distvisor.App.Tests.Unit
             var token = new GatewayToken(accessToken, refreshToken, generatedAt);
             var session = new GatewaySession(sessionId, username, token);
 
-            var firstNow = DateTimeOffset.Now.AddMinutes(5.1);
+            var firstNow = DateTimeOffset.UtcNow.AddMinutes(5.1);
             session.BeginRefresh(firstNow);
 
-            var nextNow = DateTimeOffset.Now.AddMinutes(5.2);
+            var nextNow = DateTimeOffset.UtcNow.AddMinutes(5.2);
             Assert.Throws<GatewaySessionRefreshingReservedException>(() => session.BeginRefresh(nextNow));
         }
 
@@ -155,10 +155,10 @@ namespace Distvisor.App.Tests.Unit
             var token = new GatewayToken(accessToken, refreshToken, generatedAt);
             var session = new GatewaySession(sessionId, username, token);
 
-            var firstNow = DateTimeOffset.Now.AddMinutes(5.1);
+            var firstNow = DateTimeOffset.UtcNow.AddMinutes(5.1);
             session.BeginRefresh(firstNow);
 
-            var nextNow = DateTimeOffset.Now.AddMinutes(5.2);
+            var nextNow = DateTimeOffset.UtcNow.AddMinutes(5.2);
             Assert.Throws<GatewaySessionRefreshingReservedException>(() => session.BeginRefresh(nextNow));
         }
 
@@ -168,12 +168,12 @@ namespace Distvisor.App.Tests.Unit
             var token = new GatewayToken(accessToken, refreshToken, generatedAt);
             var session = new GatewaySession(sessionId, username, token);
 
-            var firstNow = DateTimeOffset.Now.AddMinutes(5.1);
+            var firstNow = DateTimeOffset.UtcNow.AddMinutes(5.1);
             session.BeginRefresh(firstNow);
 
             session.RefreshFailed();
 
-            var nextNow = DateTimeOffset.Now.AddMinutes(5.2);
+            var nextNow = DateTimeOffset.UtcNow.AddMinutes(5.2);
             var refreshedToken = new GatewayToken($"{accessToken}_fresh", $"{refreshToken}_fresh", nextNow);
 
             Assert.Throws<GatewaySessionClosedException>(() => session.BeginRefresh(nextNow));
@@ -188,7 +188,7 @@ namespace Distvisor.App.Tests.Unit
             var session = new GatewaySession(sessionId, username, token);
             session.Delete();
 
-            Assert.Throws<GatewaySessionDeletedException>(() => session.BeginRefresh(DateTimeOffset.Now));
+            Assert.Throws<GatewaySessionDeletedException>(() => session.BeginRefresh(DateTimeOffset.UtcNow));
             Assert.Throws<GatewaySessionDeletedException>(() => session.RefreshSucceed(token));
             Assert.Throws<GatewaySessionDeletedException>(() => session.RefreshFailed());
         }

@@ -1,5 +1,6 @@
-﻿using Distvisor.App.Common.Interfaces;
-using Distvisor.App.Core.Aggregates;
+﻿using Distvisor.App.Core.Aggregates;
+using Distvisor.App.Core.Events;
+using Distvisor.App.Core.Exceptions;
 using Distvisor.App.Core.Queries;
 using Distvisor.App.EventLog.Services.DetailsProviding;
 using System;
@@ -17,21 +18,25 @@ namespace Distvisor.App.EventLog.Qureies.GetAggregate
 
     public class GetAggregateHandler : IQueryHandler<GetAggregate, AggregateDto>
     {
-        private readonly IEventsDbContext _context;
+        private readonly IEventStore _eventStore;
         private readonly IAggregateContext _aggregateContext;
         private readonly IAggregateDetailsProvider _aggregateDetailsProvider;
 
-        public GetAggregateHandler(IEventsDbContext context, IAggregateContext aggregateContext, IAggregateDetailsProvider aggregateDetailsProvider)
+        public GetAggregateHandler(IEventStore eventStore, IAggregateContext aggregateContext, IAggregateDetailsProvider aggregateDetailsProvider)
         {
-            _context = context;
+            _eventStore = eventStore;
             _aggregateContext = aggregateContext;
             _aggregateDetailsProvider = aggregateDetailsProvider;
         }
 
         public async Task<AggregateDto> Handle(GetAggregate request, CancellationToken cancellationToken)
         {
-            var aggregateTypeString = _context.Events.First(ev => ev.AggregateId == request.AggregateId)?.AggregateType;
-            var aggregateType = Type.GetType(aggregateTypeString, true);
+            var aggregateEvents = await _eventStore.GetAsync(request.AggregateId, batchSize: 1, cancellationToken: cancellationToken);
+            if (!aggregateEvents.Any())
+            {
+                throw new AggregateNotFoundException(request.AggregateId);
+            }
+            var aggregateType = aggregateEvents.First().AggregateType;
             var getAggregateMethod = GetType()
                 .GetMethod(nameof(GetAggregateAsync), BindingFlags.NonPublic | BindingFlags.Instance)
                 .MakeGenericMethod(aggregateType);

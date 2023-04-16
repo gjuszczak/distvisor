@@ -22,12 +22,12 @@ namespace Distvisor.Infrastructure.Persistence
                 {
                     case EntityState.Added:
                         entry.Entity.CreatedBy = _correlationIdProvider.GetCorrelationId().ToString();
-                        entry.Entity.Created = DateTimeOffset.Now;
+                        entry.Entity.Created = DateTimeOffset.UtcNow;
                         break;
 
                     case EntityState.Modified:
                         entry.Entity.LastModifiedBy = _correlationIdProvider.GetCorrelationId().ToString();
-                        entry.Entity.LastModified = DateTimeOffset.Now;
+                        entry.Entity.LastModified = DateTimeOffset.UtcNow;
                         break;
                 }
             }

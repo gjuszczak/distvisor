@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
@@ -34,7 +34,10 @@ export class AccountService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecAccountGet$Plain$Response(params?: {
-  }): Observable<StrictHttpResponse<UserInfoDto>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<UserInfoDto>> {
 
     const rb = new RequestBuilder(this.rootUrl, AccountService.ApiSecAccountGetPath, 'get');
     if (params) {
@@ -42,7 +45,8 @@ export class AccountService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: 'text/plain'
+      accept: 'text/plain',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -52,15 +56,18 @@ export class AccountService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecAccountGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiSecAccountGet$Plain(params?: {
-  }): Observable<UserInfoDto> {
+  },
+  context?: HttpContext
 
-    return this.apiSecAccountGet$Plain$Response(params).pipe(
+): Observable<UserInfoDto> {
+
+    return this.apiSecAccountGet$Plain$Response(params,context).pipe(
       map((r: StrictHttpResponse<UserInfoDto>) => r.body as UserInfoDto)
     );
   }
@@ -72,7 +79,10 @@ export class AccountService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecAccountGet$Json$Response(params?: {
-  }): Observable<StrictHttpResponse<UserInfoDto>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<UserInfoDto>> {
 
     const rb = new RequestBuilder(this.rootUrl, AccountService.ApiSecAccountGetPath, 'get');
     if (params) {
@@ -80,7 +90,8 @@ export class AccountService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'json',
-      accept: 'text/json'
+      accept: 'text/json',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -90,15 +101,18 @@ export class AccountService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecAccountGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiSecAccountGet$Json(params?: {
-  }): Observable<UserInfoDto> {
+  },
+  context?: HttpContext
 
-    return this.apiSecAccountGet$Json$Response(params).pipe(
+): Observable<UserInfoDto> {
+
+    return this.apiSecAccountGet$Json$Response(params,context).pipe(
       map((r: StrictHttpResponse<UserInfoDto>) => r.body as UserInfoDto)
     );
   }

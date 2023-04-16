@@ -2,10 +2,14 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+#nullable disable
+
 namespace Distvisor.Infrastructure.Persistence.App.Migrations
 {
+    /// <inheritdoc />
     public partial class Initial : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
@@ -56,6 +60,7 @@ namespace Distvisor.Infrastructure.Persistence.App.Migrations
                 });
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

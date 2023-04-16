@@ -5,9 +5,6 @@ using Distvisor.App.HomeBox.Queries.GetDevices;
 using Distvisor.App.HomeBox.Queries.GetGatewaySessions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
 {

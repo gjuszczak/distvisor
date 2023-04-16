@@ -13,11 +13,5 @@ namespace Distvisor.App.Core.Aggregates
 
         Task<TAggregateRoot> GetAsync<TAggregateRoot>(Guid aggregateId, IList<IEvent> events = null, CancellationToken cancellationToken = default)
             where TAggregateRoot : IAggregateRoot, new();
-
-        Task<TAggregateRoot> GetToVersionAsync<TAggregateRoot>(Guid aggregateId, int version, IList<IEvent> events = null, CancellationToken cancellationToken = default)
-            where TAggregateRoot : IAggregateRoot, new();
-
-        Task<TAggregateRoot> GetToDateAsync<TAggregateRoot>(Guid aggregateId, DateTime versionedDate, IList<IEvent> events = null, CancellationToken cancellationToken = default)
-            where TAggregateRoot : IAggregateRoot, new();
     }
 }

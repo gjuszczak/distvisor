@@ -36,7 +36,7 @@ namespace Distvisor.App.Core.Aggregates
 
             if (expectedVersion != null)
             {
-                var eventStoreResults = await _eventStore.GetAsync(aggregate.GetType(), aggregate.AggregateId, false, expectedVersion.Value, cancellationToken);
+                var eventStoreResults = await _eventStore.GetAsync(aggregate.AggregateId, expectedVersion.Value, cancellationToken);
                 if (eventStoreResults.Any())
                 {
                     throw new ConcurrencyException(aggregate.AggregateId);
@@ -47,11 +47,6 @@ namespace Distvisor.App.Core.Aggregates
             int version = aggregate.Version;
             foreach (IEvent @event in uncommittedChanges)
             {
-                if (@event.EventId == Guid.Empty)
-                {
-                    @event.EventId = Guid.NewGuid();
-                }
-
                 if (@event.AggregateId == Guid.Empty)
                 {
                     if (aggregate.AggregateId == Guid.Empty)
@@ -60,71 +55,27 @@ namespace Distvisor.App.Core.Aggregates
                     }
 
                     @event.AggregateId = aggregate.AggregateId;
+                    @event.AggregateType = aggregate.GetType();
                 }
 
                 @event.Version = ++version;
                 @event.TimeStamp = DateTimeOffset.UtcNow;
                 @event.CorrelationId = _correlationIdProvider.GetCorrelationId();
-                await _eventStore.SaveAsync(aggregate.GetType(), @event, cancellationToken);
+                @event.EventId = await _eventStore.SaveAsync(@event, cancellationToken);
                 eventsToPublish.Add(@event);
             }
 
             aggregate.MarkChangesAsCommitted();
             foreach (IEvent @event in eventsToPublish)
             {
-                _publisher.Publish(@event);
+                await _publisher.PublishAsync(@event, cancellationToken);
             }
         }
 
         public virtual async Task<TAggregateRoot> GetAsync<TAggregateRoot>(Guid aggregateId, IList<IEvent> events = null, CancellationToken cancellationToken = default)
             where TAggregateRoot : IAggregateRoot, new()
         {
-            var aggregateEvents = events ?? await _eventStore.GetAsync<TAggregateRoot>(aggregateId, cancellationToken: cancellationToken);
-            if (!aggregateEvents.Any())
-            {
-                throw new AggregateNotFoundException(aggregateId, typeof(TAggregateRoot));
-            }
-
-            var duplicatedEvents = aggregateEvents.GroupBy(x => x.Version)
-                .Select(x => new { Version = x.Key, Total = x.Count() })
-                .FirstOrDefault(x => x.Total > 1);
-            if (duplicatedEvents != null)
-            {
-                throw new DuplicateEventException<TAggregateRoot>(aggregateId, duplicatedEvents.Version);
-            }
-
-            var aggregate = new TAggregateRoot();
-            aggregate.LoadFromHistory(aggregateEvents);
-            return aggregate;
-        }
-
-        public virtual async Task<TAggregateRoot> GetToVersionAsync<TAggregateRoot>(Guid aggregateId, int version, IList<IEvent> events = null, CancellationToken cancellationToken = default)
-            where TAggregateRoot : IAggregateRoot, new()
-        {
-            var aggregateEvents = events ?? await _eventStore.GetToVersionAsync<TAggregateRoot>(aggregateId, version, cancellationToken);
-            if (!aggregateEvents.Any())
-            {
-                throw new AggregateNotFoundException(aggregateId, typeof(TAggregateRoot));
-
-            }
-
-            var duplicatedEvents = aggregateEvents.GroupBy(x => x.Version)
-                .Select(x => new { Version = x.Key, Total = x.Count() })
-                .FirstOrDefault(x => x.Total > 1);
-            if (duplicatedEvents != null)
-            {
-                throw new DuplicateEventException<TAggregateRoot>(aggregateId, duplicatedEvents.Version);
-            }
-
-            var aggregate = new TAggregateRoot();
-            aggregate.LoadFromHistory(aggregateEvents);
-            return aggregate;
-        }
-
-        public virtual async Task<TAggregateRoot> GetToDateAsync<TAggregateRoot>(Guid aggregateId, DateTime versionedDate, IList<IEvent> events = null, CancellationToken cancellationToken = default)
-            where TAggregateRoot : IAggregateRoot, new()
-        {
-            var aggregateEvents = events ?? await _eventStore.GetToDateAsync<TAggregateRoot>(aggregateId, versionedDate, cancellationToken);
+            var aggregateEvents = events ?? await _eventStore.GetAsync(aggregateId, cancellationToken: cancellationToken);
             if (!aggregateEvents.Any())
             {
                 throw new AggregateNotFoundException(aggregateId, typeof(TAggregateRoot));

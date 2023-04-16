@@ -1,5 +1,4 @@
 ﻿using Distvisor.App.Core.Aggregates;
-using Distvisor.App.Core.Events;
 using Distvisor.App.HomeBox.Enums;
 using Distvisor.App.HomeBox.Events;
 using Distvisor.App.HomeBox.Exceptions;
@@ -15,12 +14,19 @@ namespace Distvisor.App.HomeBox.Aggregates
         public GatewaySessionStatus Status { get; private set; }
         public DateTimeOffset RefreshingReservationTimeout { get; private set; }
 
-        public GatewaySession() { }
+        public GatewaySession()
+        {
+            RegisterEventHandler<GatewaySessionOpened>(Apply);
+            RegisterEventHandler<GatewaySessionRefreshStarted>(Apply);
+            RegisterEventHandler<GatewaySessionRefreshFailed>(Apply);
+            RegisterEventHandler<GatewaySessionRefreshSucceeded>(Apply);
+            RegisterEventHandler<GatewaySessionDeleted>(Apply);
+        }
 
-        public GatewaySession(Guid aggregateId, string username, GatewayToken token)
+        public GatewaySession(Guid aggregateId, string username, GatewayToken token) : this()
         {
             AggregateId = aggregateId;
-            ApplyChange(new GatewaySessionOpened(username, token));
+            ApplyEvent(new GatewaySessionOpened(username, token));
         }
 
         public void BeginRefresh(DateTimeOffset? optionalNow = null)
@@ -34,7 +40,7 @@ namespace Distvisor.App.HomeBox.Aggregates
                 throw new GatewaySessionDeletedException();
             }
 
-            var now = optionalNow ?? DateTimeOffset.Now;
+            var now = optionalNow ?? DateTimeOffset.UtcNow;
             if (IsReservedForRefreshing(now))
             {
                 throw new GatewaySessionRefreshingReservedException(RefreshingReservationTimeout);
@@ -45,7 +51,7 @@ namespace Distvisor.App.HomeBox.Aggregates
                 throw new GatewaySessionTokenIsFreshException();
             }
 
-            ApplyChange(new GatewaySessionRefreshStarted(now.AddSeconds(30)));
+            ApplyEvent(new GatewaySessionRefreshStarted(now.AddSeconds(30)));
         }
 
         public void RefreshFailed()
@@ -63,7 +69,7 @@ namespace Distvisor.App.HomeBox.Aggregates
                 throw new GatewaySessionIsNotRefreshingException();
             };
 
-            ApplyChange(new GatewaySessionRefreshFailed());
+            ApplyEvent(new GatewaySessionRefreshFailed());
         }
 
         public void RefreshSucceed(GatewayToken token)
@@ -81,7 +87,7 @@ namespace Distvisor.App.HomeBox.Aggregates
                 throw new GatewaySessionIsNotRefreshingException();
             };
 
-            ApplyChange(new GatewaySessionRefreshSucceeded(token));
+            ApplyEvent(new GatewaySessionRefreshSucceeded(token));
         }
 
         public void Delete()
@@ -95,38 +101,12 @@ namespace Distvisor.App.HomeBox.Aggregates
                 throw new GatewaySessionRefreshingReservedException(RefreshingReservationTimeout);
             };
 
-            ApplyChange(new GatewaySessionDeleted());
+            ApplyEvent(new GatewaySessionDeleted());
         }
 
         private bool IsReservedForRefreshing(DateTimeOffset now)
         {
             return Status == GatewaySessionStatus.Refreshing && now < RefreshingReservationTimeout;
-        }
-
-        protected override void Apply(IEvent @event)
-        {
-            switch (@event)
-            {
-                case GatewaySessionOpened sessionOpened:
-                    Apply(sessionOpened);
-                    break;
-
-                case GatewaySessionRefreshStarted refreshStarted:
-                    Apply(refreshStarted);
-                    break;
-
-                case GatewaySessionRefreshFailed refreshFailed:
-                    Apply(refreshFailed);
-                    break;
-
-                case GatewaySessionRefreshSucceeded refreshSucceeded:
-                    Apply(refreshSucceeded);
-                    break;
-                
-                case GatewaySessionDeleted sessionDeleted:
-                    Apply(sessionDeleted);
-                    break;
-            }
         }
 
         private void Apply(GatewaySessionOpened @event)

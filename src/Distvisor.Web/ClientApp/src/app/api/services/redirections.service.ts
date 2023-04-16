@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
@@ -35,7 +35,10 @@ export class RedirectionsService extends BaseService {
    */
   apiSecRedirectionsNameDelete$Response(params: {
     name: string;
-  }): Observable<StrictHttpResponse<void>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, RedirectionsService.ApiSecRedirectionsNameDeletePath, 'delete');
     if (params) {
@@ -44,7 +47,8 @@ export class RedirectionsService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: '*/*'
+      accept: '*/*',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -54,16 +58,19 @@ export class RedirectionsService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecRedirectionsNameDelete$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiSecRedirectionsNameDelete(params: {
     name: string;
-  }): Observable<void> {
+  },
+  context?: HttpContext
 
-    return this.apiSecRedirectionsNameDelete$Response(params).pipe(
+): Observable<void> {
+
+    return this.apiSecRedirectionsNameDelete$Response(params,context).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
@@ -80,7 +87,10 @@ export class RedirectionsService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecRedirectionsGet$Plain$Response(params?: {
-  }): Observable<StrictHttpResponse<Array<RedirectionDetails>>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Array<RedirectionDetails>>> {
 
     const rb = new RequestBuilder(this.rootUrl, RedirectionsService.ApiSecRedirectionsGetPath, 'get');
     if (params) {
@@ -88,7 +98,8 @@ export class RedirectionsService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: 'text/plain'
+      accept: 'text/plain',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -98,15 +109,18 @@ export class RedirectionsService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecRedirectionsGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiSecRedirectionsGet$Plain(params?: {
-  }): Observable<Array<RedirectionDetails>> {
+  },
+  context?: HttpContext
 
-    return this.apiSecRedirectionsGet$Plain$Response(params).pipe(
+): Observable<Array<RedirectionDetails>> {
+
+    return this.apiSecRedirectionsGet$Plain$Response(params,context).pipe(
       map((r: StrictHttpResponse<Array<RedirectionDetails>>) => r.body as Array<RedirectionDetails>)
     );
   }
@@ -118,7 +132,10 @@ export class RedirectionsService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecRedirectionsGet$Json$Response(params?: {
-  }): Observable<StrictHttpResponse<Array<RedirectionDetails>>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Array<RedirectionDetails>>> {
 
     const rb = new RequestBuilder(this.rootUrl, RedirectionsService.ApiSecRedirectionsGetPath, 'get');
     if (params) {
@@ -126,7 +143,8 @@ export class RedirectionsService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'json',
-      accept: 'text/json'
+      accept: 'text/json',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -136,15 +154,18 @@ export class RedirectionsService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecRedirectionsGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiSecRedirectionsGet$Json(params?: {
-  }): Observable<Array<RedirectionDetails>> {
+  },
+  context?: HttpContext
 
-    return this.apiSecRedirectionsGet$Json$Response(params).pipe(
+): Observable<Array<RedirectionDetails>> {
+
+    return this.apiSecRedirectionsGet$Json$Response(params,context).pipe(
       map((r: StrictHttpResponse<Array<RedirectionDetails>>) => r.body as Array<RedirectionDetails>)
     );
   }
@@ -162,7 +183,10 @@ export class RedirectionsService extends BaseService {
    */
   apiSecRedirectionsPost$Response(params?: {
     body?: RedirectionDetails
-  }): Observable<StrictHttpResponse<void>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, RedirectionsService.ApiSecRedirectionsPostPath, 'post');
     if (params) {
@@ -171,7 +195,8 @@ export class RedirectionsService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: '*/*'
+      accept: '*/*',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -181,16 +206,19 @@ export class RedirectionsService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecRedirectionsPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
   apiSecRedirectionsPost(params?: {
     body?: RedirectionDetails
-  }): Observable<void> {
+  },
+  context?: HttpContext
 
-    return this.apiSecRedirectionsPost$Response(params).pipe(
+): Observable<void> {
+
+    return this.apiSecRedirectionsPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }

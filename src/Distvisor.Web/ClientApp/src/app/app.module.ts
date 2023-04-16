@@ -1,8 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
+
+import localePl from '@angular/common/locales/pl';
+registerLocaleData(localePl);
 
 import { NgxsModule } from '@ngxs/store';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
@@ -24,6 +28,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { ApiModule } from './api/api.module';
 import { CoreModule } from './core/core.module';
 
+import { AdminModule } from './features/admin/admin.module';
 import { SettingsModule } from './features/settings/settings.module';
 import { FinancesModule } from './features/finances/finances.module';
 import { HomeBoxModule } from './features/home-box/home-box.module';
@@ -66,6 +71,7 @@ import { AppComponent } from './app.component';
     // internal
     ApiModule,
     CoreModule,
+    AdminModule,
     SettingsModule,
     FinancesModule,
     HomeBoxModule,
@@ -79,6 +85,7 @@ import { AppComponent } from './app.component';
     { provide: MSAL_INSTANCE, useFactory: MsalInstanceFactory, deps: ['CLIENT_CONFIGURATION'] },
     { provide: MSAL_GUARD_CONFIG, useFactory: MsalGuardConfigFactory, deps: ['CLIENT_CONFIGURATION'] },
     { provide: MSAL_INTERCEPTOR_CONFIG, useFactory: MsalInterceptorConfigFactory, deps: ['CLIENT_CONFIGURATION'] },
+    { provide: LOCALE_ID, useValue: navigator.language === 'pl' ? 'pl' : 'en-US' },
     MsalService,
     MsalGuard,
     MsalBroadcastService,

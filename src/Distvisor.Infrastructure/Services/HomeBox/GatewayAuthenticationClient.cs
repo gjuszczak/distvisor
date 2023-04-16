@@ -53,7 +53,7 @@ namespace Distvisor.Infrastructure.Services.HomeBox
             var result = JsonSerializer.Deserialize<GatewayResponseDto<GatewayLoginResponseData>>(responseContent);
             return new GatewayAuthenticationResult
             {
-                Token = new GatewayToken(result.Data.AccessToken, result.Data.RefreshToken, DateTimeOffset.Now)
+                Token = new GatewayToken(result.Data.AccessToken, result.Data.RefreshToken, DateTimeOffset.UtcNow)
             };
         }
 
@@ -85,7 +85,7 @@ namespace Distvisor.Infrastructure.Services.HomeBox
             var result = JsonSerializer.Deserialize<GatewayResponseDto<GatewayLoginResponseData>>(responseContent);
             return new GatewayAuthenticationResult
             {
-                Token = new GatewayToken(result.Data.AccessToken, result.Data.RefreshToken, DateTimeOffset.Now)
+                Token = new GatewayToken(result.Data.AccessToken, result.Data.RefreshToken, DateTimeOffset.UtcNow)
             };
         }
     }

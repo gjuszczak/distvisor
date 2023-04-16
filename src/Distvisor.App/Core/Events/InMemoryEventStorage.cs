@@ -8,66 +8,76 @@ namespace Distvisor.App.Core.Events
 {
     public class InMemoryEventStorage : IEventStorage
     {
-        private readonly IDictionary<Guid, IList<EventEntity>> _inMemoryStorage =
-            new Dictionary<Guid, IList<EventEntity>>();
+        private readonly IDictionary<Guid, IList<EventEntity>> _inMemoryStorageDict = new Dictionary<Guid, IList<EventEntity>>();
 
-        public Task SaveAsync(EventEntity eventData, CancellationToken cancellationToken)
+        private readonly IList<EventEntity> _inMemoryStorageList = new List<EventEntity>();
+
+        private long _idSeq = 1;
+
+        public Task<long> SaveAsync(EventEntity eventData, CancellationToken cancellationToken)
         {
-            if (!_inMemoryStorage.TryGetValue(eventData.AggregateId, out var list))
+            if (!_inMemoryStorageDict.TryGetValue(eventData.AggregateId, out var list))
             {
                 list = new List<EventEntity>();
-                _inMemoryStorage.Add(eventData.AggregateId, list);
+                _inMemoryStorageDict.Add(eventData.AggregateId, list);
             }
+            eventData.EventId = _idSeq++;
             list.Add(eventData);
+            _inMemoryStorageList.Add(eventData);
 
-            return Task.CompletedTask;
+            return Task.FromResult(eventData.EventId);
         }
 
-        public Task<IEnumerable<EventEntity>> GetAsync(Type aggregateRootType, Guid aggregateId, bool useLastEventOnly, int fromVersion, CancellationToken cancellationToken)
+        public Task<IEnumerable<EventEntity>> GetAsync(Guid aggregateId, int fromVersion, CancellationToken cancellationToken)
         {
-            if (_inMemoryStorage.TryGetValue(aggregateId, out var list))
+            if (_inMemoryStorageDict.TryGetValue(aggregateId, out var list))
             {
-                var entities = list.Where(x => x.Version > fromVersion);
-                var result = (entities.Any() && useLastEventOnly)
-                    ? new[] { entities.Last() }
-                    : entities.ToArray();
-                return Task.FromResult(result.AsEnumerable());
+                var entities = list.Where(x => x.Version > fromVersion).ToArray();
+                return Task.FromResult(entities.AsEnumerable());
             }
 
             return Task.FromResult(Enumerable.Empty<EventEntity>());
         }
 
-        public Task<IEnumerable<EventEntity>> GetToVersionAsync(Type aggregateRootType, Guid aggregateId, int version, CancellationToken cancellationToken)
+        public Task<IEnumerable<EventEntity>> GetAsync(long offsetId, int batchSize, CancellationToken cancellationToken)
         {
-            if (_inMemoryStorage.TryGetValue(aggregateId, out var list))
-            {
-                var result = list.Where(x => x.Version <= version).ToArray();
-                return Task.FromResult(result.AsEnumerable());
-            }
-
-            return Task.FromResult(Enumerable.Empty<EventEntity>());
+            var entities = _inMemoryStorageList.Where(x => x.EventId > offsetId).Take(batchSize).ToArray();
+            return Task.FromResult(entities.AsEnumerable());
         }
 
-        public Task<IEnumerable<EventEntity>> GetToDateAsync(Type aggregateRootType, Guid aggregateId, DateTime versionedDate, CancellationToken cancellationToken)
+        public Task<IEnumerable<EventEntity>> GetAsync(Guid? aggregateId, int offset, int batchSize, CancellationToken cancellationToken)
         {
-            if (_inMemoryStorage.TryGetValue(aggregateId, out var list))
+            var entities = Enumerable.Empty<EventEntity>();
+
+            if (!aggregateId.HasValue)
             {
-                var result = list.Where(x => x.TimeStamp <= versionedDate).ToArray();
-                return Task.FromResult(result.AsEnumerable());
+                entities = _inMemoryStorageList;                    
+            }
+            else if (_inMemoryStorageDict.TryGetValue(aggregateId.Value, out var list))
+            {
+                entities = list;
             }
 
-            return Task.FromResult(Enumerable.Empty<EventEntity>());
+            return Task.FromResult(entities
+                .OrderByDescending(x => x.EventId)
+                .Skip(offset)
+                .Take(batchSize)
+                .ToArray()
+                .AsEnumerable());
         }
 
-        public Task<IEnumerable<EventEntity>> GetBetweenDatesAsync(Type aggregateRootType, Guid aggregateId, DateTime fromVersionedDate, DateTime toVersionedDate, CancellationToken cancellationToken)
+        public Task<int> CountAsync(Guid? aggregateId, CancellationToken cancellationToken)
         {
-            if (_inMemoryStorage.TryGetValue(aggregateId, out var list))
+            if (!aggregateId.HasValue)
             {
-                var result = list.Where(x => x.TimeStamp >= fromVersionedDate && x.TimeStamp <= toVersionedDate).ToArray();
-                return Task.FromResult(result.AsEnumerable());
+                return Task.FromResult(_inMemoryStorageList.Count);
+            }
+            else if (_inMemoryStorageDict.TryGetValue(aggregateId.Value, out var list))
+            {
+                return Task.FromResult(list.Count);
             }
 
-            return Task.FromResult(Enumerable.Empty<EventEntity>());
+            return Task.FromResult(0);
         }
     }
 }

@@ -8,20 +8,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
+#nullable disable
+
 namespace Distvisor.Infrastructure.Persistence.App.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220603141212_Initial")]
+    [Migration("20230413105935_Initial")]
     partial class Initial
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("app")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.11")
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                .HasAnnotation("ProductVersion", "7.0.3")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Distvisor.App.HomeBox.Entities.DeviceEntity", b =>
                 {
@@ -64,7 +68,7 @@ namespace Distvisor.Infrastructure.Persistence.App.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HomeboxDevices");
+                    b.ToTable("HomeboxDevices", "app");
                 });
 
             modelBuilder.Entity("Distvisor.App.HomeBox.Entities.GatewaySessionEntity", b =>
@@ -93,7 +97,7 @@ namespace Distvisor.Infrastructure.Persistence.App.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HomeboxGatewaySessions");
+                    b.ToTable("HomeboxGatewaySessions", "app");
                 });
 
             modelBuilder.Entity("Distvisor.App.HomeBox.Entities.GatewaySessionEntity", b =>
@@ -117,7 +121,7 @@ namespace Distvisor.Infrastructure.Persistence.App.Migrations
 
                             b1.HasKey("GatewaySessionEntityId");
 
-                            b1.ToTable("HomeboxGatewaySessions");
+                            b1.ToTable("HomeboxGatewaySessions", "app");
 
                             b1.WithOwner()
                                 .HasForeignKey("GatewaySessionEntityId");

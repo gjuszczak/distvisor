@@ -17,18 +17,18 @@ namespace Distvisor.App.Core.Events
             _serviceProvider = serviceProvider;
         }
 
-        public void Publish(IEvent @event)
+        public async Task PublishAsync(IEvent @event, CancellationToken cancellationToken)
         {
             var eventType = @event.GetType();
             var eventPublishHelper = _eventPublishHelpers.GetOrAdd(eventType, CreateEventPublishHelper);
-            eventPublishHelper.Publish(_serviceProvider, @event, default(CancellationToken)).GetAwaiter().GetResult();
+            await eventPublishHelper.Publish(_serviceProvider, @event, cancellationToken);
         }
 
-        public void Publish(IEnumerable<IEvent> events)
+        public async Task PublishAsync(IEnumerable<IEvent> events, CancellationToken cancellationToken)
         {
             foreach (var @event in events)
             {
-                Publish(@event);
+                await PublishAsync(@event, cancellationToken);
             }
         }
 

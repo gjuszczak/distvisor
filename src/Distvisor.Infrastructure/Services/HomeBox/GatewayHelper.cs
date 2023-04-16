@@ -16,14 +16,14 @@ namespace Distvisor.Infrastructure.Services.HomeBox
 
         public static string GenerateTimestamp()
         {
-            var seed = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            var seed = DateTimeOffset.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             var timestamp = Math.Floor(seed / 1000);
             return timestamp.ToString(CultureInfo.InvariantCulture);
         }
 
         public static (string timestamp, string sequence) GenerateSequence()
         {
-            var seed = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            var seed = DateTimeOffset.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             var timestamp = Math.Floor(seed / 1000);
             var sequence = Math.Floor(timestamp);
             return (timestamp.ToString(CultureInfo.InvariantCulture), sequence.ToString(CultureInfo.InvariantCulture));

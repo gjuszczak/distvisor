@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -8,22 +9,16 @@ namespace Distvisor.App.EventLog.Services.DetailsProviding
 {
     public class SensitiveDataMaskJsonConverter : JsonConverterFactory
     {
-        private readonly Type _type;
-        private readonly string _propName;
+        private readonly ISensitiveDataMaskConfiguration _configuration;
 
-        public SensitiveDataMaskJsonConverter(Type type, string propName)
+        public SensitiveDataMaskJsonConverter(ISensitiveDataMaskConfiguration configuration)
         {
-            var camelCasePropName = propName.Length == 1
-                ? propName[..1].ToLowerInvariant()
-                : propName[..1].ToLowerInvariant() + propName[1..];
-
-            _type = type;
-            _propName = camelCasePropName;
+            _configuration = configuration;
         }
 
         public override bool CanConvert(Type typeToConvert)
         {
-            return typeToConvert == _type;
+            return _configuration.IsTypeMasked(typeToConvert);
         }
 
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
@@ -33,7 +28,7 @@ namespace Distvisor.App.EventLog.Services.DetailsProviding
                     new Type[] { typeToConvert }),
                 BindingFlags.Instance | BindingFlags.Public,
                 binder: null,
-                args: new object[] { _propName },
+                args: new object[] { _configuration.GetMaskedProperties(typeToConvert), _configuration.MaskString },
                 culture: null)!;
 
             return converter;
@@ -41,11 +36,13 @@ namespace Distvisor.App.EventLog.Services.DetailsProviding
 
         private class SensitiveDataMaskJsonConverterInner<T> : JsonConverter<T>
         {
-            private readonly string _propName;
+            private readonly IEnumerable<string> _propNames;
+            private readonly string _maskString;
 
-            public SensitiveDataMaskJsonConverterInner(string propName)
+            public SensitiveDataMaskJsonConverterInner(IEnumerable<string> propNames, string maskString)
             {
-                _propName = propName;
+                _propNames = propNames;
+                _maskString = maskString;
             }
 
             public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -56,7 +53,10 @@ namespace Distvisor.App.EventLog.Services.DetailsProviding
             public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
             {
                 var jsonNode = JsonSerializer.SerializeToNode(value, JsonDefaults.SerializerOptions);
-                jsonNode[_propName] = "*****";
+                foreach (var propName in _propNames)
+                {
+                    jsonNode[propName] = _maskString;
+                }
                 JsonSerializer.Serialize(writer, jsonNode, JsonDefaults.SerializerOptions);
             }
         }

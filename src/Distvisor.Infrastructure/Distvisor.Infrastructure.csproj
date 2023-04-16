@@ -17,10 +17,4 @@
     <ProjectReference Include="..\Distvisor.App\Distvisor.App.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Persistence\App\Migrations\" />
-    <Folder Include="Persistence\Events\Migrations\" />
-    <Folder Include="Services\EventLog\" />
-  </ItemGroup>
-
 </Project>

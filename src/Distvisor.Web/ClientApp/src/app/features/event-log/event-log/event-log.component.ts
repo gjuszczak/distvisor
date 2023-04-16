@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, Select } from '@ngxs/store';
 import { combineLatest, Observable } from 'rxjs';
-import { LazyLoadEvent } from 'primeng/api';
+import { LazyLoadEvent, MenuItem } from 'primeng/api';
 
 import 'prismjs/components/prism-json.js';
 
-import { LoadEvents } from '../store/events.actions';
+import { LoadEvents, ReplayEvents } from '../store/events.actions';
 import { EventsState, EventsStateModel } from '../store/events.state';
 import { AggregateState, AggregateStateModel } from '../store/aggregate.state';
 import { ClearAggregate, LoadAggregate } from '../store/aggregate.actions';
@@ -24,6 +24,7 @@ export class EventLogComponent implements OnInit {
   @Select(AggregateState.getAggregate)
   public readonly aggregate$!: Observable<AggregateStateModel>;
 
+  public eventLogMenuItems: MenuItem[] = [];
   private firstLazyLoad = true;
 
   constructor(
@@ -33,6 +34,16 @@ export class EventLogComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.eventLogMenuItems = [
+      {
+        label: 'Replay events to RS',
+        icon: 'pi pi-refresh',
+        command: () => {
+          this.replayEvents();
+        }
+      }
+    ];
+
     combineLatest([
       this.route.params,
       this.route.queryParams
@@ -67,10 +78,14 @@ export class EventLogComponent implements OnInit {
   }
 
   reloadAggregate(aggregateId: string) {
-    this.store.dispatch(new LoadAggregate(aggregateId))
+    this.store.dispatch(new LoadAggregate(aggregateId));
   }
 
   clearAggregate() {
-    this.store.dispatch(new ClearAggregate())
+    this.store.dispatch(new ClearAggregate());
+  }
+
+  replayEvents() {
+    this.store.dispatch(new ReplayEvents());
   }
 }

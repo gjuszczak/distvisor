@@ -34,7 +34,18 @@
             </p-panel>
         </p-card>
     </ng-container>
-    <p-card styleClass="mt-3" header="Events">
+    <p-card styleClass="mt-3">
+        <p-header>
+            <div class="flex justify-content-between pt-3 px-3">
+                <div class="p-card-title">Events</div>
+                <div class="flex">
+                    <button pButton type="button" icon="pi pi-ellipsis-v"
+                        class="p-button-rounded p-button-text p-button-info mr-1"
+                        (click)="menu.toggle($event)"></button>
+                    <p-menu #menu [popup]="true" [model]="eventLogMenuItems"></p-menu>
+                </div>
+            </div>
+        </p-header>
         <p-table *ngIf="(events$ | async) as events" dataKey="eventId" [value]="events.items" [lazy]="true"
             [first]="events.first" [rows]="events.rows" [rowsPerPageOptions]="events.rowsPerPageOptions"
             [totalRecords]="events.totalRecords" [loading]="events.loading" [rowHover]="true" [paginator]="true"

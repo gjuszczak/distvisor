@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Distvisor.Web;
+using Distvisor.App.Common.Interfaces;
 
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -26,7 +27,6 @@ builder.Services.Configure<RfLinkConfiguration>(builder.Configuration.GetSection
         
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<ICryptoService, CryptoService>();
-builder.Services.AddSingleton<IEventLogToDtoMapper, EventLogToDtoMapper>();
 builder.Services.AddSingleton<IFinancialDataExtractor, FinancialCsvDataExtractor>();
 builder.Services.AddSingleton<IFinancialCsvDataExtractor, CsvSVariantDataExtractor>();
 builder.Services.AddSingleton<IFinancialCsvDataExtractor, CsvIVariantDataExtractor>();
@@ -108,6 +108,7 @@ builder.Services.AddMvc(opts =>
 });
 
 builder.Services.AddDistvisor(builder.Configuration);
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 
 var app = builder.Build();

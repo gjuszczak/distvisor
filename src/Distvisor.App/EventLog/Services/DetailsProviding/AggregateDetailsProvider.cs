@@ -4,16 +4,15 @@ using System.Text.Json;
 
 namespace Distvisor.App.EventLog.Services.DetailsProviding
 {
-    public class AggregateDetailsProvider : DetailsProvider<Type, IAggregateRoot, AggregateDetails>, IAggregateDetailsProvider
+    public class AggregateDetailsProvider : DetailsProvider<IAggregateRoot, AggregateDetails>, IAggregateDetailsProvider
     {
-        protected override Type GetDetailsFactoryKey(IAggregateRoot aggregate)
-        {
-            return aggregate.GetType();
-        }
+        public AggregateDetailsProvider(ISensitiveDataMaskConfiguration configuration) 
+            : base(configuration) { }
 
-        protected override Func<IAggregateRoot, AggregateDetails> GetDetailsFactory(Type aggregateType)
+        protected override Func<IAggregateRoot, AggregateDetails> GetDetailsFactory(IAggregateRoot firstAggregate)
         {
-            var aggregateTypeString = aggregateType.ToString();
+            var aggregateType = firstAggregate.GetType();
+            var aggregateTypeString = aggregateType.FullName;
             var aggregateTypeDisplayName = GetDisplayName(aggregateType);
             var maskSensitiveDataSerializerOptions = GetMaskSensitiveDataSerializerOptions();
             return (aggregate) => new AggregateDetails

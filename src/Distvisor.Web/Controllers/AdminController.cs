@@ -1,113 +1,54 @@
-﻿using Distvisor.Web.Services;
+﻿using Distvisor.App.Admin.Commands.CreateBackup;
+using Distvisor.App.Admin.Commands.DeleteBackup;
+using Distvisor.App.Admin.Commands.RenameBackup;
+using Distvisor.App.Admin.Commands.RestoreBackup;
+using Distvisor.App.Admin.Qureies.GetBackupFiles;
+using Distvisor.App.Core.Dispatchers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/sec/[controller]")]
+    [Route("api/s/[controller]")]
     public class AdminController : ControllerBase
     {
-        private readonly IDeploymentService _deploymentService;
-        private readonly IBackupService _backupService;
+        private readonly IDispatcher _dispatcher;        
 
-        public AdminController(IDeploymentService deploymentService, IBackupService backupService)
+        public AdminController(IDispatcher dispatcher)
         {
-            _deploymentService = deploymentService;
-            _backupService = backupService;
+            _dispatcher = dispatcher;
         }
 
-        [HttpGet("deployment-params")]
-        public async Task<DeploymentParamsResponseDto> GetDeploymentParams()
+        [HttpGet("backups")]
+        public async Task<BackupFilesListDto> GetBackups([FromQuery] GetBackupFiles query, CancellationToken cancellationToken)
         {
-            var versions = await _deploymentService.GetReleasesAsync();
-            var environments = _deploymentService.Environments;
-            return new DeploymentParamsResponseDto
-            {
-                Versions = versions,
-                Environments = environments,
-            };
+            return await _dispatcher.DispatchAsync(query, cancellationToken);
         }
 
-        [HttpPost("deploy")]
-        public Task Deploy([FromBody]DeployRequestDto dto)
+        [HttpPost("backups")]
+        public async Task CreateBackup(CreateBackup command, CancellationToken cancellationToken)
         {
-            return _deploymentService.DeployVersionAsync(dto.Environment, dto.Version);
+            await _dispatcher.DispatchAsync(command, cancellationToken);
         }
 
-        [HttpPost("redeploy")]
-        public Task Redeploy([FromBody]RedeployRequestDto dto)
+        [HttpDelete("backups")]
+        public async Task DeleteBackup(DeleteBackup command, CancellationToken cancellationToken)
         {
-            return _deploymentService.RedeployAsync(dto.Environment);
+            await _dispatcher.DispatchAsync(command, cancellationToken);
         }
 
-
-        [HttpGet("list-backups")]
-        public async Task<List<BackupFileInfoDto>> ListBackups()
+        [HttpPatch("backups")]
+        public async Task RenameBackup(RenameBackup command, CancellationToken cancellationToken)
         {
-            var files = (await _backupService.ListStoredBackupsAsync())
-                .Select(x => new BackupFileInfoDto
-                {
-                    Name = x.Name,
-                    CreatedDateTime = x.CreatedDateTime,
-                    Size = x.Size
-                })
-                .ToList();
-
-            return files;
+            await _dispatcher.DispatchAsync(command, cancellationToken);
         }
 
-        [HttpPost("create-backup")]
-        public async Task CreateBackup()
+        [HttpPost("backups/restore")]
+        public async Task RestoreBackup(RestoreBackup command, CancellationToken cancellationToken)
         {
-            await _backupService.CreateBackupAsync();
+            await _dispatcher.DispatchAsync(command, cancellationToken);
         }
-
-        [HttpPost("restore-backup")]
-        public async Task RestoreBackup([FromBody]BackupFileInfoDto dto)
-        {
-            await _backupService.RestoreBackupAsync(dto.Name);
-        }
-
-        [HttpPost("delete-backup")]
-        public async Task DeleteBackup([FromBody]BackupFileInfoDto dto)
-        {
-            await _backupService.DeleteBackupAsync(dto.Name);
-        }
-
-        [HttpPost("replay-events")]
-        public async Task ReplayEvents()
-        {
-            await _backupService.ReplayEventsToReadStoreAsync();
-        }
-    }
-
-    public class DeploymentParamsResponseDto
-    {
-        public IEnumerable<string> Versions { get; set; }
-        public IEnumerable<string> Environments { get; set; }
-    }
-
-    public class BackupFileInfoDto
-    {
-        public string Name { get; set; }
-        public long Size { get; set; }
-        public DateTime CreatedDateTime { get; set; }
-    }
-
-    public class DeployRequestDto
-    {
-        public string Environment { get; set; }
-        public string Version { get; set; }
-    }
-
-    public class RedeployRequestDto
-    {
-        public string Environment { get; set; }
     }
 }

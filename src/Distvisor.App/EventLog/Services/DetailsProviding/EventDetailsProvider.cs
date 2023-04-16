@@ -4,31 +4,22 @@ using System.Text.Json;
 
 namespace Distvisor.App.EventLog.Services.DetailsProviding
 {
-    public class EventDetailsProvider : DetailsProvider<(Type eventType, Type aggregateType), EventEntity, EventDetails>, IEventDetailsProvider
+    public class EventDetailsProvider : DetailsProvider<IEvent, EventDetails>, IEventDetailsProvider
     {
-        private readonly IEventEntityBuilder _eventEntityBuilder;
+        public EventDetailsProvider(ISensitiveDataMaskConfiguration configuration) 
+            : base(configuration) { }
 
-        public EventDetailsProvider(IEventEntityBuilder eventEntityBuilder)
+        protected override Func<IEvent, EventDetails> GetDetailsFactory(IEvent firstEvent)
         {
-            _eventEntityBuilder = eventEntityBuilder;
-        }
-
-        protected override (Type eventType, Type aggregateType) GetDetailsFactoryKey(EventEntity @event)
-        {
-            return (Type.GetType(@event.EventType), Type.GetType(@event.AggregateType));
-        }
-
-        protected override Func<EventEntity, EventDetails> GetDetailsFactory((Type eventType, Type aggregateType) factoryKey)
-        {
-            var (eventType, aggregateType) = factoryKey;
+            var eventType = firstEvent.GetType();
             var eventTypeDisplayName = GetDisplayName(eventType);
-            var aggregateTypeDisplayName = GetDisplayName(aggregateType);
+            var aggregateTypeDisplayName = GetDisplayName(firstEvent.AggregateType);
             var maskSensitiveDataSerializerOptions = GetMaskSensitiveDataSerializerOptions();
             return (@event) => new EventDetails
             {
                 EventTypeDisplayName = eventTypeDisplayName,
                 AggregateTypeDisplayName = aggregateTypeDisplayName,
-                MaskedPayload = JsonSerializer.SerializeToDocument(_eventEntityBuilder.FromEventEntity(@event), eventType, maskSensitiveDataSerializerOptions)
+                MaskedPayload = JsonSerializer.SerializeToDocument(@event, eventType, maskSensitiveDataSerializerOptions)
             };
         }
     }

@@ -9,26 +9,31 @@ namespace Distvisor.App.Core.Aggregates
 {
     public abstract class AggregateRoot : IAggregateRoot
     {
-        private ICollection<IEvent> _events = new ReadOnlyCollection<IEvent>(new List<IEvent>());
+        private readonly Dictionary<Type, Action<object>> _eventHandlers = new();
+        private readonly List<IEvent> _events = new();
 
         public Guid AggregateId { get; protected set; } = Guid.Empty;
         public int Version { get; protected set; } = 0;
 
         public IEnumerable<IEvent> GetUncommittedChanges()
         {
-            return _events;
+            return new ReadOnlyCollection<IEvent>(_events);
         }
 
-        public virtual void MarkChangesAsCommitted()
+        public void MarkChangesAsCommitted()
         {
             Version += _events.Count;
-            _events = new ReadOnlyCollection<IEvent>(new List<IEvent>());
+            _events.Clear();
         }
 
-        public virtual void LoadFromHistory(IEnumerable<IEvent> history)
+        public void LoadFromHistory(IEnumerable<IEvent> history)
         {
             var aggregateId = history.FirstOrDefault()?.AggregateId;
-            if (aggregateId.HasValue && AggregateId != aggregateId)
+            if (!aggregateId.HasValue)
+            {
+                return;
+            }
+            if (AggregateId != aggregateId)
             {
                 AggregateId = aggregateId.Value;
             }
@@ -36,19 +41,32 @@ namespace Distvisor.App.Core.Aggregates
             {
                 if (@event.Version != Version + 1)
                 {
-                    throw new EventsOutOfOrderException(@event.AggregateId, this.GetType(), Version + 1, @event.Version);
+                    throw new EventsOutOfOrderException(@event.AggregateId, GetType(), Version + 1, @event.Version);
                 }
                 Apply(@event);
                 Version++;
             }
         }
 
-        protected virtual void ApplyChange(IEvent @event)
+        protected void RegisterEventHandler<TEvent>(Action<TEvent> handler)
+            where TEvent : IEvent
         {
-            Apply(@event);
-            _events = new ReadOnlyCollection<IEvent>(_events.Concat(new[] { @event }).ToList());
+            _eventHandlers.Add(typeof(TEvent), x => handler((TEvent)x));
         }
 
-        protected abstract void Apply(IEvent @event);
+        protected void ApplyEvent(IEvent @event)
+        {
+            Apply(@event);
+            _events.Add(@event);
+        }
+
+        private void Apply(IEvent @event)
+        {
+            var eventType = @event.GetType();
+            if (!_eventHandlers.TryGetValue(eventType, out var handler))
+                throw new ArgumentException($"'{eventType.FullName}' is not supported by aggregate {GetType().FullName}", nameof(@event));
+
+            handler(@event);
+        }
     }
 }

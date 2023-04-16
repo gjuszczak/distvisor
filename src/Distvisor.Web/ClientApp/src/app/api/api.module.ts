@@ -6,10 +6,10 @@ import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { AccountService } from './services/account.service';
 import { AdminService } from './services/admin.service';
+import { AdminDeprService } from './services/admin-depr.service';
 import { ClientConfigService } from './services/client-config.service';
 import { CoreService } from './services/core.service';
 import { EventLogService } from './services/event-log.service';
-import { EventLogDeprService } from './services/event-log-depr.service';
 import { FinancesService } from './services/finances.service';
 import { HomeBoxService } from './services/home-box.service';
 import { RedirectionsService } from './services/redirections.service';
@@ -27,10 +27,10 @@ import { SecretsVaultService } from './services/secrets-vault.service';
   providers: [
     AccountService,
     AdminService,
+    AdminDeprService,
     ClientConfigService,
     CoreService,
     EventLogService,
-    EventLogDeprService,
     FinancesService,
     HomeBoxService,
     RedirectionsService,

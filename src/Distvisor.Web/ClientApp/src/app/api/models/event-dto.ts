@@ -5,7 +5,7 @@ export interface EventDto {
   aggregateType?: null | string;
   aggregateTypeDisplayName?: null | string;
   correlationId?: string;
-  eventId?: string;
+  eventId?: number;
   eventType?: null | string;
   eventTypeDisplayName?: null | string;
   maskedPayload?: null | any;

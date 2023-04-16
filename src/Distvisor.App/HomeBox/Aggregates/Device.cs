@@ -1,5 +1,4 @@
 ﻿using Distvisor.App.Core.Aggregates;
-using Distvisor.App.Core.Events;
 using Distvisor.App.HomeBox.Enums;
 using Distvisor.App.HomeBox.Events;
 using Distvisor.App.HomeBox.ValueObjects;
@@ -18,26 +17,19 @@ namespace Distvisor.App.HomeBox.Aggregates
         public DeviceType Type { get; set; }
         public string Location { get; set; }
 
-        public Device() { }
+        public Device() 
+        {
+            RegisterEventHandler<DeviceSyncedWithGateway>(Apply);
+        }
 
-        public Device(Guid aggregateId)
+        public Device(Guid aggregateId) : this()
         {
             AggregateId = aggregateId;
         }
 
         public void SyncWithGateway(GatewayDeviceDetails gatewayDeviceDetails)
         {
-            ApplyChange(new DeviceSyncedWithGateway(gatewayDeviceDetails));
-        }
-
-        protected override void Apply(IEvent @event)
-        {
-            switch (@event)
-            {
-                case DeviceSyncedWithGateway deviceSyncedWithGateway:
-                    Apply(deviceSyncedWithGateway);
-                    break;
-            }
+            ApplyEvent(new DeviceSyncedWithGateway(gatewayDeviceDetails));
         }
 
         private void Apply(DeviceSyncedWithGateway deviceSyncedWithGateway)

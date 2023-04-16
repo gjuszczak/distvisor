@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
@@ -36,7 +36,10 @@ export class RfLinkService extends BaseService {
     code: string;
     timestamp: number;
     authorization: string;
-  }): Observable<StrictHttpResponse<void>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, RfLinkService.ApiRfLinkPostPath, 'post');
     if (params) {
@@ -47,7 +50,8 @@ export class RfLinkService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: '*/*'
+      accept: '*/*',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -57,7 +61,7 @@ export class RfLinkService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiRfLinkPost$Response()` instead.
    *
    * This method doesn't expect any request body.
@@ -66,9 +70,12 @@ export class RfLinkService extends BaseService {
     code: string;
     timestamp: number;
     authorization: string;
-  }): Observable<void> {
+  },
+  context?: HttpContext
 
-    return this.apiRfLinkPost$Response(params).pipe(
+): Observable<void> {
+
+    return this.apiRfLinkPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }

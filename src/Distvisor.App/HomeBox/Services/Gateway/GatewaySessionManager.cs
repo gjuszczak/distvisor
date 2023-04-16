@@ -78,7 +78,7 @@ namespace Distvisor.App.HomeBox.Services.Gateway
                 }
                 catch (GatewaySessionRefreshingReservedException exc)
                 {
-                    await Task.Delay(exc.ReservationTimeout - DateTimeOffset.Now, cancellationToken);
+                    await Task.Delay(exc.ReservationTimeout - DateTimeOffset.UtcNow, cancellationToken);
                 }
                 catch (ConcurrencyException)
                 {

@@ -1,10 +1,9 @@
 ﻿using Distvisor.App.Core.Dispatchers;
+using Distvisor.App.EventLog.Commands.ReplayEvents;
 using Distvisor.App.EventLog.Qureies.GetAggregate;
 using Distvisor.App.EventLog.Qureies.GetEvents;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
 {
@@ -30,6 +29,12 @@ namespace Distvisor.Web.Controllers
         public async Task<AggregateDto> GetEvents([FromRoute] GetAggregate query, CancellationToken cancellationToken)
         {
             return await _dispatcher.DispatchAsync(query, cancellationToken);
+        }
+
+        [HttpPost("replay-events")]
+        public async Task ReplayEvents(ReplayEvents command, CancellationToken cancellationToken)
+        {
+            await _dispatcher.DispatchAsync(command, cancellationToken);
         }
     }
 }

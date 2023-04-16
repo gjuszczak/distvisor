@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-import { HttpRequest, HttpParameterCodec, HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpRequest, HttpParameterCodec, HttpParams, HttpHeaders, HttpContext } from '@angular/common/http';
 
 /**
  * Custom parameter codec to correctly handle the plus sign in parameter
@@ -88,6 +88,7 @@ class PathParameter extends Parameter {
     }
     let prefix = this.options.style === 'label' ? '.' : '';
     let separator = this.options.explode ? prefix === '' ? ',' : prefix : ',';
+    let alreadySerialized = false;
     if (this.options.style === 'matrix') {
       // The parameter name is just used as prefix, except in some cases...
       prefix = `;${this.name}=`;
@@ -96,18 +97,29 @@ class PathParameter extends Parameter {
         if (value instanceof Array) {
           // For arrays we have to repeat the name for each element
           value = value.map(v => `${this.name}=${this.serializeValue(v, ';')}`);
-          separator = ';';
+          value = value.join(';');
+          alreadySerialized = true;
         } else {
           // For objects we have to put each the key / value pairs
           value = this.serializeValue(value, ';');
+          alreadySerialized = true
         }
       }
     }
-    value = prefix + this.serializeValue(value, separator);
+    value = prefix + (alreadySerialized ? value : this.serializeValue(value, separator));
     // Replace both the plain variable and the corresponding variant taking in the prefix and explode into account
     path = path.replace(`{${this.name}}`, value);
     path = path.replace(`{${prefix}${this.name}${this.options.explode ? '*' : ''}}`, value);
     return path;
+  }
+
+  // @ts-ignore
+  serializeValue(value: any, separator = ','): string {
+    var result = typeof value === 'string' ? encodeURIComponent(value) : super.serializeValue(value, separator);
+    result = result.replace(/%3D/g, '=');
+    result = result.replace(/%3B/g, ';');
+    result = result.replace(/%2C/g, ',');
+    return result;
   }
 }
 
@@ -241,7 +253,7 @@ export class RequestBuilder {
     }
     if (this._bodyContentType === 'application/x-www-form-urlencoded' && value !== null && typeof value === 'object') {
       // Handle URL-encoded data
-      const pairs: string[][] = [];
+      const pairs: Array<[string, string]> = [];
       for (const key of Object.keys(value)) {
         let val = value[key];
         if (!(val instanceof Array)) {
@@ -308,6 +320,9 @@ export class RequestBuilder {
 
     /** Whether to report progress on uploads / downloads */
     reportProgress?: boolean;
+
+    /** Allow passing HttpContext for HttpClient */
+    context?: HttpContext;
   }): HttpRequest<T> {
 
     options = options || {};
@@ -346,8 +361,8 @@ export class RequestBuilder {
       params: httpParams,
       headers: httpHeaders,
       responseType: options.responseType,
-      reportProgress: options.reportProgress
+      reportProgress: options.reportProgress,
+      context: options.context
     });
   }
 }
-

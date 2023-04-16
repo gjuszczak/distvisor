@@ -22,3 +22,18 @@ export class LoadEventsFail {
         public readonly error: any 
     ) { }
 }
+
+export class ReplayEvents {
+    static readonly type = '[Event Log] ReplayEvents';
+}
+
+export class ReplayEventsSuccess {
+    static readonly type = '[Event Log] ReplayEventsSuccess';
+}
+
+export class ReplayEventsFail {
+    static readonly type = '[Event Log] ReplayEventsFail';
+    constructor(
+        public readonly error: any 
+    ) { }
+}

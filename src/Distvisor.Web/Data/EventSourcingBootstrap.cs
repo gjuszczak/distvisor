@@ -3,11 +3,6 @@ using Distvisor.Infrastructure.Persistence.Events;
 using Distvisor.Web.Data.Events.Core;
 using Distvisor.Web.Data.Reads.Core;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Distvisor.Web.Data
 {

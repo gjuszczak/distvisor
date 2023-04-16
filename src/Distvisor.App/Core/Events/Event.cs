@@ -6,12 +6,15 @@ namespace Distvisor.App.Core.Events
     public class Event : IEvent
     {
 		[JsonIgnore]
-		public Guid EventId { get; set; }
+		public long EventId { get; set; }
 
 		[JsonIgnore]
 		public Guid AggregateId { get; set; }
 
-		[JsonIgnore]
+        [JsonIgnore]
+        public Type AggregateType { get; set; }
+
+        [JsonIgnore]
 		public Guid CorrelationId { get; set; }
 
 		[JsonIgnore]

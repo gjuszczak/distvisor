@@ -4,6 +4,6 @@ namespace Distvisor.App.EventLog.Services.DetailsProviding
 {
     public interface IEventDetailsProvider
     {
-        EventDetails GetDetails(EventEntity eventEntity);
+        EventDetails GetDetails(IEvent @event);
     }
 }

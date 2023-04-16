@@ -1,5 +1,4 @@
-﻿using Distvisor.App.Common.Interfaces;
-using Distvisor.App.Common.Models;
+﻿using Distvisor.App.Common.Models;
 using Distvisor.App.Core.Events;
 using Distvisor.App.Core.Queries;
 using Distvisor.App.EventLog.Services.DetailsProviding;
@@ -17,44 +16,33 @@ namespace Distvisor.App.EventLog.Qureies.GetEvents
 
     public class GetEventsHandler : IQueryHandler<GetEvents, EventsListDto>
     {
-        private readonly IEventsDbContext _context;
+        private readonly IEventStore _eventStore;
         private readonly IEventDetailsProvider _eventDetailsProvider;
 
-        public GetEventsHandler(IEventsDbContext context, IEventDetailsProvider eventDetailsProvider)
+        public GetEventsHandler(IEventStore eventStore, IEventDetailsProvider eventDetailsProvider)
         {
-            _context = context;
+            _eventStore = eventStore;
             _eventDetailsProvider = eventDetailsProvider;
         }
 
         public async Task<EventsListDto> Handle(GetEvents request, CancellationToken cancellationToken)
         {
-            var eventsQuery = _context.Events.AsQueryable();
-
-            if (request.AggregateId.HasValue)
-            {
-                eventsQuery = eventsQuery.Where(ev => ev.AggregateId == request.AggregateId.Value);
-            }
-
-            var eventEntities = await eventsQuery
-                .OrderByDescending(x => x.TimeStamp)
-                .ToPaginatedListAsync(request.First, request.Rows, cancellationToken);
-
-            var dtos = eventEntities.Items
-                .Select(EventEntityToDto)
-                .ToList();
+            var events = await _eventStore.GetAsync(request.AggregateId, request.First, request.Rows, cancellationToken);
+            var totalCount = await _eventStore.CountAsync(request.AggregateId, cancellationToken);
+            var dtos = events.Select(EventToDto).ToList();
 
             return new EventsListDto(
                 dtos,
-                eventEntities.TotalRecords,
-                eventEntities.First,
-                eventEntities.Rows,
+                totalCount,
+                request.First,
+                request.Rows,
                 request.AggregateId);
         }
 
-        private EventDto EventEntityToDto(EventEntity entity)
+        private EventDto EventToDto(IEvent @event)
         {
-            var details = _eventDetailsProvider.GetDetails(entity);
-            return EventDto.FromEntity(entity, details);
+            var details = _eventDetailsProvider.GetDetails(@event);
+            return EventDto.FromEvent(@event, details);
         }
     }
 }

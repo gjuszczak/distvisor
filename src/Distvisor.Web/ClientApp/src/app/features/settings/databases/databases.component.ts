@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AdminService } from 'src/app/api/services';
+import { AdminDeprService } from 'src/app/api/services';
 import { MenuItem } from 'primeng/api';
 import { BackupFileInfoDto } from 'src/app/api/models';
 
@@ -14,7 +14,7 @@ export class DatabasesComponent implements OnInit {
   bakBtnMenuItems: {[key:string]: MenuItem[]} = {};
   backupFiles: BackupFileInfoDto[] = [];
 
-  constructor(private adminService: AdminService) { }
+  constructor(private adminService: AdminDeprService) { }
 
   ngOnInit() {
     this.dbBtnMenuItems = [

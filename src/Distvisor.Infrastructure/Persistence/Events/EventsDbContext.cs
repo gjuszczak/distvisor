@@ -1,5 +1,4 @@
-﻿using Distvisor.App.Common.Interfaces;
-using Distvisor.App.Core.Events;
+﻿using Distvisor.App.Core.Events;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using System.Threading;
@@ -8,7 +7,9 @@ using System.Threading.Tasks;
 namespace Distvisor.Infrastructure.Persistence.Events
 {
     // Add-Migration Initial -c EventsDbContext -o Persistence/Events/Migrations
-    public class EventsDbContext : DbContext, IEventsDbContext
+    // docker run --name postgresdb -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres:15-alpine
+    // docker run --name pgadmin4 -p 8080:80 -e 'PGADMIN_DEFAULT_EMAIL=admin@admin.com' -e 'PGADMIN_DEFAULT_PASSWORD=admin' -d dpage/pgadmin4
+    public class EventsDbContext : DbContext
     {
         private readonly IAuditDataEnricher _auditDataEnricher;
 

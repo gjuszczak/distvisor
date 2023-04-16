@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Distvisor.Web
@@ -33,7 +30,7 @@ namespace Distvisor.Web
         private static Func<TInput, TOutput> CreateCloner()
         {
             //check if type has parameterless constructor - just in case
-            if (typeof(TOutput).GetConstructor(Type.EmptyTypes) == null) return ((x) => default(TOutput));
+            if (typeof(TOutput).GetConstructor(Type.EmptyTypes) == null) return (x) => default;
 
             var input = Expression.Parameter(typeof(TInput), "input");
 
@@ -82,7 +79,7 @@ namespace Distvisor.Web
 
         public static TOutput From(TInput input)
         {
-            if (input == null) return default(TOutput);
+            if (input == null) return default;
             return _cloner(input);
         }
 

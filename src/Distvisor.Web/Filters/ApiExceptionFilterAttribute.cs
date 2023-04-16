@@ -1,9 +1,6 @@
 ﻿using Distvisor.App.Core.Exceptions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Collections.Generic;
 
 namespace Distvisor.Web.Filters
 {
@@ -31,9 +28,9 @@ namespace Distvisor.Web.Filters
         private void HandleException(ExceptionContext context)
         {
             Type type = context.Exception.GetType();
-            if (_exceptionHandlers.ContainsKey(type))
+            if (_exceptionHandlers.TryGetValue(type, out var value))
             {
-                _exceptionHandlers[type].Invoke(context);
+                value.Invoke(context);
                 return;
             }
 
@@ -46,7 +43,7 @@ namespace Distvisor.Web.Filters
             HandleUnknownException(context);
         }
 
-        private void HandleValidationException(ExceptionContext context)
+        private static void HandleValidationException(ExceptionContext context)
         {
             var exception = context.Exception as ValidationException;
 
@@ -60,7 +57,7 @@ namespace Distvisor.Web.Filters
             context.ExceptionHandled = true;
         }
 
-        private void HandleInvalidModelStateException(ExceptionContext context)
+        private static void HandleInvalidModelStateException(ExceptionContext context)
         {
             var details = new ValidationProblemDetails(context.ModelState)
             {
@@ -72,7 +69,7 @@ namespace Distvisor.Web.Filters
             context.ExceptionHandled = true;
         }
 
-        private void HandleUnauthorizedAccessException(ExceptionContext context)
+        private static void HandleUnauthorizedAccessException(ExceptionContext context)
         {
             var details = new ProblemDetails
             {
@@ -89,12 +86,12 @@ namespace Distvisor.Web.Filters
             context.ExceptionHandled = true;
         }
 
-        private void HandleUnknownException(ExceptionContext context)
+        private static void HandleUnknownException(ExceptionContext context)
         {
             var details = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
-                Title = "An error occurred while processing your request.",
+                Title = $"An error occurred while processing your request. {context.Exception.Message}",
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1"
             };
 

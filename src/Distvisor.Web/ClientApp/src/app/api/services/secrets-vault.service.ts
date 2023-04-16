@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
@@ -34,7 +34,10 @@ export class SecretsVaultService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecSecretsVaultListGet$Plain$Response(params?: {
-  }): Observable<StrictHttpResponse<Array<SecretKey>>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Array<SecretKey>>> {
 
     const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecSecretsVaultListGetPath, 'get');
     if (params) {
@@ -42,7 +45,8 @@ export class SecretsVaultService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: 'text/plain'
+      accept: 'text/plain',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -52,15 +56,18 @@ export class SecretsVaultService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecSecretsVaultListGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiSecSecretsVaultListGet$Plain(params?: {
-  }): Observable<Array<SecretKey>> {
+  },
+  context?: HttpContext
 
-    return this.apiSecSecretsVaultListGet$Plain$Response(params).pipe(
+): Observable<Array<SecretKey>> {
+
+    return this.apiSecSecretsVaultListGet$Plain$Response(params,context).pipe(
       map((r: StrictHttpResponse<Array<SecretKey>>) => r.body as Array<SecretKey>)
     );
   }
@@ -72,7 +79,10 @@ export class SecretsVaultService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiSecSecretsVaultListGet$Json$Response(params?: {
-  }): Observable<StrictHttpResponse<Array<SecretKey>>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<Array<SecretKey>>> {
 
     const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecSecretsVaultListGetPath, 'get');
     if (params) {
@@ -80,7 +90,8 @@ export class SecretsVaultService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'json',
-      accept: 'text/json'
+      accept: 'text/json',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -90,15 +101,18 @@ export class SecretsVaultService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecSecretsVaultListGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiSecSecretsVaultListGet$Json(params?: {
-  }): Observable<Array<SecretKey>> {
+  },
+  context?: HttpContext
 
-    return this.apiSecSecretsVaultListGet$Json$Response(params).pipe(
+): Observable<Array<SecretKey>> {
+
+    return this.apiSecSecretsVaultListGet$Json$Response(params,context).pipe(
       map((r: StrictHttpResponse<Array<SecretKey>>) => r.body as Array<SecretKey>)
     );
   }
@@ -117,7 +131,10 @@ export class SecretsVaultService extends BaseService {
   apiSecSecretsVaultKeyPost$Response(params: {
     key: SecretKey;
     value?: string;
-  }): Observable<StrictHttpResponse<void>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecSecretsVaultKeyPostPath, 'post');
     if (params) {
@@ -127,7 +144,8 @@ export class SecretsVaultService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: '*/*'
+      accept: '*/*',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -137,7 +155,7 @@ export class SecretsVaultService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecSecretsVaultKeyPost$Response()` instead.
    *
    * This method doesn't expect any request body.
@@ -145,9 +163,12 @@ export class SecretsVaultService extends BaseService {
   apiSecSecretsVaultKeyPost(params: {
     key: SecretKey;
     value?: string;
-  }): Observable<void> {
+  },
+  context?: HttpContext
 
-    return this.apiSecSecretsVaultKeyPost$Response(params).pipe(
+): Observable<void> {
+
+    return this.apiSecSecretsVaultKeyPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
@@ -165,7 +186,10 @@ export class SecretsVaultService extends BaseService {
    */
   apiSecSecretsVaultKeyDelete$Response(params: {
     key: SecretKey;
-  }): Observable<StrictHttpResponse<void>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, SecretsVaultService.ApiSecSecretsVaultKeyDeletePath, 'delete');
     if (params) {
@@ -174,7 +198,8 @@ export class SecretsVaultService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: '*/*'
+      accept: '*/*',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -184,16 +209,19 @@ export class SecretsVaultService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiSecSecretsVaultKeyDelete$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiSecSecretsVaultKeyDelete(params: {
     key: SecretKey;
-  }): Observable<void> {
+  },
+  context?: HttpContext
 
-    return this.apiSecSecretsVaultKeyDelete$Response(params).pipe(
+): Observable<void> {
+
+    return this.apiSecSecretsVaultKeyDelete$Response(params,context).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }

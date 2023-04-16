@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Distvisor.App.Core.Events
 {
     public interface IEventPublisher
     {
-        void Publish(IEvent @event);
+        Task PublishAsync(IEvent @event, CancellationToken cancellationToken);
 
-        void Publish(IEnumerable<IEvent> events);
+        Task PublishAsync(IEnumerable<IEvent> events, CancellationToken cancellationToken);
     }
 }

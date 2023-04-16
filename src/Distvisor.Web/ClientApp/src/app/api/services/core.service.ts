@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpContext } from '@angular/common/http';
 import { BaseService } from '../base-service';
 import { ApiConfiguration } from '../api-configuration';
 import { StrictHttpResponse } from '../strict-http-response';
@@ -35,7 +35,10 @@ export class CoreService extends BaseService {
   apiCoreApiLoginPost$Response(params?: {
     username?: string;
     password?: string;
-  }): Observable<StrictHttpResponse<void>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, CoreService.ApiCoreApiLoginPostPath, 'post');
     if (params) {
@@ -45,7 +48,8 @@ export class CoreService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: '*/*'
+      accept: '*/*',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -55,7 +59,7 @@ export class CoreService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiCoreApiLoginPost$Response()` instead.
    *
    * This method doesn't expect any request body.
@@ -63,9 +67,12 @@ export class CoreService extends BaseService {
   apiCoreApiLoginPost(params?: {
     username?: string;
     password?: string;
-  }): Observable<void> {
+  },
+  context?: HttpContext
 
-    return this.apiCoreApiLoginPost$Response(params).pipe(
+): Observable<void> {
+
+    return this.apiCoreApiLoginPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
@@ -83,7 +90,10 @@ export class CoreService extends BaseService {
    */
   apiCoreApiRefreshPost$Response(params?: {
     sessionId?: string;
-  }): Observable<StrictHttpResponse<void>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, CoreService.ApiCoreApiRefreshPostPath, 'post');
     if (params) {
@@ -92,7 +102,8 @@ export class CoreService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: '*/*'
+      accept: '*/*',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -102,16 +113,19 @@ export class CoreService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiCoreApiRefreshPost$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiCoreApiRefreshPost(params?: {
     sessionId?: string;
-  }): Observable<void> {
+  },
+  context?: HttpContext
 
-    return this.apiCoreApiRefreshPost$Response(params).pipe(
+): Observable<void> {
+
+    return this.apiCoreApiRefreshPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
@@ -128,7 +142,10 @@ export class CoreService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiCoreSyncDevicesPost$Response(params?: {
-  }): Observable<StrictHttpResponse<void>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, CoreService.ApiCoreSyncDevicesPostPath, 'post');
     if (params) {
@@ -136,7 +153,8 @@ export class CoreService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: '*/*'
+      accept: '*/*',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -146,15 +164,18 @@ export class CoreService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiCoreSyncDevicesPost$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiCoreSyncDevicesPost(params?: {
-  }): Observable<void> {
+  },
+  context?: HttpContext
 
-    return this.apiCoreSyncDevicesPost$Response(params).pipe(
+): Observable<void> {
+
+    return this.apiCoreSyncDevicesPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
@@ -171,7 +192,10 @@ export class CoreService extends BaseService {
    * This method doesn't expect any request body.
    */
   apiCoreDevicesGet$Response(params?: {
-  }): Observable<StrictHttpResponse<void>> {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<void>> {
 
     const rb = new RequestBuilder(this.rootUrl, CoreService.ApiCoreDevicesGetPath, 'get');
     if (params) {
@@ -179,7 +203,8 @@ export class CoreService extends BaseService {
 
     return this.http.request(rb.build({
       responseType: 'text',
-      accept: '*/*'
+      accept: '*/*',
+      context: context
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
@@ -189,15 +214,18 @@ export class CoreService extends BaseService {
   }
 
   /**
-   * This method provides access to only to the response body.
+   * This method provides access only to the response body.
    * To access the full response (for headers, for example), `apiCoreDevicesGet$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
   apiCoreDevicesGet(params?: {
-  }): Observable<void> {
+  },
+  context?: HttpContext
 
-    return this.apiCoreDevicesGet$Response(params).pipe(
+): Observable<void> {
+
+    return this.apiCoreDevicesGet$Response(params,context).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }

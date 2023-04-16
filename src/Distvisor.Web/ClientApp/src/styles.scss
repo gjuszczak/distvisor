@@ -103,8 +103,14 @@ body {
     min-width: 20rem;
   }
 
-  .p-dialog {
-    width: 450px;
+  .dialog-modal {
+    min-width: 350px;
+    max-width: 1000px;
+    width: 50vw;
+
+    .p-progressbar {
+      height: 6px;
+    }
   }
 
   .p-card {

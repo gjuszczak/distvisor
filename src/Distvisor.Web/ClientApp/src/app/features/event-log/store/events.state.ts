@@ -7,7 +7,7 @@ import { EventDto } from "src/app/api/models";
 import { EventLogService } from "src/app/api/services";
 import { PaginatedList, isGuid } from "src/app/shared";
 
-import { LoadEvents, LoadEventsFail, LoadEventsSuccess } from "./events.actions";
+import { LoadEvents, LoadEventsFail, LoadEventsSuccess, ReplayEvents, ReplayEventsSuccess, ReplayEventsFail } from "./events.actions";
 
 export interface EventsStateModel extends PaginatedList<EventDto> {
     aggregateId?: string,
@@ -39,7 +39,7 @@ export class EventsState {
     @Action(LoadEvents)
     loadEvents({ dispatch, getState, patchState }: StateContext<EventsStateModel>, action: LoadEvents) {
         const state = getState();
-        const aggregateId = isGuid(action.aggregateId) 
+        const aggregateId = isGuid(action.aggregateId)
             ? action.aggregateId
             : undefined;
 
@@ -88,6 +88,35 @@ export class EventsState {
         patchState({
             loading: false,
             error: error.message
+        });
+    }
+
+    @Action(ReplayEvents)
+    replayEvents({ dispatch, getState, patchState }: StateContext<EventsStateModel>, action: ReplayEvents) {
+        patchState({
+            loading: true
+        });
+
+        return this.eventLogService.apiSEventLogReplayEventsPost$Response({ body: {} }).pipe(
+            map(() => dispatch(new ReplayEventsSuccess())),
+            catchError(error => {
+                dispatch(new ReplayEventsFail(error));
+                return of(new ReplayEventsFail(error));
+            })
+        );
+    }
+
+    @Action(ReplayEventsSuccess)
+    replayEventsSuccess({ patchState }: StateContext<EventsStateModel>, action: ReplayEventsSuccess) {
+        patchState({
+            loading: false
+        });
+    }
+
+    @Action(ReplayEventsFail)
+    replayEventsFail({ patchState }: StateContext<EventsStateModel>, { error }: ReplayEventsFail) {
+        patchState({
+            loading: false
         });
     }
 }
