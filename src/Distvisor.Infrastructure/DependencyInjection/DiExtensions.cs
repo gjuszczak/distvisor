@@ -1,20 +1,21 @@
-﻿using Distvisor.App.Admin.Services;
-using Distvisor.App.Common.Interfaces;
-using Distvisor.App.Core.Aggregates;
+﻿using Distvisor.App.Core.Aggregates;
 using Distvisor.App.Core.Commands;
 using Distvisor.App.Core.Dispatchers;
 using Distvisor.App.Core.Events;
 using Distvisor.App.Core.Queries;
 using Distvisor.App.Core.Services;
-using Distvisor.App.EventLog.Services.DetailsProviding;
-using Distvisor.App.HomeBox.Services.Gateway;
-using Distvisor.App.HomeBox.ValueObjects;
+using Distvisor.App.Features.Backups.Services;
+using Distvisor.App.Features.Common.Interfaces;
+using Distvisor.App.Features.EventLog.Services.DetailsProviding;
+using Distvisor.App.Features.HomeBox.Services.Gateway;
+using Distvisor.App.Features.HomeBox.ValueObjects;
 using Distvisor.Infrastructure.Persistence;
 using Distvisor.Infrastructure.Persistence.App;
 using Distvisor.Infrastructure.Persistence.Events;
 using Distvisor.Infrastructure.Services.Admin;
 using Distvisor.Infrastructure.Services.Common;
 using Distvisor.Infrastructure.Services.HomeBox;
+using Distvisor.Infrastructure.Services.Redirections;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -82,6 +83,7 @@ namespace Distvisor.Infrastructure
             services.AddScoped<IEventsReplayService, EventsReplayService>();
             services.AddScoped<IBackupService, BackupService>();
             services.AddScoped<IBackupFileService, BackupFileService>();
+            services.AddScoped<ICachedRedirectionsService, CachedRedirectionsService>();
 
             services.Configure<GatewayConfiguration>(config.GetSection("HomeBox:Gateway"));
             services.AddHttpClient<IGatewayAuthenticationClient, GatewayAuthenticationClient>(c =>

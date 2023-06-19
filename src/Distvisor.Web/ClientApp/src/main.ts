@@ -21,7 +21,7 @@ if (environment.production) {
   enableProdMode();
 }
 
-window.fetch('api/clientConfig')
+window.fetch('api/client-config')
   .then(res => res.json())
   .then((resp) => {
     const config = resp as ClientConfiguration;

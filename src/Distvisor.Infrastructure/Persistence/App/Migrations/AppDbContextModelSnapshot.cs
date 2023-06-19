@@ -24,7 +24,7 @@ namespace Distvisor.Infrastructure.Persistence.App.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Distvisor.App.HomeBox.Entities.DeviceEntity", b =>
+            modelBuilder.Entity("Distvisor.App.Features.HomeBox.Entities.DeviceEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,10 +57,11 @@ namespace Distvisor.Infrastructure.Persistence.App.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<JsonDocument>("Params")
+                    b.Property<JsonElement>("Params")
                         .HasColumnType("jsonb");
 
                     b.Property<string>("Type")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -68,7 +69,7 @@ namespace Distvisor.Infrastructure.Persistence.App.Migrations
                     b.ToTable("HomeboxDevices", "app");
                 });
 
-            modelBuilder.Entity("Distvisor.App.HomeBox.Entities.GatewaySessionEntity", b =>
+            modelBuilder.Entity("Distvisor.App.Features.HomeBox.Entities.GatewaySessionEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -87,6 +88,7 @@ namespace Distvisor.Infrastructure.Persistence.App.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Username")
@@ -97,9 +99,29 @@ namespace Distvisor.Infrastructure.Persistence.App.Migrations
                     b.ToTable("HomeboxGatewaySessions", "app");
                 });
 
-            modelBuilder.Entity("Distvisor.App.HomeBox.Entities.GatewaySessionEntity", b =>
+            modelBuilder.Entity("Distvisor.App.Features.Redirections.Entities.RedirectionEntity", b =>
                 {
-                    b.OwnsOne("Distvisor.App.HomeBox.ValueObjects.GatewayToken", "Token", b1 =>
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Redirections", "app");
+                });
+
+            modelBuilder.Entity("Distvisor.App.Features.HomeBox.Entities.GatewaySessionEntity", b =>
+                {
+                    b.OwnsOne("Distvisor.App.Features.HomeBox.ValueObjects.GatewayToken", "Token", b1 =>
                         {
                             b1.Property<Guid>("GatewaySessionEntityId")
                                 .HasColumnType("uuid");

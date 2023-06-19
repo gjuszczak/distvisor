@@ -1,0 +1,5 @@
+<app-header></app-header>
+<app-side-nav></app-side-nav>
+<main [class.side-nav-margin]="isNavigationSideBarVisible$ | async">
+    <ng-content></ng-content>
+</main>

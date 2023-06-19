@@ -5,17 +5,17 @@ import { environment } from "src/environments/environment";
 
 export function MsalInstanceFactory(clientConfig: ClientConfiguration): IPublicClientApplication {
     const config = (clientConfig.msal || {}) as Configuration;
-    if (!environment.production) {
-        config.system = {
-            loggerOptions: {
-                loggerCallback(logLevel: LogLevel, message: string) {
-                    console.log(message);
-                },
-                logLevel: LogLevel.Verbose,
-                piiLoggingEnabled: false
-            }
-        }
-    }
+    // if (!environment.production) {
+    //     config.system = {
+    //         loggerOptions: {
+    //             loggerCallback(logLevel: LogLevel, message: string) {
+    //                 console.log(message);
+    //             },
+    //             logLevel: LogLevel.Verbose,
+    //             piiLoggingEnabled: false
+    //         }
+    //     }
+    // }
     return new PublicClientApplication(config);
 }
 

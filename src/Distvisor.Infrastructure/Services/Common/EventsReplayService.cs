@@ -1,5 +1,5 @@
-﻿using Distvisor.App.Common.Interfaces;
-using Distvisor.App.Core.Events;
+﻿using Distvisor.App.Core.Events;
+using Distvisor.App.Features.Common.Interfaces;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;

@@ -1,5 +1,6 @@
-﻿using Distvisor.App.Common.Interfaces;
-using Distvisor.App.HomeBox.Entities;
+﻿using Distvisor.App.Features.Common.Interfaces;
+using Distvisor.App.Features.HomeBox.Entities;
+using Distvisor.App.Features.Redirections.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace Distvisor.Infrastructure.Persistence.App
 
         public DbSet<DeviceEntity> HomeboxDevices { get; set; }
         public DbSet<GatewaySessionEntity> HomeboxGatewaySessions { get; set; }
-
+        public DbSet<RedirectionEntity> Redirections { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

@@ -8,6 +8,6 @@ export interface DeviceDto {
   isOnline?: boolean;
   location?: null | string;
   name?: null | string;
-  params?: null | any;
+  params?: any;
   type?: DeviceType;
 }

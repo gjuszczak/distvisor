@@ -1,11 +1,12 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { Store } from '@ngxs/store';
 import { NgcCookieConsentService } from 'ngx-cookieconsent';
 import { PrimeNGConfig } from 'primeng/api';
 import { ApiConfiguration } from './api/api-configuration';
 import { AuthService } from './core/services/auth.service';
-import { NavigationService } from './core/services/navigation.service';
-import { SignalrService } from './core/services/signalr.service';
+import { ConfigureNavigation } from './core/state/core.actions';
+import { UserRole } from './core/state/core.state';
 
 @Component({
   selector: 'app-root',
@@ -16,10 +17,9 @@ export class AppComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(
+    private readonly store: Store,
     private authService: AuthService,
-    private navigationService: NavigationService,
     private apiConfiguration: ApiConfiguration,
-    private signalrService: SignalrService,
     private ccService: NgcCookieConsentService,
     private primengConfig: PrimeNGConfig,
     @Inject('BASE_URL') private baseUrl: string,
@@ -27,19 +27,23 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.configureAuthentication();
     this.configurePrimeNg();
     this.configureApi();
     this.configureNavigation();
-    this.configureNotifications();
     this.configureCookieConsent();
-  }
-
-  configurePrimeNg() {
-    this.primengConfig.ripple = true;
   }
 
   ngOnDestroy() {
     this.subscriptions.forEach(s => s.unsubscribe());
+  }
+
+  configureAuthentication() {
+    this.subscriptions.push(this.authService.init());
+  }
+
+  configurePrimeNg() {
+    this.primengConfig.ripple = true;
   }
 
   configureApi() {
@@ -47,74 +51,45 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   configureNavigation() {
-    this.navigationService.registerNavMenuItem({
-      name: 'Distvisor',
-      icon: 'pi pi-home',
-      routerLink: '/'
-    });
-
-    this.navigationService.registerNavMenuItem({
-      name: 'Privacy Policy',
-      icon: 'pi pi-info',
-      routerLink: '/privacy-policy'
-    });
-
-    this.navigationService.registerNavMenuItem({
-      name: 'Finances',
-      icon: 'pi pi-chart-line',
-      routerLink: '/finances',
-      menuVisibile: this.authService.isInUserRole()
-    });
-
-    this.navigationService.registerNavMenuItem({
-      name: 'Home Box',
-      icon: 'pi pi-home',
-      routerLink: '/home-box',
-      menuVisibile: this.authService.isInUserRole()
-    });
-
-    this.navigationService.registerNavMenuItem({
-      name: 'Event Log',
-      icon: 'pi pi-directions',
-      routerLink: '/event-log',
-      menuVisibile: this.authService.isInUserRole()
-    });
-
-    this.navigationService.registerNavMenuItem({
-      name: 'Admin',
-      icon: 'pi pi-sliders-h',
-      routerLink: '/admin',
-      menuVisibile: this.authService.isInUserRole()
-    });
-
-    this.navigationService.registerNavMenuItem({
-      name: 'Settings',
-      icon: 'pi pi-sliders-h',
-      routerLink: '/settings',
-      menuVisibile: this.authService.isInUserRole()
-    });
-
-    this.navigationService.registerNavMenuItem({
-      name: 'Logout',
-      icon: 'pi pi-sign-out',
-      routerLink: '/logout',
-      menuVisibile: this.authService.isAuthenticated()
-    });
+    this.store.dispatch(new ConfigureNavigation([
+      {
+        label: 'Start',
+        items: [
+          { label: 'Homepage', icon: 'pi-home', route: '/', routeExact: true },
+          { label: 'Privacy Policy', icon: 'pi-info-circle', route: '/privacy-policy', routeExact: true },
+        ]
+      },
+      {
+        label: 'Finances',
+        items: [
+          { label: 'Accounts', icon: 'pi-chart-line', route: '/finances', routeExact: true, minimalRole: UserRole.User },
+        ]
+      },
+      {
+        label: 'Home Box',
+        items: [
+          { label: 'Devices', icon: 'pi-sun', route: '/home-box/devices', routeExact: true, minimalRole: UserRole.User },
+          { label: 'Gateway Sessions', icon: 'pi-unlock', route: '/home-box/gateway-sessions', routeExact: true, minimalRole: UserRole.User },
+        ]
+      },
+      {
+        label: 'Admin',
+        items: [
+          { label: 'Event Log', icon: 'pi-directions', route: '/admin/event-log', routeExact: false, minimalRole: UserRole.Admin },
+          { label: 'Backups', icon: 'pi-database', route: '/admin/backups', routeExact: true, minimalRole: UserRole.Admin },
+          { label: 'Redirections', icon: 'pi-arrow-right-arrow-left', route: '/admin/redirections', routeExact: true, minimalRole: UserRole.Admin },
+        ]
+      },
+      {
+        label: 'User',
+        items: [
+          { label: 'Logout', icon: 'pi-sign-out', route: '/logout', routeExact: true, minimalRole: UserRole.None },
+        ]
+      },
+    ]));
   }
 
-  configureNotifications() {
-    this.subscriptions.push(this.authService.accessToken()
-      .subscribe(token => {
-        if (token) {
-          this.signalrService.connect(this.baseUrl, token);
-        }
-        else {
-          this.signalrService.disconnect();
-        }
-      }));
-  }
-
-  configureCookieConsent(){
+  configureCookieConsent() {
     this.ccService.init({
       cookie: {
         domain: this.hostname

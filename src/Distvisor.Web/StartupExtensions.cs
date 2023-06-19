@@ -1,16 +1,8 @@
 ﻿using Distvisor.Web.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Distvisor.Web
 {
@@ -66,7 +58,7 @@ namespace Distvisor.Web
                     OnTokenValidated = ctx =>
                     {
                         var username = ctx.Principal.FindFirstValue("preferred_username");
-                        var role = (roles?.User?.Contains(username) ?? false) ? "user" : "guest";
+                        var role = (roles?.Admin?.Contains(username) ?? false) ? "admin" : "guest";
                         var appClaims = new[]
                         {
                             new Claim(ClaimTypes.Name, username),
@@ -81,40 +73,9 @@ namespace Distvisor.Web
             services.AddAuthorization(options =>
             {
                 var policy = new AuthorizationPolicyBuilder(options.DefaultPolicy);
-                policy.RequireRole("user");
+                policy.RequireRole("admin");
                 options.DefaultPolicy = policy.Build();
             });
-        }
-
-        public static void UseAccessCookie(this IApplicationBuilder app, string accessCookieValue)
-        {
-            if (string.IsNullOrEmpty(accessCookieValue))
-            {
-                return;
-            }
-
-            app.Use(async (context, next) =>
-            {
-                var accessCookie = context.Request.Cookies.FirstOrDefault(x => x.Key == "AccessCookie");
-                if (accessCookie.Value != accessCookieValue)
-                {
-                    context.Response.StatusCode = 404;
-                    await context.Response.WriteAsync("404 Not Found.");
-                    return;
-                }
-
-                await next.Invoke();
-            });
-        }
-
-        public static async Task<List<T>> ToListAsync<T>(this IAsyncEnumerable<T> items, CancellationToken cancellationToken = default)
-        {
-            var results = new List<T>();
-            await foreach (var item in items.WithCancellation(cancellationToken).ConfigureAwait(false))
-            {
-                results.Add(item);
-            }
-            return results;
         }
     }
 }

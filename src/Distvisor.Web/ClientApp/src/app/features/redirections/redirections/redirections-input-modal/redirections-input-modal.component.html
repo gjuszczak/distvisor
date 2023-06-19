@@ -1,0 +1,22 @@
+<app-input-modal [header]="(operation | titlecase) + ' redirection'" [visible]="visible" [loading]="loading"
+    (onClose)="cancel()" (onShow)="onShow()">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="flex flex-column gap-2 mb-2">
+            <label for="name">Name</label>
+            <input pInputText id="name" formControlName="name" aria-describedby="name-help" #autofocus />
+            <small id="name-help">Enter the name of redirection.</small>
+        </div>
+        <div class="flex flex-column gap-2 mb-2">
+            <label htmlFor="url">Url</label>
+            <input pInputText id="url" formControlName="url" aria-describedby="url-help" />
+            <small id="url-help">Enter redirection url.</small>
+        </div>
+        <div *ngIf="error">
+            <p>Error: {{error}}</p>
+        </div>
+        <div class="flex justify-content-end gap-2">
+            <button pButton type="button" icon="pi pi-times" class="p-button-outlined" label="Cancel" (click)="cancel()"></button>
+            <button pButton type="submit" icon="pi pi-check" class="p-button-outlined" label="Submit"></button>
+        </div>
+    </form>
+</app-input-modal>

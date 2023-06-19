@@ -11,9 +11,13 @@ namespace Distvisor.App.Core.Aggregates
 
 		void Deatach(Guid id);
 
-		Task<TAggregateRoot> GetAsync<TAggregateRoot>(Guid id, int? expectedVersion = null, CancellationToken cancellationToken = default)
+		Task<TAggregateRoot> GetAsync<TAggregateRoot>(Guid id, CancellationToken cancellationToken = default)
+			where TAggregateRoot : IAggregateRoot, new()
+			=> GetAsync<TAggregateRoot>(id, null, cancellationToken: cancellationToken);
+
+		Task<TAggregateRoot> GetAsync<TAggregateRoot>(Guid id, int? expectedVersion, CancellationToken cancellationToken = default)
 			where TAggregateRoot : IAggregateRoot, new();
 
-		Task CommitAsync(CancellationToken cancellationToken = default);
+        Task CommitAsync(CancellationToken cancellationToken = default);
 	}
 }

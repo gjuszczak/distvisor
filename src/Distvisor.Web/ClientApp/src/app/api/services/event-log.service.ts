@@ -25,17 +25,17 @@ export class EventLogService extends BaseService {
   }
 
   /**
-   * Path part for operation apiSEventLogGet
+   * Path part for operation apiEventLogEventsGet
    */
-  static readonly ApiSEventLogGetPath = '/api/s/event-log';
+  static readonly ApiEventLogEventsGetPath = '/api/event-log/events';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSEventLogGet$Plain()` instead.
+   * To access only the response body, use `apiEventLogEventsGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSEventLogGet$Plain$Response(params?: {
+  apiEventLogEventsGet$Plain$Response(params?: {
     aggregateId?: string;
     first?: number;
     rows?: number;
@@ -44,7 +44,7 @@ export class EventLogService extends BaseService {
 
 ): Observable<StrictHttpResponse<EventsListDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiSEventLogGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiEventLogEventsGetPath, 'get');
     if (params) {
       rb.query('aggregateId', params.aggregateId, {});
       rb.query('first', params.first, {});
@@ -65,11 +65,11 @@ export class EventLogService extends BaseService {
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSEventLogGet$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiEventLogEventsGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSEventLogGet$Plain(params?: {
+  apiEventLogEventsGet$Plain(params?: {
     aggregateId?: string;
     first?: number;
     rows?: number;
@@ -78,18 +78,18 @@ export class EventLogService extends BaseService {
 
 ): Observable<EventsListDto> {
 
-    return this.apiSEventLogGet$Plain$Response(params,context).pipe(
+    return this.apiEventLogEventsGet$Plain$Response(params,context).pipe(
       map((r: StrictHttpResponse<EventsListDto>) => r.body as EventsListDto)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSEventLogGet$Json()` instead.
+   * To access only the response body, use `apiEventLogEventsGet$Json()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSEventLogGet$Json$Response(params?: {
+  apiEventLogEventsGet$Json$Response(params?: {
     aggregateId?: string;
     first?: number;
     rows?: number;
@@ -98,7 +98,7 @@ export class EventLogService extends BaseService {
 
 ): Observable<StrictHttpResponse<EventsListDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiSEventLogGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiEventLogEventsGetPath, 'get');
     if (params) {
       rb.query('aggregateId', params.aggregateId, {});
       rb.query('first', params.first, {});
@@ -119,11 +119,11 @@ export class EventLogService extends BaseService {
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSEventLogGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiEventLogEventsGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSEventLogGet$Json(params?: {
+  apiEventLogEventsGet$Json(params?: {
     aggregateId?: string;
     first?: number;
     rows?: number;
@@ -132,30 +132,30 @@ export class EventLogService extends BaseService {
 
 ): Observable<EventsListDto> {
 
-    return this.apiSEventLogGet$Json$Response(params,context).pipe(
+    return this.apiEventLogEventsGet$Json$Response(params,context).pipe(
       map((r: StrictHttpResponse<EventsListDto>) => r.body as EventsListDto)
     );
   }
 
   /**
-   * Path part for operation apiSEventLogAggregatesAggregateIdGet
+   * Path part for operation apiEventLogAggregatesAggregateIdGet
    */
-  static readonly ApiSEventLogAggregatesAggregateIdGetPath = '/api/s/event-log/aggregates/{aggregateId}';
+  static readonly ApiEventLogAggregatesAggregateIdGetPath = '/api/event-log/aggregates/{aggregateId}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSEventLogAggregatesAggregateIdGet$Plain()` instead.
+   * To access only the response body, use `apiEventLogAggregatesAggregateIdGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSEventLogAggregatesAggregateIdGet$Plain$Response(params: {
+  apiEventLogAggregatesAggregateIdGet$Plain$Response(params: {
     aggregateId: string;
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<AggregateDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiSEventLogAggregatesAggregateIdGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiEventLogAggregatesAggregateIdGetPath, 'get');
     if (params) {
       rb.path('aggregateId', params.aggregateId, {});
     }
@@ -174,36 +174,36 @@ export class EventLogService extends BaseService {
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSEventLogAggregatesAggregateIdGet$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiEventLogAggregatesAggregateIdGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSEventLogAggregatesAggregateIdGet$Plain(params: {
+  apiEventLogAggregatesAggregateIdGet$Plain(params: {
     aggregateId: string;
   },
   context?: HttpContext
 
 ): Observable<AggregateDto> {
 
-    return this.apiSEventLogAggregatesAggregateIdGet$Plain$Response(params,context).pipe(
+    return this.apiEventLogAggregatesAggregateIdGet$Plain$Response(params,context).pipe(
       map((r: StrictHttpResponse<AggregateDto>) => r.body as AggregateDto)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSEventLogAggregatesAggregateIdGet$Json()` instead.
+   * To access only the response body, use `apiEventLogAggregatesAggregateIdGet$Json()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSEventLogAggregatesAggregateIdGet$Json$Response(params: {
+  apiEventLogAggregatesAggregateIdGet$Json$Response(params: {
     aggregateId: string;
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<AggregateDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiSEventLogAggregatesAggregateIdGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiEventLogAggregatesAggregateIdGetPath, 'get');
     if (params) {
       rb.path('aggregateId', params.aggregateId, {});
     }
@@ -222,41 +222,41 @@ export class EventLogService extends BaseService {
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSEventLogAggregatesAggregateIdGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiEventLogAggregatesAggregateIdGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSEventLogAggregatesAggregateIdGet$Json(params: {
+  apiEventLogAggregatesAggregateIdGet$Json(params: {
     aggregateId: string;
   },
   context?: HttpContext
 
 ): Observable<AggregateDto> {
 
-    return this.apiSEventLogAggregatesAggregateIdGet$Json$Response(params,context).pipe(
+    return this.apiEventLogAggregatesAggregateIdGet$Json$Response(params,context).pipe(
       map((r: StrictHttpResponse<AggregateDto>) => r.body as AggregateDto)
     );
   }
 
   /**
-   * Path part for operation apiSEventLogReplayEventsPost
+   * Path part for operation apiEventLogReplayEventsPost
    */
-  static readonly ApiSEventLogReplayEventsPostPath = '/api/s/event-log/replay-events';
+  static readonly ApiEventLogReplayEventsPostPath = '/api/event-log/replay-events';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSEventLogReplayEventsPost()` instead.
+   * To access only the response body, use `apiEventLogReplayEventsPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiSEventLogReplayEventsPost$Response(params?: {
+  apiEventLogReplayEventsPost$Response(params?: {
     body?: ReplayEvents
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiSEventLogReplayEventsPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, EventLogService.ApiEventLogReplayEventsPostPath, 'post');
     if (params) {
       rb.body(params.body, 'application/*+json');
     }
@@ -275,18 +275,18 @@ export class EventLogService extends BaseService {
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSEventLogReplayEventsPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiEventLogReplayEventsPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiSEventLogReplayEventsPost(params?: {
+  apiEventLogReplayEventsPost(params?: {
     body?: ReplayEvents
   },
   context?: HttpContext
 
 ): Observable<void> {
 
-    return this.apiSEventLogReplayEventsPost$Response(params,context).pipe(
+    return this.apiEventLogReplayEventsPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }

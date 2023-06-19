@@ -2,6 +2,6 @@
 {
     public class RolesConfiguration
     {
-        public string[] User { get; set; }
+        public string[] Admin { get; set; }
     }
 }

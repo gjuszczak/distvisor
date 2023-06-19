@@ -1,6 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
-export interface DeviceType {
-  id?: number;
-  name?: null | string;
+export enum DeviceType {
+  Unknown = 'Unknown',
+  RgbLight = 'RgbLight',
+  RgbwLight = 'RgbwLight',
+  Switch = 'Switch',
+  RfBridge = 'RfBridge'
 }

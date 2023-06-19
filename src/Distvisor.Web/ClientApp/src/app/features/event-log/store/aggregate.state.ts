@@ -40,7 +40,7 @@ export class AggregateState {
                 error: '',
             });
 
-            return this.eventLogService.apiSEventLogAggregatesAggregateIdGet$Json({ aggregateId: action.aggregateId }).pipe(
+            return this.eventLogService.apiEventLogAggregatesAggregateIdGet$Json({ aggregateId: action.aggregateId }).pipe(
                 map(aggregate => dispatch(new LoadAggregateSuccess(aggregate))),
                 catchError(error => {
                     dispatch(new LoadAggregateFail(error));

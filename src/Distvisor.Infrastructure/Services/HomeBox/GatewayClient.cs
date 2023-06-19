@@ -1,8 +1,6 @@
-﻿using Distvisor.App.HomeBox.Enums;
-using Distvisor.App.HomeBox.Services.Gateway;
-using Distvisor.App.HomeBox.ValueObjects;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Options;
+﻿using Distvisor.App.Features.HomeBox.Enums;
+using Distvisor.App.Features.HomeBox.Services.Gateway;
+using Distvisor.App.Features.HomeBox.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +15,11 @@ namespace Distvisor.Infrastructure.Services.HomeBox
     public class GatewayClient : IGatewayClient
     {
         private readonly HttpClient _httpClient;
-        private readonly GatewayConfiguration _config;
         private readonly IGatewayAuthenticationPolicy _authPolicy;
 
-        public GatewayClient(HttpClient client, IOptions<GatewayConfiguration> config, IGatewayAuthenticationPolicy authPolicy)
+        public GatewayClient(HttpClient client, IGatewayAuthenticationPolicy authPolicy)
         {
             _httpClient = client;
-            _config = config.Value;
             _authPolicy = authPolicy;
         }
 
@@ -33,60 +29,75 @@ namespace Distvisor.Infrastructure.Services.HomeBox
             {
                 var urlBuilder = new UriBuilder(_httpClient.BaseAddress)
                 {
-                    Path = $"api/user/device"
+                    Path = $"v2/device/thing"
                 };
 
-                var queryParams = new Dictionary<string, string>
-                {
-                    ["lang"] = GatewayHelper.Constants.LANG_EN,
-                    ["appid"] = _config.AppId,
-                    ["nonce"] = GatewayHelper.GenerateNonce(),
-                    ["ts"] = GatewayHelper.GenerateTimestamp(),
-                    ["version"] = GatewayHelper.Constants.VERSION,
-                    ["getTags"] = GatewayHelper.Constants.GET_TAGS_OFF,
-                };
-
-                var url = QueryHelpers.AddQueryString(urlBuilder.ToString(), queryParams);
+                var url = urlBuilder.ToString();
 
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
                 var response = await _httpClient.SendAsync(request, token);
                 response.EnsureSuccessStatusCode();
-                var responseContent = await response.Content.ReadAsStringAsync(token);
-                var result = JsonSerializer.Deserialize<GatewayDeviceListDto>(responseContent);
+
+                using var streamContent =  await response.Content.ReadAsStreamAsync(token);
+                using var jsonContent = await JsonSerializer.DeserializeAsync<JsonDocument>(streamContent);
+
+                if (IsErrorResponse(jsonContent, out var error, out var message))
+                {
+                    throw new Exception($"GetDevicesAsync -> gateway returned an error = {error}. {message}");
+                }
+
+                var devices = ParseDeviceDetails(jsonContent).ToArray();
+
                 return new GetDevicesResponse
                 {
-                    Devices = result.devicelist.Select(d => new GatewayDeviceDetails
-                    (
-                        d.name,
-                        d.deviceid,
-                        DeviceType.FromGatewayDeviceType(d.uiid),
-                        d.online,
-                        d.@params
-                    )).ToArray()
+                    Devices = devices
                 };
             });
         }
 
         public Task SetDeviceParamsAsync(string deviceId, object parameters, CancellationToken token = default)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
-    }
 
-    public class GatewayDeviceListDto
-    {
-        public int error { get; set; }
-        public GatewayDeviceDto[] devicelist { get; set; }
-    }
+        private static bool IsErrorResponse(JsonDocument jsonContent, out int error, out string message)
+        {
+            error = jsonContent.RootElement.GetProperty("error").GetInt32();
+            message = jsonContent.RootElement.GetProperty("msg").GetString();
+            return error != 0;
+        }
 
-    public class GatewayDeviceDto
-    {
-        public string apikey { get; set; }
-        public string name { get; set; }
-        public string deviceid { get; set; }
-        public int uiid { get; set; }
-        public bool online { get; set; }
-        public JsonDocument @params { get; set; }
+        private static IEnumerable<GatewayDeviceDetails> ParseDeviceDetails(JsonDocument jsonContent)
+        {
+            var thingList = jsonContent.RootElement.GetProperty("data").GetProperty("thingList").EnumerateArray();
+            foreach(var device in thingList)
+            {
+                if (device.GetProperty("itemType").GetInt32() != 1)
+                    continue;
+
+                var deviceData = device.GetProperty("itemData");
+                var name = deviceData.GetProperty("name").GetString();
+                var deviceId = deviceData.GetProperty("deviceid").GetString();
+                var uiid = deviceData.GetProperty("extra").GetProperty("uiid").GetInt32();
+                var online = deviceData.GetProperty("online").GetBoolean();
+                var @params = deviceData.GetProperty("params").Clone();
+                var deviceType = UiidToDeviceType(uiid);
+
+                yield return new GatewayDeviceDetails(name, deviceId, deviceType, online, @params);
+            }
+        }
+
+        private static DeviceType UiidToDeviceType(int gatewayDeviceType)
+        {
+            return gatewayDeviceType switch
+            {
+                1 => DeviceType.Switch,
+                28 => DeviceType.RfBridge,
+                59 => DeviceType.RgbLight,
+                104 => DeviceType.RgbwLight,
+                _ => DeviceType.Unknown,
+            };
+        }
     }
 }

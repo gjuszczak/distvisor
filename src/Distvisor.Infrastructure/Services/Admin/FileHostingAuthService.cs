@@ -1,4 +1,4 @@
-﻿using Distvisor.App.Common.Interfaces;
+﻿using Distvisor.App.Features.Common.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using System;
@@ -58,7 +58,7 @@ namespace Distvisor.Infrastructure.Services.Admin
             response.EnsureSuccessStatusCode();
 
             using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
-            var token = await JsonSerializer.DeserializeAsync<JsonDocument>(stream, cancellationToken: cancellationToken);
+            using var token = await JsonSerializer.DeserializeAsync<JsonDocument>(stream, cancellationToken: cancellationToken);
 
             var accessToken = token.RootElement.GetProperty("access_token").GetString();
             var expiresIn = token.RootElement.GetProperty("expires_in").GetInt32();

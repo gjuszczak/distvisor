@@ -1,8 +1,8 @@
-using Distvisor.App.HomeBox.Aggregates;
-using Distvisor.App.HomeBox.Enums;
-using Distvisor.App.HomeBox.Events;
-using Distvisor.App.HomeBox.Exceptions;
-using Distvisor.App.HomeBox.ValueObjects;
+using Distvisor.App.Features.HomeBox.Enums;
+using Distvisor.App.Features.HomeBox.Events;
+using Distvisor.App.Features.HomeBox.Exceptions;
+using Distvisor.App.Features.HomeBox.Aggregates;
+using Distvisor.App.Features.HomeBox.ValueObjects;
 using NUnit.Framework;
 using System;
 using System.Linq;

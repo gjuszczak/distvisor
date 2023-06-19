@@ -1,0 +1,68 @@
+<div class="container">
+    <p-menu #menu [popup]="true" [model]="gatewaySessionMenuItems"></p-menu>
+    <p-card styleClass="mt-3">
+        <p-header>
+            <div class="flex justify-content-between pt-3 px-3">
+                <div class="p-card-title">Gateway sessions</div>
+                <div class="flex">
+                    <button pButton type="button" icon="pi pi-refresh"
+                        class="p-button-rounded p-button-text p-button-info mr-1"
+                        (click)="reloadGatewaySessions()"></button>
+                </div>
+            </div>
+        </p-header>
+        <p-table *ngIf="(gatewaySessions$ | async) as gs" dataKey="id" [value]="gs.items" 
+            [lazy]="true" [first]="gs.first" [rows]="gs.rows"
+            [rowsPerPageOptions]="gs.rowsPerPageOptions" [totalRecords]="gs.totalRecords" 
+            [loading]="gs.loading" [rowHover]="true" [paginator]="true" [showCurrentPageReport]="true" 
+            [autoLayout]="true" (onLazyLoad)="lazyLoadGatewaySessions($event)">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="tiny-col"></th>
+                    <th>Generated at</th>
+                    <th>Status</th>
+                    <th class="tiny-col"></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td><i class="pi pi-unlock"></i></td>
+                    <td>{{ item.tokenGeneratedAt | date:'short' }}</td>
+                    <td>{{ item.status }}</td>
+                    <td>
+                        <button pButton type="button" icon="pi pi-ellipsis-v"
+                            class="p-button-rounded p-button-text p-button-info mr-1"
+                            (click)="toggleGatewaySessionMenu(menu, $event, item)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="4">{{ gs.error !== '' ? gs.error : 'No gateway sessions found.' }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <form (ngSubmit)="onLogin()">
+            <h3 class="pt-3">Enable Home Box by login to gateway:</h3>
+            <div class="field grid">
+                <label for="inputHomeBoxUser" class="col-12 mb-2 md:col-1 md:mb-0">User:</label>
+                <div class="col-12 md:col-4">
+                    <input pInputText class="w-full" type="text" inputId="inputHomeBoxUser" name="inputHomeBoxUser"
+                        [(ngModel)]="inputHomeBoxUser" />
+                </div>
+            </div>
+            <div class="field grid">
+                <label for="inputHomeBoxPassword" class="col-12 mb-2 md:col-1 md:mb-0">Password:</label>
+                <div class="col-12 md:col-4">
+                    <p-password styleClass="w-full" inputStyleClass="w-full" inputId="inputHomeBoxPassword"
+                        name="inputHomeBoxPassword" [(ngModel)]="inputHomeBoxPassword" [feedback]="false"
+                        [toggleMask]="true"></p-password>
+                </div>
+            </div>
+            <div class="mt-2">
+                <button pButton pRipple class="p-button-info p-button-outlined" icon="pi pi-check" label="Login"
+                    type="submit"></button>
+            </div>
+        </form>
+    </p-card>
+</div>

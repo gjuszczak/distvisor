@@ -1,4 +1,4 @@
-﻿using Distvisor.App.Admin.Qureies.GetBackupFiles;
+﻿using Distvisor.App.Features.Backups.Queries.GetBackupFiles;
 using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;

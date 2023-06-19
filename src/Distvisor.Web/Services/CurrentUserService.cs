@@ -1,4 +1,4 @@
-﻿using Distvisor.App.Common.Interfaces;
+﻿using Distvisor.App.Features.Common.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 

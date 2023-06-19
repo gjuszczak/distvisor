@@ -41,7 +41,7 @@ namespace Distvisor.Infrastructure.Persistence.Events.Migrations
                     b.Property<Guid>("CorrelationId")
                         .HasColumnType("uuid");
 
-                    b.Property<JsonDocument>("Data")
+                    b.Property<JsonElement>("Data")
                         .HasColumnType("jsonb");
 
                     b.Property<string>("EventType")

@@ -1,5 +1,5 @@
-﻿using Distvisor.App.HomeBox.Services.Gateway;
-using Distvisor.App.HomeBox.ValueObjects;
+﻿using Distvisor.App.Features.HomeBox.Services.Gateway;
+using Distvisor.App.Features.HomeBox.ValueObjects;
 using Microsoft.Extensions.Options;
 using System;
 using System.Net.Http;
@@ -49,8 +49,8 @@ namespace Distvisor.Infrastructure.Services.HomeBox
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<GatewayResponseDto<GatewayLoginResponseData>>(responseContent);
+            using var streamContent = await response.Content.ReadAsStreamAsync();
+            var result = JsonSerializer.Deserialize<GatewayResponseDto<GatewayLoginResponseData>>(streamContent);
             return new GatewayAuthenticationResult
             {
                 Token = new GatewayToken(result.Data.AccessToken, result.Data.RefreshToken, DateTimeOffset.UtcNow)
@@ -81,8 +81,8 @@ namespace Distvisor.Infrastructure.Services.HomeBox
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<GatewayResponseDto<GatewayLoginResponseData>>(responseContent);
+            using var streamContent = await response.Content.ReadAsStreamAsync();
+            var result = JsonSerializer.Deserialize<GatewayResponseDto<GatewayLoginResponseData>>(streamContent);
             return new GatewayAuthenticationResult
             {
                 Token = new GatewayToken(result.Data.AccessToken, result.Data.RefreshToken, DateTimeOffset.UtcNow)

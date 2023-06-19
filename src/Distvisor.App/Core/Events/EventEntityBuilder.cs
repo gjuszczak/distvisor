@@ -33,10 +33,10 @@ namespace Distvisor.App.Core.Events
             return @event;
         }
 
-        protected virtual JsonDocument SerializeEventData(IEvent @event)
+        protected virtual JsonElement SerializeEventData(IEvent @event)
         {
-            var jsonDocument = JsonSerializer.SerializeToDocument(@event, @event.GetType(), JsonDefaults.SerializerOptions);
-            return jsonDocument;
+            var eventData = JsonSerializer.SerializeToElement(@event, @event.GetType(), JsonDefaults.SerializerOptions);
+            return eventData;
         }
     }
 }

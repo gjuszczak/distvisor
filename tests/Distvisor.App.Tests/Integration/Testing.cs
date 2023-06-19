@@ -1,10 +1,10 @@
-﻿using Distvisor.App.Common.Interfaces;
-using Distvisor.App.Core.Aggregates;
+﻿using Distvisor.App.Core.Aggregates;
 using Distvisor.App.Core.Commands;
 using Distvisor.App.Core.Dispatchers;
 using Distvisor.App.Core.Events;
 using Distvisor.App.Core.Queries;
 using Distvisor.App.Core.Services;
+using Distvisor.App.Features.Common.Interfaces;
 using Distvisor.Infrastructure.Persistence;
 using Distvisor.Infrastructure.Persistence.App;
 using Microsoft.EntityFrameworkCore;

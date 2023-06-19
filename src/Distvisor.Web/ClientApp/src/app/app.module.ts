@@ -28,11 +28,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { ApiModule } from './api/api.module';
 import { CoreModule } from './core/core.module';
 
-import { AdminModule } from './features/admin/admin.module';
-import { SettingsModule } from './features/settings/settings.module';
+import { BackupsModule } from './features/backups/backups.module';
+import { EventLogModule } from './features/event-log/event-log.module';
 import { FinancesModule } from './features/finances/finances.module';
 import { HomeBoxModule } from './features/home-box/home-box.module';
-import { EventLogModule } from './features/event-log/event-log.module';
+import { RedirectionsModule } from './features/redirections/redirections.module';
 
 import { CoreState } from './core/state/core.state';
 import { AppComponent } from './app.component';
@@ -70,12 +70,12 @@ import { AppComponent } from './app.component';
 
     // internal
     ApiModule,
+    BackupsModule,
     CoreModule,
-    AdminModule,
-    SettingsModule,
+    EventLogModule,
     FinancesModule,
     HomeBoxModule,
-    EventLogModule,
+    RedirectionsModule,
 
     // top level routing
     AppRoutingModule,

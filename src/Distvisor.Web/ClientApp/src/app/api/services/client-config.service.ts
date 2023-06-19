@@ -25,7 +25,7 @@ export class ClientConfigService extends BaseService {
   /**
    * Path part for operation apiClientConfigGet
    */
-  static readonly ApiClientConfigGetPath = '/api/ClientConfig';
+  static readonly ApiClientConfigGetPath = '/api/client-config';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.

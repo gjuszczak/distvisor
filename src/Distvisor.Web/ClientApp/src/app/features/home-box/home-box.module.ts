@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { NgxsModule } from '@ngxs/store';
 
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -16,22 +17,31 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { MenuModule } from 'primeng/menu';
+import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
+
+import { HomeBoxState } from './store/home-box.state';
+import { GatewaySessionsState } from './store/gateway-sessions.state';
 
 import { ApiModule } from 'src/app/api/api.module';
 import { SharedModule } from 'src/app/shared';
 import { HomeBoxRoutingModule } from './home-box-routing.module';
 
-import { HomeBoxComponent } from './home-box/home-box.component';
-import { DevicesListComponent } from './devices-list/devices-list.component';
+import { DevicesComponent } from './devices/devices.component';
+import { GatewaySessionsComponent } from './gateway-sessions/gateway-sessions.component';
+import { DevicesState } from './store/devices.state';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     HttpClientModule,
+
+    // Ngxs
+    NgxsModule.forFeature([HomeBoxState, GatewaySessionsState, DevicesState]),
 
     // PrimeNg
     ButtonModule,
@@ -46,6 +56,8 @@ import { DevicesListComponent } from './devices-list/devices-list.component';
     InputSwitchModule,
     InputTextareaModule,
     InputTextModule,
+    MenuModule,
+    PasswordModule,
     RippleModule,
     TableModule,
     TabViewModule,
@@ -56,8 +68,8 @@ import { DevicesListComponent } from './devices-list/devices-list.component';
     HomeBoxRoutingModule,
   ],
   declarations: [
-    HomeBoxComponent,
-    DevicesListComponent
+    DevicesComponent,
+    GatewaySessionsComponent,
   ],
   providers: [ConfirmationService]
 })

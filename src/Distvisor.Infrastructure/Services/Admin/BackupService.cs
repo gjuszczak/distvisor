@@ -1,5 +1,5 @@
-﻿using Distvisor.App.Admin.Qureies.GetBackupFiles;
-using Distvisor.App.Admin.Services;
+﻿using Distvisor.App.Features.Backups.Queries.GetBackupFiles;
+using Distvisor.App.Features.Backups.Services;
 using System.Threading;
 using System.Threading.Tasks;
 

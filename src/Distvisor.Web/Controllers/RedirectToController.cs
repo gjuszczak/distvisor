@@ -1,9 +1,5 @@
-﻿using Distvisor.Web.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Distvisor.Infrastructure.Services.Redirections;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
 {
@@ -11,17 +7,17 @@ namespace Distvisor.Web.Controllers
     [Route("api/redirect-to")]
     public class RedirectToController : ControllerBase
     {
-        private readonly IRedirectionsService _redirections;
+        private readonly ICachedRedirectionsService _cachedRedirections;
 
-        public RedirectToController(IRedirectionsService redirections)
+        public RedirectToController(ICachedRedirectionsService cachedRedirections)
         {
-            _redirections = redirections;
+            _cachedRedirections = cachedRedirections;
         }
 
         [HttpGet("{name}")]
         public async Task<IActionResult> RedirectTo(string name)
         {
-            var redirection = await _redirections.GetRedirectionAsync(name);
+            var redirection = await _cachedRedirections.GetByNameAsync(name);
             if (redirection == null)
             {
                 return RedirectPermanent("/");

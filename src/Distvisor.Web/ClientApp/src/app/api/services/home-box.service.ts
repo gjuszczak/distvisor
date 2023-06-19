@@ -10,12 +10,10 @@ import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
 import { DeleteGatewaySession } from '../models/delete-gateway-session';
-import { DeviceDto } from '../models/device-dto';
-import { GatewaySessionDtoPaginatedList } from '../models/gateway-session-dto-paginated-list';
-import { GetDevices } from '../models/get-devices';
-import { LoginToGateway } from '../models/login-to-gateway';
+import { DevicesListDto } from '../models/devices-list-dto';
+import { GatewaySessionsListDto } from '../models/gateway-sessions-list-dto';
+import { OpenGatewaySession } from '../models/open-gateway-session';
 import { RefreshGatewaySession } from '../models/refresh-gateway-session';
-import { SyncDevicesWithGateway } from '../models/sync-devices-with-gateway';
 
 @Injectable({
   providedIn: 'root',
@@ -29,25 +27,25 @@ export class HomeBoxService extends BaseService {
   }
 
   /**
-   * Path part for operation apiSHomeBoxGatewaySessionsGet
+   * Path part for operation apiHomeBoxSessionsGet
    */
-  static readonly ApiSHomeBoxGatewaySessionsGetPath = '/api/s/home-box/gateway-sessions';
+  static readonly ApiHomeBoxSessionsGetPath = '/api/home-box/sessions';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSHomeBoxGatewaySessionsGet$Plain()` instead.
+   * To access only the response body, use `apiHomeBoxSessionsGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSHomeBoxGatewaySessionsGet$Plain$Response(params?: {
+  apiHomeBoxSessionsGet$Plain$Response(params?: {
     first?: number;
     rows?: number;
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<GatewaySessionDtoPaginatedList>> {
+): Observable<StrictHttpResponse<GatewaySessionsListDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiSHomeBoxGatewaySessionsGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiHomeBoxSessionsGetPath, 'get');
     if (params) {
       rb.query('first', params.first, {});
       rb.query('rows', params.rows, {});
@@ -60,45 +58,45 @@ export class HomeBoxService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<GatewaySessionDtoPaginatedList>;
+        return r as StrictHttpResponse<GatewaySessionsListDto>;
       })
     );
   }
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSHomeBoxGatewaySessionsGet$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiHomeBoxSessionsGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSHomeBoxGatewaySessionsGet$Plain(params?: {
+  apiHomeBoxSessionsGet$Plain(params?: {
     first?: number;
     rows?: number;
   },
   context?: HttpContext
 
-): Observable<GatewaySessionDtoPaginatedList> {
+): Observable<GatewaySessionsListDto> {
 
-    return this.apiSHomeBoxGatewaySessionsGet$Plain$Response(params,context).pipe(
-      map((r: StrictHttpResponse<GatewaySessionDtoPaginatedList>) => r.body as GatewaySessionDtoPaginatedList)
+    return this.apiHomeBoxSessionsGet$Plain$Response(params,context).pipe(
+      map((r: StrictHttpResponse<GatewaySessionsListDto>) => r.body as GatewaySessionsListDto)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSHomeBoxGatewaySessionsGet$Json()` instead.
+   * To access only the response body, use `apiHomeBoxSessionsGet$Json()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSHomeBoxGatewaySessionsGet$Json$Response(params?: {
+  apiHomeBoxSessionsGet$Json$Response(params?: {
     first?: number;
     rows?: number;
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<GatewaySessionDtoPaginatedList>> {
+): Observable<StrictHttpResponse<GatewaySessionsListDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiSHomeBoxGatewaySessionsGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiHomeBoxSessionsGetPath, 'get');
     if (params) {
       rb.query('first', params.first, {});
       rb.query('rows', params.rows, {});
@@ -111,49 +109,49 @@ export class HomeBoxService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<GatewaySessionDtoPaginatedList>;
+        return r as StrictHttpResponse<GatewaySessionsListDto>;
       })
     );
   }
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSHomeBoxGatewaySessionsGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiHomeBoxSessionsGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSHomeBoxGatewaySessionsGet$Json(params?: {
+  apiHomeBoxSessionsGet$Json(params?: {
     first?: number;
     rows?: number;
   },
   context?: HttpContext
 
-): Observable<GatewaySessionDtoPaginatedList> {
+): Observable<GatewaySessionsListDto> {
 
-    return this.apiSHomeBoxGatewaySessionsGet$Json$Response(params,context).pipe(
-      map((r: StrictHttpResponse<GatewaySessionDtoPaginatedList>) => r.body as GatewaySessionDtoPaginatedList)
+    return this.apiHomeBoxSessionsGet$Json$Response(params,context).pipe(
+      map((r: StrictHttpResponse<GatewaySessionsListDto>) => r.body as GatewaySessionsListDto)
     );
   }
 
   /**
-   * Path part for operation apiSHomeBoxLoginToGatewayPost
+   * Path part for operation apiHomeBoxSessionsOpenPost
    */
-  static readonly ApiSHomeBoxLoginToGatewayPostPath = '/api/s/home-box/login-to-gateway';
+  static readonly ApiHomeBoxSessionsOpenPostPath = '/api/home-box/sessions/open';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSHomeBoxLoginToGatewayPost()` instead.
+   * To access only the response body, use `apiHomeBoxSessionsOpenPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiSHomeBoxLoginToGatewayPost$Response(params?: {
-    body?: LoginToGateway
+  apiHomeBoxSessionsOpenPost$Response(params?: {
+    body?: OpenGatewaySession
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiSHomeBoxLoginToGatewayPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiHomeBoxSessionsOpenPostPath, 'post');
     if (params) {
       rb.body(params.body, 'application/*+json');
     }
@@ -172,41 +170,41 @@ export class HomeBoxService extends BaseService {
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSHomeBoxLoginToGatewayPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiHomeBoxSessionsOpenPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiSHomeBoxLoginToGatewayPost(params?: {
-    body?: LoginToGateway
+  apiHomeBoxSessionsOpenPost(params?: {
+    body?: OpenGatewaySession
   },
   context?: HttpContext
 
 ): Observable<void> {
 
-    return this.apiSHomeBoxLoginToGatewayPost$Response(params,context).pipe(
+    return this.apiHomeBoxSessionsOpenPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
   /**
-   * Path part for operation apiSHomeBoxRefreshGatewaySessionPost
+   * Path part for operation apiHomeBoxSessionsRefreshPost
    */
-  static readonly ApiSHomeBoxRefreshGatewaySessionPostPath = '/api/s/home-box/refresh-gateway-session';
+  static readonly ApiHomeBoxSessionsRefreshPostPath = '/api/home-box/sessions/refresh';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSHomeBoxRefreshGatewaySessionPost()` instead.
+   * To access only the response body, use `apiHomeBoxSessionsRefreshPost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiSHomeBoxRefreshGatewaySessionPost$Response(params?: {
+  apiHomeBoxSessionsRefreshPost$Response(params?: {
     body?: RefreshGatewaySession
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiSHomeBoxRefreshGatewaySessionPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiHomeBoxSessionsRefreshPostPath, 'post');
     if (params) {
       rb.body(params.body, 'application/*+json');
     }
@@ -225,41 +223,41 @@ export class HomeBoxService extends BaseService {
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSHomeBoxRefreshGatewaySessionPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiHomeBoxSessionsRefreshPost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiSHomeBoxRefreshGatewaySessionPost(params?: {
+  apiHomeBoxSessionsRefreshPost(params?: {
     body?: RefreshGatewaySession
   },
   context?: HttpContext
 
 ): Observable<void> {
 
-    return this.apiSHomeBoxRefreshGatewaySessionPost$Response(params,context).pipe(
+    return this.apiHomeBoxSessionsRefreshPost$Response(params,context).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
   /**
-   * Path part for operation apiSHomeBoxDeleteGatewaySessionPost
+   * Path part for operation apiHomeBoxSessionsDeletePost
    */
-  static readonly ApiSHomeBoxDeleteGatewaySessionPostPath = '/api/s/home-box/delete-gateway-session';
+  static readonly ApiHomeBoxSessionsDeletePostPath = '/api/home-box/sessions/delete';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSHomeBoxDeleteGatewaySessionPost()` instead.
+   * To access only the response body, use `apiHomeBoxSessionsDeletePost()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiSHomeBoxDeleteGatewaySessionPost$Response(params?: {
+  apiHomeBoxSessionsDeletePost$Response(params?: {
     body?: DeleteGatewaySession
   },
   context?: HttpContext
 
 ): Observable<StrictHttpResponse<void>> {
 
-    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiSHomeBoxDeleteGatewaySessionPostPath, 'post');
+    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiHomeBoxSessionsDeletePostPath, 'post');
     if (params) {
       rb.body(params.body, 'application/*+json');
     }
@@ -278,96 +276,45 @@ export class HomeBoxService extends BaseService {
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSHomeBoxDeleteGatewaySessionPost$Response()` instead.
+   * To access the full response (for headers, for example), `apiHomeBoxSessionsDeletePost$Response()` instead.
    *
    * This method sends `application/*+json` and handles request body of type `application/*+json`.
    */
-  apiSHomeBoxDeleteGatewaySessionPost(params?: {
+  apiHomeBoxSessionsDeletePost(params?: {
     body?: DeleteGatewaySession
   },
   context?: HttpContext
 
 ): Observable<void> {
 
-    return this.apiSHomeBoxDeleteGatewaySessionPost$Response(params,context).pipe(
+    return this.apiHomeBoxSessionsDeletePost$Response(params,context).pipe(
       map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 
   /**
-   * Path part for operation apiSHomeBoxSyncDevicesWithGatewayPost
+   * Path part for operation apiHomeBoxDevicesGet
    */
-  static readonly ApiSHomeBoxSyncDevicesWithGatewayPostPath = '/api/s/home-box/sync-devices-with-gateway';
+  static readonly ApiHomeBoxDevicesGetPath = '/api/home-box/devices';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSHomeBoxSyncDevicesWithGatewayPost()` instead.
-   *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
-   */
-  apiSHomeBoxSyncDevicesWithGatewayPost$Response(params?: {
-    body?: SyncDevicesWithGateway
-  },
-  context?: HttpContext
-
-): Observable<StrictHttpResponse<void>> {
-
-    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiSHomeBoxSyncDevicesWithGatewayPostPath, 'post');
-    if (params) {
-      rb.body(params.body, 'application/*+json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'text',
-      accept: '*/*',
-      context: context
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSHomeBoxSyncDevicesWithGatewayPost$Response()` instead.
-   *
-   * This method sends `application/*+json` and handles request body of type `application/*+json`.
-   */
-  apiSHomeBoxSyncDevicesWithGatewayPost(params?: {
-    body?: SyncDevicesWithGateway
-  },
-  context?: HttpContext
-
-): Observable<void> {
-
-    return this.apiSHomeBoxSyncDevicesWithGatewayPost$Response(params,context).pipe(
-      map((r: StrictHttpResponse<void>) => r.body as void)
-    );
-  }
-
-  /**
-   * Path part for operation apiSHomeBoxDevicesGet
-   */
-  static readonly ApiSHomeBoxDevicesGetPath = '/api/s/home-box/devices';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSHomeBoxDevicesGet$Plain()` instead.
+   * To access only the response body, use `apiHomeBoxDevicesGet$Plain()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSHomeBoxDevicesGet$Plain$Response(params?: {
-    query?: GetDevices;
+  apiHomeBoxDevicesGet$Plain$Response(params?: {
+    first?: number;
+    rows?: number;
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<Array<DeviceDto>>> {
+): Observable<StrictHttpResponse<DevicesListDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiSHomeBoxDevicesGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiHomeBoxDevicesGetPath, 'get');
     if (params) {
-      rb.query('query', params.query, {});
+      rb.query('first', params.first, {});
+      rb.query('rows', params.rows, {});
     }
 
     return this.http.request(rb.build({
@@ -377,45 +324,48 @@ export class HomeBoxService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<DeviceDto>>;
+        return r as StrictHttpResponse<DevicesListDto>;
       })
     );
   }
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSHomeBoxDevicesGet$Plain$Response()` instead.
+   * To access the full response (for headers, for example), `apiHomeBoxDevicesGet$Plain$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSHomeBoxDevicesGet$Plain(params?: {
-    query?: GetDevices;
+  apiHomeBoxDevicesGet$Plain(params?: {
+    first?: number;
+    rows?: number;
   },
   context?: HttpContext
 
-): Observable<Array<DeviceDto>> {
+): Observable<DevicesListDto> {
 
-    return this.apiSHomeBoxDevicesGet$Plain$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<DeviceDto>>) => r.body as Array<DeviceDto>)
+    return this.apiHomeBoxDevicesGet$Plain$Response(params,context).pipe(
+      map((r: StrictHttpResponse<DevicesListDto>) => r.body as DevicesListDto)
     );
   }
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `apiSHomeBoxDevicesGet$Json()` instead.
+   * To access only the response body, use `apiHomeBoxDevicesGet$Json()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSHomeBoxDevicesGet$Json$Response(params?: {
-    query?: GetDevices;
+  apiHomeBoxDevicesGet$Json$Response(params?: {
+    first?: number;
+    rows?: number;
   },
   context?: HttpContext
 
-): Observable<StrictHttpResponse<Array<DeviceDto>>> {
+): Observable<StrictHttpResponse<DevicesListDto>> {
 
-    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiSHomeBoxDevicesGetPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiHomeBoxDevicesGetPath, 'get');
     if (params) {
-      rb.query('query', params.query, {});
+      rb.query('first', params.first, {});
+      rb.query('rows', params.rows, {});
     }
 
     return this.http.request(rb.build({
@@ -425,26 +375,77 @@ export class HomeBoxService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<DeviceDto>>;
+        return r as StrictHttpResponse<DevicesListDto>;
       })
     );
   }
 
   /**
    * This method provides access only to the response body.
-   * To access the full response (for headers, for example), `apiSHomeBoxDevicesGet$Json$Response()` instead.
+   * To access the full response (for headers, for example), `apiHomeBoxDevicesGet$Json$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  apiSHomeBoxDevicesGet$Json(params?: {
-    query?: GetDevices;
+  apiHomeBoxDevicesGet$Json(params?: {
+    first?: number;
+    rows?: number;
   },
   context?: HttpContext
 
-): Observable<Array<DeviceDto>> {
+): Observable<DevicesListDto> {
 
-    return this.apiSHomeBoxDevicesGet$Json$Response(params,context).pipe(
-      map((r: StrictHttpResponse<Array<DeviceDto>>) => r.body as Array<DeviceDto>)
+    return this.apiHomeBoxDevicesGet$Json$Response(params,context).pipe(
+      map((r: StrictHttpResponse<DevicesListDto>) => r.body as DevicesListDto)
+    );
+  }
+
+  /**
+   * Path part for operation apiHomeBoxDevicesSyncWithGatewayPost
+   */
+  static readonly ApiHomeBoxDevicesSyncWithGatewayPostPath = '/api/home-box/devices/sync-with-gateway';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `apiHomeBoxDevicesSyncWithGatewayPost()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiHomeBoxDevicesSyncWithGatewayPost$Response(params?: {
+  },
+  context?: HttpContext
+
+): Observable<StrictHttpResponse<void>> {
+
+    const rb = new RequestBuilder(this.rootUrl, HomeBoxService.ApiHomeBoxDevicesSyncWithGatewayPostPath, 'post');
+    if (params) {
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'text',
+      accept: '*/*',
+      context: context
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: undefined }) as StrictHttpResponse<void>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access only to the response body.
+   * To access the full response (for headers, for example), `apiHomeBoxDevicesSyncWithGatewayPost$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  apiHomeBoxDevicesSyncWithGatewayPost(params?: {
+  },
+  context?: HttpContext
+
+): Observable<void> {
+
+    return this.apiHomeBoxDevicesSyncWithGatewayPost$Response(params,context).pipe(
+      map((r: StrictHttpResponse<void>) => r.body as void)
     );
   }
 

@@ -1,0 +1,64 @@
+<div class="container">
+    <p-menu #menu [popup]="true" [model]="devicesMenuItems"></p-menu>
+    <p-card styleClass="mt-3">
+        <p-header>
+            <div class="flex justify-content-between pt-3 px-3">
+                <div class="p-card-title">Devices</div>
+                <div class="flex">
+                    <button pButton type="button" icon="pi pi-refresh"
+                        class="p-button-rounded p-button-text p-button-info mr-1" (click)="reloadDevices()"></button>
+                    <button pButton type="button" icon="pi pi-ellipsis-v"
+                        class="p-button-rounded p-button-text p-button-info mr-1"
+                        (click)="menu.toggle($event)"></button>
+                </div>
+            </div>
+        </p-header>
+        <p-dataView *ngIf="(devices$ | async) as devices" dataKey="id" layout="grid" [value]="devices.items"
+            [lazy]="true" [first]="devices.first" [rows]="devices.rows" 
+            [rowsPerPageOptions]="devices.rowsPerPageOptions" [totalRecords]="devices.totalRecords"
+            [loading]="devices.loading" [paginator]="true" [showCurrentPageReport]="true" 
+            (onLazyLoad)="lazyLoadDevices($event)">
+            <ng-template let-device pTemplate="gridItem">
+                <div class="p-2 col-12 sm:col-6 md:col-4">
+                    <p-card [header]="device.header || device.name" styleClass="shadow-6">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th class="auto-fit text-right pr-3">Name:</th>
+                                    <td>{{device.name}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="auto-fit text-right pr-3">GW Id:</th>
+                                    <td>{{device.gatewayDeviceId}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="auto-fit text-right pr-3">Type:</th>
+                                    <td>{{device.type}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="auto-fit text-right pr-3">Location:</th>
+                                    <td>{{device.location || '---'}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="auto-fit text-right pr-3">Status:</th>
+                                    <td>{{device.isOnline ? 'Online' : 'Offline'}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="flex flex-row-reverse pt-3">
+                            <div class="ml-3">
+                                <button pButton pRipple type="button" class="p-button-lg p-button-info p-button-text"
+                                    icon="pi pi-power-off" (click)="onDeviceToggleClicked(device)"></button>
+                            </div>
+                            <div class="ml-3">
+                                <button pButton pRipple type="button" class="p-button-lg p-button-info p-button-text"
+                                    icon="pi pi-ellipsis-h"
+                                    (click)="onDeviceShowDetailsClicked(device.id || '')"></button>
+                            </div>
+                        </div>
+                    </p-card>
+                </div>
+            </ng-template>
+        </p-dataView>
+    </p-card>
+</div>

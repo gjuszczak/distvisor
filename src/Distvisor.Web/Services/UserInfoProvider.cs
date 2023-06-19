@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Distvisor.Web.Services
 {
@@ -30,7 +28,7 @@ namespace Distvisor.Web.Services
 
         public string UserId => _httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        public string Role => _httpContext.User.IsInRole("user") ? "user" : "guest";
+        public string Role => _httpContext.User.IsInRole("admin") ? "admin" : "guest";
 
         public async Task<string> GetAccessTokenAsync() => await _httpContext.GetTokenAsync("access_token");
     }

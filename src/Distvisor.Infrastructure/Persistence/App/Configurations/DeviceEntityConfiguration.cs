@@ -1,6 +1,5 @@
-﻿using Distvisor.App.Core.Enums;
-using Distvisor.App.HomeBox.Entities;
-using Distvisor.App.HomeBox.Enums;
+﻿using Distvisor.App.Features.HomeBox.Entities;
+using Distvisor.App.Features.HomeBox.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,9 +12,7 @@ namespace Distvisor.Infrastructure.Persistence.App.Configurations
             entityType.HasKey(o => o.Id);
 
             entityType.Property(e => e.Type)
-                .HasConversion(
-                    v => v.Name,
-                    v => Enumeration.FromName<DeviceType>(v));
+                .HasConversion<string>();
         }
     }
 }

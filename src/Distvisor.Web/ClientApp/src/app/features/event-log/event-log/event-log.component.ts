@@ -6,8 +6,8 @@ import { LazyLoadEvent, MenuItem } from 'primeng/api';
 
 import 'prismjs/components/prism-json.js';
 
-import { LoadEvents, ReplayEvents } from '../store/events.actions';
-import { EventsState, EventsStateModel } from '../store/events.state';
+import { HideEventsModal, LoadEvents, ReplayEvents, ShowEventsModal } from '../store/events.actions';
+import { EventsList, EventsModal, EventsModals, EventsState } from '../store/events.state';
 import { AggregateState, AggregateStateModel } from '../store/aggregate.state';
 import { ClearAggregate, LoadAggregate } from '../store/aggregate.actions';
 import { distinctUntilChanged, map } from 'rxjs/operators';
@@ -17,12 +17,17 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
   templateUrl: './event-log.component.html',
 })
 export class EventLogComponent implements OnInit {
+  
+  @Select(EventsState.getModal)
+  public readonly modal$!: Observable<EventsModal>;
 
   @Select(EventsState.getEvents)
-  public readonly events$!: Observable<EventsStateModel>;
+  public readonly events$!: Observable<EventsList>;
 
   @Select(AggregateState.getAggregate)
   public readonly aggregate$!: Observable<AggregateStateModel>;
+
+  public readonly EventsModals = EventsModals;
 
   public eventLogMenuItems: MenuItem[] = [];
   private firstLazyLoad = true;
@@ -37,9 +42,9 @@ export class EventLogComponent implements OnInit {
     this.eventLogMenuItems = [
       {
         label: 'Replay events to RS',
-        icon: 'pi pi-refresh',
+        icon: 'pi pi-history',
         command: () => {
-          this.replayEvents();
+          this.store.dispatch(new ShowEventsModal(EventsModals.ReplayEvents));
         }
       }
     ];
@@ -71,6 +76,10 @@ export class EventLogComponent implements OnInit {
     }
 
     this.router.navigate([], { queryParams: { first, rows } });
+  }
+
+  hideEventsModal() {
+    this.store.dispatch(new HideEventsModal());
   }
 
   reloadEvents(aggregateId?: string, first?: number, rows?: number) {

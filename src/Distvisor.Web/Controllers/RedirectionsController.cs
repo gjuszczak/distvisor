@@ -1,43 +1,47 @@
-﻿using Distvisor.Web.Services;
+﻿using Distvisor.App.Core.Dispatchers;
+using Distvisor.App.Features.Redirections.Queries.GetRedirections;
+using Distvisor.App.Features.Redirections.Commands.CreateRedirection;
+using Distvisor.App.Features.Redirections.Commands.DeleteRedirection;
+using Distvisor.App.Features.Redirections.Commands.EditRedirection;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Distvisor.Web.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/sec/[controller]")]
+    [Route("api/redirections")]
     public class RedirectionsController : ControllerBase
     {
-        private readonly IRedirectionsService _redirections;
+        private readonly IDispatcher _dispatcher;
 
-        public RedirectionsController(IRedirectionsService redirections)
+        public RedirectionsController(IDispatcher dispatcher)
         {
-            _redirections = redirections;
-        }
-
-        [HttpDelete("{name}")]
-        public async Task<IActionResult> RemoveRedirection(string name)
-        {
-            await _redirections.RemoveRedirectionAsync(name);
-            return Ok();
+            _dispatcher = dispatcher;
         }
 
         [HttpGet]
-        public Task<IEnumerable<RedirectionDetails>> ListRedirections()
+        public async Task<RedirectionsListDto> GetRedirections([FromQuery] GetRedirections query, CancellationToken cancellationToken)
         {
-            return _redirections.ListRedirectionsAsync();
+            return await _dispatcher.DispatchAsync(query, cancellationToken);
         }
 
         [HttpPost]
-        public async Task<IActionResult> ConfigureRedirection(RedirectionDetails redirection)
+        public async Task CreateRedirection(CreateRedirection command, CancellationToken cancellationToken)
         {
-            await _redirections.ConfigureRedirectionAsync(redirection);
-            return Ok();
+            await _dispatcher.DispatchAsync(command, cancellationToken);
+        }
+
+        [HttpDelete]
+        public async Task DeleteRedirection(DeleteRedirection command, CancellationToken cancellationToken)
+        {
+            await _dispatcher.DispatchAsync(command, cancellationToken);
+        }
+
+        [HttpPatch]
+        public async Task EditRedirection(EditRedirection command, CancellationToken cancellationToken)
+        {
+            await _dispatcher.DispatchAsync(command, cancellationToken);
         }
     }
 }

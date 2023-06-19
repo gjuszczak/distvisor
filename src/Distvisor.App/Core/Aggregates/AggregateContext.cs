@@ -38,7 +38,7 @@ namespace Distvisor.App.Core.Aggregates
             }
 		}
 
-		public virtual async Task<TAggregateRoot> GetAsync<TAggregateRoot>(Guid id, int? expectedVersion = null, CancellationToken cancellationToken = default)
+		public virtual async Task<TAggregateRoot> GetAsync<TAggregateRoot>(Guid id, int? expectedVersion, CancellationToken cancellationToken = default)
 			where TAggregateRoot : IAggregateRoot, new()
 		{
 			if (_aggregateTrackers.ContainsKey(id))
