@@ -1,0 +1,5 @@
+<p-dialog [header]="header" [(visible)]="isVisible" styleClass="dialog-modal" position="top" [modal]="true"
+    [draggable]="false" [resizable]="false" (onShow)="show()">
+    <p-progressBar *ngIf="loading" mode="indeterminate"></p-progressBar>
+    <ng-content></ng-content>
+</p-dialog>

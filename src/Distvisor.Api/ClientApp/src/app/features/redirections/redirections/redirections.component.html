@@ -1,0 +1,60 @@
+<div class="container">
+    <p-menu #menu [popup]="true" [model]="redirectionMenuItems"></p-menu>
+    <div *ngIf="(modal$ | async) as modal">
+        <app-redirections-confirm-modal operation="delete" [visible]="modal.kind === RedirectionModalKind.ConfirmDelete"
+            [value]="modal.value" [loading]="modal.loading" [error]="modal.error" (onCancel)="hideRedirectionModal()"
+            (onSubmit)="deleteRedirection($event)"></app-redirections-confirm-modal>
+        <app-redirections-input-modal operation="create" [visible]="modal.kind === RedirectionModalKind.Create"
+            [value]="modal.value" [loading]="modal.loading" [error]="modal.error" (onCancel)="hideRedirectionModal()"
+            (onSubmit)="createRedirection($event)"></app-redirections-input-modal>
+        <app-redirections-input-modal operation="edit" [visible]="modal.kind === RedirectionModalKind.Edit"
+            [value]="modal.value" [loading]="modal.loading" [error]="modal.error" (onCancel)="hideRedirectionModal()"
+            (onSubmit)="editRedirection($event)"></app-redirections-input-modal>
+    </div>
+    <p-card styleClass="mt-3">
+        <p-header>
+            <div class="flex justify-content-between pt-3 px-3">
+                <div class="p-card-title">Redirections</div>
+                <div class="flex">
+                    <button pButton type="button" icon="pi pi-refresh"
+                        class="p-button-rounded p-button-text p-button-info mr-1"
+                        (click)="reloadRedirections()"></button>
+                    <button pButton type="button" icon="pi pi-plus"
+                        class="p-button-rounded p-button-text p-button-info mr-1"
+                        (click)="showCreateRedirectionModal()"></button>
+                </div>
+            </div>
+        </p-header>
+        <p-table *ngIf="(redirections$ | async) as redirections" dataKey="name" [value]="redirections.items"
+            [lazy]="true" [first]="redirections.first" [rows]="redirections.rows"
+            [rowsPerPageOptions]="redirections.rowsPerPageOptions" [totalRecords]="redirections.totalRecords"
+            [loading]="redirections.loading" [rowHover]="true" [paginator]="true" [showCurrentPageReport]="true"
+            [autoLayout]="true" (onLazyLoad)="lazyLoadRedirections($event)">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="tiny-col"></th>
+                    <th>Name</th>
+                    <th>Url</th>
+                    <th class="tiny-col"></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-redirection>
+                <tr>
+                    <td><i class="pi pi-arrow-right-arrow-left"></i></td>
+                    <td>{{ redirection.name }}</td>
+                    <td><a [href]="redirection.url" target="_blank" rel="noopener">{{ redirection.url }}</a></td>
+                    <td>
+                        <button pButton type="button" icon="pi pi-ellipsis-v"
+                            class="p-button-rounded p-button-text p-button-info mr-1"
+                            (click)="toggleRedirectionMenu(menu, $event, redirection)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5">{{ redirections.error !== '' ? redirections.error : 'No redirections found.' }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-card>
+</div>

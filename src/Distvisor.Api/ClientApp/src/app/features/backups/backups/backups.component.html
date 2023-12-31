@@ -1,0 +1,72 @@
+<div class="container">
+    <p-menu #menu [popup]="true" [model]="backupMenuItems"></p-menu>
+    <app-backup-confirm-modal *ngIf="(modal$ | async) as modal" header="Delete backup"
+        [visible]="modal.visible === BackupModals.ConfirmDelete" operation="delete" [backupName]="selectedBackupName"
+        [loading]="modal.loading" [error]="modal.error" (onCancel)="hideBackupModal()"
+        (onConfirm)="deleteBackup()"></app-backup-confirm-modal>
+    <app-backup-confirm-modal *ngIf="(modal$ | async) as modal" header="Restore backup"
+        [visible]="modal.visible === BackupModals.ConfirmRestore" operation="restore" [backupName]="selectedBackupName"
+        [loading]="modal.loading" [error]="modal.error" (onCancel)="hideBackupModal()"
+        (onConfirm)="restoreBackup()"></app-backup-confirm-modal>
+    <app-backup-input-modal *ngIf="(modal$ | async) as modal" header="Create backup"
+        [visible]="modal.visible === BackupModals.Create" [defaultInputText]="modal.defaultInputText"
+        [loading]="modal.loading" [error]="modal.error" (onCancel)="hideBackupModal()"
+        (onConfirm)="createBackup($event)"></app-backup-input-modal>
+    <app-backup-input-modal *ngIf="(modal$ | async) as modal" header="Rename backup"
+        [visible]="modal.visible === BackupModals.Rename" [defaultInputText]="modal.defaultInputText"
+        [loading]="modal.loading" [error]="modal.error" (onCancel)="hideBackupModal()"
+        (onConfirm)="renameBackup($event)"></app-backup-input-modal>
+    <p-card styleClass="mt-3">
+        <p-header>
+            <div class="flex justify-content-between pt-3 px-3">
+                <div class="p-card-title">Backups</div>
+                <div class="flex">
+                    <button pButton type="button" icon="pi pi-refresh"
+                        class="p-button-rounded p-button-text p-button-info mr-1"
+                        (click)="reloadBackups()"></button>
+                    <button pButton type="button" icon="pi pi-plus"
+                        class="p-button-rounded p-button-text p-button-info mr-1"
+                        (click)="showCreateBackupModal()"></button>
+                </div>
+            </div>
+        </p-header>
+        <p-table *ngIf="(backups$ | async) as backups" dataKey="name" [value]="backups.items" [lazy]="true"
+            [first]="backups.first" [rows]="backups.rows" [rowsPerPageOptions]="backups.rowsPerPageOptions"
+            [totalRecords]="backups.totalRecords" [loading]="backups.loading" [rowHover]="true" [paginator]="true"
+            [showCurrentPageReport]="true" [autoLayout]="true" (onLazyLoad)="lazyLoadBackups($event)">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="tiny-col"></th>
+                    <th>Name</th>
+                    <th>Created at</th>
+                    <th>Size</th>
+                    <th class="tiny-col"></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-backup>
+                <tr>
+                    <td><i class="pi pi-database"></i></td>
+                    <td>{{ backup.name }}</td>
+                    <td>{{ backup.createdDateTime | date:'short' }}</td>
+                    <td>{{ backup.size | fileSize }}</td>
+                    <td>
+                        <button pButton type="button" icon="pi pi-ellipsis-v"
+                            class="p-button-rounded p-button-text p-button-info mr-1"
+                            (click)="toggleBackupMenu(menu, $event, backup)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="rowexpansion" let-ev>
+                <tr>
+                    <td colspan="5" class="p-0">
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="5">{{ backups.error !== '' ? backups.error : 'No backups found.' }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-card>
+</div>

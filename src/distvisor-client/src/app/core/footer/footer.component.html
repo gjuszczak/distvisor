@@ -1,0 +1,20 @@
+<footer>
+    <div class="container text-center">
+        <h3 class="text-uppercase">Stay in touch</h3>
+        <div>
+            <a href="/api/redirect-to/linkedin" target="_blank" rel="noopener" class="fab fa-linkedin-in"></a>
+            <a href="/api/redirect-to/facebook" target="_blank" rel="noopener" class="fab fa-facebook-f"></a>
+            <a href="/api/redirect-to/github" target="_blank" rel="noopener" class="fab fa-github"></a>
+        </div>
+        <div class="py-3">
+            <div>
+                <a class="hidden-link" (click)="login()">©</a> 2020 Copyright: <a href="/">Distvisor Grzegorz
+                    Juszczak</a>
+            </div>
+            <div *ngIf="config.backendDetails">
+              <span *ngIf="config.backendDetails.appVersion" class="pr-1">v{{config.backendDetails.appVersion}}</span>
+              <span *ngIf="config.backendDetails.runtimeVersion">Powered by {{config.backendDetails.runtimeVersion}}</span>
+            </div>
+        </div>
+    </div>
+</footer>

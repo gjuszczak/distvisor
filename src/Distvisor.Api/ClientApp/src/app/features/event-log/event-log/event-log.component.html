@@ -1,0 +1,108 @@
+<div class="container">
+    <ng-container *ngIf="(aggregate$ | async) as aggregate">
+        <p-card *ngIf="aggregate.aggregateId" styleClass="mt-3">
+            <p-header>
+                <div class="flex justify-content-between pt-3 px-3">
+                    <div class="p-card-title">Aggregate</div>
+                    <div class="flex">
+                        <button pButton type="button" icon="pi pi-times" [routerLink]="['/admin', 'event-log']"
+                            class="p-button-rounded p-button-text p-button-info mr-1"></button>
+                    </div>
+                </div>
+            </p-header>
+            <div class="fluid grid px-2">
+                <div class="col-12 md:col-6">
+                    <h4 class="my-2">Id:</h4>
+                    <p class="my-0">{{aggregate.aggregateId}}</p>
+                </div>
+                <div class="col-12 md:col-6">
+                    <h4 class="my-2">Version:</h4>
+                    <p class="my-0">{{aggregate.version}}</p>
+                </div>
+                <div class="col-12 md:col-6">
+                    <h4 class="my-2">Type:</h4>
+                    <p class="my-0">{{aggregate.aggregateTypeDisplayName}}</p>
+                </div>
+                <div class="col-12 md:col-6">
+                    <h4 class="my-2">Internal type:</h4>
+                    <p class="my-0">{{aggregate.aggregateType}}</p>
+                </div>
+            </div>
+            <p-panel styleClass="aggregate-payload mt-3" header="Payload" [toggleable]="true" [collapsed]="true"
+                toggler="header" expandIcon="pi pi-chevron-right" collapseIcon="pi pi-chevron-down">
+                <pre class="m-0"><code class="language-json" pCode>{{ aggregate.maskedPayload | json }}</code></pre>
+            </p-panel>
+        </p-card>
+        <app-event-log-confirm-modal *ngIf="(modal$ | async) as modal" header="Replay events"
+            [visible]="modal.visible === EventsModals.ReplayEvents" operation="replay all events"
+            [loading]="modal.loading" [error]="modal.error" (onCancel)="hideEventsModal()"
+            (onConfirm)="replayEvents()"></app-event-log-confirm-modal>
+        <p-card styleClass="mt-3">
+            <p-header>
+                <div class="flex justify-content-between pt-3 px-3">
+                    <div class="p-card-title">Events</div>
+                    <div class="flex">
+                        <button pButton type="button" icon="pi pi-refresh"
+                            class="p-button-rounded p-button-text p-button-info mr-1"
+                            (click)="reloadEvents(aggregate?.aggregateId)"></button>
+                        <ng-template [ngIf]="!aggregate.aggregateId">
+                            <button pButton type="button" icon="pi pi-ellipsis-v"
+                                class="p-button-rounded p-button-text p-button-info mr-1"
+                                (click)="menu.toggle($event)"></button>
+                            <p-menu #menu [popup]="true" [model]="eventLogMenuItems"></p-menu>
+                        </ng-template>
+                    </div>
+                </div>
+            </p-header>
+            <p-table *ngIf="(events$ | async) as events" dataKey="eventId" [value]="events.items" [lazy]="true"
+                [first]="events.first" [rows]="events.rows" [rowsPerPageOptions]="events.rowsPerPageOptions"
+                [totalRecords]="events.totalRecords" [loading]="events.loading" [rowHover]="true" [paginator]="true"
+                [showCurrentPageReport]="true" [autoLayout]="true" (onLazyLoad)="lazyLoadEvents($event)">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th class="tiny-col"></th>
+                        <th>Timestamp</th>
+                        <th>Version</th>
+                        <th>Event</th>
+                        <th>Aggregate</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-ev let-expanded="expanded">
+                    <tr [pRowToggler]="ev">
+                        <td><i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i></td>
+                        <td>{{ ev.timeStamp | date:'short' }}</td>
+                        <td>{{ ev.version }}</td>
+                        <td>
+                            <div>{{ ev.eventTypeDisplayName }}</div>
+                            <small>{{ ev.eventId }}</small>
+                        </td>
+                        <td>
+                            <div>{{ ev.aggregateTypeDisplayName }}</div>
+                            <a *ngIf="!events.aggregateId; else withAggregate"
+                                [routerLink]="['/admin', 'event-log', 'aggregates', ev.aggregateId]"
+                                [queryParams]="{first: 0, rows: events.rows}">
+                                <small>{{ ev.aggregateId }}</small>
+                            </a>
+                            <ng-template #withAggregate>
+                                <small>{{ ev.aggregateId }}</small>
+                            </ng-template>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="rowexpansion" let-ev>
+                    <tr>
+                        <td colspan="5" class="p-0">
+                            <pre
+                                class="m-0"><code class="language-json" pCode>{{ ev.maskedPayload | json }}</code></pre>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="5">{{ events.error !== '' ? events.error : 'No events found.' }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-card>
+    </ng-container>
+</div>

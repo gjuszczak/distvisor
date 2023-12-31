@@ -1,0 +1,4 @@
+<app-confirm-modal [header]="(operation | titlecase) + ' redirection'" [visible]="visible" [error]="error"
+        [loading]="loading" (onSubmit)="submit()" (onCancel)="cancel()">
+        Do you want to {{operation}} redirection '{{value.name}}'?
+</app-confirm-modal>

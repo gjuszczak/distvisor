@@ -1,0 +1,38 @@
+.fab {
+  font-size: 30px;
+  padding: 15px;
+  width: 60px;
+  margin: 10px;
+  text-decoration: none;
+  border-radius: 50%;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.fa-envelope {
+  background: #3c3150;
+  color: white;
+}
+
+.fa-facebook-f {
+  background: #3B5998;
+  color: white;
+}
+
+.fa-linkedin-in {
+  background: #007bb5;
+  color: white;
+}
+
+.fa-github {
+  background: #24292e;
+  color: white;
+}
+
+.hidden-link, .hidden-link:hover {
+  cursor: default;
+  color: inherit;
+  text-decoration: none;
+}

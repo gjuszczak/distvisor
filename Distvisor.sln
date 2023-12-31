@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Distvisor.Web", "src\Distvisor.Web\Distvisor.Web.csproj", "{A1003EF4-7F28-4D0E-88C1-A676BB4E2926}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Distvisor.App", "src\Distvisor.App\Distvisor.App.csproj", "{FAB3C8CD-8194-4451-8515-8AD344D9E9FE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7A877D89-C207-4FF5-A35C-E2212B45200D}"
@@ -15,7 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Distvisor.App.Tests", "test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Distvisor.Infrastructure", "src\Distvisor.Infrastructure\Distvisor.Infrastructure.csproj", "{000785FA-B927-4DBE-9295-FE016DBFFACE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngularTemplate", "src\AngularTemplate\AngularTemplate.csproj", "{7C660C82-30E5-48F8-84F5-E585079D1E5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AngularTemplate", "src\AngularTemplate\AngularTemplate.csproj", "{7C660C82-30E5-48F8-84F5-E585079D1E5C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Distvisor.Api", "src\Distvisor.Api\Distvisor.Api.csproj", "{18671D3D-27CF-49DD-B373-F7F2289357E0}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "distvisor-client", "src\distvisor-client\distvisor-client.esproj", "{5E57CE1E-D574-4305-96F1-E2D7A02D2AAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +25,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A1003EF4-7F28-4D0E-88C1-A676BB4E2926}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1003EF4-7F28-4D0E-88C1-A676BB4E2926}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A1003EF4-7F28-4D0E-88C1-A676BB4E2926}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A1003EF4-7F28-4D0E-88C1-A676BB4E2926}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FAB3C8CD-8194-4451-8515-8AD344D9E9FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FAB3C8CD-8194-4451-8515-8AD344D9E9FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAB3C8CD-8194-4451-8515-8AD344D9E9FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -43,16 +41,27 @@ Global
 		{7C660C82-30E5-48F8-84F5-E585079D1E5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C660C82-30E5-48F8-84F5-E585079D1E5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C660C82-30E5-48F8-84F5-E585079D1E5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18671D3D-27CF-49DD-B373-F7F2289357E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18671D3D-27CF-49DD-B373-F7F2289357E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18671D3D-27CF-49DD-B373-F7F2289357E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18671D3D-27CF-49DD-B373-F7F2289357E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E57CE1E-D574-4305-96F1-E2D7A02D2AAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E57CE1E-D574-4305-96F1-E2D7A02D2AAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E57CE1E-D574-4305-96F1-E2D7A02D2AAA}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{5E57CE1E-D574-4305-96F1-E2D7A02D2AAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E57CE1E-D574-4305-96F1-E2D7A02D2AAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E57CE1E-D574-4305-96F1-E2D7A02D2AAA}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{A1003EF4-7F28-4D0E-88C1-A676BB4E2926} = {7A877D89-C207-4FF5-A35C-E2212B45200D}
 		{FAB3C8CD-8194-4451-8515-8AD344D9E9FE} = {7A877D89-C207-4FF5-A35C-E2212B45200D}
 		{65622F11-823D-4AB8-8C89-1C8E39920205} = {5389A851-09EC-424D-B935-8F017EB0E043}
 		{000785FA-B927-4DBE-9295-FE016DBFFACE} = {7A877D89-C207-4FF5-A35C-E2212B45200D}
 		{7C660C82-30E5-48F8-84F5-E585079D1E5C} = {7A877D89-C207-4FF5-A35C-E2212B45200D}
+		{18671D3D-27CF-49DD-B373-F7F2289357E0} = {7A877D89-C207-4FF5-A35C-E2212B45200D}
+		{5E57CE1E-D574-4305-96F1-E2D7A02D2AAA} = {7A877D89-C207-4FF5-A35C-E2212B45200D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2914F3E-7ECC-457F-AAAE-4D65DF3F3CC4}
